@@ -18,6 +18,7 @@ PHASES = {
     "map": pipeline.phase_map,  # H-A1 field map → results/<cfg>/map_fields.json
     "shapes": pipeline.phase_shapes,  # H-B chains/circles → results/<cfg>/shapes.json
     "lattice": pipeline.phase_lattice,  # H-B2 axiom lattices → results/<cfg>/lattice.json
+    "structures": pipeline.phase_structures,  # H-B2 tests 4–5: axiom transfer, Lie/topological/algebraic groups → structures.json
     "judges": pipeline.phase_judges,  # H-A4 covariate: LLM-judge abstraction ratings → data/judge_ratings.csv
     "axes": pipeline.phase_axes,  # H-A4: PCs vs pure/applied & abstraction → results/<cfg>/axes.json
     "causal": pipeline.phase_causal,  # H-B causal: chain-subspace vs random-subspace noise → results/<cfg>/causal.json

@@ -141,6 +141,17 @@ def table_holm(mp: dict, sh: dict, la: dict) -> str:
     return "\n".join(out)
 
 
+def table_structures(s: dict) -> str:
+    rows = ["| Model | commutativity transfer cos (null95, p) | identity transfer cos (p) | group-object parallelograms cos (null95, p) | parent ranks: topological / Lie / algebraic group |", "|---|---|---|---|---|"]
+    for key, r in s.items():
+        t, go = r["transfer"], r["group_objects"]
+        pr = go["parent_ranks"]
+        rows.append(f"| {key} | {t['commutative']['cos']:+.3f} ({t['commutative']['null95']:.3f}, {_p(t['commutative']['p'])}) | {t['identity']['cos']:+.3f} ({_p(t['identity']['p'])}) | "
+                    f"{go['parallelograms']['cos']:+.3f} ({go['parallelograms']['null95']:.3f}, {_p(go['parallelograms']['p'])}) | "
+                    f"{pr['topological group']} / {pr['Lie group']} / {pr['algebraic group']} (of {go['pool_size']}) |")
+    return "\n".join(rows)
+
+
 def table_judges(j: dict) -> str:
     rows = ["| Judges | n concepts | mean pairwise Spearman | ICC(2,1) | ICC(2,k) |", "|---|---|---|---|---|",
             f"| {', '.join(j['judges'])} | {j['n']} | {j['mean_pairwise_spearman']:.3f} | {j['icc2_1']:.3f} | {j['icc2_k']:.3f} |"]
@@ -365,7 +376,8 @@ def phase_report(cfg: Config) -> None:
         "H-B number-coded families: structure beyond the number reference": table_beyond_reference(sh, fams),
         "H-B2 axiom lattices (offset consistency = mean cosine of same-axiom difference vectors)": table_lattice(la),
     }
-    for title, name, fn in (("H-A4 judges: agreement of LLM abstraction raters", "judges.json", table_judges),
+    for title, name, fn in (("H-B2 tests 4–5: axiom transfer to ring-like pairs; group objects (parent ranks = nearest-neighbour rank of [group, other parent])", "structures.json", table_structures),
+                            ("H-A4 judges: agreement of LLM abstraction raters", "judges.json", table_judges),
                             ("H-A4 axes: top PCs vs pure/applied and abstraction (residualized on frequency, token count)", "axes.json", table_axes),
                             ("H-B causal test (gated on baseline accuracy ≥ 0.70)", "causal.json", table_causal),
                             ("Exploratory: Qwen-Scope SAE codes", "sae.json", table_sae)):
