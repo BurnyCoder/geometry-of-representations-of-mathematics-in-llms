@@ -17,13 +17,15 @@ from mathgeom.report import style as S
 KEYS = list(S.MODEL)
 
 
-def draw_hero(r: dict, planes: dict, conf: str):
-    """(a) field-map ρ for all models vs twins; (b) days cycle vs angles line; (c) axiom offsets."""
+def draw_hero(r: dict, planes: dict, fmap: dict, conf: str):
+    """(A) field-map ρ for all models vs twins; (B) the confirmatory model's field map with ground-truth
+    neighbour edges; (C, D) days cycle vs angles line; (E) axiom offsets, all models + twins."""
     import matplotlib.pyplot as plt
+    from matplotlib.lines import Line2D
 
     mp, la, sh, ph = r["map_fields"], r["lattice"], r["shapes"], r["posthoc"]
-    fig = plt.figure(figsize=(14.5, 4.3))
-    gs = fig.add_gridspec(1, 4, width_ratios=[1.15, 0.85, 0.85, 1.35], wspace=0.32)
+    fig = plt.figure(figsize=(18.5, 4.4))
+    gs = fig.add_gridspec(1, 5, width_ratios=[1.1, 1.15, 0.8, 0.8, 1.3], wspace=0.3)
     ax = fig.add_subplot(gs[0])
     y = np.arange(len(KEYS))[::-1]
     for yi, k in zip(y, KEYS):
@@ -38,10 +40,21 @@ def draw_hero(r: dict, planes: dict, conf: str):
     ax.scatter([], [], color=S.BLUE, label="trained (95% CI)"), ax.scatter([], [], color=S.TWIN, label="random-init twin")
     ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.17), ncol=2, fontsize=6.5)
     ax.set_title("A · Fields form a map in every model", fontsize=9)
+    ax = fig.add_subplot(gs[1])
+    P = fmap["P"]
+    for i, j in fmap["edges"]:
+        ax.plot(*P[[i, j]].T, color=S.AXIS, lw=0.8, zorder=1)
+    ax.scatter(P[:, 0], P[:, 1], c=[S.BLUE if p == "pure" else S.ORANGE for p in fmap["pa"]], s=30, zorder=3, edgecolors=S.SURFACE, linewidths=1.0)
+    S.label_points(ax, P, [S.FIELD.get(n, n) for n in fmap["names"]], size=5.6)
+    S.bare(ax)
+    S.note(ax, f"{S.MODEL[conf]} ★ · grey edges: each field's 2 nearest arXiv neighbours")
+    ax.legend(handles=[Line2D([], [], marker="o", ls="", color=S.BLUE, label="pure"), Line2D([], [], marker="o", ls="", color=S.ORANGE, label="applied")],
+              loc="upper center", bbox_to_anchor=(0.5, -0.12), ncol=2, fontsize=6.5)
+    ax.set_title("B · Related fields sit together", fontsize=9)
     Lp = mp[conf]["primary_layer"]
     from mathgeom.report.figures.families import draw_plane
 
-    for col, (f, title, closed) in enumerate((("days", "B · Days: a circle", True), ("angles", "C · Angles: not a circle", False)), start=1):
+    for col, (f, title, closed) in enumerate((("days", "C · Days: a circle", True), ("angles", "D · Angles: not a circle", False)), start=2):
         ax = fig.add_subplot(gs[col])
         P, items = planes[f]
         draw_plane(ax, P, items, closed=closed, size=6, highlight=((len(P) - 1, 0),) if f == "angles" else ())
@@ -50,7 +63,7 @@ def draw_hero(r: dict, planes: dict, conf: str):
         else:
             S.note(ax, f"d(0°, 330°) = {sh[conf]['angles']['closure']:.2f} × neighbour distance")
         ax.set_title(title, fontsize=9)
-    ax = fig.add_subplot(gs[3])
+    ax = fig.add_subplot(gs[4])
     axioms = list(la[conf]["group_like"]["offsets"])
     y = np.arange(len(axioms))[::-1]
     for yi, a in zip(y, axioms):
@@ -61,13 +74,17 @@ def draw_hero(r: dict, planes: dict, conf: str):
         ax.scatter(twins, [yi - 0.15] * len(twins), color=S.TWIN, s=14, zorder=2)
         ax.scatter(others, [yi + 0.15] * len(others), facecolors=S.SURFACE, edgecolors=S.BLUE, s=18, zorder=3)
         ax.scatter(o["consistency"], yi, color=S.BLUE, s=48, zorder=4, edgecolors=S.SURFACE)
+        lp = la[conf].get("audit2", {}).get("group_like_offsets", {}).get("length_projected", {}).get(a)
+        if lp:  # same model with the token-count direction projected out (word-length control)
+            ax.scatter(lp["consistency"], yi, marker="D", facecolors="none", edgecolors=S.INK2, s=26, zorder=5, linewidths=1.0)
     ax.axvline(0, color=S.AXIS, lw=0.7)
     ax.set_yticks(y, [f"+ {a}" for a in axioms], fontsize=7.5)
     ax.set_xlabel("offset consistency (mean cosine of same-axiom differences)", fontsize=7.5)
     ax.scatter([], [], color=S.BLUE, label=f"{S.MODEL[conf]} ★"), ax.scatter([], [], facecolors=S.SURFACE, edgecolors=S.BLUE, label="other 4 models")
+    ax.scatter([], [], marker="D", facecolors="none", edgecolors=S.INK2, label="★ without token-count direction")
     ax.scatter([], [], color=S.TWIN, label="5 twins"), ax.plot([], [], color=S.GRID, lw=5, label="null: mean → 95th pct")
     ax.legend(loc="upper center", bbox_to_anchor=(0.45, -0.17), ncol=2, fontsize=6.3)
-    ax.set_title("D · Axioms act as directions", fontsize=9)
+    ax.set_title("E · Axioms act as directions", fontsize=9)
     return fig
 
 
@@ -134,6 +151,46 @@ def draw_forest(r: dict):
     return fig
 
 
+def draw_group_objects(r: dict):
+    """Group objects (topological / Lie / algebraic groups): parallelogram consistency per model vs its null
+    and twin, and how close 'Lie group' sits to each of its two parents (nearest-neighbour rank)."""
+    import matplotlib.pyplot as plt
+
+    st = r["structures"]
+    fig, axes = plt.subplots(1, 2, figsize=(11.5, 3.3), gridspec_kw={"wspace": 0.55})
+    y = np.arange(len(KEYS))[::-1]
+    ax = axes[0]
+    for yi, k in zip(y, KEYS):
+        p, t = st[k]["group_objects"]["parallelograms"], st[k + "__random"]["group_objects"]["parallelograms"]
+        ax.scatter(p["null95"], yi, marker="|", s=260, color=S.MUTED, linewidths=2, zorder=2)  # only the 95th percentile is stored
+        ax.scatter(t["cos"], yi, color=S.TWIN, s=34, zorder=3)
+        ax.scatter(p["cos"], yi, color=S.BLUE, s=44, zorder=4, edgecolors=S.SURFACE)
+        ax.text(0.68, yi, S.fmt_p(p["p"]), fontsize=6.8, color=S.INK2, va="center")
+    ax.set_yticks(y, [S.MODEL[k] for k in KEYS], fontsize=7.5)
+    ax.set_xlim(-0.1, 0.8)
+    ax.axvline(0, color=S.AXIS, lw=0.7)
+    ax.set_xlabel("mean cosine of the 3 parallelograms\n(e.g. Lie group − topological group vs smooth manifold − topological space)", fontsize=7)
+    ax.scatter([], [], color=S.BLUE, label="trained"), ax.scatter([], [], color=S.TWIN, label="random-init twin"), ax.scatter([], [], marker="|", s=120, color=S.MUTED, linewidths=2, label="random-quadruple null, 95th pct")
+    ax.legend(loc="upper center", bbox_to_anchor=(0.45, -0.32), ncol=3, fontsize=6.3)
+    ax.set_title("Group objects combine their parents", fontsize=9)
+    ax = axes[1]
+    for yi, k in zip(y, KEYS):
+        for kk, col in ((k, S.BLUE), (k + "__random", S.TWIN)):
+            g, m = st[kk]["group_objects"]["parent_ranks"]["Lie group"]
+            off = 0.13 if kk == k else -0.13
+            ax.plot([g, m], [yi + off, yi + off], color=col, lw=1, alpha=0.5)
+            ax.scatter(g, yi + off, color=col, s=26, marker="o", zorder=3)
+            ax.scatter(m, yi + off, color=col, s=30, marker="D", zorder=3)
+    ax.set_xscale("log")
+    ax.set_yticks(y, [S.MODEL[k] for k in KEYS], fontsize=7.5)
+    ax.set_xlabel(f"rank among {st[KEYS[0]]['group_objects']['pool_size']} family items (1 = nearest, log scale)", fontsize=7)
+    ax.scatter([], [], color=S.INK2, marker="o", label="“group”"), ax.scatter([], [], color=S.INK2, marker="D", label="“smooth manifold”")
+    ax.scatter([], [], color=S.BLUE, label="trained"), ax.scatter([], [], color=S.TWIN, label="twin")
+    ax.legend(loc="upper center", bbox_to_anchor=(0.45, -0.32), ncol=4, fontsize=6.3)
+    ax.set_title("“Lie group”: how near each parent sits", fontsize=9)
+    return fig
+
+
 def build(r: dict, cfg_conf, outdir) -> list[str]:
     from mathgeom.report.figures.families import short
 
@@ -141,4 +198,8 @@ def build(r: dict, cfg_conf, outdir) -> list[str]:
     Lp = r["map_fields"][conf]["primary_layer"]
     planes = {f: (figdata.pca(figdata.family_acts(cfg_conf, conf, f)[:, Lp]), [short(f, c)[:3] if f == "days" else (short(f, c) if i in (0, 3, 6, 11) else "") for i, c in enumerate(figdata.family_items(cfg_conf, f))])
               for f in ("days", "angles")}
-    return [S.save(draw_hero(r, planes, conf), outdir, "hero"), S.save(draw_depth(r), outdir, "depth_curves"), S.save(draw_forest(r), outdir, "forest")]
+    setup = figdata.field_setup(cfg_conf, r["map_fields"][conf])
+    fmap = {"P": figdata.field_layouts(figdata.field_rdms(cfg_conf, conf, setup, Lp))["trained"], "names": setup["names"], "pa": setup["pa"],
+            "edges": figdata.neighbour_edges(setup["arxiv"])}
+    return [S.save(draw_hero(r, planes, fmap, conf), outdir, "hero"), S.save(draw_depth(r), outdir, "depth_curves"), S.save(draw_forest(r), outdir, "forest"),
+            S.save(draw_group_objects(r), outdir, "group_objects")]

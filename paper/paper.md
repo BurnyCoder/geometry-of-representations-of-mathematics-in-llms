@@ -113,7 +113,7 @@ The test is calibrated when the nuisance distance matrix *is* the confounder. It
 
 # 4 Results
 
-![**Results at a glance.** Blue: trained model; grey: its random-init twin (same architecture and tokenizer, no learning). The starred model is the preregistered confirmatory model, Qwen3.5-2B. (A) Field-centroid geometry correlates with arXiv cross-listing in all five models (dots: ρ; lines: 95% bootstrap CI); the twins sit at or below zero. (B) Days of the week close into a cycle in the top-2 principal-component plane (positive control). (C) Angles do not; the orange edge is the 330° → 0° closure the preregistration predicted. (D) Offset consistency per axiom: the confirmatory model, the other four models and the five twins, against the random-pair null (grey bar: mean to 95th percentile). Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-hero>.](../reports/figures/hero.pdf){width=100%}
+![**Results at a glance.** Blue: trained model; grey: its random-init twin (same architecture and tokenizer, no learning). The starred model is the preregistered confirmatory model, Qwen3.5-2B. (A) Field-centroid geometry correlates with arXiv cross-listing in all five models (dots: ρ; lines: 95% bootstrap CI); the twins sit at or below zero. (B) The confirmatory model's field map (metric MDS); grey edges join each field to its two nearest arXiv neighbours. (C) Days of the week close into a cycle in the top-2 principal-component plane (positive control). (D) Angles do not; the orange edge is the 330° → 0° closure the preregistration predicted. (E) Offset consistency per axiom: the confirmatory model, the other four models and the five twins, against the random-pair null (grey bar: mean to 95th percentile). Diamonds show the confirmatory model with the token-count direction removed. Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#s-glance>.](../reports/figures/hero.pdf){width=100%}
 
 **Every test in every model.** The table below summarizes the confirmatory and secondary tests for all five models.
 
@@ -155,7 +155,7 @@ The test is calibrated when the nuisance distance matrix *is* the confounder. It
 
 ![**Related fields stay close in the trained model, and the twin scrambles them.** Metric MDS of three 17 × 17 distance matrices: arXiv cross-listing (ground truth), Qwen3.5-2B field centroids at layer 12, and the random-init twin. Panels are rotated or reflected onto the arXiv layout for display only. Grey edges join each field to its two nearest arXiv neighbours and are drawn in every panel: short edges mean the neighbourhood is preserved. Blue: pure; orange: applied. ρ is computed on the full matrices, not on the 2-D layout. Interactive version, with a layer slider: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-map>.](../reports/figures/field_maps_qwen3.5-2b.pdf){width=100%}
 
-![**The same matrices, ranked.** Colour is the rank of each distance within its matrix (Spearman RSA compares ranks), with rows in one fixed order grouped by the five super-tree branches. The trained matrix partly reproduces the arXiv block structure; the twin's does not.](../reports/figures/field_rdms_qwen3.5-2b.pdf){width=100%}
+![**The same matrices, ranked.** Colour is the rank of each distance within its matrix (Spearman RSA compares ranks), with rows in one fixed order grouped by the five super-tree branches. The trained matrix partly reproduces the arXiv block structure; the twin's does not. Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-rdm>.](../reports/figures/field_rdms_qwen3.5-2b.pdf){width=100%}
 
 **Not a rogue-dimension artifact (post-hoc).** The preregistered all-but-the-top variant removes the top d/100 = 20 principal components, and it reverses the correlation (ρ = -0.22). A post-hoc sweep explains why:
 
@@ -260,7 +260,7 @@ infini-gram (v4_dolma-v1_7_llama): Spearman ρ(wordfreq Zipf, log count) = 0.316
 | angles | circle | qwen3.5-2b | 0.56 | 0.29 | 2.11 | 1.01 (0.39) | 0.65 (0.0005) | 0.90 (0.0005) | 0.76 (0.0033) |
 | angles | circle | qwen3.5-2b__random | -0.01 | 0.22 | 0.80 | 1.01 (0.77) | 0.26 (0.8581) | 0.08 (0.8076) | -0.49 (0.3754) |
 
-![**Days and months close into cycles; angles do not.** Top-2 principal-component plane of each family at the preregistered layer (unsupervised; no labels are used to fit it). Colour runs light to dark along the true order; the grey path joins consecutive items. For angles, the orange edge is the 330° → 0° closure the preregistration predicted. Below each panel: the post-hoc PC-plane cycle score (1 = perfect cycle) with its order-permutation p. Bottom row: the random-init twin.](../reports/figures/cyclic_qwen3.5-2b.pdf){width=82%}
+![**Days and months close into cycles; angles do not.** Top-2 principal-component plane of each family at the preregistered layer (unsupervised; no labels are used to fit it). Colour runs light to dark along the true order; the grey path joins consecutive items. For angles, the orange edge is the 330° → 0° closure the preregistration predicted. Below each panel: the post-hoc PC-plane cycle score (1 = perfect cycle) with its order-permutation p. Bottom row: the random-init twin. Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families>.](../reports/figures/cyclic_qwen3.5-2b.pdf){width=82%}
 
 ![**The cycles are present at almost every depth.** Days (top) and months (bottom) at fixed relative depths, each plane rotated onto the preregistered layer's plane for display, plus the cycle score at every layer for the trained model and the twin (right). Post-hoc and unadjusted. Animated version: `reports/figures/circle_depth_qwen3.5-2b.gif`; interactive: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families>.](../reports/figures/circle_depth_qwen3.5-2b.pdf){width=100%}
 
@@ -286,7 +286,7 @@ This statistic is post-hoc. We conclude that the pipeline works, and that the fu
 | qwen3.5-2b | 0.04 | 0.04 | 0.04 | 100 |
 | qwen3.5-2b__random | 0.04 | 0.04 | 0.05 | 100 |
 
-![**Class-inclusion chains are ordered paths; the twin's are tangles.** PC planes of the ordered families at the preregistered layer. Below each panel: the Robinson score (fraction of item triples consistent with the order; chance 1/3) with its permutation p, and for the ring and space chains the p of the frequency control.](../reports/figures/chains_qwen3.5-2b.pdf){width=100%}
+![**Class-inclusion chains are ordered paths; the twin's are tangles.** PC planes of the ordered families at the preregistered layer. Below each panel: the Robinson score (fraction of item triples consistent with the order; chance 1/3) with its permutation p, and for the ring and space chains the p of the frequency control. Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families>.](../reports/figures/chains_qwen3.5-2b.pdf){width=100%}
 
 **Frequency control (plan; added in the second audit).** Could the chain order just be a frequency or word-length order? We removed wordfreq Zipf frequency and model token count from both the representation and the ranks, fitting that regression inside each leave-one-out fold to avoid leakage ([Snoek et al., 2019](https://doi.org/10.1016/j.neuroimage.2018.09.074)), then predicted the residual order.
 - *Result.* Both preregistered chains stay ordered: ring chain ρ = 0.94 (p = 0.003), space chain ρ = 0.81 (p = 0.017). The twin gives 0.13 and -0.04.
@@ -314,7 +314,7 @@ This statistic is post-hoc. We conclude that the pipeline works, and that the fu
 | angles vs digits_0_330 | qwen3.5-2b | 0.84 | +0.054 (0.1858) |
 | angles vs digits_0_330 | qwen3.5-2b__random | 0.22 | +0.227 (0.0104) |
 
-![**Predicted vs found for angles.** Left: the preregistered prediction, a circle on which 330° neighbours 0° (orange edge). Middle: Qwen3.5-2B's PC plane, where that edge spans the whole layout. Right: the bare numbers 0–330, whose geometry the angles follow.](../reports/figures/angles_qwen3.5-2b.pdf){width=90%}
+![**Predicted vs found for angles.** Left: the preregistered prediction, a circle on which 330° neighbours 0° (orange edge). Middle: Qwen3.5-2B's PC plane, where that edge spans the whole layout. Right: the bare numbers 0–330, whose geometry the angles follow. Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families>.](../reports/figures/angles_qwen3.5-2b.pdf){width=90%}
 
 **SMDS (plan, secondary).** Supervised MDS fits a projection to a line or a discrete-circle template, and each fit is tested against refits on shuffled labels.
 
@@ -358,7 +358,7 @@ This agrees with the unsupervised statistics, including the conclusion that angl
 
 ![**Adding an axiom moves structures in a consistent direction in the trained model only.** Left: the ideal geometry, in which each axiom is one fixed step. Other panels: the same unsupervised PCA plane of the 13 group-like structures, one panel per axiom, with the pairs that differ only in that axiom drawn as blue arrows. Parallel arrows mean a consistent direction. Below each panel: offset consistency and its random-pair p. Bottom row: the twin. Interactive version, with an analogy playground: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-lattice>.](../reports/figures/lattice_axes_qwen3.5-2b.pdf){width=100%}
 
-![**The direction evidence, unprojected.** Cosine between every pair of single-axiom difference vectors in the full residual space, grouped by axiom. Red diagonal blocks mean a consistent direction. Hatched cells are cross-axiom pairs that share a structure; isotropic noise alone puts these near ±0.5, so they carry no evidence. The self-cosines on the diagonal are masked. Right: offset consistency per axiom for the trained model, the trained model with the token-count direction removed, and the twin, against the random-pair null.](../reports/figures/lattice_cosines_qwen3.5-2b.pdf){width=100%}
+![**The direction evidence, unprojected.** Cosine between every pair of single-axiom difference vectors in the full residual space, grouped by axiom. Red diagonal blocks mean a consistent direction. Hatched cells are cross-axiom pairs that share a structure; isotropic noise alone puts these near ±0.5, so they carry no evidence. The self-cosines on the diagonal are masked. Right: offset consistency per axiom for the trained model, the trained model with the token-count direction removed, and the twin, against the random-pair null. Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-cosines>.](../reports/figures/lattice_cosines_qwen3.5-2b.pdf){width=100%}
 
 For every group-like axiom, difference vectors between structures that differ only in that axiom are more parallel than random pairs (raw p < .05):
 
@@ -414,10 +414,12 @@ In this model's random-init twin, all four consistencies are ≈ 0.
 | gemma-4-e2b | +0.129 (0.271, 0.2324) | -0.180 (0.9320) | +0.484 (0.303, 0.0085) | [41, 6] / [2, 10] / [7, 3] (of 113) |
 | gemma-4-e2b__random | +0.003 (0.063, 0.4568) | +0.037 (0.2344) | -0.003 (0.141, 0.5337) | [2, 31] / [2, 6] / [2, 7] (of 113) |
 
+![**Lie, topological and algebraic groups combine their parents in every trained model.** Left: mean cosine of the three parallelograms (for example, Lie group − topological group vs smooth manifold − topological space) for each model (blue) and its twin (grey), against the 95th percentile of a random-quadruple null (grey tick); p values from that null. Right: the nearest-neighbour rank of "group" (circle) and "smooth manifold" (diamond) among the family items around "Lie group", trained vs twin (log scale). Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-groups>.](../reports/figures/group_objects.pdf){width=88%}
+
 **Group objects: supported.**
 - The parallelograms hold in all five trained models: mean cosine 0.40 in Qwen3.5-2B (p = 0.0045). The twins are near zero; the Qwen2.5 twins show a weak lexical signal.
 - Trained models place "Lie group" close to *both* parents: "group" and "smooth manifold" rank 3 and 7 among 113 items.
-- The twins place it next to "group" only, because of the shared token; "smooth manifold" ranks 18 in the Qwen3.5-2B twin.
+- The twins place it nearest to "group" because of the shared token. "Smooth manifold" ranks 18 in the Qwen3.5-2B twin; Gemma's twin is the exception, ranking it 6.
 
 **Axiom transfer: inconclusive.**
 - The commutativity direction learned on group-like pairs transfers only weakly to ring → commutative ring and division ring → field (0.20, p = 0.051).
@@ -500,7 +502,7 @@ Full tables: `reports/mvp_variants_results.md`.
 | ring_module_theory | 0.250 |
 | set_theory_logic | 0.000 |
 
-![**Concrete ↔ abstract is the top axis of the math-concept cloud.** Left and middle: PC1 × PC2 of the 398 primary concepts, both residualized on frequency and token count exactly as in the statistic. Left is coloured by judge abstraction, with the most and least abstract concepts labelled; middle is coloured pure/applied. The PC signs are flipped for display so that abstract and applied point right and up. Right: mean judge rating vs Mathlib import depth for the matched concepts.](../reports/figures/abstraction_qwen3.5-2b.pdf){width=100%}
+![**Concrete ↔ abstract is the top axis of the math-concept cloud.** Left and middle: PC1 × PC2 of the 398 primary concepts, both residualized on frequency and token count exactly as in the statistic. Left is coloured by judge abstraction, with the most and least abstract concepts labelled; middle is coloured pure/applied. The PC signs are flipped for display so that abstract and applied point right and up. Right: mean judge rating vs Mathlib import depth for the matched concepts. Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-abstraction>.](../reports/figures/abstraction_qwen3.5-2b.pdf){width=100%}
 
 **Axes.** We first residualized on word frequency and token count. The top principal component of the math-concept cloud then correlates with abstraction (ρ = 0.49), and the second with the pure/applied label (ρ = -0.41). In the twin these correlations are 0.06 and 0.14. A 5-fold cross-validated linear readout predicts abstraction with ρ = 0.74, against -0.06 in the twin. We also partialled out pretraining-scale frequency: infini-gram counts in Dolma v1.7, which correlate ρ = 0.32 with wordfreq. The axes are essentially unchanged: PC1 ↔ abstraction ρ = 0.44, PC2 ↔ applied ρ = -0.41.
 

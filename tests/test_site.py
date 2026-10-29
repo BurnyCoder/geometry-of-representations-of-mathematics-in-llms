@@ -48,3 +48,11 @@ def test_site_data_schema_and_page_numbers():
     text = re.sub(r"<[^>]+>", " ", text)
     text = re.sub(r"Qwen\d\.\d", "Qwen", text)  # model names, not results
     assert not re.findall(r"\d\.\d", text), "numbers in the page must come from data/index.json"
+
+
+def test_links_into_the_site_resolve():
+    """Every #anchor that README, summary or paper uses to point into the site exists in index.html."""
+    html = (SITE / "index.html").read_text(encoding="utf-8")
+    sources = ["README.md", "reports/summary_template.md", "reports/readme_results_template.md", "paper/template.md"]
+    anchors = {a for p in sources for a in re.findall(r"mathematics-in-llms/#([\w-]+)", (ROOT / p).read_text(encoding="utf-8"))}
+    assert anchors and not [a for a in anchors if f'id="{a}"' not in html]

@@ -3,7 +3,7 @@
 // elements resolved against index.json, chart values come from the same files.
 "use strict";
 
-const S = { I: null, M: {}, key: null, layer: 12, timer: null, edges: true, allModels: false, fam: "days",
+const S = { I: null, M: {}, key: null, layer: 12, timer: null, edges: true, allModels: false, fam: "days", ideal: false,
             axiom: null, cloudTwin: false, colorMode: "field", field: null, picked: null, hover: null };
 const CFG = { responsive: true, displaylogo: false, modeBarButtonsToRemove: ["lasso2d", "select2d", "toImage"] };
 const $ = (id) => document.getElementById(id);
@@ -60,6 +60,7 @@ function layout(title, extra = {}) {
   }, extra);
 }
 const plot = (id, data, lay) => Plotly.react($(id), data, lay, CFG);
+const TRANSITION = { duration: 350, easing: "cubic-in-out" };  // points glide between layers instead of jumping
 function padded(xy, f = 0.32) {  // axis ranges with room for direct labels at the edges
   const lo = [0, 1].map((k) => Math.min(...xy.map((d) => d[k]))), hi = [0, 1].map((k) => Math.max(...xy.map((d) => d[k])));
   const pad = [0, 1].map((k) => (hi[k] - lo[k]) * f);
@@ -138,20 +139,25 @@ function mapTraces(xy, highlight) {
   ];
 }
 function renderMap() {
-  const M = S.M[S.key], F = M.fields, L = S.layer - 1;
+  const M = S.M[S.key], F = M.fields, L = S.layer - 1, tr = { transition: TRANSITION };
   plot("map-arxiv", mapTraces(S.I.fields.arxiv_layout, S.hover), layout("arXiv cross-listing (ground truth)", padded(S.I.fields.arxiv_layout)));
-  plot("map-trained", mapTraces(F.trained.layout[L], S.hover), layout(fieldTitle("trained"), padded(F.trained.layout[L])));
-  plot("map-twin", mapTraces(F.random_init.layout[L], S.hover), layout(fieldTitle("random_init"), padded(F.random_init.layout[L])));
+  plot("map-trained", mapTraces(F.trained.layout[L], S.hover), layout(fieldTitle("trained"), { ...padded(F.trained.layout[L]), ...tr }));
+  plot("map-twin", mapTraces(F.random_init.layout[L], S.hover), layout(fieldTitle("random_init"), { ...padded(F.random_init.layout[L]), ...tr }));
   ["map-arxiv", "map-trained", "map-twin"].forEach((id) => {
     const el = $(id);
     if (el._linked) return;
     el._linked = true;
-    el.on("plotly_hover", (e) => { const i = e.points[0].customdata; if (i !== undefined && S.hover !== i) { S.hover = i; rerender(["fig-map", "fig-rdm"]); } });
-    el.on("plotly_unhover", () => { S.hover = null; rerender(["fig-map", "fig-rdm"]); });
+    el.on("plotly_hover", (e) => { const i = e.points[0].customdata; if (i !== undefined && S.hover !== i) hoverField(i); });
+    el.on("plotly_unhover", () => hoverField(null));
   });
   const lab = S.I.fields.labels;
   table($("map-table"), ["Field", "Pure/applied", "Branch", "Nearest arXiv neighbours"], lab.map((l, i) => [l, S.I.fields.pa[i], S.I.fields.branch_labels[S.I.fields.branch[i]],
     S.I.fields.edges.filter(([a, b]) => a === i || b === i).map(([a, b]) => lab[a === i ? b : a]).join(", ")]));
+}
+function hoverField(i) {  // linked highlight: field maps ↔ distance matrices → concept cloud (that field's concepts)
+  S.hover = i;
+  if (i !== null && S.colorMode === "field") { S.field = S.I.fields.names[i]; $("cloud-field").value = S.field; }
+  rerender(["fig-map", "fig-rdm", "fig-concepts"]);
 }
 function rdmTrace(M, order) {
   const p = P(), lab = S.I.fields.labels, o = order;
@@ -172,6 +178,16 @@ function renderRdm() {
   plot("rdm-arxiv", rdmTrace(S.I.fields.arxiv_rank, o), lay("arXiv distances", true));
   plot("rdm-trained", rdmTrace(M.fields.trained.rank[L], o), lay(fieldTitle("trained"), false));
   plot("rdm-twin", rdmTrace(M.fields.random_init.rank[L], o), lay(fieldTitle("random_init"), false));
+  ["rdm-arxiv", "rdm-trained", "rdm-twin"].forEach((id) => {  // hovering a row highlights that field everywhere
+    const el = $(id);
+    if (el._linked) return;
+    el._linked = true;
+    el.on("plotly_hover", (e) => { const i = S.I.fields.labels.indexOf(e.points[0].y); if (i >= 0 && S.hover !== i) hoverField(i); });
+    el.on("plotly_unhover", () => hoverField(null));
+  });
+  const lab = S.I.fields.labels, rows = [];
+  o.forEach((i, a) => o.slice(a + 1).forEach((j) => rows.push([`${lab[i]} ↔ ${lab[j]}`, fmt(S.I.fields.arxiv_rank[i][j]), fmt(M.fields.trained.rank[L][i][j]), fmt(M.fields.random_init.rank[L][i][j])])));
+  table($("rdm-table"), ["Field pair", "arXiv rank", `${model().name} rank (layer ${S.layer})`, "Twin rank"], rows);
 }
 function renderDepth() {
   const p = P(), traces = [], show = S.allModels ? S.I.models : [model()];
@@ -191,6 +207,9 @@ function renderDepth() {
              { type: "line", x0: model().primary_layer / L, x1: model().primary_layer / L, y0: 0, y1: 1, yref: "paper", line: { color: p.axis, width: 1 } }],
     annotations: [{ x: model().primary_layer / L, y: 1, yref: "paper", text: "pre-registered", showarrow: false, font: { size: 10, color: p.muted }, yanchor: "bottom" },
                   { x: S.layer / L, y: 0, yref: "paper", text: `layer ${S.layer}`, showarrow: false, font: { size: 10, color: p.orange }, yanchor: "top" }] }));
+  const lc = R(`map_fields.${S.key}.math_primary.layer_curve`);
+  table($("depth-table"), ["Layer", "Relative depth", "ρ trained", "ρ twin", "95th pct of max-over-layers null"],
+    lc.trained.map((v, i) => [i + 1, fmt((i + 1) / lc.trained.length), fmt(v), fmt(lc.random_init[i]), fmt(lc.max_null95)]));
 }
 
 // ---------------------------------------------------------------- figure 7: concept cloud + card
@@ -209,6 +228,8 @@ function renderCloud() {
     { margin: { l: 0, r: 0, t: 40, b: 0 }, scene: { xaxis: ax, yaxis: ax, zaxis: ax, aspectmode: "cube", camera: { eye: { x: 0.95, y: 0.95, z: 0.7 } } } }));
   const el = $("cloud");
   if (!el._linked) { el._linked = true; el.on("plotly_click", (e) => { const i = e.points[0].customdata; if (i !== undefined) pick(i); }); }
+  if (!$("cloud-table").childElementCount) table($("cloud-table"), ["Concept", "Field", "Judge abstraction (1–7)", "Mathlib declaration (import depth)"],
+    C.concept.map((c, i) => [c, label(C.field[i]), fmt(C.abstraction[i]), C.mathlib[i] ? `<code>${C.mathlib[i].decl}</code> (${C.mathlib[i].depth})` : "—"]));
 }
 function pick(i) {
   S.picked = i;
@@ -229,24 +250,49 @@ const FAM_TAKE = {
   number_systems: "Exploratory (7 items): ordered but frequency-confounded.",
   ngons: "Follows the number words three … twelve.", dimensions: "Follows the number words zero … ten.",
 };
-function famTraces(xy, items, closed, isAngles) {
+function idealFit(xy, closed) {
+  // Display aid: the ideal template (equally spaced circle, or evenly spaced line) in true order, rotated,
+  // reflected and scaled onto the observed points (2-D orthogonal Procrustes, closed form). It is drawn
+  // the same way for the twin, so a good fit there would show what chance looks like; no statistic uses it.
+  const n = xy.length, c = [0, 1].map((k) => xy.reduce((s, d) => s + d[k], 0) / n), X = xy.map((d) => [d[0] - c[0], d[1] - c[1]]);
+  const T0 = xy.map((_, i) => (closed ? [Math.cos((2 * Math.PI * i) / n), Math.sin((2 * Math.PI * i) / n)] : [i - (n - 1) / 2, 0]));
+  const rms = (A) => Math.sqrt(A.reduce((s, d) => s + d[0] ** 2 + d[1] ** 2, 0) / n), sx = rms(X);
+  let best = null;
+  for (const flip of [1, -1]) {
+    const T = T0.map((d) => [d[0], flip * d[1]]), st = rms(T);
+    const a = T.reduce((s, d, i) => s + d[0] * X[i][0] + d[1] * X[i][1], 0), b = T.reduce((s, d, i) => s + d[0] * X[i][1] - d[1] * X[i][0], 0);
+    const th = Math.atan2(b, a), k = sx / st, Y = T.map((d) => [k * (Math.cos(th) * d[0] - Math.sin(th) * d[1]), k * (Math.sin(th) * d[0] + Math.cos(th) * d[1])]);
+    const err = Y.reduce((s, d, i) => s + (d[0] - X[i][0]) ** 2 + (d[1] - X[i][1]) ** 2, 0);
+    if (!best || err < best.err) best = { err, Y };
+  }
+  return best.Y.map((d) => [d[0] + c[0], d[1] + c[1]]);
+}
+function famTraces(xy, items, closed, isAngles, cycle) {
   const p = P(), seq = closed ? [...xy.keys(), 0] : [...xy.keys()];
-  const t = [{ type: "scatter", mode: "lines", x: seq.map((i) => xy[i][0]), y: seq.map((i) => xy[i][1]), line: { color: p.axis, width: 1.5 }, hoverinfo: "skip" }];
+  const t = [];
+  if (S.ideal) {
+    const Y = idealFit(xy, closed), ys = closed ? [...Y.keys(), 0] : [...Y.keys()];
+    t.push({ type: "scatter", mode: "lines+markers", x: ys.map((i) => Y[i][0]), y: ys.map((i) => Y[i][1]), line: { color: p.grid, width: 6 }, marker: { size: 5, color: p.axis }, hoverinfo: "skip" });
+  }
+  t.push({ type: "scatter", mode: "lines", x: seq.map((i) => xy[i][0]), y: seq.map((i) => xy[i][1]), line: { color: p.axis, width: 1.5 }, hoverinfo: "skip" });
   if (isAngles) t.push({ type: "scatter", mode: "lines", x: [xy[xy.length - 1][0], xy[0][0]], y: [xy[xy.length - 1][1], xy[0][1]], line: { color: p.orange, width: 2.5 }, hoverinfo: "skip" });
+  const stat = cycle === undefined ? "" : `<br>cycle score at this layer ${fmt(cycle)} (post-hoc)`;
   t.push({ type: "scatter", mode: "markers+text", x: xy.map((d) => d[0]), y: xy.map((d) => d[1]), text: items.map((s) => s.replace(" degrees", "°").replace("-dimensional", "-d")),
     textposition: "top center", textfont: { size: 10, color: p.ink2 }, marker: { size: 11, color: ramp(xy.length), line: { color: p.surface, width: 1.5 } },
-    hovertemplate: items.map((s, i) => `<b>${s}</b><br>position ${i + 1} of ${items.length}<extra></extra>`) });
+    hovertemplate: items.map((s, i) => `<b>${s}</b><br>position ${i + 1} of ${items.length}${stat}<extra></extra>`) });
   return t;
 }
 function renderFamilies() {
   const p = P(), f = S.fam, F = S.M[S.key].families[f], L = S.layer - 1, closed = F.expected === "circle", ang = f === "angles";
-  const name = (S.I.family_labels[f] || f).split("\n")[0];
-  plot("fam-trained", famTraces(F.trained[L], F.items, closed, ang), layout(`${name} · ${model().name} · layer ${S.layer}`));
-  plot("fam-twin", famTraces(F.random_init[L], F.items, closed, ang), layout(`${name} · random-init twin`));
+  const name = (S.I.family_labels[f] || f).split("\n")[0], tr = { transition: TRANSITION };
+  const cyc = R(`posthoc.${S.key}.pc_plane_cycle.${f}`), cycT = R(`posthoc.${S.key}__random.pc_plane_cycle.${f}`);
+  plot("fam-trained", famTraces(F.trained[L], F.items, closed, ang, cyc && cyc[L]), layout(`${name} · ${model().name} · layer ${S.layer}`, tr));
+  plot("fam-twin", famTraces(F.random_init[L], F.items, closed, ang, cycT && cycT[L]), layout(`${name} · random-init twin`, tr));
+  table($("fam-table"), ["Item", "Position", `${model().name} PC1`, "PC2", "Twin PC1", "Twin PC2"],
+    F.items.map((it, i) => [it, i + 1, fmt(F.trained[L][i][0]), fmt(F.trained[L][i][1]), fmt(F.random_init[L][i][0]), fmt(F.random_init[L][i][1])]));
   $("fam-takeaway").innerHTML = `<b>${FAM_TAKE[f] || ""}</b>`;
-  const cyc = R(`posthoc.${S.key}.pc_plane_cycle.${f}`);
   if (cyc) {
-    const tw = R(`posthoc.${S.key}__random.pc_plane_cycle.${f}`), x = cyc.map((_, i) => (i + 1) / cyc.length);
+    const tw = cycT, x = cyc.map((_, i) => (i + 1) / cyc.length);
     plot("fam-curve", [{ x, y: tw, mode: "lines", line: { color: p.twin, width: 2 }, hovertemplate: "twin · depth %{x:.2f}: %{y:.2f}<extra></extra>" },
                        { x, y: cyc, mode: "lines", line: { color: p.blue, width: 3 }, hovertemplate: "trained · depth %{x:.2f}: %{y:.2f}<extra></extra>" }],
       layout("cycle score by depth (post-hoc)", { margin: { l: 44, r: 12, t: 40, b: 40 }, xaxis: { title: "relative depth", range: [0, 1], gridcolor: p.grid, color: p.muted },
@@ -284,8 +330,10 @@ function renderLattice() {
   if (!S.axiom) S.axiom = Lt.axioms[0];
   ["trained", "random_init"].forEach((side) => {
     const t = latTraces(side);
-    plot(side === "trained" ? "lat-trained" : "lat-twin", t.data, layout(`${side === "trained" ? model().name : "random-init twin"} · PCA plane at layer ${S.layer} · + ${S.axiom}`, { annotations: t.ann }));
+    plot(side === "trained" ? "lat-trained" : "lat-twin", t.data, layout(`${side === "trained" ? model().name : "random-init twin"} · PCA plane at layer ${S.layer} · + ${S.axiom}`, { annotations: t.ann, transition: TRANSITION }));
   });
+  table($("lat-table"), ["Structure", ...Lt.axioms, `+ ${S.axiom} leads to`], Lt.items.map((it, i) => [it, ...Lt.bits[i].map((b) => (b ? "✓" : "")),
+    Lt.pairs.filter(([a], k) => a === i && Lt.group[k] === Lt.axioms.indexOf(S.axiom)).map(([, b]) => Lt.items[b]).join(", ") || "—"]));
   const o = R(`lattice.${S.key}.group_like.offsets.${S.axiom}`), ot = R(`lattice.${S.key}__random.group_like.offsets.${S.axiom}`);
   $("lat-note").innerHTML = `<b>+ ${S.axiom}:</b> offset consistency ${fmt(o.consistency)} (random-pair null 95th percentile ${fmt(o.null95)}, p ${fmt(o.p, ".3f")}); twin ${fmt(ot.consistency)}. Values at the preregistered layer.`;
   $("axiom-chips").innerHTML = Lt.axioms.map((a) => `<button data-a="${a}" aria-pressed="${a === S.axiom}">+ ${a}</button>`).join("");
@@ -305,7 +353,7 @@ function renderCosines() {
       { type: "heatmap", z, zmin: -1, zmax: 1, colorscale: [[0, p.blue], [0.5, p.mid], [1, p.red]], showscale: side === "trained", colorbar: { thickness: 10, len: 0.6, tickfont: { color: p.muted } },
         text: z.map((r, i) => r.map((_, j) => `${nm(i)}<br>vs ${nm(j)}`)), hovertemplate: "%{text}<br>cos %{z:.2f}<extra></extra>" },
       { type: "scatter", mode: "markers", x: sx, y: sy, marker: { symbol: "x-thin", size: 5, line: { width: 1, color: p.surface } }, hoverinfo: "skip" }],
-      layout(title, { margin: { l: 70, r: 10, t: 40, b: 40 }, shapes: lines,
+      layout(title, { margin: { l: 88, r: 10, t: 40, b: 40 }, shapes: lines,
         xaxis: { visible: true, tickvals: centers, ticktext: Lt.axioms, color: p.ink2, showgrid: false, zeroline: false },
         yaxis: { visible: true, tickvals: centers, ticktext: Lt.axioms, autorange: "reversed", color: p.ink2, showgrid: false, zeroline: false, scaleanchor: "x" } }));
   };
@@ -346,6 +394,48 @@ function renderMathlib() {
     layout(`Judges vs Mathlib: ρ = ${fmt(ml.rho_mean_rating_depth)}, 95% CI [${fmt(ml.ci95[0])}, ${fmt(ml.ci95[1])}], n = ${ml.n_matched}`,
       { height: 380, margin: { l: 54, r: 16, t: 40, b: 46 }, xaxis: { title: "Mathlib import depth", gridcolor: p.grid, color: p.muted },
         yaxis: { title: "mean judge abstraction (1–7)", gridcolor: p.grid, color: p.muted, scaleanchor: null } }));
+  table($("ml-table"), ["Concept", "Field", "Mathlib declaration", "Import depth", "Judge rating"], pts.map((d) => [d.concept, d.field, `<code>${d.decl}</code>`, d.depth, fmt(d.rating)]));
+}
+
+// ---------------------------------------------------------------- figure 12: group objects
+function renderGroups() {
+  const p = P(), st = S.I.results.structures, ms = S.I.models, y = ms.map((m) => m.name);
+  const g = (k) => st[k].group_objects;
+  const dots = (k, side, color, name) => ({ type: "scatter", mode: "markers", x: ms.map((m) => g(m.key + side).parallelograms.cos), y, name, marker: { size: side ? 9 : 11, color, line: { color: p.surface, width: 1.5 } },
+    hovertemplate: ms.map((m) => `${m.name} · ${name}<br>cos ${fmt(g(m.key + side).parallelograms.cos)} (null 95th pct ${fmt(g(m.key + side).parallelograms.null95)}, p ${fmt(g(m.key + side).parallelograms.p, ".3f")})<extra></extra>`) });
+  plot("groups-par", [{ type: "bar", orientation: "h", x: ms.map((m) => g(m.key).parallelograms.null95), y, marker: { color: p.grid }, name: "null 95th pct", hovertemplate: "null 95th percentile %{x:.2f}<extra></extra>" },
+    dots("", "__random", p.twin, "twin"), dots("", "", p.blue, "trained")],
+    layout("Parallelogram consistency vs null", { margin: { l: 120, r: 16, t: 40, b: 40 }, barmode: "overlay", xaxis: { visible: true, title: "mean cosine", gridcolor: p.grid, color: p.muted, zerolinecolor: p.axis },
+      yaxis: { visible: true, autorange: "reversed", color: p.ink2, scaleanchor: null } }));
+  const rank = (side, parent, color, symbol, name) => ({ type: "scatter", mode: "markers", y, name, x: ms.map((m) => g(m.key + side).parent_ranks["Lie group"][parent]),
+    marker: { size: 10, color, symbol, line: { color: p.surface, width: 1.5 } }, hovertemplate: `${name}: rank %{x}<extra></extra>` });
+  plot("groups-rank", [rank("", 0, p.blue, "circle", "trained · “group”"), rank("", 1, p.blue, "diamond", "trained · “smooth manifold”"),
+    rank("__random", 0, p.twin, "circle", "twin · “group”"), rank("__random", 1, p.twin, "diamond", "twin · “smooth manifold”")],
+    layout("Where the parents of “Lie group” rank (1 = nearest)", { margin: { l: 120, r: 16, t: 40, b: 40 }, xaxis: { visible: true, type: "log", title: "rank (log)", gridcolor: p.grid, color: p.muted },
+      yaxis: { visible: true, autorange: "reversed", color: p.ink2, scaleanchor: null } }));
+  table($("groups-table"), ["Model", "Parallelogram cos", "Null 95th pct", "p", "Twin cos", "“group” rank (twin)", "“smooth manifold” rank (twin)"], ms.map((m) => {
+    const a = g(m.key), t = g(m.key + "__random");
+    return [m.name, fmt(a.parallelograms.cos), fmt(a.parallelograms.null95), fmt(a.parallelograms.p, ".3f"), fmt(t.parallelograms.cos),
+      `${a.parent_ranks["Lie group"][0]} (${t.parent_ranks["Lie group"][0]})`, `${a.parent_ranks["Lie group"][1]} (${t.parent_ranks["Lie group"][1]})`];
+  }));
+}
+
+// ---------------------------------------------------------------- figure decorations: paper links, table views
+const PAPER = "https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms/blob/master/paper/paper.md";
+function decorate() {
+  document.querySelectorAll("figure.fig[data-paper]").forEach((f) => {
+    f.querySelector("figcaption")?.insertAdjacentHTML("beforeend", `<span><a href="${PAPER}${f.dataset.paper}">Details in the paper, §${f.dataset.section} →</a></span>`);
+  });
+  document.querySelectorAll("figure.fig[data-tableid]").forEach((f) => {  // every chart gets a table-view twin
+    const id = f.dataset.tableid;
+    if (!$(id)) {
+      let tools = f.querySelector(".fig-tools");
+      if (!tools) { tools = document.createElement("div"); tools.className = "fig-tools"; f.querySelector(".fig-head").appendChild(tools); }
+      tools.insertAdjacentHTML("beforeend", `<button data-table="${id}">Table view</button>`);
+      f.querySelector("figcaption").insertAdjacentHTML("beforebegin", `<div class="table-view" id="${id}"></div>`);
+    }
+  });
+  $("fig-families").querySelector(".fig-head").insertAdjacentHTML("beforeend", `<div class="fig-tools"><button id="ideal" aria-pressed="false" title="Overlay the ideal circle or line, rotated and scaled onto the points">Ideal shape</button></div>`);
 }
 
 // ---------------------------------------------------------------- controls, state, boot
@@ -384,6 +474,7 @@ function wire() {
   };
   $("edges-toggle").onclick = (e) => { S.edges = !S.edges; e.target.setAttribute("aria-pressed", String(S.edges)); rerender(["fig-map"]); };
   $("all-models").onclick = (e) => { S.allModels = !S.allModels; e.target.setAttribute("aria-pressed", String(S.allModels)); rerender(["fig-depth"]); };
+  $("ideal").onclick = (e) => { S.ideal = !S.ideal; e.target.setAttribute("aria-pressed", String(S.ideal)); rerender(["fig-families"]); };
   document.querySelectorAll("[data-table]").forEach((b) => b.onclick = () => $(b.dataset.table).classList.toggle("open"));
   const C = S.I.concepts, fields = [...new Set(C.field)];
   $("cloud-field").innerHTML = fields.map((f) => `<option value="${f}">${label(f)}</option>`).join("");
@@ -402,12 +493,13 @@ async function boot() {
   try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (_) { /* ignore */ }
   S.I = await (await fetch("data/index.json")).json();
   fillNums();
+  decorate();
   wire();
   renderTiles();
   renderScorecard();
   register("fig-forest", renderForest); register("fig-map", renderMap); register("fig-rdm", renderRdm); register("fig-depth", renderDepth);
   register("fig-concepts", renderCloud); register("fig-families", renderFamilies); register("fig-lattice", renderLattice);
-  register("fig-cosines", renderCosines); register("fig-analogy", renderAnalogy); register("fig-abstraction", renderMathlib);
+  register("fig-cosines", renderCosines); register("fig-analogy", renderAnalogy); register("fig-groups", renderGroups); register("fig-abstraction", renderMathlib);
   const q = new URLSearchParams(location.search);
   const key = S.I.models.some((m) => m.key === q.get("model")) ? q.get("model") : conf();
   S.layer = +q.get("layer") || S.I.models.find((m) => m.key === key).primary_layer;

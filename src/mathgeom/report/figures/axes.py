@@ -36,7 +36,7 @@ def axis_data(cfg, key: str, Lp: int) -> dict:
     return {"pcs": pcs, "abstraction": ab, "concept": df.concept.values, "pa": df.pa.values}
 
 
-def draw(d: dict, ax_res: dict, ml: pd.DataFrame | None, mlres: dict | None, title: str):
+def draw(d: dict, ax_res: dict, ax_twin: dict, ml: pd.DataFrame | None, mlres: dict | None, title: str):
     import matplotlib.pyplot as plt
 
     fig, axes = plt.subplots(1, 3 if ml is not None else 2, figsize=(14 if ml is not None else 9.6, 4.7), gridspec_kw={"wspace": 0.28})
@@ -47,7 +47,7 @@ def draw(d: dict, ax_res: dict, ml: pd.DataFrame | None, mlres: dict | None, tit
     S.label_points(ax, P[ext], [d["concept"][i] for i in ext], size=6.3)
     cb = fig.colorbar(sc, ax=ax, fraction=0.04, pad=0.02)
     cb.set_label("judge abstraction (1–7)", fontsize=7), cb.outline.set_visible(False)
-    ax.set_xlabel(f"PC1 (residualized) · |ρ| with abstraction = {abs(ax_res['pcs'][0]['rho_abstraction']):.2f}", fontsize=7.5)
+    ax.set_xlabel(f"PC1 (residualized) · |ρ| with abstraction = {abs(ax_res['pcs'][0]['rho_abstraction']):.2f} (twin {abs(ax_twin['pcs'][0]['rho_abstraction']):.2f})", fontsize=7.5)
     ax.set_ylabel("PC2 (residualized)", fontsize=7.5)
     ax.set_xticks([]), ax.set_yticks([])
     ax.set_title(f"{title}: concrete → abstract", fontsize=9)
@@ -56,7 +56,7 @@ def draw(d: dict, ax_res: dict, ml: pd.DataFrame | None, mlres: dict | None, tit
         m = d["pa"] == lab
         ax.scatter(P[m, 0], P[m, 1], color=col, s=14, edgecolors=S.SURFACE, linewidths=0.4, label=lab, alpha=0.9)
     ax.set_xlabel("PC1 (residualized)", fontsize=7.5)
-    ax.set_ylabel(f"PC2 · |ρ| with applied = {abs(ax_res['pcs'][1]['rho_applied']):.2f} (PC sign is arbitrary)", fontsize=7.5)
+    ax.set_ylabel(f"PC2 · |ρ| with applied = {abs(ax_res['pcs'][1]['rho_applied']):.2f} (twin {abs(ax_twin['pcs'][1]['rho_applied']):.2f})", fontsize=7.5)
     ax.set_xticks([]), ax.set_yticks([])
     ax.legend(loc="lower right")
     ax.set_title("pure ↔ applied", fontsize=9)
@@ -76,5 +76,5 @@ def build(cfg, ax_all: dict, mathlib: dict | None, primary: dict, outdir) -> lis
     out = []
     ml = pd.read_csv(cfg.data_dir / "mathlib_depth.csv").dropna(subset=["depth"]) if mathlib else None
     for key in [k for k in ax_all if not k.endswith("__random")]:
-        out.append(S.save(draw(axis_data(cfg, key, primary[key]), ax_all[key], ml, mathlib, S.pretty(key)), outdir, f"abstraction_{key}"))
+        out.append(S.save(draw(axis_data(cfg, key, primary[key]), ax_all[key], ax_all[f"{key}__random"], ml, mathlib, S.pretty(key)), outdir, f"abstraction_{key}"))
     return out

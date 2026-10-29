@@ -14,7 +14,7 @@ from pathlib import Path
 
 import matplotlib as mpl
 import numpy as np
-from matplotlib.colors import LinearSegmentedColormap, ListedColormap
+from matplotlib.colors import LinearSegmentedColormap
 
 # --- tokens (light surface; the site defines the dark steps in site/style.css)
 SURFACE, INK, INK2, MUTED, GRID, AXIS = "#fcfcfb", "#0b0b0b", "#52514e", "#898781", "#e1e0d9", "#c3c2b7"
@@ -47,8 +47,9 @@ div_cmap = LinearSegmentedColormap.from_list("mg_div", [DIV_NEG, DIV_MID, DIV_PO
 
 
 def ordinal(n: int) -> list[str]:
-    """n ordered colours from the blue ramp, starting no lighter than step 250 (≥ 2:1 on the surface)."""
-    ramp = ListedColormap(SEQ[3:])
+    """n distinct ordered colours interpolated along the blue ramp, starting no lighter than step 250
+    (≥ 2:1 on the surface). Beyond ~7 steps neighbours blur, so order is also carried by labels and the path."""
+    ramp = LinearSegmentedColormap.from_list("mg_ord", SEQ[3:])
     return [mpl.colors.to_hex(ramp(t)) for t in np.linspace(0, 1, n)]
 
 
