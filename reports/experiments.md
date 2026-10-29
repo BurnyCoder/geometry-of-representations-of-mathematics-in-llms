@@ -121,6 +121,36 @@ A second test failure was a bug in the test itself: the synthetic shape was smal
 
 **SAE.** Qwen-Scope SAEs show field-selective features, but the graded field map is much weaker in the sparse code than in the dense residual.
 
+## E6: Plan and preregistration audit
+
+Asked to double-check completeness, we compared every commitment in the approved plan and in `docs/prereg.md` against the repository. What we found:
+
+**A wrong primary measure.** H-A2 had been computed as a tree-distance RSA, but the preregistration specifies *cophenetic correlation*.
+- With the preregistered measure, a UPGMA dendrogram matches the super-tree better than shuffled trees, but not better than the random-init twin.
+- It is also no more tree-like than a spectrum-matched Gaussian cloud, which the plan also required.
+- The earlier "supported" claim was withdrawn. The RSA is kept as post-hoc only.
+- *Lesson:* implement the preregistered statistic verbatim before any variant.
+
+**Missing baselines (fastText, a sentence embedder).**
+- The LLM's field map beats static fastText vectors.
+- It does not beat Qwen3-Embedding. The map is a property of contextual text representations in general, not of generative LLMs specifically.
+
+**Missing items, now run:**
+- **Infini-gram covariate:** the H-A4 axes survive it.
+- **SMDS with shuffled refits:** the twin's line fit is perfect for any labelling, a vivid demonstration of the small-n overfitting trap, and none of its fits beats the null.
+- **Template variants:** naming the field inflates clustering in the trained model *and* in its twin, which is the leakage the preregistration guarded against. The graded map barely moves.
+- **Manifest, hook test, docs-regeneration lint, per-prompt causal logs:** the causal re-run reproduced its earlier results byte for byte.
+
+**Citations.** Every arXiv ID and DOI was checked through the arXiv API and Crossref. One DOI (Anderson & Legendre 1999) pointed to the wrong paper and was fixed; two papers had been retitled.
+
+**A reporting bug.** A second config reusing a model key overwrote the confirmatory figures and the explorer data. Variant configs now write to their own figure subfolder and skip the site export.
+
+**Not run, with reasons in `docs/deviations.md`:**
+- Qwen3.5-4B in 8-bit: its random-init twin does not fit.
+- OctoThinker: optional.
+- Ripser: no family has ≥30 points.
+- Mathlib validation of the judges.
+
 ## Tooling learnings (continued)
 
 - **Line endings.** On Windows, `Path.write_text` translates `\n` to `\r\n`. Python heredoc scripts that search-and-replace code containing `"\n"` literals therefore corrupted files three times. The fix was to make code edits with the editor tool.

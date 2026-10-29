@@ -1,0 +1,452 @@
+[
+ {
+  "phase": "baselines",
+  "time": "2026-10-29T12:33:33",
+  "git_sha": "8f9f7154d0814203f40ee6d813147d063979be80",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "causal",
+  "time": "2026-10-29T13:01:06",
+  "git_sha": "8f9f7154d0814203f40ee6d813147d063979be80",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "smds",
+  "time": "2026-10-29T13:17:46",
+  "git_sha": "8f9f7154d0814203f40ee6d813147d063979be80",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "baselines",
+  "time": "2026-10-29T13:38:22",
+  "git_sha": "8f9f7154d0814203f40ee6d813147d063979be80",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "axes",
+  "time": "2026-10-29T13:39:10",
+  "git_sha": "8f9f7154d0814203f40ee6d813147d063979be80",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "report",
+  "time": "2026-10-29T13:40:08",
+  "git_sha": "8f9f7154d0814203f40ee6d813147d063979be80",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "report",
+  "time": "2026-10-29T13:42:21",
+  "git_sha": "8f9f7154d0814203f40ee6d813147d063979be80",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "calibration",
+  "time": "2026-10-29T13:48:30",
+  "git_sha": "f18b280f15688367c07d2f3cd1dd9208285212a0",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "concepts",
+  "time": "2026-10-29T13:48:38",
+  "git_sha": "f18b280f15688367c07d2f3cd1dd9208285212a0",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "arxiv",
+  "time": "2026-10-29T13:48:59",
+  "git_sha": "f18b280f15688367c07d2f3cd1dd9208285212a0",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "extract",
+  "time": "2026-10-29T13:49:13",
+  "git_sha": "f18b280f15688367c07d2f3cd1dd9208285212a0",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "map",
+  "time": "2026-10-29T13:52:26",
+  "git_sha": "f18b280f15688367c07d2f3cd1dd9208285212a0",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "baselines",
+  "time": "2026-10-29T13:53:11",
+  "git_sha": "f18b280f15688367c07d2f3cd1dd9208285212a0",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "smds",
+  "time": "2026-10-29T14:43:48",
+  "git_sha": "f18b280f15688367c07d2f3cd1dd9208285212a0",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "hierarchy",
+  "time": "2026-10-29T14:44:12",
+  "git_sha": "f18b280f15688367c07d2f3cd1dd9208285212a0",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "shapes",
+  "time": "2026-10-29T15:05:48",
+  "git_sha": "f18b280f15688367c07d2f3cd1dd9208285212a0",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "lattice",
+  "time": "2026-10-29T15:06:50",
+  "git_sha": "f18b280f15688367c07d2f3cd1dd9208285212a0",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "structures",
+  "time": "2026-10-29T15:06:52",
+  "git_sha": "f18b280f15688367c07d2f3cd1dd9208285212a0",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "judges",
+  "time": "2026-10-29T15:06:52",
+  "git_sha": "f18b280f15688367c07d2f3cd1dd9208285212a0",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "axes",
+  "time": "2026-10-29T15:06:55",
+  "git_sha": "f18b280f15688367c07d2f3cd1dd9208285212a0",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "causal",
+  "time": "2026-10-29T15:15:10",
+  "git_sha": "f18b280f15688367c07d2f3cd1dd9208285212a0",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "sae",
+  "time": "2026-10-29T15:15:30",
+  "git_sha": "f18b280f15688367c07d2f3cd1dd9208285212a0",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "posthoc",
+  "time": "2026-10-29T15:19:28",
+  "git_sha": "f18b280f15688367c07d2f3cd1dd9208285212a0",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "compare",
+  "time": "2026-10-29T15:19:28",
+  "git_sha": "f18b280f15688367c07d2f3cd1dd9208285212a0",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "report",
+  "time": "2026-10-29T15:19:40",
+  "git_sha": "f18b280f15688367c07d2f3cd1dd9208285212a0",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "9363aa7a5738740fe604a9a8796f34866299486efca3d634f31f83c321d43d33",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ }
+]

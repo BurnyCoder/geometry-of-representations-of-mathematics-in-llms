@@ -45,7 +45,8 @@ All models are base (pretrained) checkpoints, measured at relative depth 0.5. Fi
 | Hypothesis | Pre-registered? | Outcome | Evidence type |
 |---|---|---|---|
 | H-A1 field map tracks arXiv relatedness beyond the random-init twin | yes | **supported**: Δρ CI [0.28, 0.58] | correlation; paired control |
-| H-A2 hierarchy (super-tree) | yes (branch membership fixed after the tag, before analysis) | **supported**: shuffled-tree p = 0.0035 | correlation |
+| H-A2 hierarchy (super-tree, cophenetic correlation) | yes (branch membership fixed after the tag, before analysis) | **not supported**: beats shuffled trees (p = 0.020) but not the random-init twin (Δ CI [-0.08, 0.35]), and is not more tree-like than a spectrum-matched Gaussian | correlation |
+| Field map stronger than non-LLM baselines | added (plan) | **vs fastText: yes** (Δ CI [0.07, 0.30]). **vs Qwen3-Embedding: no** (ρ 0.45 vs LLM 0.39; Δ CI [-0.13, 0.04]) | baseline comparison |
 | H-A3 math pretraining sharpens the map | yes | **not supported (null)**: Δρ CI [-0.06, 0.02] | ablation (paired models) |
 | Field map specific to math | yes (specificity check) | **no**: science topics are organized comparably (post-hoc matched test) | correlation |
 | Days/months circle (positive control) | yes | **full-space criterion failed**; post-hoc PC-plane cycle = 1.00 (days) and 1.00 (months) | correlation |

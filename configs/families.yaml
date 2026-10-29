@@ -82,7 +82,7 @@ lattices:
     flagged:  # analyzed separately
       associative quasigroup: [1, 0, 1, 0]  # non-empty ⇒ already a group: semantic-collapse probe
       inverse semigroup: null  # weaker than divisibility; no clean bit vector
-  self_distributive:  # https://en.wikipedia.org/wiki/Racks_and_quandles ; https://ncatlab.org/nlab/show/shelf ; spindle = idempotent shelf (Crans 2004, arXiv:math/0409602, §3.1)
+  self_distributive:  # https://en.wikipedia.org/wiki/Racks_and_quandles ; https://ncatlab.org/nlab/show/shelf ; spindle = idempotent shelf (Crans 2004, arXiv:math/0409602, §3.1.1 Def. 55 (verified))
     domain: "abstract algebra"
     role: exploratory
     axioms: [self_distributive, invertible, idempotent, involutory]

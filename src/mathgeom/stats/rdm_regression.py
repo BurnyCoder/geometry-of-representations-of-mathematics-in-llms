@@ -7,7 +7,7 @@ nuisance matrices are structured (Guillot & Rousset 2013, Methods Ecol. Evol.,
 https://doi.org/10.1111/2041-210X.12018), so we use multiple regression on distance
 matrices (Lichstein 2007, https://doi.org/10.1007/s11258-006-9126-3) with the
 Freedman–Lane permutation scheme (Freedman & Lane 1983; compared in Anderson &
-Legendre 1999, https://doi.org/10.1080/00949659908811970): fit the reduced
+Legendre 1999, https://doi.org/10.1080/00949659908811936): fit the reduced
 (nuisance-only) model, permute *concept labels* of its residual matrix (rows and
 columns together, preserving the matrix dependence structure), add the fitted values
 back, refit the full model and record the target t-statistic.

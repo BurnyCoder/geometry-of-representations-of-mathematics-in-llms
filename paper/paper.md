@@ -5,7 +5,7 @@ date: "October 2026"
 abstract: |
   Large language models represent days of the week and months on circles (Engels et al., 2024). We ask whether *abstract mathematics* is organized geometrically too. We test three preregistered hypotheses on base models up to 2B parameters, comparing every model with a random-init twin (same architecture and tokenizer, no learning).
 
-  **(A) Field map.** Centroids of 17 mathematical fields are computed from concepts drawn from Wikipedia glossaries, excluding concepts whose names leak the field. In Qwen3.5-2B-Base, their geometry correlates with field relatedness measured by arXiv cross-listing over 3.2M papers: Spearman ρ = 0.39, against ρ = -0.12 for the random-init twin. The paired bootstrap 95% CI of the difference is [0.28, 0.58]. The map replicates in Qwen3.5-0.8B (ρ = 0.37), Qwen2.5-1.5B (ρ = 0.41) and Gemma-4-E2B (ρ = 0.44). In every case the random-init twin is near zero or below. It is, however, no stronger than the organization of non-math science topics. One trillion tokens of math continued pretraining (Qwen2.5-Math) do not sharpen it (Δρ CI [-0.06, 0.02]).
+  **(A) Field map.** Centroids of 17 mathematical fields are computed from concepts drawn from Wikipedia glossaries, excluding concepts whose names leak the field. In Qwen3.5-2B-Base, their geometry correlates with field relatedness measured by arXiv cross-listing over 3.2M papers: Spearman ρ = 0.39, against ρ = -0.12 for the random-init twin. The paired bootstrap 95% CI of the difference is [0.28, 0.58]. The map replicates in Qwen3.5-0.8B (ρ = 0.37), Qwen2.5-1.5B (ρ = 0.41) and Gemma-4-E2B (ρ = 0.44). In every case the random-init twin is near zero or below. It is, however, no stronger than the organization of non-math science topics, and no stronger than in a contrastive text embedder (Qwen3-Embedding). It is also not a clean hierarchy: our preregistered cophenetic test does not beat the random-init twin. One trillion tokens of math continued pretraining (Qwen2.5-Math) do not sharpen it (Δρ CI [-0.06, 0.02]).
 
   **(B) Shapes.** Class-inclusion chains (rng ⊃ ring ⊃ … ⊃ field; T0 ⊃ … ⊃ Hilbert) are ordered beyond permutation nulls and beyond the twin. Angles 0°–330°, however, are encoded like the number line rather than a circle in all five models, which falsifies our preregistered prediction.
 
@@ -44,7 +44,7 @@ Mathematics is an unusually good test bed for these ideas, because its concepts 
 
 **Science concepts.** [Lei & Cooper (2025)](https://arxiv.org/abs/2502.10871) found a periodic-table spiral. Mathematical "world models" in LLMs have been reported as local and fragile ([ICML 2025](https://icml.cc/virtual/2025/49128)).
 
-**Statistics.** Partial Mantel tests are known to be anticonservative ([Guillot & Rousset, 2013](https://doi.org/10.1111/2041-210X.12018)). We test Freedman–Lane permutation ([Anderson & Legendre, 1999](https://doi.org/10.1080/00949659908811970)) in our setting (Section 3.5).
+**Statistics.** Partial Mantel tests are known to be anticonservative ([Guillot & Rousset, 2013](https://doi.org/10.1111/2041-210X.12018)). We test Freedman–Lane permutation ([Anderson & Legendre, 1999](https://doi.org/10.1080/00949659908811936)) in our setting (Section 3.5).
 
 # 3 Methods
 
@@ -145,7 +145,28 @@ The test is calibrated when the nuisance distance matrix *is* the confounder. It
 
 So the map lives in the dominant semantic subspace, and removing 20 components removes the map itself.
 
-**H-A2: hierarchy.** Field geometry is more tree-like with respect to a five-branch super-tree than shuffled trees (p = 0.0035). Trained ρ = 0.312, twin ρ = 0.077, and the paired difference CI is [0.080, 0.375].
+**H-A2: hierarchy is not supported as preregistered.** The preregistered measure is the cophenetic correlation between an average-linkage (UPGMA) dendrogram of the field centroids and the five-branch super-tree.
+
+| Model | super-tree match (cophenetic ρ): trained / twin / layer-0 | shuffled-tree p (null95) | Δ trained − twin [95% CI] | cophenetic c trained / twin (Gaussian 95th pct) | relative Gromov δ trained / twin (Gaussian 5th pct) |
+|---|---|---|---|---|---|
+| qwen3.5-2b | 0.237 / -0.033 / 0.171 | 0.0200 (0.164) | [-0.079, 0.348] | 0.760 / 0.590 (0.774) | 0.243 / 0.059 (0.302) |
+
+| Model | super-tree match (cophenetic ρ): trained / twin / layer-0 | shuffled-tree p (null95) | Δ trained − twin [95% CI] | cophenetic c trained / twin (Gaussian 95th pct) | relative Gromov δ trained / twin (Gaussian 5th pct) |
+|---|---|---|---|---|---|
+| qwen3.5-0.8b | 0.250 / -0.103 / 0.266 | 0.0185 (0.156) | [-0.021, 0.409] | 0.748 / 0.581 (0.788) | 0.293 / 0.082 (0.298) |
+| qwen2.5-1.5b | 0.244 / 0.046 / 0.173 | 0.0165 (0.166) | [-0.065, 0.396] | 0.732 / 0.561 (0.782) | 0.244 / 0.078 (0.309) |
+| qwen2.5-math-1.5b | 0.113 / 0.039 / 0.178 | 0.1114 (0.164) | [-0.070, 0.385] | 0.721 / 0.597 (0.750) | 0.233 / 0.091 (0.314) |
+
+| Model | super-tree match (cophenetic ρ): trained / twin / layer-0 | shuffled-tree p (null95) | Δ trained − twin [95% CI] | cophenetic c trained / twin (Gaussian 95th pct) | relative Gromov δ trained / twin (Gaussian 5th pct) |
+|---|---|---|---|---|---|
+| gemma-4-e2b | 0.228 / 0.072 / 0.125 | 0.0215 (0.163) | [-0.080, 0.406] | 0.779 / 0.754 (0.870) | 0.275 / 0.067 (0.251) |
+
+- **Against shuffled trees:** the trained model's dendrogram matches the super-tree better (ρ = 0.237, p = 0.020).
+- **Against the twin:** the paired difference CI includes zero ([-0.079, 0.348]), and the same holds in every replication model. The preregistered criterion requires beating both, so it fails.
+- **Intrinsic tree-likeness:** the cophenetic correlation of the representation with its own dendrogram is no higher than for a spectrum-matched Gaussian cloud.
+- **Gromov δ:** relative δ is lower than the Gaussian cloud's, but higher than the twin's.
+
+A tree-distance RSA we first reported, the Spearman correlation of the centroid RDM with the super-tree distance, did beat the twin (trained 0.312 vs twin 0.077). It is *not* the preregistered measure, so it is post-hoc. It largely restates H-A1: fields that mathematicians relate are close.
 
 **Specificity.** The non-math control fields (biology, chemistry, geology, astronomy) are also clustered by the trained model and not by its twin:
 
@@ -160,6 +181,20 @@ The pre-registered comparison confounds domain with the number of fields: 17 for
 - **Overlap:** 0.12 of the math subsets reach or exceed the control value.
 
 Mathematical fields are therefore organized about as strongly as general science topics, and not more. The field map is an instance of topical organization, not something specific to mathematics.
+
+**Baselines (plan; added after the first report).** We compare against two non-generative representations of the same concepts:
+- **fastText** wiki-news vectors (averaged over words) and **Qwen3-Embedding-0.6B**, a contrastively trained text embedder.
+- **vs fastText:** the LLM's field map is stronger (Δ CI [0.07, 0.30] on the 367 concepts that fastText covers).
+- **vs Qwen3-Embedding:** the LLM is not stronger; the embedder reaches ρ = 0.454 against the LLM's 0.387 (Δ CI [-0.13, 0.04]).
+
+So the field map is a property of contextual text representations in general, not something specific to generative LLMs.
+
+| Model | concept set | n | field ρ: LLM / Qwen3-Embedding / fastText | Δ LLM − Qwen3-Emb [CI] | Δ LLM − fastText [CI] | LOO acc: LLM / Qwen3-Emb / fastText |
+|---|---|---|---|---|---|---|
+| qwen3.5-2b | all_primary | 398 | 0.387 / 0.454 / — | [-0.125, 0.045] | — | 0.472 / 0.487 / — |
+| qwen3.5-2b | fasttext_covered | 367 | 0.401 / 0.490 / 0.190 | [-0.148, 0.034] | [0.074, 0.302] | 0.485 / 0.477 / 0.322 |
+
+infini-gram (v4_dolma-v1_7_llama): Spearman ρ(wordfreq Zipf, log count) = 0.316; concepts with zero count: 0.2%.
 
 ## 4.2 Robustness: scale, model family, math training
 
@@ -234,6 +269,35 @@ This statistic is post-hoc. We conclude that the pipeline works, and that the fu
 | dimensions vs number_words_0_10 | qwen3.5-2b__random | -0.58 | -0.153 (0.9104) |
 | angles vs digits_0_330 | qwen3.5-2b | 0.84 | +0.054 (0.1858) |
 | angles vs digits_0_330 | qwen3.5-2b__random | 0.22 | +0.227 (0.0104) |
+
+**SMDS (plan, secondary).** Supervised MDS fits a projection to a line or a discrete-circle template, and each fit is tested against refits on shuffled labels.
+
+| Family | Model | SMDS line score (null95, p) | SMDS discrete-circle score (null95, p) | preferred (vs null) |
+|---|---|---|---|---|
+| days | qwen3.5-2b | 0.966 (0.970, 0.1569) | 0.891 (0.889, 0.0196) | discrete_circular |
+| days | qwen3.5-2b__random | 1.000 (1.000, 0.4902) | 0.895 (0.895, 0.5686) | none |
+| months | qwen3.5-2b | 0.961 (0.941, 0.0196) | 0.869 (0.862, 0.0196) | euclidean |
+| months | qwen3.5-2b__random | 1.000 (1.000, 0.8431) | 0.870 (0.870, 0.9608) | none |
+| ring_chain | qwen3.5-2b | 0.964 (0.945, 0.0196) | 0.877 (0.874, 0.0196) | euclidean |
+| ring_chain | qwen3.5-2b__random | 1.000 (1.000, 0.6471) | 0.886 (0.886, 0.2745) | none |
+| space_chain | qwen3.5-2b | 0.926 (0.887, 0.0196) | 0.853 (0.851, 0.0588) | euclidean |
+| space_chain | qwen3.5-2b__random | 1.000 (1.000, 0.1373) | 0.886 (0.886, 0.5294) | none |
+| number_systems | qwen3.5-2b | 0.959 (0.956, 0.0392) | 0.885 (0.887, 0.2157) | euclidean |
+| number_systems | qwen3.5-2b__random | 1.000 (1.000, 0.7451) | 0.895 (0.895, 0.9412) | none |
+| ngons | qwen3.5-2b | 0.928 (0.914, 0.0588) | 0.843 (0.843, 0.0784) | none |
+| ngons | qwen3.5-2b__random | 1.000 (1.000, 0.6078) | 0.867 (0.867, 0.2157) | none |
+| dimensions | qwen3.5-2b | 0.800 (0.684, 0.0196) | 0.721 (0.668, 0.0196) | euclidean |
+| dimensions | qwen3.5-2b__random | 1.000 (1.000, 0.2941) | 0.886 (0.886, 0.8824) | none |
+| angles | qwen3.5-2b | 0.856 (0.659, 0.0196) | 0.744 (0.673, 0.0196) | euclidean |
+| angles | qwen3.5-2b__random | 1.000 (1.000, 0.9608) | 0.870 (0.870, 0.7451) | none |
+
+- **The twin shows why the shuffle null is necessary.** Its line fit scores 1.00 on *every* family, a perfect fit to any ordering, yet never beats its shuffled null.
+- **Trained model:**
+  - Days prefer the circle template: circle p = 0.020, line p = 0.157.
+  - The chains and angles prefer the line template.
+  - Months fit both templates beyond the null.
+
+This agrees with the unsupervised statistics, including the conclusion that angles are line-like.
 
 ## 4.4 H-B2: axioms as directions
 
@@ -312,6 +376,21 @@ In this model's random-init twin, all four consistencies are ≈ 0.
 - Some Qwen twins show similar values. "Commutative ring" literally contains the token "commutative", so we consider transfer not established.
 - Identity transfer, from the single pair rng → ring, is null.
 
+**Template variants (exploratory; Qwen3.5-2B).** We reran every analysis with two other template sets.
+
+*Field-revealing concept templates* name the field, e.g. "In group theory, the notion of X":
+- The graded field map barely changes (ρ = 0.410, against 0.387 with neutral templates).
+- Leave-one-out field accuracy jumps to 0.633, and the twin also rises to 0.332. This is exactly the label leakage the preregistration excluded from the primary analysis.
+
+*No-domain family templates* drop the shared context, e.g. "Consider X":
+- Days remain a perfect PC-plane cycle.
+- The chains remain ordered (ring and space Robinson p = 0.020 and 0.021), and angles remain line-like.
+- Group-object parallelograms persist (0.47, p = 0.0005).
+- Axiom offsets weaken but persist for commutativity (0.47, p = 0.0020) and associativity (0.31, p = 0.0215).
+- Months lose their PC-plane cycle.
+
+Full tables: `reports/mvp_variants_results.md`.
+
 ## 4.5 Secondary analyses
 
 ### H-A4: concrete ↔ abstract and pure ↔ applied are the main axes
@@ -321,7 +400,7 @@ In this model's random-init twin, all four consistencies are ≈ 0.
 - Absolute agreement is low (ICC(2,1) = 0.24; ICC(2,k) = 0.49), because the judges use the scale with different offsets.
 - The ratings have face validity. The least abstract concepts include "trivial group", "bar chart" and "dot plot"; the most abstract include étale cohomology, Artin stacks and generalized cohomology theories.
 
-**Axes.** We first residualized on word frequency and token count. The top principal component of the math-concept cloud then correlates with abstraction (ρ = 0.49), and the second with the pure/applied label (ρ = -0.41). In the twin these correlations are 0.06 and 0.14. A 5-fold cross-validated linear readout predicts abstraction with ρ = 0.74, against -0.06 in the twin.
+**Axes.** We first residualized on word frequency and token count. The top principal component of the math-concept cloud then correlates with abstraction (ρ = 0.49), and the second with the pure/applied label (ρ = -0.41). In the twin these correlations are 0.06 and 0.14. A 5-fold cross-validated linear readout predicts abstraction with ρ = 0.74, against -0.06 in the twin. We also partialled out pretraining-scale frequency: infini-gram counts in Dolma v1.7, which correlate ρ = 0.32 with wordfreq. The axes are essentially unchanged: PC1 ↔ abstraction ρ = 0.44, PC2 ↔ applied ρ = -0.41.
 
 **Interpretation.** In this model, concrete ↔ abstract is the single largest axis of variation among mathematical concepts. That is a correlational, model-rated finding: abstraction ratings come from LLM judges, not humans.
 
@@ -359,7 +438,12 @@ At block 11, we encoded the template-averaged residuals with the official Qwen-S
 - **Positive control.** It passed only under a post-hoc statistic.
 - **Family size.** Families are small (n = 7–13), so shape claims rest on permutation tests with limited resolution.
 - **Correlation, not mechanism.** All tests except §4.5 are correlational.
-- **Not run.** The exploratory field-revealing template condition and the Mathlib-depth validation of judge ratings were planned but not run (`docs/deviations.md`).
+- **Not run.** Four planned items were not run; reasons are in `docs/deviations.md`:
+  - the Mathlib-depth validation of judge ratings;
+  - Qwen3.5-4B in 8-bit, whose random-init twin cannot be held in 8 GB;
+  - the optional OctoThinker pair;
+  - persistent homology, since no family has ≥30 points.
+- **Baseline scope.** SMDS and the template variants were run for the confirmatory model only.
 
 # 7 Conclusion
 

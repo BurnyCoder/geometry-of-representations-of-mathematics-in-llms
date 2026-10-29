@@ -19,7 +19,7 @@ As far as our literature search found, nobody had asked this of **abstract mathe
 ## Highlights
 
 **Positive results.** Each model is compared with its random-init twin: the same architecture and tokenizer, with no learning.
-- **Math fields form a map.** Field centroids from 17 fields correlate with how often mathematicians cross-list papers between those fields on arXiv. This holds in all five models (Qwen3.5-2B/0.8B, Qwen2.5-1.5B, Qwen2.5-Math-1.5B, Gemma-4-E2B), and every random-init twin is near zero or below. The map is also tree-like, consistent with a five-branch super-tree of mathematics.
+- **Math fields form a map.** Field centroids from 17 fields correlate with how often mathematicians cross-list papers between those fields on arXiv. This holds in all five models (Qwen3.5-2B/0.8B, Qwen2.5-1.5B, Qwen2.5-Math-1.5B, Gemma-4-E2B), and every random-init twin is near zero or below. The map is stronger than in fastText word vectors, and about as strong as in a dedicated text-embedding model (Qwen3-Embedding).
 - **Class-inclusion chains are ordered**, e.g. rng ⊃ ring ⊃ integral domain ⊃ … ⊃ field, and T0 ⊃ T1 ⊃ Hausdorff ⊃ … ⊃ Hilbert. This replicates in all five models.
 - **Axioms act as directions.** In the lattice magma → semigroup → monoid → group → abelian group, "add associativity" and "add commutativity" are consistent vectors: same-axiom differences are parallel. They survive multiple-comparison correction and replicate in all five models. The twins show much weaker offsets or none; Gemma's twin has weak lexical offsets for two axioms. "Add identity" and "add divisibility" point the same way but more weakly.
 - **Lie groups sit between "group" and "smooth manifold".** The analogies topological group − group ≈ topological space − set, and Lie group − topological group ≈ smooth manifold − topological space, hold in all five models (exploratory). The twins place "Lie group" next to "group" only, because of the shared word.
@@ -27,6 +27,7 @@ As far as our literature search found, nobody had asked this of **abstract mathe
 
 **Negative and null results:**
 - **Angles are not a circle.** "330 degrees" sits next to "300 degrees", not next to "0 degrees", in all five models. Their geometry tracks the bare numerals. This falsifies one of our preregistered predictions.
+- **The map is not a clean hierarchy (H-A2).** Under the preregistered measure (cophenetic correlation with a five-branch super-tree), the trained models beat shuffled trees but not their random-init twins. They are also no more tree-like than a Gaussian cloud with the same spectrum.
 - **A trillion tokens of math pretraining did not sharpen the map.** Qwen2.5-Math vs its base shows no detectable difference (H-A3).
 - **The map is not special to mathematics.** Biology, chemistry, geology and astronomy topics cluster at least as strongly once the number of fields is matched.
 - **The causal test was inconclusive.** Noise in the chain subspace barely hurt task accuracy beyond random-subspace noise.
@@ -184,12 +185,12 @@ PyTorch 2.14 (CUDA 13), Hugging Face `transformers` 5.x and `huggingface_hub`, N
 - Li et al. 2024, *The Geometry of Concepts*, [arXiv:2410.19750](https://arxiv.org/abs/2410.19750).
 - Karkada et al. 2026, *Symmetry in language statistics shapes the geometry of model representations*, [arXiv:2602.15029](https://arxiv.org/abs/2602.15029).
 - Park et al. 2024, [arXiv:2406.01506](https://arxiv.org/abs/2406.01506), and the critique by Golechha et al. (ICLR 2025).
-- Tiblias et al. 2025, *Shape Happens* (SMDS), [arXiv:2510.01025](https://arxiv.org/abs/2510.01025).
+- Tiblias et al. 2025, *Hypothesis-Driven Feature Manifold Analysis in LLMs via Supervised Multi-Dimensional Scaling* (SMDS; v1 title "Shape Happens"), [arXiv:2510.01025](https://arxiv.org/abs/2510.01025).
 - Lei & Cooper 2025, [arXiv:2502.10871](https://arxiv.org/abs/2502.10871).
 - Kantamneni & Tegmark 2025, [arXiv:2502.00873](https://arxiv.org/abs/2502.00873).
 - Mu & Viswanath 2018, *All-but-the-Top*, [arXiv:1702.01417](https://arxiv.org/abs/1702.01417).
 - Guillot & Rousset 2013, [doi:10.1111/2041-210X.12018](https://doi.org/10.1111/2041-210X.12018).
-- Anderson & Legendre 1999, [doi:10.1080/00949659908811970](https://doi.org/10.1080/00949659908811970).
+- Anderson & Legendre 1999, [doi:10.1080/00949659908811936](https://doi.org/10.1080/00949659908811936).
 - Qwen2.5-Math report, [arXiv:2409.12122](https://arxiv.org/abs/2409.12122).
 - Qwen-Scope, [arXiv:2605.11887](https://arxiv.org/abs/2605.11887).
 

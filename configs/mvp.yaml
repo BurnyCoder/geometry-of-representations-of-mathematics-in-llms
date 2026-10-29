@@ -5,7 +5,7 @@ models:
     id: Qwen/Qwen3.5-2B-Base
     random_control: true
     sae: {repo: Qwen/SAE-Res-Qwen3.5-2B-Base-W32K-L0_50, k: 50}  # Qwen-Scope TopK SAE (exploratory)
-conditions: [field_neutral, family]
+conditions: [field_neutral, family, field_revealing, no_domain]  # last two: exploratory template variants (prereg §2, plan H-B2 test 6)
 judges:  # H-A4 abstraction raters from families we do not probe (newest ungated ~3-4B instruct models)
   - ibm-granite/granite-4.0-micro
   - HuggingFaceTB/SmolLM3-3B

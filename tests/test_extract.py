@@ -39,3 +39,25 @@ def test_span_and_last_token_match_direct_forward(tiny):
     direct = np.mean([torch.stack(h)[:, 0, -1].numpy() for h in hs], 0)
     assert np.allclose(out["last"][0].astype(np.float32), direct, atol=2e-2)
     assert out["last"].shape == (1, 3, 32) and out["n_tokens"][0] == len(span)
+
+
+def test_noise_hook_zero_is_identity_and_only_touches_target_positions(tiny):
+    """Causal-test hook: σ=0 must not change logits; σ>0 must leave positions before the target unchanged."""
+    from mathgeom.analyses.causal import _make_hook
+
+    model, tok = tiny
+    ids = tok("In topology, a Hausdorff space is", return_tensors="pt").input_ids
+    layer = model.transformer.h[0]
+    basis = torch.nn.functional.normalize(torch.randn(2, 32), dim=-1)
+    gen = torch.Generator().manual_seed(0)
+    with torch.inference_mode():
+        ref = model(input_ids=ids, output_hidden_states=True)
+        h = layer.register_forward_hook(_make_hook([3], basis, 0.0, gen))
+        same = model(input_ids=ids).logits
+        h.remove()
+        h = layer.register_forward_hook(_make_hook([3], basis, 5.0, gen))
+        noisy = model(input_ids=ids, output_hidden_states=True)
+        h.remove()
+    assert torch.allclose(ref.logits, same)
+    assert torch.allclose(ref.hidden_states[1][0, :3], noisy.hidden_states[1][0, :3])  # causal: earlier positions untouched
+    assert not torch.allclose(ref.hidden_states[1][0, 3], noisy.hidden_states[1][0, 3])
