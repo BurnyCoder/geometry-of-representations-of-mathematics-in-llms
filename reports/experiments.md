@@ -217,7 +217,7 @@ The new items were appended after the existing ones. Extraction runs at batch si
   - "twins place 'Lie group' next to 'group' only" is false for Gemma's twin, which ranks "smooth manifold" 6th.
   - "a circle needs closure < 2" is misleading for Qwen2.5-Math, which meets that half (1.84) but fails "circle ρ > line ρ". The angles figure now shows both halves of the preregistered rule.
 - *A broken link.* The paper linked to a site anchor that did not exist. A test now checks every link from the README, summary and paper into the site.
-- *Not done, by design.* The plan's global trained ↔ twin toggle was dropped: every site figure already shows the trained model and its twin side by side, so a toggle would only hide one of them.
+- *Deferred at first.* The plan's global trained ↔ twin toggle was first skipped, because every site figure already shows both side by side. The third pass built it (below).
 
 **A second audit pass, against the plan text rather than memory, found more:**
 - *Dark-mode contrast.* The site used the light-theme ordinal ramp on the dark surface, where its darkest step has 1.46:1 contrast (floor 2:1). Dark mode now uses step 600 → 100, which passes the validator.
@@ -236,6 +236,13 @@ The new items were appended after the existing ones. Extraction runs at batch si
   - the families table view now includes the per-layer cycle scores.
 - *A finding the new twin panel exposed.* All five random-init twins *meet* the preregistered angles rule (closure < 2 and circle ρ > line ρ), while all five trained models fail it. A structureless point cloud has closure ≈ 1 and near-zero template correlations, so it passes by chance. The rule is not specific, and the informative result is the trained models' line-like order. Reported in the paper and README; this is the second preregistered shape criterion (after the days/months full-space criterion) that turned out to be insensitive or non-specific.
 - *Summary.* It carried only five of the figures; it now has all of them with plain-language captions. Writing them surfaced two loose phrasings, both fixed: "the map appears and stays" (Gemma dips twice) and an example concept that is not labelled in the figure.
+
+**A third audit pass, line by line against the plan, closed the remaining gaps:**
+- *Controls in every panel.* The README GIF showed only the trained model; it now has a twin row, so every frame shows its control. The hero's angles panel now gives the twin's closure ratio next to the trained one, and its caption says why a small twin value is not a circle.
+- *Scorecard at the top.* The plan put the scorecard next to the hero; it sat inside the results block. The README now has two generated blocks: `TOP` (scorecard and the GIF with its three-part caption, from `reports/readme_top_template.md`) and `RESULTS`. The GIF had also appeared twice; it now appears once.
+- *Legends.* The plan asks for a legend whenever a chart has two or more series; the site charts had none. The field map, depth curve, cycle-score curve, forest plot, concept cloud, family planes, lattice and group-object charts now carry one.
+- *The global trained ↔ twin morph.* A control-bar button switches the main panels (field map and matrix, families, lattice, concept cloud) to the twin; 2-D points glide with a Plotly transition. To make the motion minimal, the twin's family and lattice planes are rotated onto the trained plane (rotation and reflection only; a test checks that no distance changes).
+- *Missing pieces.* The site had no partial-operation chart (now Figure 14, with the selected model, the other models, all twins and the null), the forest plot had no filter by hypothesis (now chips), and the method figure had no caption. The paper's partial-operation caption now links to the site.
 
 ## Tooling learnings (continued)
 

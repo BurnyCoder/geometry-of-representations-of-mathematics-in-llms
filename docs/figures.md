@@ -8,7 +8,7 @@ To regenerate the per-model figures, report tables and site data for one config:
 uv run python run.py report --config configs/mvp.yaml
 ```
 
-To regenerate the cross-model figures, README block, summary and paper:
+To regenerate the cross-model figures, the two generated README blocks (`TOP`: scorecard and GIF, from `reports/readme_top_template.md`; `RESULTS`, from `reports/readme_results_template.md`), the summary and the paper:
 
 ```bash
 uv run python run.py paper --config configs/mvp.yaml
@@ -47,7 +47,7 @@ uv run python run.py paper --config configs/mvp.yaml
 | `field_maps_<model>` | MDS of the arXiv, trained and twin distance matrices with ground-truth neighbour edges | `figures/maps.py` | activations, `field_distance.json` |
 | `field_rdms_<model>` | The same matrices as within-matrix ranks | `maps.py` | same |
 | `cyclic_<model>` | Days, months and angles in the PC plane, trained and twin | `figures/families.py` | activations, `posthoc` |
-| `circle_depth_<model>` (`.png`, `.gif`) | Days and months at fixed depths, and animated through every layer | `families.py` | activations, `posthoc` |
+| `circle_depth_<model>` (`.png`, `.gif`) | Days and months at fixed depths; the GIF animates every layer, trained (top row) and twin (bottom row) | `families.py` | activations, `posthoc` |
 | `angles_<model>` | Preregistered prediction vs observed angles vs bare numbers, plus the twin as control; both halves of the decision rule | `families.py` | activations, `shapes` |
 | `chains_<model>` | Ordered chains with Robinson scores and the frequency control | `families.py` | activations, `shapes`, `chain_frequency` |
 | `lattice_axes_<model>` | Ideal axiom lattice and per-axiom PCA facets, trained and twin | `figures/lattice.py` | activations, `lattice` |
@@ -72,6 +72,10 @@ The Markdown scorecard (`{{table:scorecard:all}}`) and its site version come fro
 - concept PCA coordinates and nearest neighbours;
 - per-layer family planes;
 - lattice planes, exact coordinates and the cosine matrix.
+
+The twin's family and lattice planes are rotated onto the trained model's plane at the preregistered layer (rotation and reflection only), so the **Trained ↔ twin** button in the control bar morphs the main panels with minimal motion. The field maps of both are already aligned to the arXiv layout.
+
+**Interactions.** Model menu; layer slider with play button and a depth inset; the global trained ↔ twin morph; linked hover between field maps, distance matrices and the concept cloud; concept search and a card with 10 nearest neighbours in the model and its twin; family picker with an ideal-shape overlay; axiom chips, a lattice click that shows axiom bits, and the analogy playground; scorecard and forest filters by hypothesis; a table view under every chart; light and dark themes. Every chart with two or more series has a legend.
 
 Prose numbers are `data-num` elements resolved against `index.json`. `tests/test_site.py` checks the data schema, that every `data-num` path resolves, that the page text contains no hand-typed decimals, and that every link from the README, summary or paper into the site points to an existing anchor.
 
