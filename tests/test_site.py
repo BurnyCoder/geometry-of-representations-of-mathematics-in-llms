@@ -53,6 +53,18 @@ def test_site_data_schema_and_page_numbers():
 def test_links_into_the_site_resolve():
     """Every #anchor that README, summary or paper uses to point into the site exists in index.html."""
     html = (SITE / "index.html").read_text(encoding="utf-8")
-    sources = ["README.md", "reports/summary_template.md", "reports/readme_results_template.md", "paper/template.md"]
+    sources = ["README.md", "reports/summary_template.md", "reports/readme_top_template.md", "reports/readme_results_template.md", "paper/template.md"]
     anchors = {a for p in sources for a in re.findall(r"mathematics-in-llms/#([\w-]+)", (ROOT / p).read_text(encoding="utf-8"))}
     assert anchors and not [a for a in anchors if f'id="{a}"' not in html]
+
+
+def test_script_targets_exist_in_page():
+    """Every figure app.js registers and every element it looks up by id exists in index.html (ids the
+    script creates itself, such as the per-facet forest charts and table views, are excluded)."""
+    html, js = (SITE / "index.html").read_text(encoding="utf-8"), (SITE / "app.js").read_text(encoding="utf-8")
+    ids = set(re.findall(r'id="([\w-]+)"', html))
+    created = set(re.findall(r'id="([\w-]+)"', js)) | set(re.findall(r'data-tableid="([\w-]+)"', html))
+    registered = set(re.findall(r'register\("([\w-]+)"', js))
+    looked_up = set(re.findall(r'\$\("([\w-]+)"\)', js))
+    assert registered and registered <= ids
+    assert not (looked_up - ids - created), looked_up - ids - created

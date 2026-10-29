@@ -59,3 +59,17 @@ def test_figure_data_reproduces_reported_statistics(cfg_name):
     # days: PC-plane cycle score of the prepared family == post-hoc result at the primary layer
     D = figdata.family_acts(cfg, key, "days")
     assert pc_plane_cycle_score(D[:, Lp], np.arange(len(D))) == pytest.approx(res["posthoc"][key]["pc_plane_cycle"]["days"][Lp - 1]["score"])
+
+
+def test_morph_alignment_is_display_only():
+    """Rotating the twin's planes onto the trained plane (site morph) changes no distance, only the pose."""
+    from scipy.spatial.distance import pdist
+
+    rng = np.random.default_rng(0)
+    X, onto = rng.normal(size=(9, 5, 40)), rng.normal(size=(9, 2))
+    plain, moved = figdata.planes_by_layer(X, 2), figdata.planes_by_layer(X, 2, onto=onto)
+    for a, b in zip(plain, moved):
+        np.testing.assert_allclose(pdist(a), pdist(b), atol=1e-9)
+    # and the moved reference plane is closer to `onto` than the unmoved one
+    target = figdata.unit_rms(onto)
+    assert np.linalg.norm(moved[1] - target) <= np.linalg.norm(plain[1] - target) + 1e-9

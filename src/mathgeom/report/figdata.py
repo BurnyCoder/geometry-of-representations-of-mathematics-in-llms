@@ -126,9 +126,11 @@ def family_items(cfg: Config, family: str) -> list[str]:
     return [c for f, c, _ in family_index(cfg) if f == family]
 
 
-def planes_by_layer(X: np.ndarray, ref_layer: int) -> np.ndarray:
-    """PC-1/2 plane of the family at every layer, each aligned to the reference layer's plane → [L, n, 2]."""
-    ref = pca(X[:, ref_layer])
+def planes_by_layer(X: np.ndarray, ref_layer: int, onto: np.ndarray | None = None) -> np.ndarray:
+    """PC-1/2 plane of the family at every layer, each aligned to the reference layer's plane → [L, n, 2].
+    `onto` (e.g. the trained model's plane) first rotates the reference itself onto that layout, so the
+    site's trained ↔ twin morph moves points as little as possible (display only, distances unchanged)."""
+    ref = pca(X[:, ref_layer]) if onto is None else align(pca(X[:, ref_layer]), onto)
     return np.stack([align(pca(X[:, l]), ref) for l in range(1, X.shape[1])])
 
 
