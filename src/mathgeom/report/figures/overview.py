@@ -91,7 +91,7 @@ def draw_hero(r: dict, planes: dict, fmap: dict, conf: str):
         if f == "days":
             S.note(ax, f"cycle score {ph[conf]['pc_plane_cycle']['days'][Lp - 1]['score']:.2f} (twin {ph[conf + '__random']['pc_plane_cycle']['days'][Lp - 1]['score']:.2f})")
         else:
-            S.note(ax, f"d(0°, 330°) = {sh[conf]['angles']['closure']:.2f} × neighbour distance")
+            S.note(ax, f"d(0°, 330°) = {sh[conf]['angles']['closure']:.2f} × neighbour distance (twin {sh[conf + '__random']['angles']['closure']:.2f})")
         ax.set_title(title, fontsize=9)
     ax = fig.add_subplot(gs[1, 2:])
     lp = la[conf].get("audit2", {}).get("group_like_offsets", {}).get("length_projected", {})
