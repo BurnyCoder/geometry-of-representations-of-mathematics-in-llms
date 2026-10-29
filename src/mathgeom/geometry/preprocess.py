@@ -24,7 +24,7 @@ def all_but_the_top(X: np.ndarray, n_remove: int | None = None) -> np.ndarray:
 
     n_remove defaults to d/100 as recommended in the paper, but never more than n-2.
     """
-    Xc = center(X)
+    Xc = center(X.astype(np.float64))  # activations are stored as float16; LAPACK needs float32/64
     d = X.shape[1]
     k = n_remove if n_remove is not None else max(1, d // 100)
     k = min(k, X.shape[0] - 2)

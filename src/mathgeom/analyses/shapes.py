@@ -45,6 +45,10 @@ def family_stats(X: np.ndarray, n_perm: int = 2000, seed: int = 0) -> dict:
         out[name + "_p"] = perm_p(obs, null)
         out[name + "_null95"] = float(np.percentile(null, 95))
     out["closure"] = closure_ratio(D, o)
+    # POST-HOC (docs/deviations.md): d(first,last)/d(first,middle) — <1 for a closed loop, >1 for an
+    # open chain; unlike `closure` it is not ≈1 for structureless (equidistant) points by default
+    out["closure_far"] = float(D[0, -1] / D[0, n // 2])
+    out["closure_far_null95"] = float(np.percentile(permutation_null(lambda p: D[p[0], p[-1]] / D[p[0], p[n // 2]], n, n_perm=n_perm or 1, seed=seed), 5))
     loo = loo_order_rho(X, o)
     loo_null = permutation_null(lambda p: loo_order_rho(X, p), n, n_perm=min(n_perm, 300), seed=seed)
     out["loo_order"], out["loo_order_p"] = loo, perm_p(loo, loo_null)

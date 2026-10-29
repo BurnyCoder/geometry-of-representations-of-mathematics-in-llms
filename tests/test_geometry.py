@@ -79,5 +79,17 @@ def test_abtt_and_char_ngrams():
     X = rng.normal(size=(30, 200)) + 50 * rng.normal(size=(1, 200))  # big shared offset
     Y = all_but_the_top(X, 2)
     assert np.allclose(Y.mean(0), 0, atol=1e-8)
+    assert all_but_the_top(X.astype(np.float16), 2).dtype == np.float64  # stored activations are float16
     D = char_ngram_rdm(["group", "semigroup", "quasigroup", "manifold"])
     assert D[0, 1] < D[0, 3] and D[1, 2] < D[1, 3]
+
+
+def test_pc_plane_cycle_score_detects_planted_cycle_only():
+    from mathgeom.geometry.manifold import pc_plane_cycle_score
+
+    n = 12
+    th = 2 * np.pi * np.arange(n) / n
+    X = _embed(5 * np.c_[np.cos(th), np.sin(th)])
+    assert pc_plane_cycle_score(X, np.arange(n)) == 1.0
+    rng = np.random.default_rng(3)
+    assert np.mean([pc_plane_cycle_score(X, rng.permutation(n)) for _ in range(50)]) < 0.4
