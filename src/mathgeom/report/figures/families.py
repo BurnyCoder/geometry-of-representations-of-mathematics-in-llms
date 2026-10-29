@@ -140,7 +140,8 @@ def draw_angles(cfg, key: str, sh: dict, Lp: int):
     draw_plane(axes[1], figdata.pca(figdata.family_acts(cfg, key, "angles")[:, Lp]), lab, closed=False, highlight=((len(items) - 1, 0),))
     a = sh[key]["angles"]
     axes[1].set_title(f"Found: {S.pretty(key)} · layer {Lp}", fontsize=9)
-    S.note(axes[1], f"d(0°, 330°) = {a['closure']:.2f} × mean neighbour distance (a circle needs < 2)")
+    S.note(axes[1], f"closure d(0°, 330°) / mean neighbour distance = {a['closure']:.2f} (circle: < 2)\n"
+                    f"circle ρ = {a['circle_rho']:.2f} vs line ρ = {a['line_rho']:.2f} (circle: circle ρ > line ρ)")
     digits = figdata.family_items(cfg, "digits_0_330")
     draw_plane(axes[2], figdata.pca(figdata.family_acts(cfg, key, "digits_0_330")[:, Lp]), digits, closed=False)
     axes[2].set_title("Reference: bare numbers 0 … 330", fontsize=9)
