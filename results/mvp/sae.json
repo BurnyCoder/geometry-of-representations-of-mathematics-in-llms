@@ -1,0 +1,445 @@
+{
+ "qwen3.5-2b": {
+  "sae_repo": "Qwen/SAE-Res-Qwen3.5-2B-Base-W32K-L0_50",
+  "sae_block": 11,
+  "k": 50,
+  "math": {
+   "loo_acc_sae": 0.4296482412060301,
+   "selective": {
+    "algebraic_geometry": [
+     {
+      "feature": 12833,
+      "score": 0.48517122864723206,
+      "fire_rate_in": 0.75,
+      "fire_rate_out": 0.3689839572192513
+     },
+     {
+      "feature": 15524,
+      "score": 0.1860734522342682,
+      "fire_rate_in": 0.9583333333333334,
+      "fire_rate_out": 0.8315508021390374
+     },
+     {
+      "feature": 18117,
+      "score": 0.17327946424484253,
+      "fire_rate_in": 0.25,
+      "fire_rate_out": 0.10160427807486631
+     }
+    ],
+    "algebraic_topology": [
+     {
+      "feature": 27746,
+      "score": 0.24310225248336792,
+      "fire_rate_in": 0.7727272727272727,
+      "fire_rate_out": 0.5718085106382979
+     },
+     {
+      "feature": 29588,
+      "score": 0.21015013754367828,
+      "fire_rate_in": 0.5,
+      "fire_rate_out": 0.031914893617021274
+     },
+     {
+      "feature": 7850,
+      "score": 0.19807198643684387,
+      "fire_rate_in": 0.9090909090909091,
+      "fire_rate_out": 0.6781914893617021
+     }
+    ],
+    "category_theory": [
+     {
+      "feature": 9199,
+      "score": 0.5669265389442444,
+      "fire_rate_in": 0.6086956521739131,
+      "fire_rate_out": 0.032
+     },
+     {
+      "feature": 12833,
+      "score": 0.2620665431022644,
+      "fire_rate_in": 0.5652173913043478,
+      "fire_rate_out": 0.38133333333333336
+     },
+     {
+      "feature": 1258,
+      "score": 0.21578851342201233,
+      "fire_rate_in": 0.43478260869565216,
+      "fire_rate_out": 0.18666666666666668
+     }
+    ],
+    "commutative_algebra": [
+     {
+      "feature": 15745,
+      "score": 0.26244592666625977,
+      "fire_rate_in": 0.16666666666666666,
+      "fire_rate_out": 0.0053475935828877
+     },
+     {
+      "feature": 13511,
+      "score": 0.22563695907592773,
+      "fire_rate_in": 0.2916666666666667,
+      "fire_rate_out": 0.01871657754010695
+     },
+     {
+      "feature": 29408,
+      "score": 0.21735680103302002,
+      "fire_rate_in": 0.125,
+      "fire_rate_out": 0.0
+     }
+    ],
+    "differential_geometry": [
+     {
+      "feature": 31641,
+      "score": 0.2872219681739807,
+      "fire_rate_in": 0.19230769230769232,
+      "fire_rate_out": 0.0
+     },
+     {
+      "feature": 27746,
+      "score": 0.275562584400177,
+      "fire_rate_in": 0.8846153846153846,
+      "fire_rate_out": 0.5618279569892473
+     },
+     {
+      "feature": 28001,
+      "score": 0.24765416979789734,
+      "fire_rate_in": 0.38461538461538464,
+      "fire_rate_out": 0.016129032258064516
+     }
+    ],
+    "functional_analysis": [
+     {
+      "feature": 12833,
+      "score": 0.3535754680633545,
+      "fire_rate_in": 0.6363636363636364,
+      "fire_rate_out": 0.3776595744680851
+     },
+     {
+      "feature": 806,
+      "score": 0.27025309205055237,
+      "fire_rate_in": 0.5454545454545454,
+      "fire_rate_out": 0.034574468085106384
+     },
+     {
+      "feature": 10119,
+      "score": 0.1783519685268402,
+      "fire_rate_in": 0.13636363636363635,
+      "fire_rate_out": 0.0026595744680851063
+     }
+    ],
+    "game_theory": [
+     {
+      "feature": 20626,
+      "score": 0.5530725717544556,
+      "fire_rate_in": 0.6363636363636364,
+      "fire_rate_out": 0.0
+     },
+     {
+      "feature": 25600,
+      "score": 0.36554497480392456,
+      "fire_rate_in": 0.18181818181818182,
+      "fire_rate_out": 0.0
+     },
+     {
+      "feature": 7909,
+      "score": 0.2626745104789734,
+      "fire_rate_in": 0.18181818181818182,
+      "fire_rate_out": 0.025839793281653745
+     }
+    ],
+    "general_topology": [
+     {
+      "feature": 23873,
+      "score": 0.3005436956882477,
+      "fire_rate_in": 0.5555555555555556,
+      "fire_rate_out": 0.013477088948787063
+     },
+     {
+      "feature": 8597,
+      "score": 0.26742714643478394,
+      "fire_rate_in": 0.5185185185185185,
+      "fire_rate_out": 0.16172506738544473
+     },
+     {
+      "feature": 462,
+      "score": 0.14214526116847992,
+      "fire_rate_in": 0.7037037037037037,
+      "fire_rate_out": 0.5417789757412399
+     }
+    ],
+    "graph_theory": [
+     {
+      "feature": 15524,
+      "score": 0.26637890934944153,
+      "fire_rate_in": 1.0,
+      "fire_rate_out": 0.8293333333333334
+     },
+     {
+      "feature": 11488,
+      "score": 0.2546676695346832,
+      "fire_rate_in": 0.43478260869565216,
+      "fire_rate_out": 0.005333333333333333
+     },
+     {
+      "feature": 2653,
+      "score": 0.18108530342578888,
+      "fire_rate_in": 1.0,
+      "fire_rate_out": 0.5973333333333334
+     }
+    ],
+    "group_theory": [
+     {
+      "feature": 20681,
+      "score": 0.8768426179885864,
+      "fire_rate_in": 0.5,
+      "fire_rate_out": 0.0398936170212766
+     },
+     {
+      "feature": 12823,
+      "score": 0.47657427191734314,
+      "fire_rate_in": 0.5909090909090909,
+      "fire_rate_out": 0.010638297872340425
+     },
+     {
+      "feature": 19414,
+      "score": 0.31618350744247437,
+      "fire_rate_in": 0.5,
+      "fire_rate_out": 0.005319148936170213
+     }
+    ],
+    "lie_representation_theory": [
+     {
+      "feature": 12833,
+      "score": 0.3634977340698242,
+      "fire_rate_in": 0.6,
+      "fire_rate_out": 0.3780160857908847
+     },
+     {
+      "feature": 32699,
+      "score": 0.31975045800209045,
+      "fire_rate_in": 0.44,
+      "fire_rate_out": 0.05361930294906166
+     },
+     {
+      "feature": 6957,
+      "score": 0.15474119782447815,
+      "fire_rate_in": 0.12,
+      "fire_rate_out": 0.010723860589812333
+     }
+    ],
+    "number_theory": [
+     {
+      "feature": 8598,
+      "score": 0.17550960183143616,
+      "fire_rate_in": 0.4583333333333333,
+      "fire_rate_out": 0.18983957219251338
+     },
+     {
+      "feature": 6865,
+      "score": 0.17263247072696686,
+      "fire_rate_in": 0.2916666666666667,
+      "fire_rate_out": 0.029411764705882353
+     },
+     {
+      "feature": 10991,
+      "score": 0.17121346294879913,
+      "fire_rate_in": 0.125,
+      "fire_rate_out": 0.0053475935828877
+     }
+    ],
+    "numerical_analysis": [
+     {
+      "feature": 22450,
+      "score": 0.2714015245437622,
+      "fire_rate_in": 0.16666666666666666,
+      "fire_rate_out": 0.0
+     },
+     {
+      "feature": 18117,
+      "score": 0.22098258137702942,
+      "fire_rate_in": 0.4166666666666667,
+      "fire_rate_out": 0.09090909090909091
+     },
+     {
+      "feature": 23455,
+      "score": 0.17999567091464996,
+      "fire_rate_in": 0.25,
+      "fire_rate_out": 0.06149732620320856
+     }
+    ],
+    "probability_statistics": [
+     {
+      "feature": 6461,
+      "score": 0.2939450740814209,
+      "fire_rate_in": 0.7037037037037037,
+      "fire_rate_out": 0.3450134770889488
+     },
+     {
+      "feature": 581,
+      "score": 0.21718017756938934,
+      "fire_rate_in": 0.7037037037037037,
+      "fire_rate_out": 0.24797843665768193
+     },
+     {
+      "feature": 11013,
+      "score": 0.19452527165412903,
+      "fire_rate_in": 0.5555555555555556,
+      "fire_rate_out": 0.0862533692722372
+     }
+    ],
+    "real_complex_analysis": [
+     {
+      "feature": 6157,
+      "score": 0.20858469605445862,
+      "fire_rate_in": 0.9130434782608695,
+      "fire_rate_out": 0.7786666666666666
+     },
+     {
+      "feature": 9140,
+      "score": 0.1513543576002121,
+      "fire_rate_in": 0.21739130434782608,
+      "fire_rate_out": 0.029333333333333333
+     },
+     {
+      "feature": 3252,
+      "score": 0.15123319625854492,
+      "fire_rate_in": 0.13043478260869565,
+      "fire_rate_out": 0.0
+     }
+    ],
+    "ring_module_theory": [
+     {
+      "feature": 19009,
+      "score": 0.22608543932437897,
+      "fire_rate_in": 0.16,
+      "fire_rate_out": 0.0
+     },
+     {
+      "feature": 27580,
+      "score": 0.2211017906665802,
+      "fire_rate_in": 0.48,
+      "fire_rate_out": 0.1876675603217158
+     },
+     {
+      "feature": 6957,
+      "score": 0.19385214149951935,
+      "fire_rate_in": 0.12,
+      "fire_rate_out": 0.010723860589812333
+     }
+    ],
+    "set_theory_logic": [
+     {
+      "feature": 12833,
+      "score": 0.2768881916999817,
+      "fire_rate_in": 0.6153846153846154,
+      "fire_rate_out": 0.3763440860215054
+     },
+     {
+      "feature": 3629,
+      "score": 0.1881094127893448,
+      "fire_rate_in": 0.4230769230769231,
+      "fire_rate_out": 0.053763440860215055
+     },
+     {
+      "feature": 28737,
+      "score": 0.11957982927560806,
+      "fire_rate_in": 0.07692307692307693,
+      "fire_rate_out": 0.002688172043010753
+     }
+    ]
+   },
+   "mean_active": 50.0,
+   "n_features_used": 3160,
+   "rsa_sae": 0.14640522875816991
+  },
+  "control": {
+   "loo_acc_sae": 0.6185567010309279,
+   "selective": {
+    "astronomy": [
+     {
+      "feature": 27746,
+      "score": 0.3100167512893677,
+      "fire_rate_in": 0.5384615384615384,
+      "fire_rate_out": 0.2535211267605634
+     },
+     {
+      "feature": 5096,
+      "score": 0.1994962841272354,
+      "fire_rate_in": 0.34615384615384615,
+      "fire_rate_out": 0.0
+     },
+     {
+      "feature": 2690,
+      "score": 0.14074809849262238,
+      "fire_rate_in": 0.07692307692307693,
+      "fire_rate_out": 0.0
+     }
+    ],
+    "biology": [
+     {
+      "feature": 21431,
+      "score": 0.23209938406944275,
+      "fire_rate_in": 0.52,
+      "fire_rate_out": 0.19444444444444445
+     },
+     {
+      "feature": 10233,
+      "score": 0.14273950457572937,
+      "fire_rate_in": 0.4,
+      "fire_rate_out": 0.1388888888888889
+     },
+     {
+      "feature": 820,
+      "score": 0.14166098833084106,
+      "fire_rate_in": 0.32,
+      "fire_rate_out": 0.1388888888888889
+     }
+    ],
+    "chemistry": [
+     {
+      "feature": 20893,
+      "score": 0.173737570643425,
+      "fire_rate_in": 0.08695652173913043,
+      "fire_rate_out": 0.0
+     },
+     {
+      "feature": 24332,
+      "score": 0.15313078463077545,
+      "fire_rate_in": 0.13043478260869565,
+      "fire_rate_out": 0.0
+     },
+     {
+      "feature": 8667,
+      "score": 0.14781808853149414,
+      "fire_rate_in": 0.5217391304347826,
+      "fire_rate_out": 0.05405405405405406
+     }
+    ],
+    "geology": [
+     {
+      "feature": 22152,
+      "score": 0.5094680190086365,
+      "fire_rate_in": 0.5217391304347826,
+      "fire_rate_out": 0.0
+     },
+     {
+      "feature": 22876,
+      "score": 0.4125356376171112,
+      "fire_rate_in": 0.6521739130434783,
+      "fire_rate_out": 0.0
+     },
+     {
+      "feature": 12833,
+      "score": 0.40376538038253784,
+      "fire_rate_in": 0.782608695652174,
+      "fire_rate_out": 0.5135135135135135
+     }
+    ]
+   },
+   "mean_active": 50.0,
+   "n_features_used": 1586
+  },
+  "features_math_only": 2445,
+  "features_control_only": 871,
+  "features_shared": 715
+ }
+}

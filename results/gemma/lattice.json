@@ -1,0 +1,726 @@
+{
+ "gemma-4-e2b": {
+  "primary_layer": 18,
+  "group_like": {
+   "axiom_rdm_beta": 0.3007159386956309,
+   "axiom_rdm_p": 0.001799640071985603,
+   "lexical_beta": 0.4368526817362145,
+   "offsets": {
+    "associative": {
+     "n_pairs": 5,
+     "consistency": 0.5597937747986238,
+     "null_mean": -0.0007492954635449007,
+     "null95": 0.26157835293315085,
+     "p": 0.001999000499750125
+    },
+    "identity": {
+     "n_pairs": 5,
+     "consistency": 0.19138948470163747,
+     "null_mean": -0.007253576105347888,
+     "null95": 0.25487148981448965,
+     "p": 0.08995502248875563
+    },
+    "divisible": {
+     "n_pairs": 5,
+     "consistency": 0.3538612656511842,
+     "null_mean": -0.0009674348304187841,
+     "null95": 0.2566859601290725,
+     "p": 0.022988505747126436
+    },
+    "commutative": {
+     "n_pairs": 6,
+     "consistency": 0.7359426733390545,
+     "null_mean": -0.0005054803016702298,
+     "null95": 0.21810837063954877,
+     "p": 0.0004997501249375312
+    }
+   },
+   "analogy": {
+    "n": 45,
+    "top1": 0.5555555555555556,
+    "mean_rank": 2.6,
+    "chance_mean_rank": 5.5,
+    "chance_top1": 0.1
+   },
+   "layer_curve": [
+    {
+     "layer": 1,
+     "axiom_rdm_beta": 0.024174231804520475
+    },
+    {
+     "layer": 2,
+     "axiom_rdm_beta": 0.1877675329496058
+    },
+    {
+     "layer": 3,
+     "axiom_rdm_beta": 0.11514832991359297
+    },
+    {
+     "layer": 4,
+     "axiom_rdm_beta": 0.08941014240232714
+    },
+    {
+     "layer": 5,
+     "axiom_rdm_beta": 0.178936065939857
+    },
+    {
+     "layer": 6,
+     "axiom_rdm_beta": 0.24844835774743657
+    },
+    {
+     "layer": 7,
+     "axiom_rdm_beta": 0.23994355357936006
+    },
+    {
+     "layer": 8,
+     "axiom_rdm_beta": 0.24626161848981803
+    },
+    {
+     "layer": 9,
+     "axiom_rdm_beta": 0.24283608953472818
+    },
+    {
+     "layer": 10,
+     "axiom_rdm_beta": 0.20005947822714382
+    },
+    {
+     "layer": 11,
+     "axiom_rdm_beta": 0.07982912507716883
+    },
+    {
+     "layer": 12,
+     "axiom_rdm_beta": 0.15314264933529478
+    },
+    {
+     "layer": 13,
+     "axiom_rdm_beta": 0.02512401792917944
+    },
+    {
+     "layer": 14,
+     "axiom_rdm_beta": 0.23278079971499094
+    },
+    {
+     "layer": 15,
+     "axiom_rdm_beta": 0.25294427844569844
+    },
+    {
+     "layer": 16,
+     "axiom_rdm_beta": 0.2992259382886535
+    },
+    {
+     "layer": 17,
+     "axiom_rdm_beta": 0.3737565129802406
+    },
+    {
+     "layer": 18,
+     "axiom_rdm_beta": 0.3007159386956309
+    },
+    {
+     "layer": 19,
+     "axiom_rdm_beta": 0.2973810945125832
+    },
+    {
+     "layer": 20,
+     "axiom_rdm_beta": 0.27507104392110876
+    },
+    {
+     "layer": 21,
+     "axiom_rdm_beta": 0.27003474446134457
+    },
+    {
+     "layer": 22,
+     "axiom_rdm_beta": 0.24846747611825046
+    },
+    {
+     "layer": 23,
+     "axiom_rdm_beta": 0.24172966894954076
+    },
+    {
+     "layer": 24,
+     "axiom_rdm_beta": 0.21689859922058777
+    },
+    {
+     "layer": 25,
+     "axiom_rdm_beta": 0.13091325244039526
+    },
+    {
+     "layer": 26,
+     "axiom_rdm_beta": 0.1903973144861087
+    },
+    {
+     "layer": 27,
+     "axiom_rdm_beta": 0.18243237193974238
+    },
+    {
+     "layer": 28,
+     "axiom_rdm_beta": 0.19719192658798118
+    },
+    {
+     "layer": 29,
+     "axiom_rdm_beta": 0.19597776710960788
+    },
+    {
+     "layer": 30,
+     "axiom_rdm_beta": 0.18264811045075938
+    },
+    {
+     "layer": 31,
+     "axiom_rdm_beta": 0.17199429883714495
+    },
+    {
+     "layer": 32,
+     "axiom_rdm_beta": 0.1619685254892913
+    },
+    {
+     "layer": 33,
+     "axiom_rdm_beta": 0.14323141024114508
+    },
+    {
+     "layer": 34,
+     "axiom_rdm_beta": 0.15590889113443682
+    },
+    {
+     "layer": 35,
+     "axiom_rdm_beta": 0.12892576642642123
+    }
+   ]
+  },
+  "self_distributive": {
+   "axiom_rdm_beta": 0.0804952305248891,
+   "axiom_rdm_p": 0.4149170165966807,
+   "lexical_beta": -0.08384474254746914,
+   "offsets": {
+    "invertible": {
+     "n_pairs": 2,
+     "consistency": -0.11417266410270341,
+     "null_mean": 0.0008665894449664577,
+     "null95": 0.8416066772666897,
+     "p": 0.6111944027986007
+    },
+    "idempotent": {
+     "n_pairs": 2,
+     "consistency": 0.22854303998960776,
+     "null_mean": -0.0171786903280977,
+     "null95": 0.8416066772666897,
+     "p": 0.3468265867066467
+    }
+   },
+   "analogy": {
+    "n": 2,
+    "top1": 0.0,
+    "mean_rank": 2.0,
+    "chance_mean_rank": 1.5,
+    "chance_top1": 0.5
+   },
+   "layer_curve": [
+    {
+     "layer": 1,
+     "axiom_rdm_beta": 0.05145055971693955
+    },
+    {
+     "layer": 2,
+     "axiom_rdm_beta": -0.1460532017771184
+    },
+    {
+     "layer": 3,
+     "axiom_rdm_beta": -0.12447716060549865
+    },
+    {
+     "layer": 4,
+     "axiom_rdm_beta": -0.01991634569687975
+    },
+    {
+     "layer": 5,
+     "axiom_rdm_beta": -0.08713401242384905
+    },
+    {
+     "layer": 6,
+     "axiom_rdm_beta": -0.024065584383729743
+    },
+    {
+     "layer": 7,
+     "axiom_rdm_beta": 0.03900284365638959
+    },
+    {
+     "layer": 8,
+     "axiom_rdm_beta": -0.024065584383729743
+    },
+    {
+     "layer": 9,
+     "axiom_rdm_beta": -0.08713401242384904
+    },
+    {
+     "layer": 10,
+     "axiom_rdm_beta": -0.08713401242384904
+    },
+    {
+     "layer": 11,
+     "axiom_rdm_beta": -0.08713401242384904
+    },
+    {
+     "layer": 12,
+     "axiom_rdm_beta": -0.08713401242384904
+    },
+    {
+     "layer": 13,
+     "axiom_rdm_beta": -0.08713401242384908
+    },
+    {
+     "layer": 14,
+     "axiom_rdm_beta": 0.2821482307057971
+    },
+    {
+     "layer": 15,
+     "axiom_rdm_beta": -0.01991634569687975
+    },
+    {
+     "layer": 16,
+     "axiom_rdm_beta": 0.043152082343239584
+    },
+    {
+     "layer": 17,
+     "axiom_rdm_beta": 0.19916345696879795
+    },
+    {
+     "layer": 18,
+     "axiom_rdm_beta": 0.0804952305248891
+    },
+    {
+     "layer": 19,
+     "axiom_rdm_beta": 0.28961686034212697
+    },
+    {
+     "layer": 20,
+     "axiom_rdm_beta": 0.2323573664635975
+    },
+    {
+     "layer": 21,
+     "axiom_rdm_beta": 0.2323573664635975
+    },
+    {
+     "layer": 22,
+     "axiom_rdm_beta": 0.3410674200590663
+    },
+    {
+     "layer": 23,
+     "axiom_rdm_beta": 0.37094193860438607
+    },
+    {
+     "layer": 24,
+     "axiom_rdm_beta": 0.22903797551411756
+    },
+    {
+     "layer": 25,
+     "axiom_rdm_beta": 0.35102559290750623
+    },
+    {
+     "layer": 26,
+     "axiom_rdm_beta": 0.2464647779988873
+    },
+    {
+     "layer": 27,
+     "axiom_rdm_beta": 0.14190396309026843
+    },
+    {
+     "layer": 28,
+     "axiom_rdm_beta": 0.0746862963632991
+    },
+    {
+     "layer": 29,
+     "axiom_rdm_beta": 0.1161786832317987
+    },
+    {
+     "layer": 30,
+     "axiom_rdm_beta": -0.03983269139375961
+    },
+    {
+     "layer": 31,
+     "axiom_rdm_beta": 0.1161786832317987
+    },
+    {
+     "layer": 32,
+     "axiom_rdm_beta": 0.1161786832317987
+    },
+    {
+     "layer": 33,
+     "axiom_rdm_beta": 0.0746862963632991
+    },
+    {
+     "layer": 34,
+     "axiom_rdm_beta": 0.14190396309026843
+    },
+    {
+     "layer": 35,
+     "axiom_rdm_beta": 0.3510255929075062
+    }
+   ]
+  },
+  "analogy_control": {
+   "consistency": 0.11206638341935864,
+   "null95": 0.09826216245415036,
+   "king_queen_rank": 6
+  }
+ },
+ "gemma-4-e2b__random": {
+  "primary_layer": 18,
+  "group_like": {
+   "axiom_rdm_beta": 0.275002160182552,
+   "axiom_rdm_p": 0.005398920215956809,
+   "lexical_beta": -0.017159741615422525,
+   "offsets": {
+    "associative": {
+     "n_pairs": 5,
+     "consistency": 0.21772951716948996,
+     "null_mean": 0.0010064891158143106,
+     "null95": 0.21101109975639698,
+     "p": 0.047476261869065464
+    },
+    "identity": {
+     "n_pairs": 5,
+     "consistency": 0.14481462785963592,
+     "null_mean": -0.0047603615408303305,
+     "null95": 0.20076602824004755,
+     "p": 0.09795102448775612
+    },
+    "divisible": {
+     "n_pairs": 5,
+     "consistency": 0.23287835853465264,
+     "null_mean": -0.0019624011799239185,
+     "null95": 0.2104032299911495,
+     "p": 0.04247876061969016
+    },
+    "commutative": {
+     "n_pairs": 6,
+     "consistency": 0.02270795159977432,
+     "null_mean": 0.0029587360549930067,
+     "null95": 0.18528673227123646,
+     "p": 0.3683158420789605
+    }
+   },
+   "analogy": {
+    "n": 45,
+    "top1": 0.4666666666666667,
+    "mean_rank": 3.4,
+    "chance_mean_rank": 5.5,
+    "chance_top1": 0.1
+   },
+   "layer_curve": [
+    {
+     "layer": 1,
+     "axiom_rdm_beta": 0.17827112974993028
+    },
+    {
+     "layer": 2,
+     "axiom_rdm_beta": 0.3323548944993699
+    },
+    {
+     "layer": 3,
+     "axiom_rdm_beta": 0.2624639773565084
+    },
+    {
+     "layer": 4,
+     "axiom_rdm_beta": 0.28981614451215865
+    },
+    {
+     "layer": 5,
+     "axiom_rdm_beta": 0.2880622261217837
+    },
+    {
+     "layer": 6,
+     "axiom_rdm_beta": 0.3238156947891213
+    },
+    {
+     "layer": 7,
+     "axiom_rdm_beta": 0.2822742524822139
+    },
+    {
+     "layer": 8,
+     "axiom_rdm_beta": 0.34542924858010743
+    },
+    {
+     "layer": 9,
+     "axiom_rdm_beta": 0.34840722536637586
+    },
+    {
+     "layer": 10,
+     "axiom_rdm_beta": 0.3733148432765543
+    },
+    {
+     "layer": 11,
+     "axiom_rdm_beta": 0.3850340878373344
+    },
+    {
+     "layer": 12,
+     "axiom_rdm_beta": 0.34827454597021684
+    },
+    {
+     "layer": 13,
+     "axiom_rdm_beta": 0.3553622448945101
+    },
+    {
+     "layer": 14,
+     "axiom_rdm_beta": 0.35525086232053904
+    },
+    {
+     "layer": 15,
+     "axiom_rdm_beta": 0.2813718636559998
+    },
+    {
+     "layer": 16,
+     "axiom_rdm_beta": 0.27074373880680874
+    },
+    {
+     "layer": 17,
+     "axiom_rdm_beta": 0.27942068301018014
+    },
+    {
+     "layer": 18,
+     "axiom_rdm_beta": 0.275002160182552
+    },
+    {
+     "layer": 19,
+     "axiom_rdm_beta": 0.2098347878451911
+    },
+    {
+     "layer": 20,
+     "axiom_rdm_beta": 0.18438477720132
+    },
+    {
+     "layer": 21,
+     "axiom_rdm_beta": 0.18191053407628616
+    },
+    {
+     "layer": 22,
+     "axiom_rdm_beta": 0.15235720808181463
+    },
+    {
+     "layer": 23,
+     "axiom_rdm_beta": 0.17562172204006757
+    },
+    {
+     "layer": 24,
+     "axiom_rdm_beta": 0.21122558575680075
+    },
+    {
+     "layer": 25,
+     "axiom_rdm_beta": 0.18236074448728873
+    },
+    {
+     "layer": 26,
+     "axiom_rdm_beta": 0.19337917628506543
+    },
+    {
+     "layer": 27,
+     "axiom_rdm_beta": 0.22002156189356784
+    },
+    {
+     "layer": 28,
+     "axiom_rdm_beta": 0.16462414318615742
+    },
+    {
+     "layer": 29,
+     "axiom_rdm_beta": 0.16632417776494515
+    },
+    {
+     "layer": 30,
+     "axiom_rdm_beta": 0.16291808321054205
+    },
+    {
+     "layer": 31,
+     "axiom_rdm_beta": 0.18064137462627436
+    },
+    {
+     "layer": 32,
+     "axiom_rdm_beta": 0.15823963084016313
+    },
+    {
+     "layer": 33,
+     "axiom_rdm_beta": 0.16004859445190822
+    },
+    {
+     "layer": 34,
+     "axiom_rdm_beta": 0.154416558570647
+    },
+    {
+     "layer": 35,
+     "axiom_rdm_beta": 0.1693195685154627
+    }
+   ]
+  },
+  "self_distributive": {
+   "axiom_rdm_beta": 0.08713401242384904,
+   "axiom_rdm_p": 0.4553089382123575,
+   "lexical_beta": 0.1461294084398747,
+   "offsets": {
+    "invertible": {
+     "n_pairs": 2,
+     "consistency": -0.05032118268720151,
+     "null_mean": -0.0032685811901376613,
+     "null95": 0.5524739595522808,
+     "p": 0.6336831584207896
+    },
+    "idempotent": {
+     "n_pairs": 2,
+     "consistency": 0.0018922381053005158,
+     "null_mean": -0.018170217131725095,
+     "null95": 0.5524739595522808,
+     "p": 0.47626186906546725
+    }
+   },
+   "analogy": {
+    "n": 2,
+    "top1": 1.0,
+    "mean_rank": 1.0,
+    "chance_mean_rank": 1.5,
+    "chance_top1": 0.5
+   },
+   "layer_curve": [
+    {
+     "layer": 1,
+     "axiom_rdm_beta": 0.4622251897150853
+    },
+    {
+     "layer": 2,
+     "axiom_rdm_beta": 0.11119959680757895
+    },
+    {
+     "layer": 3,
+     "axiom_rdm_beta": 0.08547431694910926
+    },
+    {
+     "layer": 4,
+     "axiom_rdm_beta": 0.11119959680757893
+    },
+    {
+     "layer": 5,
+     "axiom_rdm_beta": 0.08547431694910926
+    },
+    {
+     "layer": 6,
+     "axiom_rdm_beta": 0.2647214282210274
+    },
+    {
+     "layer": 7,
+     "axiom_rdm_beta": 0.2647214282210274
+    },
+    {
+     "layer": 8,
+     "axiom_rdm_beta": -0.07883553505014909
+    },
+    {
+     "layer": 9,
+     "axiom_rdm_beta": 0.24895432121099748
+    },
+    {
+     "layer": 10,
+     "axiom_rdm_beta": 0.24895432121099748
+    },
+    {
+     "layer": 11,
+     "axiom_rdm_beta": 0.31617198793796675
+    },
+    {
+     "layer": 12,
+     "axiom_rdm_beta": 0.3120227492511168
+    },
+    {
+     "layer": 13,
+     "axiom_rdm_beta": 0.37509117729123614
+    },
+    {
+     "layer": 14,
+     "axiom_rdm_beta": 0.37509117729123614
+    },
+    {
+     "layer": 15,
+     "axiom_rdm_beta": 0.2962556422410869
+    },
+    {
+     "layer": 16,
+     "axiom_rdm_beta": 0.16182030878714826
+    },
+    {
+     "layer": 17,
+     "axiom_rdm_beta": 0.08713401242384904
+    },
+    {
+     "layer": 18,
+     "axiom_rdm_beta": 0.08713401242384904
+    },
+    {
+     "layer": 19,
+     "axiom_rdm_beta": 0.04564162555534944
+    },
+    {
+     "layer": 20,
+     "axiom_rdm_beta": -0.04315208234323957
+    },
+    {
+     "layer": 21,
+     "axiom_rdm_beta": -0.17758741579717818
+    },
+    {
+     "layer": 22,
+     "axiom_rdm_beta": -0.2033126956556479
+    },
+    {
+     "layer": 23,
+     "axiom_rdm_beta": -0.16182030878714831
+    },
+    {
+     "layer": 24,
+     "axiom_rdm_beta": -0.22903797551411761
+    },
+    {
+     "layer": 25,
+     "axiom_rdm_beta": -0.17758741579717818
+    },
+    {
+     "layer": 26,
+     "axiom_rdm_beta": -0.043152082343239556
+    },
+    {
+     "layer": 27,
+     "axiom_rdm_beta": -0.09460264206017899
+    },
+    {
+     "layer": 28,
+     "axiom_rdm_beta": -0.09045340337332898
+    },
+    {
+     "layer": 29,
+     "axiom_rdm_beta": -0.2921064035542369
+    },
+    {
+     "layer": 30,
+     "axiom_rdm_beta": -0.1460532017771184
+    },
+    {
+     "layer": 31,
+     "axiom_rdm_beta": -0.10456081490861877
+    },
+    {
+     "layer": 32,
+     "axiom_rdm_beta": 0.029874518545319848
+    },
+    {
+     "layer": 33,
+     "axiom_rdm_beta": 0.029874518545319854
+    },
+    {
+     "layer": 34,
+     "axiom_rdm_beta": 0.26887066690787736
+    },
+    {
+     "layer": 35,
+     "axiom_rdm_beta": 0.13443533345393874
+    }
+   ]
+  },
+  "analogy_control": {
+   "consistency": -0.004134422951124433,
+   "null95": 0.06714034651172872,
+   "king_queen_rank": 1
+  }
+ }
+}

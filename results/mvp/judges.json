@@ -1,0 +1,35 @@
+{
+ "judges": [
+  "ibm-granite/granite-4.0-micro",
+  "HuggingFaceTB/SmolLM3-3B",
+  "microsoft/Phi-4-mini-instruct"
+ ],
+ "n": 655,
+ "mean_pairwise_spearman": 0.6285404756550954,
+ "pairwise_spearman": [
+  0.5952902864346242,
+  0.6936219256254454,
+  0.5967092149052163
+ ],
+ "icc2_1": 0.2412827996504814,
+ "icc2_k": 0.4882403849736851,
+ "field_mean_rating": {
+  "algebraic_geometry": 4.82,
+  "algebraic_topology": 5.314,
+  "category_theory": 5.042,
+  "commutative_algebra": 4.966,
+  "differential_geometry": 5.24,
+  "functional_analysis": 4.905,
+  "game_theory": 4.721,
+  "general_topology": 4.987,
+  "graph_theory": 4.485,
+  "group_theory": 4.972,
+  "lie_representation_theory": 5.104,
+  "number_theory": 5.226,
+  "numerical_analysis": 4.819,
+  "probability_statistics": 4.728,
+  "real_complex_analysis": 4.914,
+  "ring_module_theory": 4.931,
+  "set_theory_logic": 4.865
+ }
+}
