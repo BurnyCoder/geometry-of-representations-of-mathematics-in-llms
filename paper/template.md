@@ -5,11 +5,11 @@ date: "October 2026"
 abstract: |
   Large language models represent days of the week and months on circles (Engels et al., 2024). We ask whether *abstract mathematics* is organized geometrically too. We test three preregistered hypotheses on base models up to 2B parameters, comparing every model with a random-init twin (same architecture and tokenizer, no learning).
 
-  **(A) Field map.** Centroids of 17 mathematical fields are computed from concepts drawn from Wikipedia glossaries, excluding concepts whose names leak the field. In Qwen3.5-2B-Base, their geometry correlates with field relatedness measured by arXiv cross-listing over 3.2M papers: Spearman ρ = {{num:mvp.map_fields.qwen3.5-2b.math_primary.rsa.trained:.2f}}, against ρ = {{num:mvp.map_fields.qwen3.5-2b.math_primary.rsa.random_init:.2f}} for the random-init twin. The paired bootstrap 95% CI of the difference is [{{num:mvp.map_fields.qwen3.5-2b.math_primary.rsa_boot.delta_vs_random_init.ci.0:.2f}}, {{num:mvp.map_fields.qwen3.5-2b.math_primary.rsa_boot.delta_vs_random_init.ci.1:.2f}}]. The map replicates in Qwen3.5-0.8B and in Qwen2.5-1.5B. One trillion tokens of math continued pretraining (Qwen2.5-Math) do not sharpen it (Δρ CI [{{num:robustness.compare.qwen2.5-math-1.5b_vs_qwen2.5-1.5b.boot.delta_vs_qwen2.5-1.5b.ci.0:.2f}}, {{num:robustness.compare.qwen2.5-math-1.5b_vs_qwen2.5-1.5b.boot.delta_vs_qwen2.5-1.5b.ci.1:.2f}}]).
+  **(A) Field map.** Centroids of 17 mathematical fields are computed from concepts drawn from Wikipedia glossaries, excluding concepts whose names leak the field. In Qwen3.5-2B-Base, their geometry correlates with field relatedness measured by arXiv cross-listing over 3.2M papers: Spearman ρ = {{num:mvp.map_fields.qwen3.5-2b.math_primary.rsa.trained:.2f}}, against ρ = {{num:mvp.map_fields.qwen3.5-2b.math_primary.rsa.random_init:.2f}} for the random-init twin. The paired bootstrap 95% CI of the difference is [{{num:mvp.map_fields.qwen3.5-2b.math_primary.rsa_boot.delta_vs_random_init.ci.0:.2f}}, {{num:mvp.map_fields.qwen3.5-2b.math_primary.rsa_boot.delta_vs_random_init.ci.1:.2f}}]. The map replicates in Qwen3.5-0.8B (ρ = {{num:robustness.map_fields.qwen3.5-0.8b.math_primary.rsa.trained:.2f}}), Qwen2.5-1.5B (ρ = {{num:robustness.map_fields.qwen2.5-1.5b.math_primary.rsa.trained:.2f}}) and Gemma-4-E2B (ρ = {{num:gemma.map_fields.gemma-4-e2b.math_primary.rsa.trained:.2f}}). In every case the random-init twin is near zero or below. It is, however, no stronger than the organization of non-math science topics. One trillion tokens of math continued pretraining (Qwen2.5-Math) do not sharpen it (Δρ CI [{{num:robustness.compare.qwen2.5-math-1.5b_vs_qwen2.5-1.5b.boot.delta_vs_qwen2.5-1.5b.ci.0:.2f}}, {{num:robustness.compare.qwen2.5-math-1.5b_vs_qwen2.5-1.5b.boot.delta_vs_qwen2.5-1.5b.ci.1:.2f}}]).
 
-  **(B) Shapes.** Class-inclusion chains (rng ⊃ ring ⊃ … ⊃ field; T0 ⊃ … ⊃ Hilbert) are ordered beyond permutation nulls and beyond the twin. Angles 0°–330°, however, are encoded like the number line rather than a circle, which falsifies our preregistered prediction.
+  **(B) Shapes.** Class-inclusion chains (rng ⊃ ring ⊃ … ⊃ field; T0 ⊃ … ⊃ Hilbert) are ordered beyond permutation nulls and beyond the twin. Angles 0°–330°, however, are encoded like the number line rather than a circle in all five models, which falsifies our preregistered prediction.
 
-  **(B2) Axiom lattices.** For group-like structures (magma … abelian group), adding each axiom (associativity, identity, divisibility, commutativity) is a consistent direction: same-axiom difference vectors are more parallel than random pairs, and about orthogonal in the twin.
+  **(B2) Axiom lattices.** For group-like structures (magma … abelian group), adding an axiom behaves like a consistent direction. Same-axiom difference vectors are more parallel than random pairs, and much less so in the random-init twins. This holds clearly for associativity and commutativity, which survive Holm correction in the confirmatory model and are significant in all five models. The evidence is weaker for divisibility (raw p < .05 in all five models, but not after Holm correction) and for identity (raw p < .05 in three of five models).
 
   The days/months positive control met our preregistered full-space criterion only partially. A post-hoc test in the top-2 principal-component plane recovers perfect cycles. Simulations show why we use paired random-init contrasts as primary tests: partial regression on distance matrices inflates type-I error when nuisances are proxies of confounders.
 ---
@@ -29,8 +29,8 @@ Mathematics is an unusually good test bed for these ideas, because its concepts 
 **Contributions.**
 
 1. A preregistered test (`docs/prereg.md`, git tag `prereg-v1`) of three geometric hypotheses about mathematics in LLMs, with random-init twins, leakage flags, permutation nulls and paired bootstrap contrasts.
-2. Evidence that field-level geometry tracks how mathematicians cross-list papers, replicated across three models and unchanged by heavy math pretraining.
-3. Evidence that axioms of group-like structures act as consistent directions (parallelograms), and that class-inclusion chains are ordered.
+2. Evidence that field-level geometry tracks how mathematicians cross-list papers, replicated across five models from two families and unchanged by heavy math pretraining.
+3. Evidence that axioms of group-like structures act as consistent directions (parallelograms). This is strongest for associativity and commutativity. We also find that class-inclusion chains are ordered.
 4. Two negative results: angles are not circular, and math pretraining does not sharpen the map. There is also one methodological negative: partial RDM regression is miscalibrated under realistic confounding.
 
 # 2 Related work
@@ -180,7 +180,7 @@ This statistic is post-hoc. We conclude that the pipeline works, and that the fu
 
 ![Group-like axiom lattice in the PC plane. Same-colour arrows add the same axiom.]({{fig:lattice_group_like_qwen3.5-2b.png}})
 
-For every group-like axiom, difference vectors between structures that differ only in that axiom are more parallel than random pairs:
+For every group-like axiom, difference vectors between structures that differ only in that axiom are more parallel than random pairs (raw p < .05):
 
 | Axiom | Consistency | Null 95th percentile | p |
 |---|---|---|---|
@@ -189,13 +189,47 @@ For every group-like axiom, difference vectors between structures that differ on
 | Divisibility | {{num:mvp.lattice.qwen3.5-2b.group_like.offsets.divisible.consistency:.2f}} | {{num:mvp.lattice.qwen3.5-2b.group_like.offsets.divisible.null95:.2f}} | {{num:mvp.lattice.qwen3.5-2b.group_like.offsets.divisible.p:.4f}} |
 | Commutativity | {{num:mvp.lattice.qwen3.5-2b.group_like.offsets.commutative.consistency:.2f}} | {{num:mvp.lattice.qwen3.5-2b.group_like.offsets.commutative.null95:.2f}} | {{num:mvp.lattice.qwen3.5-2b.group_like.offsets.commutative.p:.4f}} |
 
-The twin's consistencies are all ≈ 0.
+In this model's random-init twin, all four consistencies are ≈ 0.
 
 **Analogies.** Analogy completion is top-1 for {{num:mvp.lattice.qwen3.5-2b.group_like.analogy.top1:.2f}} of {{num:mvp.lattice.qwen3.5-2b.group_like.analogy.n}} parallelograms (chance {{num:mvp.lattice.qwen3.5-2b.group_like.analogy.chance_top1:.2f}}). The twin reaches {{num:mvp.lattice.qwen3.5-2b__random.group_like.analogy.top1:.2f}}, so part of the analogy accuracy is lexical (shared "commutative" tokens); offset consistency is not.
 
-**Caveats.** The gender-offset positive control passes. The identity axiom's p-value would not survive Holm correction across the eight confirmatory tests.
+**Caveats.** The gender-offset positive control passes. Multiplicity across the preregistered confirmatory tests is handled by Holm correction:
 
-{{RESULTS_SECONDARY}}
+{{table:holm:mvp}}
+
+- **After correction:** associativity and commutativity remain significant; identity and divisibility do not.
+- **Across the replication models (Appendix B):** all four offsets are positive in every model. They are near zero in the Qwen twins and weaker in Gemma's twin, which has small lexical offsets for associativity and divisibility. Divisibility reaches raw p < .05 in all five models, identity in three.
+- **Our reading:** strong evidence for associativity and commutativity directions, and suggestive evidence for divisibility and identity.
+
+## 4.5 Secondary analyses
+
+### H-A4: concrete ↔ abstract and pure ↔ applied are the main axes
+
+**Ratings.** Three judge LLMs rated every math concept's abstraction from 1 to 7: IBM Granite-4.0-micro, SmolLM3-3B and Phi-4-mini-instruct, none from a model family we probe. We read each rating as the expectation over next-token digit probabilities.
+- Rank agreement is moderate (mean pairwise Spearman {{num:mvp.judges.mean_pairwise_spearman:.2f}}).
+- Absolute agreement is low (ICC(2,1) = {{num:mvp.judges.icc2_1:.2f}}; ICC(2,k) = {{num:mvp.judges.icc2_k:.2f}}), because the judges use the scale with different offsets.
+- The ratings have face validity. The least abstract concepts include "trivial group", "bar chart" and "dot plot"; the most abstract include étale cohomology, Artin stacks and generalized cohomology theories.
+
+**Axes.** We first residualized on word frequency and token count. The top principal component of the math-concept cloud then correlates with abstraction (ρ = {{num:mvp.axes.qwen3.5-2b.pcs.0.rho_abstraction:.2f}}), and the second with the pure/applied label (ρ = {{num:mvp.axes.qwen3.5-2b.pcs.1.rho_applied:.2f}}). In the twin these correlations are {{num:mvp.axes.qwen3.5-2b__random.pcs.0.rho_abstraction:.2f}} and {{num:mvp.axes.qwen3.5-2b__random.pcs.1.rho_applied:.2f}}. A 5-fold cross-validated linear readout predicts abstraction with ρ = {{num:mvp.axes.qwen3.5-2b.cv_ridge_rho_abstraction:.2f}}, against {{num:mvp.axes.qwen3.5-2b__random.cv_ridge_rho_abstraction:.2f}} in the twin.
+
+**Interpretation.** In this model, concrete ↔ abstract is the single largest axis of variation among mathematical concepts. That is a correlational, model-rated finding: abstraction ratings come from LLM judges, not humans.
+
+### Causal test of chain geometry: inconclusive
+
+The preregistered gate requires baseline accuracy ≥ 0.70 on "which is more general, a A or a B?".
+- **Ring chain:** it failed the gate (accuracy {{num:mvp.causal.qwen3.5-2b.ring_chain.baseline_acc:.3f}}), so no intervention was run.
+- **Space chain:** it passed ({{num:mvp.causal.qwen3.5-2b.space_chain.baseline_acc:.3f}}).
+
+At noise scale s = 4, noise injected into the chain's 2-D subspace lowered accuracy to {{num:mvp.causal.qwen3.5-2b.space_chain.scales.4.0.acc_chain_subspace:.3f}}. Noise in random 2-D subspaces gave a mean of {{num:mvp.causal.qwen3.5-2b.space_chain.scales.4.0.acc_random_subspace_mean:.3f}}. At s = 1 there was no difference. The direction matches the prediction, but the effect is small and five random draws cannot establish significance. We report it as inconclusive.
+
+### SAE features (exploratory)
+
+At block {{num:mvp.sae.qwen3.5-2b.sae_block}}, we encoded the template-averaged residuals with the official Qwen-Scope TopK SAE (k = 50).
+- **Graded map:** the SAE code preserves the field map only weakly (ρ = {{num:mvp.sae.qwen3.5-2b.math.rsa_sae:.2f}}, against {{num:mvp.map_fields.qwen3.5-2b.math_primary.rsa.trained:.2f}} for the dense residual).
+- **Clustering:** field clustering is largely preserved (LOO accuracy {{num:mvp.sae.qwen3.5-2b.math.loo_acc_sae:.2f}}).
+- **Field-selective features exist.** For example, a game-theory feature fires on most game-theory concepts and almost no others (`results/mvp/sae.json`).
+- **Feature sets:** {{num:mvp.sae.qwen3.5-2b.features_math_only}} features fire only on math concepts, {{num:mvp.sae.qwen3.5-2b.features_control_only}} only on control concepts, and {{num:mvp.sae.qwen3.5-2b.features_shared}} on both. The sample sizes are unequal, so this is only suggestive of the "math lobe" of [Li et al. (2024)](https://arxiv.org/abs/2410.19750).
+
 
 # 5 Discussion
 
@@ -217,11 +251,33 @@ The twin's consistencies are all ≈ 0.
 
 # 7 Conclusion
 
-Mathematical fields form a map in LLM residual streams that tracks how mathematicians cross-list their papers. Axioms of algebraic structures act as consistent directions, and class-inclusion chains are ordered. None of this is present in untrained twins. Angles are not circles, and heavy math pretraining does not sharpen the field map.
+Mathematical fields form a map in LLM residual streams that tracks how mathematicians cross-list their papers. Axioms of algebraic structures act as consistent directions, most clearly associativity and commutativity, and class-inclusion chains are ordered. None of this is present in untrained twins. Angles are not circles, and heavy math pretraining does not sharpen the field map.
 
 # References
 
 See the inline links. Code, data, preregistration and every number: <https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms>. Interactive explorer: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/>.
+
+# Appendix B: Replication of shapes and lattices
+
+**Qwen3.5-0.8B, Qwen2.5-1.5B and Qwen2.5-Math-1.5B**, each with its twin:
+
+{{table:shapes:robustness}}
+
+{{table:lattice:robustness}}
+
+{{table:cycles:robustness}}
+
+**Gemma-4-E2B** with its twin:
+
+{{table:shapes:gemma}}
+
+{{table:lattice:gemma}}
+
+{{table:cycles:gemma}}
+
+Matched 4-field clustering in Gemma-4-E2B:
+- math subsets: mean {{num:gemma.posthoc.gemma-4-e2b.matched_clustering.math_subsets_mean:.3f}};
+- control fields: {{num:gemma.posthoc.gemma-4-e2b.matched_clustering.control_acc:.3f}}.
 
 # Appendix A: Deviations from the preregistration
 
