@@ -1,10 +1,13 @@
-"""Export data for the interactive GitHub Pages explorer (site/index.html + site/data.json).
+"""Export data for the explorable article on GitHub Pages (site/index.html, site/app.js).
 
-Global context: the explorer lets readers rotate/hover the same geometry the statistics are
-computed on — field-centroid maps (arXiv vs trained vs random-init), the concept cloud, the
-ordered families and the group-like axiom lattice — for the trained model and its random-init
-twin side by side. All coordinates are PCA/MDS projections computed here from cached
-activations at the pre-registered layer; all numbers shown come from results/<cfg>/*.json.
+Global context: the site shows the same unsupervised projections as the static figures
+(report/figdata.py) — per layer, so readers can scrub through depth — plus everything needed for
+in-browser interaction: field distance matrices (hover-linked to the map), concept nearest
+neighbours, exact (n−1)-D lattice coordinates (an analogy playground computes ranks exactly in the
+browser) and the difference-vector cosine matrix. Layout:
+  site/data/index.json   models, fields, scorecard, forest rows, a pruned copy of the results JSON
+  site/data/<model>.json per-model geometry (lazy-loaded when the reader picks that model)
+All numbers on the page are read from these files; none are typed into the HTML.
 """
 
 from __future__ import annotations
@@ -15,65 +18,104 @@ import numpy as np
 import pandas as pd
 
 from mathgeom.config import ROOT, Config, load_yaml
+from mathgeom.report import figdata
+from mathgeom.report import style as S
+
+SITE = ROOT / "site" / "data"
+SHOW_FAMILIES = ["days", "months", "angles", "ring_chain", "space_chain", "number_systems", "ngons", "dimensions"]
 
 
-def _pca(X: np.ndarray, k: int) -> np.ndarray:
-    X = X.astype(np.float64)
-    X = X - X.mean(0)
-    _, _, Vt = np.linalg.svd(X, full_matrices=False)
-    return (X @ Vt[:k].T).round(4)
+def _r(x, d: int = 3):
+    return np.round(np.asarray(x, dtype=float), d).tolist()
 
 
-def export_site(cfg: Config, mp: dict, sh: dict, la: dict) -> None:
-    from mathgeom.analyses.lattice import axiom_pairs
+def _prune(obj, drop=("layer_curve", "concept_level_regression", "negative_control", "smds")):
+    """Results JSON without per-layer family curves and large diagnostics (the site needs headline values)."""
+    if isinstance(obj, dict):
+        return {k: _prune(v, drop) for k, v in obj.items() if k not in drop}
+    if isinstance(obj, list):
+        return [_prune(v, drop) for v in obj]
+    return obj
+
+
+def export_model(cfg: Config, key: str, mp_key: dict) -> dict:
+    Lp = mp_key["primary_layer"]
+    setup = figdata.field_setup(cfg, mp_key)
+    names = setup["names"]
+    base = figdata.mds(setup["arxiv"])
+    out = {"key": key, "name": S.MODEL.get(key, key), "primary_layer": Lp, "fields": {"order": setup["order"]}}
+    # field map + distance matrix at every layer, aligned to the primary-layer layout (no flips when scrubbing)
     from mathgeom.analyses.map_fields import field_centroids
     from mathgeom.geometry.preprocess import cosine_rdm
-    from mathgeom.report.render import _mds
+    from mathgeom.pipeline import load_acts
 
+    for side, k in (("trained", key), ("random_init", f"{key}__random")):
+        X = load_acts(cfg, k, "field_neutral")["last"][setup["mask"]]
+        rdms = [cosine_rdm(field_centroids(X[:, l], setup["labels"], names)) for l in range(1, X.shape[1])]
+        ref = figdata.align(figdata.mds(rdms[Lp - 1]), base)
+        out["fields"][side] = {"layout": [_r(figdata.align(figdata.mds(D), ref)) for D in rdms], "rank": [_r(figdata.rank_unit(D), 3) for D in rdms]}
+        pts = figdata.pca(X[:, Lp], 3)
+        out.setdefault("concepts", {})[side] = {"xyz": _r(pts, 3), "nn": figdata.concept_neighbours(X[:, Lp], 8).tolist()}
+    # families: PC planes at every layer, aligned to the pre-registered layer
+    chains = load_yaml("families.yaml")["chains"]
+    out["families"] = {}
+    for f in SHOW_FAMILIES:
+        out["families"][f] = {"items": figdata.family_items(cfg, f), "expected": chains[f]["expected"],
+                              **{side: _r(figdata.planes_by_layer(figdata.family_acts(cfg, k, f), Lp)) for side, k in (("trained", key), ("random_init", f"{key}__random"))}}
+    # group-like lattice: per-layer planes, exact coordinates and the offset cosine matrix at the primary layer
+    lat = load_yaml("families.yaml")["lattices"]["group_like"]
+    items, axioms = list(lat["items"]), lat["axioms"]
+    bits = np.array([lat["items"][c] for c in items])
+    lt = {"items": items, "axioms": axioms, "bits": bits.tolist()}
+    for side, k in (("trained", key), ("random_init", f"{key}__random")):
+        X = figdata.family_acts(cfg, k, "group_like", items)
+        om = figdata.offset_matrix(X[:, Lp], bits, axioms)
+        lt[side] = {"planes": _r(figdata.planes_by_layer(X, Lp)), "exact": _r(figdata.exact_coords(X[:, Lp]), 5), "cos": _r(om["cos"])}
+        lt["pairs"], lt["group"], lt["shared"] = [list(p) for p in om["pairs"]], om["group"].tolist(), om["shared"].astype(int).tolist()
+    out["lattice"] = lt
+    return out
+
+
+def export_site(cfg: Config, mp: dict) -> None:
+    """Per-model geometry files for this config's models, then the shared index (all configs so far)."""
+    SITE.mkdir(parents=True, exist_ok=True)
+    for key in [k for k in mp if not k.endswith("__random")]:
+        (SITE / f"{key}.json").write_text(json.dumps(export_model(cfg, key, mp[key]), separators=(",", ":")))
+    write_index(cfg)
+
+
+def write_index(cfg: Config) -> None:
+    from mathgeom.report.figures.overview import forest_rows
+    from mathgeom.report.paper import _results
+    from mathgeom.report.render import scorecard_rows
+
+    r = _results("all")
+    keys = [k for k in S.MODEL if k in r.get("map_fields", {}) and (SITE / f"{k}.json").exists()]
     concepts = pd.read_csv(cfg.data_dir / "concepts.csv")
-    fd = json.loads((cfg.data_dir / "field_distance.json").read_text())
-    fields_cfg = {f["id"]: f for f in load_yaml("fields.yaml")["math"]}
-    fams = load_yaml("families.yaml")
-    fam = json.loads((cfg.artifacts / "acts" / "family_index.json").read_text())
-    data = {"config": cfg.name, "models": {}}
-    split = cfg.raw.get("analysis_split", "confirmatory")
-    for key, res in mp.items():
-        Lp = res["primary_layer"]
-        d = {"primary_layer": Lp, "results": {"map": res, "shapes": sh.get(key), "lattice": la.get(key)}}
-        mask = ((concepts.kind == "math") & concepts.primary & (concepts.split == split)).values
-        lab = concepts.field.values[mask]
-        names = res["math_primary"]["fields"]
-        sel = [fd["names"].index(n) for n in names]
-        maps = {}
-        for k, X in (("trained", np.load(cfg.artifacts / "acts" / key / "field_neutral.npz")["last"]), ("random_init", np.load(cfg.artifacts / "acts" / f"{key}__random" / "field_neutral.npz")["last"])):
-            maps[k] = _mds(cosine_rdm(field_centroids(X[mask, Lp], lab, names))).round(4).tolist()
-            pts = _pca(X[mask, Lp], 3)
-            d[f"concepts_{k}"] = {"xyz": pts.tolist(), "concept": concepts.concept.values[mask].tolist(), "field": lab.tolist()}
-        maps["arxiv"] = _mds(np.array(fd["distance"])[np.ix_(sel, sel)]).round(4).tolist()
-        d["field_maps"] = {"names": names, "pa": [fields_cfg[n]["pa"] for n in names], "branch": [fields_cfg[n]["branch"] for n in names], **maps}
-        fam_out = {}
-        for k in (key, f"{key}__random"):
-            acts = np.load(cfg.artifacts / "acts" / k / "family.npz")["last"]
-            for name in list(fams["chains"]) + ["group_like"]:
-                idx = [i for i, (f, _, _) in enumerate(fam) if f == name]
-                fam_out.setdefault(name, {"items": [fam[i][1] for i in idx]})["trained" if k == key else "random_init"] = _pca(acts[idx, Lp], 3).tolist()
-        lat = fams["lattices"]["group_like"]
-        names_l = list(lat["items"])
-        bits = np.array([lat["items"][c] for c in names_l])
-        order = [fam_out["group_like"]["items"].index(c) for c in names_l]
-        for k in ("trained", "random_init"):
-            fam_out["group_like"][k] = [fam_out["group_like"][k][i] for i in order]
-        fam_out["group_like"]["items"] = names_l
-        fam_out["group_like"]["edges"] = [{"axiom": a, "pairs": axiom_pairs(bits, i)} for i, a in enumerate(lat["axioms"])]
-        for name, f in fams["chains"].items():
-            fam_out[name]["expected"] = f["expected"]
-        d["families"] = fam_out
-        data["models"][key] = d
-    out = ROOT / "site"
-    out.mkdir(exist_ok=True)
-    path = out / "data.json"
-    merged = json.loads(path.read_text()) if path.exists() else {"models": {}}
-    merged["models"].update(data["models"])  # one explorer for all configs (mvp, robustness, gemma)
-    order = ["qwen3.5-2b", "qwen3.5-0.8b", "qwen2.5-1.5b", "qwen2.5-math-1.5b", "gemma-4-e2b"]
-    merged["models"] = dict(sorted(merged["models"].items(), key=lambda kv: order.index(kv[0]) if kv[0] in order else 99))
-    path.write_text(json.dumps(merged, default=float))
+    first = r["map_fields"][keys[0]]
+    setup = figdata.field_setup(cfg, first)
+    mask = setup["mask"]
+    ratings = pd.read_csv(cfg.data_dir / "judge_ratings.csv")
+    judges = [c for c in ratings.columns if "/" in c]
+    abstr = ratings.set_index("concept")[judges].mean(1)
+    ml = pd.read_csv(cfg.data_dir / "mathlib_depth.csv").set_index("concept") if (cfg.data_dir / "mathlib_depth.csv").exists() else None
+    cdf = concepts[mask]
+    idx = {
+        "models": [{"key": k, "name": S.MODEL[k], "primary_layer": r["map_fields"][k]["primary_layer"], "n_layers": len(r["map_fields"][k]["math_primary"]["layer_curve"]["trained"])} for k in keys],
+        "fields": {"names": setup["names"], "labels": [S.FIELD.get(n, n) for n in setup["names"]], "pa": setup["pa"], "branch": setup["branch"],
+                   "branch_labels": S.BRANCH, "order": setup["order"], "arxiv_rank": _r(figdata.rank_unit(setup["arxiv"])),
+                   "arxiv_layout": _r(figdata.unit_rms(figdata.mds(setup["arxiv"]))), "edges": figdata.neighbour_edges(setup["arxiv"]), "n_papers": setup["n_papers"]},
+        "concepts": {"concept": cdf.concept.tolist(), "field": cdf.field.tolist(), "abstraction": _r(cdf.concept.map(abstr).values, 2),
+                     "mathlib": [None if ml is None or c not in ml.index or pd.isna(ml.loc[c, "depth"]) else {"decl": ml.loc[c, "decl"], "depth": int(ml.loc[c, "depth"])} for c in cdf.concept]},
+        "mathlib_points": [] if ml is None else [{"concept": c, "field": S.FIELD.get(row.field, row.field), "decl": row.decl, "depth": int(row.depth), "rating": round(float(row.mean_rating), 3)}
+                                                  for c, row in ml.dropna(subset=["depth"]).iterrows()],  # all matched concepts (the set the ρ is computed on)
+        "family_labels": S.FAMILY,
+        "scorecard": scorecard_rows(r),
+        "forest": [{"title": t, "rows": [{"label": lab, "est": est, "ci": ci, "status": st} for lab, est, ci, st in rows]} for t, rows in forest_rows(r)],
+        "results": {k: _prune(v, ("layer_curve", "negative_control") if k in ("shapes", "lattice") else ("concept_level_regression",))
+                    for k, v in r.items() if k not in ("numbers", "manifest", "sae", "smds", "calibration")},
+    }
+    for k in list(idx["results"].get("posthoc", {})):  # keep only the cycle scores the site plots
+        pc = idx["results"]["posthoc"][k].get("pc_plane_cycle", {})
+        idx["results"]["posthoc"][k] = {"pc_plane_cycle": {f: [round(e["score"], 3) for e in pc[f]] for f in ("days", "months", "angles") if f in pc}}
+    (SITE / "index.json").write_text(json.dumps(idx, separators=(",", ":"), default=float))

@@ -17,7 +17,6 @@ import pandas as pd
 from mathgeom.config import ROOT, Config, load_yaml
 
 log = logging.getLogger(__name__)
-FIG = ROOT / "reports" / "figures"
 
 
 def _j(cfg: Config, name: str) -> dict:
@@ -125,20 +124,77 @@ def holm_rows(mp: dict, sh: dict, la: dict, key: str) -> list[tuple[str, float]]
     return rows
 
 
+def holm_decisions(mp: dict, sh: dict, la: dict, key: str) -> list[dict]:
+    """Holm (statsmodels multipletests) over one model's 8 p-valued confirmatory tests."""
+    from statsmodels.stats.multitest import multipletests
+
+    rows = holm_rows(mp, sh, la, key)
+    rej, padj, _, _ = multipletests([max(p, 1e-12) for _, p in rows], alpha=0.05, method="holm")
+    return [{"name": n, "p": p, "p_holm": float(pa), "reject": bool(r)} for (n, p), pa, r in zip(rows, padj, rej)]
+
+
 def table_holm(mp: dict, sh: dict, la: dict) -> str:
     """Holm over the p-valued confirmatory tests; the angles prediction is a pre-registered decision
     rule (closure < 2 AND circle ρ > line ρ) with no p-value, so it is listed but not adjusted."""
-    from statsmodels.stats.multitest import multipletests
-
     out = ["| Test | Model | p | Holm-adjusted p | reject at α=0.05 |", "|---|---|---|---|---|"]
     for key in mp:
-        rows = holm_rows(mp, sh, la, key)
-        rej, padj, _, _ = multipletests([max(p, 1e-12) for _, p in rows], alpha=0.05, method="holm")
-        out += [f"| {n} | {key} | {_p(p)} | {_p(pa)} | {'yes' if r else 'no'} |" for (n, p), pa, r in zip(rows, padj, rej)]
+        out += [f"| {d['name']} | {key} | {_p(d['p'])} | {_p(d['p_holm'])} | {'yes' if d['reject'] else 'no'} |" for d in holm_decisions(mp, sh, la, key)]
         a = sh[key]["angles"]
         met = a["closure"] < 2 and a["circle_rho"] > a["line_rho"]
         out.append(f"| H-B angles circle prediction (decision rule: closure {a['closure']:.2f} < 2 and circle ρ {a['circle_rho']:.2f} > line ρ {a['line_rho']:.2f}) | {key} | — | — | {'met' if met else 'not met (prediction falsified)'} |")
     return "\n".join(out)
+
+
+SCORE_LEGEND = ("● significant (Holm-adjusted for the axiom tests; 95% CI excludes 0 for Δ tests) · ◐ raw p < .05 only · ○ not significant · "
+                "✗ pre-registered prediction falsified. Numbers: the statistic for the trained model.")
+
+
+def table_scorecard(r: dict) -> str:
+    """Hypotheses × models at a glance (all configs merged), as a Markdown table."""
+    sc = scorecard_rows(r)
+    out = ["| Test | " + " | ".join(sc["models"]) + " |", "|---" * (len(sc["models"]) + 1) + "|"]
+    out += [f"| {row['test']} | " + " | ".join(row["cells"]) + " |" for row in sc["rows"]]
+    return "\n".join(out + ["\n" + SCORE_LEGEND])
+
+
+def scorecard_rows(r: dict) -> dict:
+    """Hypotheses × models (shared by the Markdown table and the site). ● Holm-significant / CI excludes 0,
+    ◐ raw p < .05 only, ○ not significant, ✗ pre-registered prediction falsified."""
+    from mathgeom.report.style import MODEL
+
+    mp, sh, la, st, hi, ph, cf = (r[k] for k in ("map_fields", "shapes", "lattice", "structures", "hierarchy", "posthoc", "chain_frequency"))
+    keys = [k for k in MODEL if k in mp]
+    ex = lambda ci: ci[0] > 0  # noqa: E731  (CI entirely above 0)
+
+    def axiom(key, name):
+        d = next(x for x in holm_decisions(mp, sh, la, key) if x["name"] == f"H-B2 {name} offset consistency")
+        c = la[key]["group_like"]["offsets"][name]["consistency"]
+        return f"{'●' if d['reject'] else '◐' if d['p'] < 0.05 else '○'} {c:.2f}"
+
+    def cyc(key):
+        e = ph[key]["pc_plane_cycle"]["days"][mp[key]["primary_layer"] - 1]
+        return f"{'●' if e['p'] < 0.05 else '○'} {e['score']:.2f}"
+
+    def chain(key, f):
+        s = sh[key][f]
+        return f"{'●' if s['robinson_p'] < 0.05 and s['robinson'] > sh[key + '__random'][f]['robinson'] else '○'} {s['robinson']:.2f}"
+
+    def angles(key):
+        a = sh[key]["angles"]
+        return f"{'●' if a['closure'] < 2 and a['circle_rho'] > a['line_rho'] else '✗'} {a['closure']:.2f}"
+
+    rows = [
+        ("Field map tracks arXiv beyond the twin (H-A1; Δρ CI)", lambda k: f"{'●' if ex(mp[k]['math_primary']['rsa_boot']['delta_vs_random_init']['ci']) else '○'} {mp[k]['math_primary']['rsa']['trained']:.2f}"),
+        ("Field map is a hierarchy beyond the twin (H-A2; cophenetic Δ CI)", lambda k: f"{'●' if ex(hi[k]['coph_match_delta_vs_random_ci']) else '○'} {hi[k]['coph_match']['trained']:.2f}"),
+        ("Days form a cycle (positive control; post-hoc PC plane)", cyc),
+        ("Ring chain ordered (Robinson; > twin)", lambda k: chain(k, "ring_chain")),
+        ("Space chain ordered (Robinson; > twin)", lambda k: chain(k, "space_chain")),
+        ("Ring / space order beyond frequency", lambda k: " / ".join("●" if cf[k][f]["p"] < 0.05 else "○" for f in ("ring_chain", "space_chain"))),
+        ("Angles form a circle (closure < 2 and circle ρ > line ρ)", angles),
+        *[(f"Axiom direction: {a} (offset consistency; Holm)", lambda k, a=a: axiom(k, a)) for a in la[keys[0]]["group_like"]["offsets"]],
+        ("Lie / topological / algebraic groups as parallelograms", lambda k: f"{'●' if st[k]['group_objects']['parallelograms']['p'] < 0.05 else '○'} {st[k]['group_objects']['parallelograms']['cos']:.2f}"),
+    ]
+    return {"models": [MODEL[k] for k in keys], "rows": [{"test": name, "cells": [fn(k) for k in keys]} for name, fn in rows], "legend": SCORE_LEGEND}
 
 
 def table_hierarchy(h: dict) -> str:
@@ -282,171 +338,27 @@ def table_calibration(cal: dict) -> str:
     return "\n".join(rows)
 
 
-# ------------------------------------------------------------------ figures
-def fig_layer_curves(mp: dict) -> list[str]:
-    import matplotlib.pyplot as plt
-
-    out = []
-    for key, res in mp.items():
-        r = res["math_primary"]
-        lc = r["layer_curve"]
-        x = np.arange(1, len(lc["trained"]) + 1)
-        fig, ax = plt.subplots(figsize=(6.4, 3.6))
-        ax.plot(x, lc["trained"], "-o", ms=3, label=f"{key} (trained)", color="#1f5fa8")
-        ax.plot(x, lc["random_init"], "-s", ms=3, label="random-init twin", color="#b0b0b0")
-        ax.axhline(lc["max_null95"], ls="--", color="#c0392b", lw=1, label="95% max-over-layers null")
-        ax.axvline(res["primary_layer"], ls=":", color="k", lw=1, label="pre-registered layer")
-        ax.set_xlabel("layer (block output index)")
-        ax.set_ylabel("ρ(field-centroid RDM, arXiv distance)")
-        ax.set_title("H-A1: field map vs depth (primary concepts, confirmatory split)", fontsize=9)
-        ax.legend(fontsize=7, frameon=False)
-        fig.tight_layout()
-        p = FIG / f"field_map_layers_{key}.png"
-        fig.savefig(p, dpi=160)
-        plt.close(fig)
-        out.append(p.name)
-    return out
-
-
-def _mds(D: np.ndarray, seed: int = 0) -> np.ndarray:
-    from sklearn.manifold import MDS
-
-    return MDS(n_components=2, metric="precomputed", random_state=seed, init="classical_mds", n_init=1).fit_transform(D)
-
-
-def fig_field_maps(cfg: Config, mp: dict) -> list[str]:
-    """Side-by-side 2D MDS: arXiv field distance vs trained field-centroid RDM vs random-init."""
-    import matplotlib.pyplot as plt
-    from scipy.linalg import orthogonal_procrustes
-
-    from mathgeom.analyses.map_fields import field_centroids
-    from mathgeom.geometry.preprocess import cosine_rdm
-
-    concepts = pd.read_csv(cfg.data_dir / "concepts.csv")
-    fd = json.loads((cfg.data_dir / "field_distance.json").read_text())
-    pa = {f["id"]: f["pa"] for f in load_yaml("fields.yaml")["math"]}
-    out = []
-    for key, res in mp.items():
-        Lp = res["primary_layer"]
-        mask = ((concepts.kind == "math") & concepts.primary & (concepts.split == cfg.raw.get("analysis_split", "confirmatory"))).values
-        names = res["math_primary"]["fields"]
-        sel = [fd["names"].index(n) for n in names]
-        lab = concepts.field.values[mask]
-        tr = np.load(cfg.artifacts / "acts" / key / "field_neutral.npz")["last"][mask, Lp]
-        rn = np.load(cfg.artifacts / "acts" / f"{key}__random" / "field_neutral.npz")["last"][mask, Lp]
-        panels = {"arXiv cross-listing distance (ground truth)": np.array(fd["distance"])[np.ix_(sel, sel)],
-                  f"{key}, layer {Lp}": cosine_rdm(field_centroids(tr, lab, names)),
-                  "random-init twin": cosine_rdm(field_centroids(rn, lab, names))}
-        embs = {t: _mds(D) for t, D in panels.items()}
-        ref = list(embs.values())[0]
-        fig, axes = plt.subplots(1, 3, figsize=(15, 5))
-        for ax, (t, E) in zip(axes, embs.items()):
-            E = E - E.mean(0)
-            R, _ = orthogonal_procrustes(E, ref - ref.mean(0))  # rotate/reflect to align with ground truth (display only)
-            E = E @ R
-            for (x, y), n in zip(E, names):
-                ax.scatter(x, y, c="#1f5fa8" if pa[n] == "pure" else "#d35400", s=30)
-                ax.annotate(n.replace("_", " "), (x, y), fontsize=7, xytext=(3, 3), textcoords="offset points")
-            ax.set_title(t, fontsize=10)
-            ax.set_xticks([]), ax.set_yticks([])
-        fig.suptitle("Field maps (2D metric MDS, Procrustes-aligned to the arXiv map; blue = pure, orange = applied)", fontsize=10)
-        fig.tight_layout()
-        p = FIG / f"field_maps_{key}.png"
-        fig.savefig(p, dpi=150)
-        plt.close(fig)
-        out.append(p.name)
-    return out
-
-
-def fig_families(cfg: Config, fams: dict, keys: list[str], primary_layers: dict) -> list[str]:
-    """PCA (2D) of each chain family, trained vs random-init, consecutive items connected."""
-    import matplotlib.pyplot as plt
-
-    fam = json.loads((cfg.artifacts / "acts" / "family_index.json").read_text())
-    names = list(fams["chains"])
-    out = []
-    for key in keys:
-        fig, axes = plt.subplots(2, len(names), figsize=(2.6 * len(names), 5.4))
-        for row, k in enumerate([key, f"{key}__random"]):
-            acts = np.load(cfg.artifacts / "acts" / k / "family.npz")["last"]
-            for col, name in enumerate(names):
-                idx = [i for i, (f, _, _) in enumerate(fam) if f == name]
-                X = acts[idx, primary_layers[key]].astype(np.float64)
-                X = X - X.mean(0)
-                U, S, Vt = np.linalg.svd(X, full_matrices=False)
-                P = X @ Vt[:2].T
-                ax = axes[row, col]
-                closed = fams["chains"][name]["expected"] == "circle"
-                seq = np.r_[np.arange(len(P)), 0] if closed else np.arange(len(P))
-                ax.plot(P[seq, 0], P[seq, 1], "-", color="#bbbbbb", lw=0.8)
-                ax.scatter(P[:, 0], P[:, 1], c=np.arange(len(P)), cmap="viridis", s=18, zorder=3)
-                for j, (_, c, _) in enumerate(fam[i] for i in idx):
-                    if j in (0, len(idx) - 1) or len(idx) <= 8:
-                        ax.annotate(c[:12], P[j], fontsize=5.5)
-                ax.set_xticks([]), ax.set_yticks([])
-                if row == 0:
-                    ax.set_title(name, fontsize=8)
-                if col == 0:
-                    ax.set_ylabel("trained" if row == 0 else "random-init", fontsize=8)
-        fig.suptitle(f"H-B shape families, PCA of layer {primary_layers[key]} ({key}); colour = ground-truth order", fontsize=9)
-        fig.tight_layout()
-        p = FIG / f"families_pca_{key}.png"
-        fig.savefig(p, dpi=150)
-        plt.close(fig)
-        out.append(p.name)
-    return out
-
-
-def fig_lattice(cfg: Config, fams: dict, keys: list[str], primary_layers: dict) -> list[str]:
-    """Group-like lattice in PCA-2D with axiom edges coloured by axiom; trained vs random-init."""
-    import matplotlib.pyplot as plt
-
-    from mathgeom.analyses.lattice import axiom_pairs
-
-    fam = json.loads((cfg.artifacts / "acts" / "family_index.json").read_text())
-    pos = {(f, c): i for i, (f, c, _) in enumerate(fam)}
-    lat = fams["lattices"]["group_like"]
-    names = list(lat["items"])
-    bits = np.array([lat["items"][c] for c in names])
-    colors = ["#1f77b4", "#2ca02c", "#d62728", "#9467bd"]
-    out = []
-    for key in keys:
-        fig, axes = plt.subplots(1, 2, figsize=(11, 5))
-        for ax, k in zip(axes, [key, f"{key}__random"]):
-            X = np.load(cfg.artifacts / "acts" / k / "family.npz")["last"][[pos[("group_like", c)] for c in names], primary_layers[key]].astype(np.float64)
-            X = X - X.mean(0)
-            _, _, Vt = np.linalg.svd(X, full_matrices=False)
-            P = X @ Vt[:2].T
-            for a, (axname, col) in enumerate(zip(lat["axioms"], colors)):
-                for i, j in axiom_pairs(bits, a):
-                    ax.annotate("", P[j], P[i], arrowprops=dict(arrowstyle="->", color=col, lw=1.1, alpha=0.8))
-                ax.plot([], [], color=col, label=f"+{axname}")
-            ax.scatter(P[:, 0], P[:, 1], c="k", s=12, zorder=3)
-            for (x, y), n in zip(P, names):
-                ax.annotate(n, (x, y), fontsize=7, xytext=(3, 3), textcoords="offset points")
-            ax.set_title(f"{k}, layer {primary_layers[key]}", fontsize=9)
-            ax.set_xticks([]), ax.set_yticks([])
-            ax.legend(fontsize=7, frameon=False)
-        fig.suptitle("H-B2 group-like axiom lattice (PCA-2D). Parallel same-colour arrows = consistent axiom direction", fontsize=9)
-        fig.tight_layout()
-        p = FIG / f"lattice_group_like_{key}.png"
-        fig.savefig(p, dpi=150)
-        plt.close(fig)
-        out.append(p.name)
-    return out
-
-
 # ------------------------------------------------------------------ assemble
+def build_model_figures(cfg: Config, outdir) -> list[str]:
+    """Per-model static figures (report/figures/*) for every model of this config → file names."""
+    from mathgeom.report import style
+    from mathgeom.report.figures import axes, families, lattice, maps
+
+    style.use_style()
+    mp = _j(cfg, "map_fields.json")
+    figs = maps.build(cfg, mp, outdir)
+    figs += families.build(cfg, _j(cfg, "shapes.json"), _j(cfg, "posthoc.json"), _j(cfg, "chain_frequency.json"), outdir)
+    figs += lattice.build(cfg, _j(cfg, "lattice.json"), outdir)
+    if _j(cfg, "axes.json"):
+        figs += axes.build(cfg, _j(cfg, "axes.json"), _j(cfg, "mathlib.json") or None, {k: v["primary_layer"] for k, v in mp.items()}, outdir)
+    return [f if f.endswith(".gif") else f + ".png" for f in figs]
+
+
 def phase_report(cfg: Config) -> None:
-    global FIG
     sub = cfg.raw.get("figure_subdir", "")  # variant configs reuse model keys: keep their figures apart
-    FIG = ROOT / "reports" / "figures" / sub if sub else ROOT / "reports" / "figures"
-    FIG.mkdir(parents=True, exist_ok=True)
     fams = load_yaml("families.yaml")
     mp, sh, la = _j(cfg, "map_fields.json"), _j(cfg, "shapes.json"), _j(cfg, "lattice.json")
-    keys = list(mp)
-    prim = {k: mp[k]["primary_layer"] for k in keys}
-    figs = fig_layer_curves(mp) + fig_field_maps(cfg, mp) + fig_families(cfg, fams, keys, prim) + fig_lattice(cfg, fams, keys, prim)
+    figs = build_model_figures(cfg, ROOT / "reports" / "figures" / sub if sub else ROOT / "reports" / "figures")
     cal = _j(cfg, "calibration.json")
     sections = {
         "Method validation: calibration of partial RDM regression (Freedman–Lane), simulation study": table_calibration(cal) if cal else "*not run*",
@@ -488,5 +400,5 @@ def phase_report(cfg: Config) -> None:
     from mathgeom.report.site import export_site
 
     if cfg.raw.get("site", True):  # variant configs would overwrite the explorer entry of the same model key
-        export_site(cfg, mp, sh, la)
+        export_site(cfg, mp)
     log.info("report written: %d figures, reports/%s_results.md, site data", len(figs), cfg.name)

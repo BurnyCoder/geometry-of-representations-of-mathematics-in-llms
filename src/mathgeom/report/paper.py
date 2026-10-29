@@ -20,12 +20,23 @@ from mathgeom.config import ROOT, load_yaml
 log = logging.getLogger(__name__)
 
 
+CROSS = ("mvp", "robustness", "gemma")  # configs whose models make up the five-model comparison
+
+
 def _results(cfg_name: str) -> dict:
+    """results/<cfg>/*.json by file stem; "all" merges the per-model entries of the CROSS configs."""
+    if cfg_name == "all":
+        merged: dict = {}
+        for c in CROSS:
+            for stem, res in _results(c).items():
+                if isinstance(res, dict):  # per-model files merge by model key; mvp-only files (mathlib, judges) pass through
+                    merged.setdefault(stem, {}).update(res)
+        return merged
     d = ROOT / "results" / cfg_name
     return {p.stem: json.loads(p.read_text()) for p in d.glob("*.json") if p.stem != "numbers"}
 
 
-def render_template(tpl: str, fig_prefix: str = "../reports/figures/") -> str:
+def render_template(tpl: str, fig_prefix: str = "../reports/figures/", fig_ext: str = ".png") -> str:
     """Resolve {{num:..}}, {{table:..}} and {{fig:..}} placeholders in a Markdown template."""
     from mathgeom.report import render
 
@@ -74,15 +85,32 @@ def render_template(tpl: str, fig_prefix: str = "../reports/figures/") -> str:
             "chain_frequency": lambda: render.table_chain_frequency(r["chain_frequency"]),
             "lattice_probes": lambda: render.table_lattice_probes(r["lattice"], r["structures"]),
             "lattice_variants": lambda: render.table_lattice_variants(r["lattice"]),
+            "scorecard": lambda: render.table_scorecard(r),
         }[name]
         return fn()
 
+    def fig(m: re.Match) -> str:
+        name = m.group(1) if m.group(1).endswith((".png", ".pdf", ".gif")) else m.group(1) + fig_ext  # templates name figures without extension
+        if not (ROOT / "reports" / "figures" / name).exists():
+            raise FileNotFoundError(f"figure referenced by a template is missing: reports/figures/{name}")
+        return f"{fig_prefix}{name}"
+
     out = re.sub(r"\{\{num:([^}]+)\}\}", num, tpl)
     out = re.sub(r"\{\{table:(\w+):(\w+)\}\}", table, out)
-    out = re.sub(r"\{\{fig:([^}]+)\}\}", lambda m: f"{fig_prefix}{m.group(1)}", out)
+    out = re.sub(r"\{\{fig:([^}]+)\}\}", fig, out)
     if "{{" in out:
         raise ValueError("unresolved placeholder: " + out[out.index("{{") : out.index("{{") + 80])
     return out
+
+
+def build_cross_figures() -> None:
+    """Hero, depth curves and forest plot need every config's results, so they are built here."""
+    from mathgeom.config import load_config
+    from mathgeom.report import style
+    from mathgeom.report.figures import overview
+
+    style.use_style()
+    overview.build(_results("all"), load_config(str(ROOT / "configs" / f"{CROSS[0]}.yaml")), ROOT / "reports" / "figures")
 
 
 def build_summary() -> None:
@@ -100,7 +128,7 @@ def build_readme_block() -> None:
 
 
 def build_paper() -> None:
-    out = render_template((ROOT / "paper" / "template.md").read_text(encoding="utf-8"))
+    out = render_template((ROOT / "paper" / "template.md").read_text(encoding="utf-8"), fig_ext=".pdf")  # vector figures in the PDF
     md = ROOT / "paper" / "paper.md"
     md.write_text(out, encoding="utf-8")
     pdf = ROOT / "paper" / "paper.pdf"
