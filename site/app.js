@@ -414,5 +414,8 @@ async function boot() {
   if (["light", "dark"].includes(q.get("theme"))) document.documentElement.dataset.theme = q.get("theme");
   await setModel(key);
   Object.keys(RENDER).forEach((id) => io.observe($(id)));
+  // fallback: render anything not yet seen, one figure at a time, so figures never depend on the
+  // observer alone (background tabs, printing, browsers that throttle intersection callbacks)
+  setTimeout(() => Object.keys(RENDER).forEach((id, i) => setTimeout(() => { if (!seen.has(id)) { seen.add(id); RENDER[id](); } }, 300 * i)), 2500);
 }
 boot();
