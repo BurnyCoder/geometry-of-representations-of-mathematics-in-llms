@@ -152,8 +152,8 @@ SCORE_LEGEND = ("● significant (Holm-adjusted for the axiom tests; 95% CI excl
 def table_scorecard(r: dict) -> str:
     """Hypotheses × models at a glance (all configs merged), as a Markdown table."""
     sc = scorecard_rows(r)
-    out = ["| Test | " + " | ".join(sc["models"]) + " |", "|---" * (len(sc["models"]) + 1) + "|"]
-    out += [f"| {row['test']} | " + " | ".join(row["cells"]) + " |" for row in sc["rows"]]
+    out = ["| Test | Status | " + " | ".join(sc["models"]) + " |", "|---" * (len(sc["models"]) + 2) + "|"]
+    out += [f"| {row['test']} | {row['status']} | " + " | ".join(row["cells"]) + " |" for row in sc["rows"]]
     return "\n".join(out + ["\n" + SCORE_LEGEND])
 
 
@@ -183,18 +183,19 @@ def scorecard_rows(r: dict) -> dict:
         a = sh[key]["angles"]
         return f"{'●' if a['closure'] < 2 and a['circle_rho'] > a['line_rho'] else '✗'} {a['closure']:.2f}"
 
+    conf_, pre, added = "pre-registered, confirmatory", "pre-registered", "added by plan audit"
     rows = [
-        ("Field map tracks arXiv beyond the twin (H-A1; Δρ CI)", lambda k: f"{'●' if ex(mp[k]['math_primary']['rsa_boot']['delta_vs_random_init']['ci']) else '○'} {mp[k]['math_primary']['rsa']['trained']:.2f}"),
-        ("Field map is a hierarchy beyond the twin (H-A2; cophenetic Δ CI)", lambda k: f"{'●' if ex(hi[k]['coph_match_delta_vs_random_ci']) else '○'} {hi[k]['coph_match']['trained']:.2f}"),
-        ("Days form a cycle (positive control; post-hoc PC plane)", cyc),
-        ("Ring chain ordered (Robinson; > twin)", lambda k: chain(k, "ring_chain")),
-        ("Space chain ordered (Robinson; > twin)", lambda k: chain(k, "space_chain")),
-        ("Ring / space order beyond frequency", lambda k: " / ".join("●" if cf[k][f]["p"] < 0.05 else "○" for f in ("ring_chain", "space_chain"))),
-        ("Angles form a circle (closure < 2 and circle ρ > line ρ)", angles),
-        *[(f"Axiom direction: {a} (offset consistency; Holm)", lambda k, a=a: axiom(k, a)) for a in la[keys[0]]["group_like"]["offsets"]],
-        ("Lie / topological / algebraic groups as parallelograms", lambda k: f"{'●' if st[k]['group_objects']['parallelograms']['p'] < 0.05 else '○'} {st[k]['group_objects']['parallelograms']['cos']:.2f}"),
+        ("Field map tracks arXiv beyond the twin (H-A1; Δρ CI)", conf_, lambda k: f"{'●' if ex(mp[k]['math_primary']['rsa_boot']['delta_vs_random_init']['ci']) else '○'} {mp[k]['math_primary']['rsa']['trained']:.2f}"),
+        ("Field map is a hierarchy beyond the twin (H-A2; cophenetic Δ CI)", pre, lambda k: f"{'●' if ex(hi[k]['coph_match_delta_vs_random_ci']) else '○'} {hi[k]['coph_match']['trained']:.2f}"),
+        ("Days form a cycle (positive control; PC plane)", "positive control; post-hoc statistic", cyc),
+        ("Ring chain ordered (Robinson; > twin)", conf_, lambda k: chain(k, "ring_chain")),
+        ("Space chain ordered (Robinson; > twin)", conf_, lambda k: chain(k, "space_chain")),
+        ("Ring / space order beyond frequency", added, lambda k: " / ".join("●" if cf[k][f]["p"] < 0.05 else "○" for f in ("ring_chain", "space_chain"))),
+        ("Angles form a circle (closure < 2 and circle ρ > line ρ)", conf_, angles),
+        *[(f"Axiom direction: {a} (offset consistency; Holm)", conf_, lambda k, a=a: axiom(k, a)) for a in la[keys[0]]["group_like"]["offsets"]],
+        ("Lie / topological / algebraic groups as parallelograms", "pre-registered, exploratory", lambda k: f"{'●' if st[k]['group_objects']['parallelograms']['p'] < 0.05 else '○'} {st[k]['group_objects']['parallelograms']['cos']:.2f}"),
     ]
-    return {"models": [MODEL[k] for k in keys], "rows": [{"test": name, "cells": [fn(k) for k in keys]} for name, fn in rows], "legend": SCORE_LEGEND}
+    return {"models": [MODEL[k] for k in keys], "rows": [{"test": name, "status": status, "cells": [fn(k) for k in keys]} for name, status, fn in rows], "legend": SCORE_LEGEND}
 
 
 def table_hierarchy(h: dict) -> str:

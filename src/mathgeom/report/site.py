@@ -55,7 +55,7 @@ def export_model(cfg: Config, key: str, mp_key: dict) -> dict:
         ref = figdata.align(figdata.mds(rdms[Lp - 1]), base)
         out["fields"][side] = {"layout": [_r(figdata.align(figdata.mds(D), ref)) for D in rdms], "rank": [_r(figdata.rank_unit(D), 3) for D in rdms]}
         pts = figdata.pca(X[:, Lp], 3)
-        out.setdefault("concepts", {})[side] = {"xyz": _r(pts, 3), "nn": figdata.concept_neighbours(X[:, Lp], 8).tolist()}
+        out.setdefault("concepts", {})[side] = {"xyz": _r(pts, 3), "nn": figdata.concept_neighbours(X[:, Lp], 10).tolist()}
     # families: PC planes at every layer, aligned to the pre-registered layer
     chains = load_yaml("families.yaml")["chains"]
     out["families"] = {}
@@ -111,7 +111,7 @@ def write_index(cfg: Config) -> None:
                                                   for c, row in ml.dropna(subset=["depth"]).iterrows()],  # all matched concepts (the set the ρ is computed on)
         "family_labels": S.FAMILY,
         "scorecard": scorecard_rows(r),
-        "forest": [{"title": t, "rows": [{"label": lab, "est": est, "ci": ci, "status": st} for lab, est, ci, st in rows]} for t, rows in forest_rows(r)],
+        "forest": [{"title": t, "rows": rows} for t, rows in forest_rows(r)],
         "results": {k: _prune(v, ("layer_curve", "negative_control") if k in ("shapes", "lattice") else ("concept_level_regression",))
                     for k, v in r.items() if k not in ("numbers", "manifest", "sae", "smds", "calibration")},
     }

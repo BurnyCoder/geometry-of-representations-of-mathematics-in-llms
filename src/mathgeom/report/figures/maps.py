@@ -72,7 +72,7 @@ def build(cfg, mp: dict, outdir) -> list[str]:
         r, ci = res["math_primary"]["rsa"], res["math_primary"]["rsa_boot"]
         titles = {"arxiv": "arXiv cross-listing distance (ground truth)", "trained": f"{S.pretty(key)} · layer {Lp}", "random_init": "random-init twin (same tokenizer, no training)"}
         badges = {"arxiv": f"Ochiai distance over {setup['n_papers'] / 1e6:.1f}M arXiv papers",
-                  "trained": f"ρ with arXiv = {r['trained']:.2f}, 95% CI {S.fmt_ci(ci['trained']['ci'])}", "random_init": f"ρ with arXiv = {r['random_init']:.2f}"}
+                  "trained": f"ρ with arXiv = {r['trained']:.2f}, 95% CI {S.fmt_ci(ci['trained']['ci'])}", "random_init": f"ρ with arXiv = {r['random_init']:.2f}, 95% CI {S.fmt_ci(ci['random_init']['ci'])}"}
         edges = figdata.neighbour_edges(setup["arxiv"])
         out.append(S.save(draw_field_maps(lay, setup["names"], setup["pa"], edges, titles, badges), outdir, f"field_maps_{key}"))
         out.append(S.save(draw_rdms(rdms, setup["names"], setup["branch"], setup["order"], titles, badges), outdir, f"field_rdms_{key}"))
