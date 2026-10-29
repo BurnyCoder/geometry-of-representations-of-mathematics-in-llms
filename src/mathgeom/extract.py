@@ -46,7 +46,7 @@ def concept_token_span(tok, full: str, prefix: str) -> list[int]:
 
 
 @torch.inference_mode()
-def extract(model, tok, items: list[Item], templates: list[str], tag: str, echo: bool = False) -> dict[str, np.ndarray]:
+def extract(model, tok, items: list[Item], templates: list[str], tag: str, echo: bool = True) -> dict[str, np.ndarray]:
     """Run all items × templates; return dict of float16 arrays and per-item token counts."""
     dev = next(model.parameters()).device
     half = len(templates) // 2
