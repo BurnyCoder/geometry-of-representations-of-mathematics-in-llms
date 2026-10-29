@@ -45,6 +45,23 @@ Do the items of a cyclic family form a cycle in some plane spanned by two of the
 - Every layer is recorded; the **headline is the preregistered layer** (relative depth 0.5).
 - Per-layer values are descriptive and unadjusted.
 
+### Amendment 1: closed loops only
+
+Made before any real-data run, and committed separately.
+
+**What the unit test found.** A unit test showed that the cycle score alone gives a perfect 1.0 to an *open arc*. Example: the plane of a linear axis and one periodic coordinate, where points trace a U. The angular-successor order is then perfect, and only the "closing" step last → first spans the opening.
+
+**Why it matters.** PCA routinely bends a line into such an arc (the horseshoe effect; [Diaconis, Goel & Holmes 2008](https://arxiv.org/abs/0807.2569)). So the statistic above would call a number line a cycle.
+
+**The change.** A plane counts only if the loop also closes there:
+- The *closed-cycle score* of a plane is its cycle score if the in-plane closure ratio is below 2, and 0 otherwise.
+- The closure ratio is the preregistered `closure_ratio`: d(first, last) ÷ mean adjacent distance, computed on the plane's Euclidean distances.
+- The threshold is the preregistered "closure < 2".
+
+**What uses it.** The maximum over planes, the permutation null (which applies the same rule to every permuted order) and the decision rule below all use the closed-cycle score. The plain cycle score and the closure ratio of every plane are recorded too.
+
+**What it does not change.** The existing PC1–2 scores are unchanged. We report that a high PC1–2 cycle score alone does not show a *closed* loop. For days and months, the full-space closure ratios (1.2–2.0) say whether the loop closes.
+
 ## Decision rule (angles)
 
 "Angles have a circular component beyond PC1–2" is accepted only if **all four** hold at the preregistered layer:
