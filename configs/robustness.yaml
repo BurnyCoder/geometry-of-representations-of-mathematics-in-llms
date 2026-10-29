@@ -1,0 +1,21 @@
+# Robustness run (pre-registered as robustness phase in docs/prereg.md): scale, second family,
+# math-training ablation. Each model is paired with its random-init twin.
+name: robustness
+models:
+  - key: qwen3.5-0.8b
+    id: Qwen/Qwen3.5-0.8B-Base
+  - key: gemma-4-e2b
+    id: google/gemma-4-E2B
+    device_map: offload_ple  # PLE tables + audio/vision towers on CPU, decoder on GPU
+  - key: qwen2.5-1.5b
+    id: Qwen/Qwen2.5-1.5B
+  - key: qwen2.5-math-1.5b
+    id: Qwen/Qwen2.5-Math-1.5B
+conditions: [field_neutral, family]
+analysis_split: confirmatory
+n_perm: 10000
+n_boot: 2000
+seed: 0
+max_concepts_per_field: 30
+pilot_fraction: 0.2
+primary_rel_depth: 0.5
