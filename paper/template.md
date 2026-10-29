@@ -5,7 +5,7 @@ date: "October 2026"
 abstract: |
   Large language models represent days of the week and months on circles (Engels et al., 2024). We ask whether *abstract mathematics* is organized geometrically too. We test three preregistered hypotheses on base models up to 2B parameters, comparing every model with a random-init twin (same architecture and tokenizer, no learning).
 
-  **(A) Field map.** Centroids of 17 mathematical fields are computed from concepts drawn from Wikipedia glossaries, excluding concepts whose names leak the field. In Qwen3.5-2B-Base, their geometry correlates with field relatedness measured by arXiv cross-listing over 3.2M papers: Spearman ρ = {{num:mvp.map_fields.qwen3.5-2b.math_primary.rsa.trained:.2f}}, against ρ = {{num:mvp.map_fields.qwen3.5-2b.math_primary.rsa.random_init:.2f}} for the random-init twin. The paired bootstrap 95% CI of the difference is [{{num:mvp.map_fields.qwen3.5-2b.math_primary.rsa_boot.delta_vs_random_init.ci.0:.2f}}, {{num:mvp.map_fields.qwen3.5-2b.math_primary.rsa_boot.delta_vs_random_init.ci.1:.2f}}]. The map replicates in Qwen3.5-0.8B (ρ = {{num:robustness.map_fields.qwen3.5-0.8b.math_primary.rsa.trained:.2f}}), Qwen2.5-1.5B (ρ = {{num:robustness.map_fields.qwen2.5-1.5b.math_primary.rsa.trained:.2f}}) and Gemma-4-E2B (ρ = {{num:gemma.map_fields.gemma-4-e2b.math_primary.rsa.trained:.2f}}). In every case the random-init twin is near zero or below. It is, however, no stronger than the organization of non-math science topics. One trillion tokens of math continued pretraining (Qwen2.5-Math) do not sharpen it (Δρ CI [{{num:robustness.compare.qwen2.5-math-1.5b_vs_qwen2.5-1.5b.boot.delta_vs_qwen2.5-1.5b.ci.0:.2f}}, {{num:robustness.compare.qwen2.5-math-1.5b_vs_qwen2.5-1.5b.boot.delta_vs_qwen2.5-1.5b.ci.1:.2f}}]).
+  **(A) Field map.** Centroids of 17 mathematical fields are computed from concepts drawn from Wikipedia glossaries, excluding concepts whose names leak the field. In Qwen3.5-2B-Base, their geometry correlates with field relatedness measured by arXiv cross-listing over 3.2M papers: Spearman ρ = {{num:mvp.map_fields.qwen3.5-2b.math_primary.rsa.trained:.2f}}, against ρ = {{num:mvp.map_fields.qwen3.5-2b.math_primary.rsa.random_init:.2f}} for the random-init twin. The paired bootstrap 95% CI of the difference is [{{num:mvp.map_fields.qwen3.5-2b.math_primary.rsa_boot.delta_vs_random_init.ci.0:.2f}}, {{num:mvp.map_fields.qwen3.5-2b.math_primary.rsa_boot.delta_vs_random_init.ci.1:.2f}}]. The map replicates in Qwen3.5-0.8B (ρ = {{num:robustness.map_fields.qwen3.5-0.8b.math_primary.rsa.trained:.2f}}), Qwen2.5-1.5B (ρ = {{num:robustness.map_fields.qwen2.5-1.5b.math_primary.rsa.trained:.2f}}) and Gemma-4-E2B (ρ = {{num:gemma.map_fields.gemma-4-e2b.math_primary.rsa.trained:.2f}}). In every case the random-init twin is near zero or below. It is, however, no stronger than the organization of non-math science topics, and no stronger than in a contrastive text embedder (Qwen3-Embedding). It is also not a clean hierarchy: our preregistered cophenetic test does not beat the random-init twin. One trillion tokens of math continued pretraining (Qwen2.5-Math) do not sharpen it (Δρ CI [{{num:robustness.compare.qwen2.5-math-1.5b_vs_qwen2.5-1.5b.boot.delta_vs_qwen2.5-1.5b.ci.0:.2f}}, {{num:robustness.compare.qwen2.5-math-1.5b_vs_qwen2.5-1.5b.boot.delta_vs_qwen2.5-1.5b.ci.1:.2f}}]).
 
   **(B) Shapes.** Class-inclusion chains (rng ⊃ ring ⊃ … ⊃ field; T0 ⊃ … ⊃ Hilbert) are ordered beyond permutation nulls and beyond the twin. Angles 0°–330°, however, are encoded like the number line rather than a circle in all five models, which falsifies our preregistered prediction.
 
@@ -44,7 +44,7 @@ Mathematics is an unusually good test bed for these ideas, because its concepts 
 
 **Science concepts.** [Lei & Cooper (2025)](https://arxiv.org/abs/2502.10871) found a periodic-table spiral. Mathematical "world models" in LLMs have been reported as local and fragile ([ICML 2025](https://icml.cc/virtual/2025/49128)).
 
-**Statistics.** Partial Mantel tests are known to be anticonservative ([Guillot & Rousset, 2013](https://doi.org/10.1111/2041-210X.12018)). We test Freedman–Lane permutation ([Anderson & Legendre, 1999](https://doi.org/10.1080/00949659908811970)) in our setting (Section 3.5).
+**Statistics.** Partial Mantel tests are known to be anticonservative ([Guillot & Rousset, 2013](https://doi.org/10.1111/2041-210X.12018)). We test Freedman–Lane permutation ([Anderson & Legendre, 1999](https://doi.org/10.1080/00949659908811936)) in our setting (Section 3.5).
 
 # 3 Methods
 
@@ -133,7 +133,20 @@ The test is calibrated when the nuisance distance matrix *is* the confounder. It
 
 So the map lives in the dominant semantic subspace, and removing 20 components removes the map itself.
 
-**H-A2: hierarchy.** Field geometry is more tree-like with respect to a five-branch super-tree than shuffled trees (p = {{num:mvp.map_fields.qwen3.5-2b.math_primary.hierarchy.p_shuffled_tree:.4f}}). Trained ρ = {{num:mvp.map_fields.qwen3.5-2b.math_primary.hierarchy.rho.trained:.3f}}, twin ρ = {{num:mvp.map_fields.qwen3.5-2b.math_primary.hierarchy.rho.random_init:.3f}}, and the paired difference CI is [{{num:mvp.map_fields.qwen3.5-2b.math_primary.hierarchy.boot.delta_vs_random_init.ci.0:.3f}}, {{num:mvp.map_fields.qwen3.5-2b.math_primary.hierarchy.boot.delta_vs_random_init.ci.1:.3f}}].
+**H-A2: hierarchy is not supported as preregistered.** The preregistered measure is the cophenetic correlation between an average-linkage (UPGMA) dendrogram of the field centroids and the five-branch super-tree.
+
+{{table:hierarchy:mvp}}
+
+{{table:hierarchy:robustness}}
+
+{{table:hierarchy:gemma}}
+
+- **Against shuffled trees:** the trained model's dendrogram matches the super-tree better (ρ = {{num:mvp.hierarchy.qwen3.5-2b.coph_match.trained:.3f}}, p = {{num:mvp.hierarchy.qwen3.5-2b.coph_match_p_shuffled_tree:.3f}}).
+- **Against the twin:** the paired difference CI includes zero ([{{num:mvp.hierarchy.qwen3.5-2b.coph_match_delta_vs_random_ci.0:.3f}}, {{num:mvp.hierarchy.qwen3.5-2b.coph_match_delta_vs_random_ci.1:.3f}}]), and the same holds in every replication model. The preregistered criterion requires beating both, so it fails.
+- **Intrinsic tree-likeness:** the cophenetic correlation of the representation with its own dendrogram is no higher than for a spectrum-matched Gaussian cloud.
+- **Gromov δ:** relative δ is lower than the Gaussian cloud's, but higher than the twin's.
+
+A tree-distance RSA we first reported, the Spearman correlation of the centroid RDM with the super-tree distance, did beat the twin (trained {{num:mvp.map_fields.qwen3.5-2b.math_primary.hierarchy.rho.trained:.3f}} vs twin {{num:mvp.map_fields.qwen3.5-2b.math_primary.hierarchy.rho.random_init:.3f}}). It is *not* the preregistered measure, so it is post-hoc. It largely restates H-A1: fields that mathematicians relate are close.
 
 **Specificity.** The non-math control fields (biology, chemistry, geology, astronomy) are also clustered by the trained model and not by its twin:
 
@@ -145,6 +158,15 @@ The pre-registered comparison confounds domain with the number of fields: 17 for
 - **Overlap:** {{num:mvp.posthoc.qwen3.5-2b.matched_clustering.frac_math_subsets_ge_control:.2f}} of the math subsets reach or exceed the control value.
 
 Mathematical fields are therefore organized about as strongly as general science topics, and not more. The field map is an instance of topical organization, not something specific to mathematics.
+
+**Baselines (plan; added after the first report).** We compare against two non-generative representations of the same concepts:
+- **fastText** wiki-news vectors (averaged over words) and **Qwen3-Embedding-0.6B**, a contrastively trained text embedder.
+- **vs fastText:** the LLM's field map is stronger (Δ CI [{{num:mvp.baselines.qwen3.5-2b.fasttext_covered.boot.delta_vs_fasttext.ci.0:.2f}}, {{num:mvp.baselines.qwen3.5-2b.fasttext_covered.boot.delta_vs_fasttext.ci.1:.2f}}] on the {{num:mvp.baselines.qwen3.5-2b.fasttext_covered.n}} concepts that fastText covers).
+- **vs Qwen3-Embedding:** the LLM is not stronger; the embedder reaches ρ = {{num:mvp.baselines.qwen3.5-2b.all_primary.rsa.qwen3_embedding:.3f}} against the LLM's {{num:mvp.baselines.qwen3.5-2b.all_primary.rsa.llm_trained:.3f}} (Δ CI [{{num:mvp.baselines.qwen3.5-2b.all_primary.boot.delta_vs_qwen3_embedding.ci.0:.2f}}, {{num:mvp.baselines.qwen3.5-2b.all_primary.boot.delta_vs_qwen3_embedding.ci.1:.2f}}]).
+
+So the field map is a property of contextual text representations in general, not something specific to generative LLMs.
+
+{{table:baselines:mvp}}
 
 ## 4.2 Robustness: scale, model family, math training
 
@@ -173,6 +195,18 @@ This statistic is post-hoc. We conclude that the pipeline works, and that the fu
 **Angles: preregistered prediction falsified.** Angles are not circular: closure ratio {{num:mvp.shapes.qwen3.5-2b.angles.closure:.2f}} and no cycle in the PC plane. Their geometry closely matches that of the bare digits 0–330 (ρ = {{num:mvp.shapes.qwen3.5-2b.angles.beyond_reference.rho_fam_ref:.2f}}). At this scale, "330 degrees" sits next to "300 degrees", not next to "0 degrees".
 
 {{table:beyond_reference:mvp}}
+
+**SMDS (plan, secondary).** Supervised MDS fits a projection to a line or a discrete-circle template, and each fit is tested against refits on shuffled labels.
+
+{{table:smds:mvp}}
+
+- **The twin shows why the shuffle null is necessary.** Its line fit scores {{num:mvp.smds.qwen3.5-2b__random.days.euclidean.score:.2f}} on *every* family, a perfect fit to any ordering, yet never beats its shuffled null.
+- **Trained model:**
+  - Days prefer the circle template: circle p = {{num:mvp.smds.qwen3.5-2b.days.discrete_circular.p:.3f}}, line p = {{num:mvp.smds.qwen3.5-2b.days.euclidean.p:.3f}}.
+  - The chains and angles prefer the line template.
+  - Months fit both templates beyond the null.
+
+This agrees with the unsupervised statistics, including the conclusion that angles are line-like.
 
 ## 4.4 H-B2: axioms as directions
 
@@ -222,6 +256,21 @@ In this model's random-init twin, all four consistencies are ≈ 0.
 - Some Qwen twins show similar values. "Commutative ring" literally contains the token "commutative", so we consider transfer not established.
 - Identity transfer, from the single pair rng → ring, is null.
 
+**Template variants (exploratory; Qwen3.5-2B).** We reran every analysis with two other template sets.
+
+*Field-revealing concept templates* name the field, e.g. "In group theory, the notion of X":
+- The graded field map barely changes (ρ = {{num:mvp_variants.map_fields.qwen3.5-2b.math_primary.rsa.trained:.3f}}, against {{num:mvp.map_fields.qwen3.5-2b.math_primary.rsa.trained:.3f}} with neutral templates).
+- Leave-one-out field accuracy jumps to {{num:mvp_variants.map_fields.qwen3.5-2b.math_primary.loo_acc.trained.acc:.3f}}, and the twin also rises to {{num:mvp_variants.map_fields.qwen3.5-2b.math_primary.loo_acc.random_init.acc:.3f}}. This is exactly the label leakage the preregistration excluded from the primary analysis.
+
+*No-domain family templates* drop the shared context, e.g. "Consider X":
+- Days remain a perfect PC-plane cycle.
+- The chains remain ordered (ring and space Robinson p = {{num:mvp_variants.shapes.qwen3.5-2b.ring_chain.robinson_p:.3f}} and {{num:mvp_variants.shapes.qwen3.5-2b.space_chain.robinson_p:.3f}}), and angles remain line-like.
+- Group-object parallelograms persist ({{num:mvp_variants.structures.qwen3.5-2b.group_objects.parallelograms.cos:.2f}}, p = {{num:mvp_variants.structures.qwen3.5-2b.group_objects.parallelograms.p:.4f}}).
+- Axiom offsets weaken but persist for commutativity ({{num:mvp_variants.lattice.qwen3.5-2b.group_like.offsets.commutative.consistency:.2f}}, p = {{num:mvp_variants.lattice.qwen3.5-2b.group_like.offsets.commutative.p:.4f}}) and associativity ({{num:mvp_variants.lattice.qwen3.5-2b.group_like.offsets.associative.consistency:.2f}}, p = {{num:mvp_variants.lattice.qwen3.5-2b.group_like.offsets.associative.p:.4f}}).
+- Months lose their PC-plane cycle.
+
+Full tables: `reports/mvp_variants_results.md`.
+
 ## 4.5 Secondary analyses
 
 ### H-A4: concrete ↔ abstract and pure ↔ applied are the main axes
@@ -231,7 +280,7 @@ In this model's random-init twin, all four consistencies are ≈ 0.
 - Absolute agreement is low (ICC(2,1) = {{num:mvp.judges.icc2_1:.2f}}; ICC(2,k) = {{num:mvp.judges.icc2_k:.2f}}), because the judges use the scale with different offsets.
 - The ratings have face validity. The least abstract concepts include "trivial group", "bar chart" and "dot plot"; the most abstract include étale cohomology, Artin stacks and generalized cohomology theories.
 
-**Axes.** We first residualized on word frequency and token count. The top principal component of the math-concept cloud then correlates with abstraction (ρ = {{num:mvp.axes.qwen3.5-2b.pcs.0.rho_abstraction:.2f}}), and the second with the pure/applied label (ρ = {{num:mvp.axes.qwen3.5-2b.pcs.1.rho_applied:.2f}}). In the twin these correlations are {{num:mvp.axes.qwen3.5-2b__random.pcs.0.rho_abstraction:.2f}} and {{num:mvp.axes.qwen3.5-2b__random.pcs.1.rho_applied:.2f}}. A 5-fold cross-validated linear readout predicts abstraction with ρ = {{num:mvp.axes.qwen3.5-2b.cv_ridge_rho_abstraction:.2f}}, against {{num:mvp.axes.qwen3.5-2b__random.cv_ridge_rho_abstraction:.2f}} in the twin.
+**Axes.** We first residualized on word frequency and token count. The top principal component of the math-concept cloud then correlates with abstraction (ρ = {{num:mvp.axes.qwen3.5-2b.pcs.0.rho_abstraction:.2f}}), and the second with the pure/applied label (ρ = {{num:mvp.axes.qwen3.5-2b.pcs.1.rho_applied:.2f}}). In the twin these correlations are {{num:mvp.axes.qwen3.5-2b__random.pcs.0.rho_abstraction:.2f}} and {{num:mvp.axes.qwen3.5-2b__random.pcs.1.rho_applied:.2f}}. A 5-fold cross-validated linear readout predicts abstraction with ρ = {{num:mvp.axes.qwen3.5-2b.cv_ridge_rho_abstraction:.2f}}, against {{num:mvp.axes.qwen3.5-2b__random.cv_ridge_rho_abstraction:.2f}} in the twin. We also partialled out pretraining-scale frequency: infini-gram counts in Dolma v1.7, which correlate ρ = {{num:mvp.baselines.infinigram.rho_zipf_vs_log_count:.2f}} with wordfreq. The axes are essentially unchanged: PC1 ↔ abstraction ρ = {{num:mvp.axes.qwen3.5-2b.pcs_with_infinigram.0.rho_abstraction:.2f}}, PC2 ↔ applied ρ = {{num:mvp.axes.qwen3.5-2b.pcs_with_infinigram.1.rho_applied:.2f}}.
 
 **Interpretation.** In this model, concrete ↔ abstract is the single largest axis of variation among mathematical concepts. That is a correlational, model-rated finding: abstraction ratings come from LLM judges, not humans.
 
@@ -269,7 +318,12 @@ At block {{num:mvp.sae.qwen3.5-2b.sae_block}}, we encoded the template-averaged 
 - **Positive control.** It passed only under a post-hoc statistic.
 - **Family size.** Families are small (n = 7–13), so shape claims rest on permutation tests with limited resolution.
 - **Correlation, not mechanism.** All tests except §4.5 are correlational.
-- **Not run.** The exploratory field-revealing template condition and the Mathlib-depth validation of judge ratings were planned but not run (`docs/deviations.md`).
+- **Not run.** Four planned items were not run; reasons are in `docs/deviations.md`:
+  - the Mathlib-depth validation of judge ratings;
+  - Qwen3.5-4B in 8-bit, whose random-init twin cannot be held in 8 GB;
+  - the optional OctoThinker pair;
+  - persistent homology, since no family has ≥30 points.
+- **Baseline scope.** SMDS and the template variants were run for the confirmatory model only.
 
 # 7 Conclusion
 
