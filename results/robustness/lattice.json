@@ -271,6 +271,122 @@
    "consistency": 0.2641197335530473,
    "null95": 0.08821922412448495,
    "king_queen_rank": 1
+  },
+  "audit2": {
+   "associative_quasigroup": {
+    "d_group": 2.3402854809680225,
+    "d_quasigroup": 0.696520030645544,
+    "ratio": 3.359968669959161,
+    "nearest": [
+     "commutative quasigroup",
+     "quasigroup",
+     "commutative semigroup"
+    ]
+   },
+   "inverse_semigroup": {
+    "nearest": [
+     "commutative semigroup",
+     "semigroup",
+     "commutative monoid"
+    ]
+   },
+   "group_like_offsets": {
+    "pool": {
+     "associative": {
+      "n_pairs": 5,
+      "consistency": 0.2645711636877198,
+      "null_mean": -0.0017661308754098402,
+      "null95": 0.21838169829571713,
+      "p": 0.030484757621189407
+     },
+     "identity": {
+      "n_pairs": 5,
+      "consistency": 0.2924909162286987,
+      "null_mean": -0.006541504767,
+      "null95": 0.2181544273593872,
+      "p": 0.021989005497251374
+     },
+     "divisible": {
+      "n_pairs": 5,
+      "consistency": 0.1729097927010997,
+      "null_mean": -0.0004586352790695377,
+      "null95": 0.240714881482039,
+      "p": 0.09995002498750624
+     },
+     "commutative": {
+      "n_pairs": 6,
+      "consistency": 0.5287554842360827,
+      "null_mean": -0.0011563168289250641,
+      "null95": 0.19380932836411657,
+      "p": 0.0004997501249375312
+     }
+    },
+    "length_projected": {
+     "associative": {
+      "n_pairs": 5,
+      "consistency": 0.4578779204116188,
+      "null_mean": 0.000830361026192335,
+      "null95": 0.239622861362719,
+      "p": 0.00399800099950025
+     },
+     "identity": {
+      "n_pairs": 5,
+      "consistency": 0.2545195728118122,
+      "null_mean": -0.006055281506377979,
+      "null95": 0.2269337534751147,
+      "p": 0.0399800099950025
+     },
+     "divisible": {
+      "n_pairs": 5,
+      "consistency": 0.2935190977143284,
+      "null_mean": -0.001938220623961907,
+      "null95": 0.2297895804627942,
+      "p": 0.03298350824587706
+     },
+     "commutative": {
+      "n_pairs": 6,
+      "consistency": 0.48281123474311255,
+      "null_mean": 0.0015149827843363467,
+      "null95": 0.20255219760413662,
+      "p": 0.0014992503748125937
+     }
+    }
+   },
+   "partial_operation": {
+    "axiom_rdm_beta": 0.10634873296226138,
+    "axiom_rdm_p": 0.3339332133573285,
+    "lexical_beta": 0.28592776728919783,
+    "offsets": {
+     "total": {
+      "n_pairs": 3,
+      "consistency": 0.28469698444480096,
+      "null_mean": -0.00703065176054378,
+      "null95": 0.5246949946989274,
+      "p": 0.1714142928535732
+     },
+     "identity": {
+      "n_pairs": 2,
+      "consistency": -0.09780977156935995,
+      "null_mean": -0.006741471724867755,
+      "null95": 0.7817621905014708,
+      "p": 0.5617191404297851
+     },
+     "divisible": {
+      "n_pairs": 2,
+      "consistency": -0.18827571761151835,
+      "null_mean": -0.030790787215756548,
+      "null95": 0.7777954680641643,
+      "p": 0.5897051474262869
+     }
+    },
+    "analogy": {
+     "n": 5,
+     "top1": 0.0,
+     "mean_rank": 2.4,
+     "chance_mean_rank": 2.0,
+     "chance_top1": 0.3333333333333333
+    }
+   }
   }
  },
  "qwen3.5-0.8b__random": {
@@ -545,6 +661,122 @@
    "consistency": -0.008313229216141015,
    "null95": 0.06834860530073954,
    "king_queen_rank": 16
+  },
+  "audit2": {
+   "associative_quasigroup": {
+    "d_group": 20.598353177562803,
+    "d_quasigroup": 16.11535747582353,
+    "ratio": 1.2781815860097874,
+    "nearest": [
+     "quasigroup",
+     "semigroup",
+     "inverse semigroup"
+    ]
+   },
+   "inverse_semigroup": {
+    "nearest": [
+     "semigroup",
+     "quasigroup",
+     "associative quasigroup"
+    ]
+   },
+   "group_like_offsets": {
+    "pool": {
+     "associative": {
+      "n_pairs": 5,
+      "consistency": 0.03720096516388466,
+      "null_mean": -0.0014093169022350261,
+      "null95": 0.16941082469937857,
+      "p": 0.312343828085957
+     },
+     "identity": {
+      "n_pairs": 5,
+      "consistency": 0.05269528628660386,
+      "null_mean": -0.0057369595246433746,
+      "null95": 0.16076727891196427,
+      "p": 0.25487256371814093
+     },
+     "divisible": {
+      "n_pairs": 5,
+      "consistency": 0.04930164643226518,
+      "null_mean": -0.00021893127844163074,
+      "null95": 0.17782091579391365,
+      "p": 0.2818590704647676
+     },
+     "commutative": {
+      "n_pairs": 6,
+      "consistency": 0.12959336467833918,
+      "null_mean": 0.0003286742556241697,
+      "null95": 0.14973409500580623,
+      "p": 0.06746626686656672
+     }
+    },
+    "length_projected": {
+     "associative": {
+      "n_pairs": 5,
+      "consistency": 0.06307525048329939,
+      "null_mean": -0.0012106717421426713,
+      "null95": 0.16625950001472764,
+      "p": 0.23388305847076463
+     },
+     "identity": {
+      "n_pairs": 5,
+      "consistency": 0.0719693158891767,
+      "null_mean": -0.004063185238928709,
+      "null95": 0.16495241581396405,
+      "p": 0.19140429785107446
+     },
+     "divisible": {
+      "n_pairs": 5,
+      "consistency": 0.04905301837774162,
+      "null_mean": -0.0006904991106402485,
+      "null95": 0.16882366924639458,
+      "p": 0.27636181909045476
+     },
+     "commutative": {
+      "n_pairs": 6,
+      "consistency": -0.008408197377817846,
+      "null_mean": 0.0016402941947376633,
+      "null95": 0.14241927271996302,
+      "p": 0.5067466266866567
+     }
+    }
+   },
+   "partial_operation": {
+    "axiom_rdm_beta": -0.17964261207223947,
+    "axiom_rdm_p": 0.8584283143371326,
+    "lexical_beta": 0.3951175261150338,
+    "offsets": {
+     "total": {
+      "n_pairs": 3,
+      "consistency": -0.08179143982735708,
+      "null_mean": -0.007106039372155532,
+      "null95": 0.4168023540926547,
+      "p": 0.5427286356821589
+     },
+     "identity": {
+      "n_pairs": 2,
+      "consistency": -0.09104386349522581,
+      "null_mean": -0.011541438265783754,
+      "null95": 0.5963886026537925,
+      "p": 0.6411794102948526
+     },
+     "divisible": {
+      "n_pairs": 2,
+      "consistency": -0.11418814354656859,
+      "null_mean": -0.022290789146428385,
+      "null95": 0.6245575293554302,
+      "p": 0.6501749125437282
+     }
+    },
+    "analogy": {
+     "n": 5,
+     "top1": 0.0,
+     "mean_rank": 2.6,
+     "chance_mean_rank": 2.0,
+     "chance_top1": 0.3333333333333333
+    }
+   }
   }
  },
  "qwen2.5-1.5b": {
@@ -851,6 +1083,122 @@
    "consistency": 0.2426483780159958,
    "null95": 0.08335307784596474,
    "king_queen_rank": 1
+  },
+  "audit2": {
+   "associative_quasigroup": {
+    "d_group": 54.827067965320765,
+    "d_quasigroup": 22.00270163058758,
+    "ratio": 2.491833452356669,
+    "nearest": [
+     "commutative quasigroup",
+     "quasigroup",
+     "commutative semigroup"
+    ]
+   },
+   "inverse_semigroup": {
+    "nearest": [
+     "semigroup",
+     "commutative semigroup",
+     "commutative monoid"
+    ]
+   },
+   "group_like_offsets": {
+    "pool": {
+     "associative": {
+      "n_pairs": 5,
+      "consistency": 0.23144458755871625,
+      "null_mean": -0.0013194397591373777,
+      "null95": 0.20972294326438826,
+      "p": 0.03548225887056472
+     },
+     "identity": {
+      "n_pairs": 5,
+      "consistency": 0.2260471174896399,
+      "null_mean": -0.006927363254913503,
+      "null95": 0.21542416363486827,
+      "p": 0.04397801099450275
+     },
+     "divisible": {
+      "n_pairs": 5,
+      "consistency": 0.14161013315323126,
+      "null_mean": -0.00012099589939215682,
+      "null95": 0.24127905831901403,
+      "p": 0.12893553223388307
+     },
+     "commutative": {
+      "n_pairs": 6,
+      "consistency": 0.5101747379628836,
+      "null_mean": -0.0009781204720423638,
+      "null95": 0.18896479097927185,
+      "p": 0.0009995002498750624
+     }
+    },
+    "length_projected": {
+     "associative": {
+      "n_pairs": 5,
+      "consistency": 0.380511805676193,
+      "null_mean": 0.000786087892805247,
+      "null95": 0.2292931903888064,
+      "p": 0.006496751624187906
+     },
+     "identity": {
+      "n_pairs": 5,
+      "consistency": 0.2893571951349232,
+      "null_mean": -0.005321491202287529,
+      "null95": 0.21881998173248426,
+      "p": 0.02448775612193903
+     },
+     "divisible": {
+      "n_pairs": 5,
+      "consistency": 0.2686573175712986,
+      "null_mean": -0.0025898225852081457,
+      "null95": 0.2257542055328749,
+      "p": 0.033483258370814596
+     },
+     "commutative": {
+      "n_pairs": 6,
+      "consistency": 0.35866960612668314,
+      "null_mean": 0.0009745315897534539,
+      "null95": 0.19292148809171664,
+      "p": 0.005497251374312844
+     }
+    }
+   },
+   "partial_operation": {
+    "axiom_rdm_beta": 0.1130602054785199,
+    "axiom_rdm_p": 0.34033193361327735,
+    "lexical_beta": 0.25588866333274507,
+    "offsets": {
+     "total": {
+      "n_pairs": 3,
+      "consistency": 0.23688255549924056,
+      "null_mean": -0.007728642017493542,
+      "null95": 0.5214184433596062,
+      "p": 0.20339830084957522
+     },
+     "identity": {
+      "n_pairs": 2,
+      "consistency": -0.0813319887051605,
+      "null_mean": -0.007554716722249471,
+      "null95": 0.7737871836210906,
+      "p": 0.5557221389305347
+     },
+     "divisible": {
+      "n_pairs": 2,
+      "consistency": -0.22128398889714562,
+      "null_mean": -0.03123156573209976,
+      "null95": 0.7664747907704901,
+      "p": 0.6061969015492253
+     }
+    },
+    "analogy": {
+     "n": 5,
+     "top1": 0.0,
+     "mean_rank": 2.4,
+     "chance_mean_rank": 2.0,
+     "chance_top1": 0.3333333333333333
+    }
+   }
   }
  },
  "qwen2.5-1.5b__random": {
@@ -1157,6 +1505,122 @@
    "consistency": 5.079516157305658e-05,
    "null95": 0.06862267324405652,
    "king_queen_rank": 14
+  },
+  "audit2": {
+   "associative_quasigroup": {
+    "d_group": 54.055676018858975,
+    "d_quasigroup": 31.686471597291863,
+    "ratio": 1.7059544118973138,
+    "nearest": [
+     "quasigroup",
+     "commutative quasigroup",
+     "semigroup"
+    ]
+   },
+   "inverse_semigroup": {
+    "nearest": [
+     "semigroup",
+     "quasigroup",
+     "commutative semigroup"
+    ]
+   },
+   "group_like_offsets": {
+    "pool": {
+     "associative": {
+      "n_pairs": 5,
+      "consistency": 0.07869612624167206,
+      "null_mean": -0.00124649119635223,
+      "null95": 0.18917169852038762,
+      "p": 0.2128935532233883
+     },
+     "identity": {
+      "n_pairs": 5,
+      "consistency": 0.09060942801331752,
+      "null_mean": -0.0065607964624792865,
+      "null95": 0.17848511531893188,
+      "p": 0.16941529235382308
+     },
+     "divisible": {
+      "n_pairs": 5,
+      "consistency": 0.07806626426211027,
+      "null_mean": 0.0011435347892014467,
+      "null95": 0.20281074278795763,
+      "p": 0.21039480259870064
+     },
+     "commutative": {
+      "n_pairs": 6,
+      "consistency": 0.2462189386828296,
+      "null_mean": -8.925164398876407e-05,
+      "null95": 0.16491894063460746,
+      "p": 0.017991004497751123
+     }
+    },
+    "length_projected": {
+     "associative": {
+      "n_pairs": 5,
+      "consistency": 0.11840178605635387,
+      "null_mean": -0.0010937340560583065,
+      "null95": 0.16740543195320254,
+      "p": 0.11794102948525736
+     },
+     "identity": {
+      "n_pairs": 5,
+      "consistency": 0.10337455215918614,
+      "null_mean": -0.005434663693068163,
+      "null95": 0.1665193947433932,
+      "p": 0.13193403298350825
+     },
+     "divisible": {
+      "n_pairs": 5,
+      "consistency": 0.10642210434277091,
+      "null_mean": 0.0005695558314055762,
+      "null95": 0.1807821752556236,
+      "p": 0.14742628685657172
+     },
+     "commutative": {
+      "n_pairs": 6,
+      "consistency": 0.14035437837738954,
+      "null_mean": 0.001325107925673257,
+      "null95": 0.15049616603105323,
+      "p": 0.06446776611694154
+     }
+    }
+   },
+   "partial_operation": {
+    "axiom_rdm_beta": 0.18759758076536814,
+    "axiom_rdm_p": 0.16836632673465307,
+    "lexical_beta": 0.5531009617378589,
+    "offsets": {
+     "total": {
+      "n_pairs": 3,
+      "consistency": -0.07240940101171366,
+      "null_mean": -0.00831194714884525,
+      "null95": 0.45267172746275913,
+      "p": 0.5347326336831584
+     },
+     "identity": {
+      "n_pairs": 2,
+      "consistency": 0.006012454801747023,
+      "null_mean": -0.009846575369460573,
+      "null95": 0.6137389378330473,
+      "p": 0.4817591204397801
+     },
+     "divisible": {
+      "n_pairs": 2,
+      "consistency": -0.08631278239960694,
+      "null_mean": -0.02230828833772716,
+      "null95": 0.6694392979687362,
+      "p": 0.5677161419290355
+     }
+    },
+    "analogy": {
+     "n": 5,
+     "top1": 0.2,
+     "mean_rank": 1.8,
+     "chance_mean_rank": 2.0,
+     "chance_top1": 0.3333333333333333
+    }
+   }
   }
  },
  "qwen2.5-math-1.5b": {
@@ -1463,6 +1927,122 @@
    "consistency": 0.2517131263336108,
    "null95": 0.08279169020919695,
    "king_queen_rank": 1
+  },
+  "audit2": {
+   "associative_quasigroup": {
+    "d_group": 126.90688737171517,
+    "d_quasigroup": 51.240157257496065,
+    "ratio": 2.476707609111594,
+    "nearest": [
+     "commutative quasigroup",
+     "quasigroup",
+     "commutative loop"
+    ]
+   },
+   "inverse_semigroup": {
+    "nearest": [
+     "semigroup",
+     "commutative semigroup",
+     "commutative monoid"
+    ]
+   },
+   "group_like_offsets": {
+    "pool": {
+     "associative": {
+      "n_pairs": 5,
+      "consistency": 0.2090560538496767,
+      "null_mean": -0.0014848919544855237,
+      "null95": 0.2112922659162968,
+      "p": 0.051974012993503245
+     },
+     "identity": {
+      "n_pairs": 5,
+      "consistency": 0.20834532842748787,
+      "null_mean": -0.00696645027463504,
+      "null95": 0.2145780399752556,
+      "p": 0.057971014492753624
+     },
+     "divisible": {
+      "n_pairs": 5,
+      "consistency": 0.17809731466942463,
+      "null_mean": -6.578332596544073e-05,
+      "null95": 0.2438576487985174,
+      "p": 0.08945527236381809
+     },
+     "commutative": {
+      "n_pairs": 6,
+      "consistency": 0.540721400897118,
+      "null_mean": -0.0008812612635717039,
+      "null95": 0.1974863734899243,
+      "p": 0.0004997501249375312
+     }
+    },
+    "length_projected": {
+     "associative": {
+      "n_pairs": 5,
+      "consistency": 0.3528475122461778,
+      "null_mean": 0.00040790739600974393,
+      "null95": 0.22233172773341903,
+      "p": 0.010494752623688156
+     },
+     "identity": {
+      "n_pairs": 5,
+      "consistency": 0.2908301747619388,
+      "null_mean": -0.005766987539185244,
+      "null95": 0.21925221148445737,
+      "p": 0.01999000499750125
+     },
+     "divisible": {
+      "n_pairs": 5,
+      "consistency": 0.31224128616007724,
+      "null_mean": -0.002771007095333751,
+      "null95": 0.216295275990582,
+      "p": 0.017491254372813594
+     },
+     "commutative": {
+      "n_pairs": 6,
+      "consistency": 0.4155843124193364,
+      "null_mean": 0.0008344518357745663,
+      "null95": 0.19670377308850803,
+      "p": 0.001999000499750125
+     }
+    }
+   },
+   "partial_operation": {
+    "axiom_rdm_beta": 0.03724526562639411,
+    "axiom_rdm_p": 0.4387122575484903,
+    "lexical_beta": -0.12460665344898893,
+    "offsets": {
+     "total": {
+      "n_pairs": 3,
+      "consistency": 0.23053203700240554,
+      "null_mean": -0.00773160459858331,
+      "null95": 0.514173219207345,
+      "p": 0.20039980009995004
+     },
+     "identity": {
+      "n_pairs": 2,
+      "consistency": -0.05675485933189606,
+      "null_mean": -0.00721457882753947,
+      "null95": 0.7532838245253471,
+      "p": 0.5382308845577212
+     },
+     "divisible": {
+      "n_pairs": 2,
+      "consistency": -0.1519226700309408,
+      "null_mean": -0.03007934708937776,
+      "null95": 0.7503886524981315,
+      "p": 0.559720139930035
+     }
+    },
+    "analogy": {
+     "n": 5,
+     "top1": 0.0,
+     "mean_rank": 2.4,
+     "chance_mean_rank": 2.0,
+     "chance_top1": 0.3333333333333333
+    }
+   }
   }
  },
  "qwen2.5-math-1.5b__random": {
@@ -1769,6 +2349,122 @@
    "consistency": -0.0007166614773105684,
    "null95": 0.06886726622119461,
    "king_queen_rank": 17
+  },
+  "audit2": {
+   "associative_quasigroup": {
+    "d_group": 54.618943416091774,
+    "d_quasigroup": 32.72583088066421,
+    "ratio": 1.6689856894775719,
+    "nearest": [
+     "quasigroup",
+     "commutative quasigroup",
+     "semigroup"
+    ]
+   },
+   "inverse_semigroup": {
+    "nearest": [
+     "semigroup",
+     "quasigroup",
+     "commutative semigroup"
+    ]
+   },
+   "group_like_offsets": {
+    "pool": {
+     "associative": {
+      "n_pairs": 5,
+      "consistency": 0.06232310139551127,
+      "null_mean": -0.001228559194143785,
+      "null95": 0.1861216910173692,
+      "p": 0.2463768115942029
+     },
+     "identity": {
+      "n_pairs": 5,
+      "consistency": 0.08214480287578249,
+      "null_mean": -0.006519450833605546,
+      "null95": 0.17585557989661696,
+      "p": 0.19290354822588707
+     },
+     "divisible": {
+      "n_pairs": 5,
+      "consistency": 0.07279052718351244,
+      "null_mean": 0.0010336114850596333,
+      "null95": 0.20226644275576625,
+      "p": 0.22288855572213892
+     },
+     "commutative": {
+      "n_pairs": 6,
+      "consistency": 0.2371642183704112,
+      "null_mean": -0.0001185239422536546,
+      "null95": 0.16398274066926277,
+      "p": 0.01899050474762619
+     }
+    },
+    "length_projected": {
+     "associative": {
+      "n_pairs": 5,
+      "consistency": 0.09645783753569519,
+      "null_mean": -0.0010728057938720074,
+      "null95": 0.16852746046229675,
+      "p": 0.15292353823088456
+     },
+     "identity": {
+      "n_pairs": 5,
+      "consistency": 0.09343759102271462,
+      "null_mean": -0.005526409216890261,
+      "null95": 0.16369397915869696,
+      "p": 0.14842578710644677
+     },
+     "divisible": {
+      "n_pairs": 5,
+      "consistency": 0.10047142179503088,
+      "null_mean": 0.0004985430407576012,
+      "null95": 0.17807266009825146,
+      "p": 0.15792103948025987
+     },
+     "commutative": {
+      "n_pairs": 6,
+      "consistency": 0.13845805828813787,
+      "null_mean": 0.0012443403342075221,
+      "null95": 0.1503037668656137,
+      "p": 0.06596701649175413
+     }
+    }
+   },
+   "partial_operation": {
+    "axiom_rdm_beta": 0.19676197724695976,
+    "axiom_rdm_p": 0.1791641671665667,
+    "lexical_beta": 0.53132658479588,
+    "offsets": {
+     "total": {
+      "n_pairs": 3,
+      "consistency": -0.06863081025018322,
+      "null_mean": -0.008125350947310685,
+      "null95": 0.4532334265539723,
+      "p": 0.5322338830584707
+     },
+     "identity": {
+      "n_pairs": 2,
+      "consistency": 0.00033837543890706534,
+      "null_mean": -0.009995627362328502,
+      "null95": 0.6165276026664133,
+      "p": 0.4897551224387806
+     },
+     "divisible": {
+      "n_pairs": 2,
+      "consistency": -0.09359543134407568,
+      "null_mean": -0.02254931524407663,
+      "null95": 0.6728050359502724,
+      "p": 0.567216391804098
+     }
+    },
+    "analogy": {
+     "n": 5,
+     "top1": 0.2,
+     "mean_rank": 1.8,
+     "chance_mean_rank": 2.0,
+     "chance_top1": 0.3333333333333333
+    }
+   }
   }
  }
 }

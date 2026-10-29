@@ -16,5 +16,95 @@
    "pandas": "3.1.0",
    "statsmodels": "0.15.0"
   }
+ },
+ {
+  "phase": "extract",
+  "time": "2026-10-29T17:24:08",
+  "git_sha": "994d095f111a4f56a75a751f007958370a00ec28",
+  "git_dirty": true,
+  "config": "configs/robustness.yaml",
+  "config_sha256": "4e09a05c225c75be2c6caa7c932f244069fd18bd9ecee1c9d1c494b41532e32c",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "lattice",
+  "time": "2026-10-29T18:31:43",
+  "git_sha": "994d095f111a4f56a75a751f007958370a00ec28",
+  "git_dirty": true,
+  "config": "configs/robustness.yaml",
+  "config_sha256": "4e09a05c225c75be2c6caa7c932f244069fd18bd9ecee1c9d1c494b41532e32c",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "structures",
+  "time": "2026-10-29T18:32:24",
+  "git_sha": "994d095f111a4f56a75a751f007958370a00ec28",
+  "git_dirty": true,
+  "config": "configs/robustness.yaml",
+  "config_sha256": "4e09a05c225c75be2c6caa7c932f244069fd18bd9ecee1c9d1c494b41532e32c",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "chainfreq",
+  "time": "2026-10-29T18:34:39",
+  "git_sha": "994d095f111a4f56a75a751f007958370a00ec28",
+  "git_dirty": true,
+  "config": "configs/robustness.yaml",
+  "config_sha256": "4e09a05c225c75be2c6caa7c932f244069fd18bd9ecee1c9d1c494b41532e32c",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "report",
+  "time": "2026-10-29T18:42:42",
+  "git_sha": "994d095f111a4f56a75a751f007958370a00ec28",
+  "git_dirty": true,
+  "config": "configs/robustness.yaml",
+  "config_sha256": "4e09a05c225c75be2c6caa7c932f244069fd18bd9ecee1c9d1c494b41532e32c",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
  }
 ]

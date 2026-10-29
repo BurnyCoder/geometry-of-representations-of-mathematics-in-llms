@@ -1,0 +1,656 @@
+concept,field,primary,split,decl,module,source,depth,mean_rating
+point of closure,general_topology,True,pilot,,,,,4.720416770937542
+completely regular,general_topology,True,confirmatory,,,,,5.155863561279451
+first-countable,general_topology,True,confirmatory,,,,,5.023529709472011
+perfectly normal,general_topology,True,confirmatory,,,,,5.225444010420081
+other glossaries,general_topology,True,confirmatory,,,,,4.685727978125215
+open ball,general_topology,True,confirmatory,,,,,4.412817121250555
+clopen set,general_topology,True,confirmatory,,,,,5.307247020304203
+isolated point,general_topology,True,confirmatory,,,,,4.274847011877379
+locally finite,general_topology,True,confirmatory,,,,,4.546151348719529
+path-connected component,general_topology,True,confirmatory,,,,,4.753652938137141
+identification map,general_topology,True,confirmatory,,,,,4.7395359901711345
+locally compact,general_topology,True,pilot,,,,,5.089853322055812
+simply connected,general_topology,True,confirmatory,IsSimplyConnected,Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected,camelcase,90.0,4.603664133154477
+sober,general_topology,True,confirmatory,,,,,4.274082066025585
+weakly countably compact,general_topology,True,confirmatory,,,,,5.204734771512449
+ultrametric,general_topology,True,confirmatory,,,,,5.6075284512868775
+semiregular,general_topology,True,confirmatory,,,,,4.532477242134822
+frontier,general_topology,True,confirmatory,,,,,4.631664457653339
+semi-preopen,general_topology,True,confirmatory,,,,,5.312295970662187
+uniform structure,general_topology,True,confirmatory,,,,,5.089581729805407
+pseudocompact,general_topology,True,confirmatory,,,,,5.406638971103045
+subbase,general_topology,True,confirmatory,,,,,5.239884317736141
+metric invariant,general_topology,True,confirmatory,,,,,5.119142845927854
+core-compact space,general_topology,True,confirmatory,,,,,5.292683011541764
+polyadic,general_topology,True,confirmatory,,,,,4.849547117560481
+closed function,general_topology,True,confirmatory,,,,,4.355655723872284
+countably locally finite,general_topology,True,confirmatory,,,,,4.959586943693769
+hemicompact,general_topology,True,pilot,,,,,5.312708422464008
+homeomorphism,general_topology,True,confirmatory,Homeomorph,Mathlib.Topology.Homeomorph.Defs,mathlib_yaml,53.0,5.448852243057142
+identification space,general_topology,True,confirmatory,,,,,5.4213816475433605
+Kolmogorov axiom,general_topology,False,confirmatory,,,,,5.434311210953941
+smaller topology,general_topology,False,confirmatory,,,,,4.924062082233529
+discrete topology,general_topology,False,pilot,DiscreteTopology,Mathlib.Topology.Order,camelcase,50.0,5.209799940115772
+well-connected,general_topology,False,confirmatory,,,,,4.557814988967341
+semi-open,general_topology,False,pilot,,,,,4.3749818012584
+regular Hausdorff,general_topology,False,confirmatory,,,,,5.440592678690639
+topologically complete,general_topology,False,confirmatory,,,,,5.572008674731478
+Vietoris,general_topology,False,confirmatory,,,,,5.038153300527483
+Cauchy sequence,general_topology,False,pilot,CauchySeq,Mathlib.Topology.UniformSpace.Cauchy,mathlib_yaml,72.0,4.846281709440518
+Borel set,general_topology,False,confirmatory,,,,,5.483411770313978
+subgroup,group_theory,True,pilot,Subgroup,Mathlib.Algebra.Group.Subgroup.Defs,mathlib_yaml,27.0,4.573330783091175
+characteristic subgroup,group_theory,True,pilot,,,,,5.195326143836913
+conjugate subgroups,group_theory,True,confirmatory,,,,,4.916744020224239
+conjugate elements,group_theory,True,confirmatory,,,,,4.631398054518892
+direct product,group_theory,True,confirmatory,,,,,4.628715297731105
+transitively normal subgroup,group_theory,True,pilot,,,,,5.477238507204068
+commutator subgroup,group_theory,True,confirmatory,,,,,5.389472410897724
+derived subgroup,group_theory,True,confirmatory,,,,,4.998328886111267
+contranormal subgroup,group_theory,True,pilot,,,,,5.718097258048753
+subgroup series,group_theory,True,confirmatory,,,,,5.00877196722043
+normal subgroup,group_theory,True,confirmatory,Subgroup.Normal,Mathlib.Algebra.Group.Subgroup.Defs,mathlib_yaml,27.0,4.896456531016156
+ascendant subgroup,group_theory,True,confirmatory,,,,,4.962722894231168
+normal closure,group_theory,True,confirmatory,,,,,5.526386685999266
+normal series,group_theory,True,confirmatory,,,,,4.875101851842676
+no small subgroup,group_theory,True,confirmatory,,,,,5.458049098184953
+real element,group_theory,True,confirmatory,,,,,4.439638558930407
+conjugacy-closed subgroup,group_theory,True,confirmatory,,,,,5.289091942987095
+normal core,group_theory,True,confirmatory,,,,,5.101889498842259
+central subgroup,group_theory,True,confirmatory,,,,,4.920727903333803
+perfect core,group_theory,True,confirmatory,,,,,4.812018152442761
+commutator,group_theory,True,confirmatory,,,,,4.795575966204827
+serial subgroup,group_theory,True,confirmatory,,,,,5.073894022614695
+composition series,group_theory,True,confirmatory,CompositionSeries,Mathlib.Order.JordanHolder,camelcase,52.0,5.199694308491114
+subnormal subgroup,group_theory,True,confirmatory,,,,,5.0498022675359
+conjugacy class,group_theory,True,confirmatory,,,,,4.930361792289962
+lattice of subgroups,group_theory,True,confirmatory,,,,,5.3883869429506985
+permutation group,group_theory,False,confirmatory,,,,,5.16598484327551
+trivial group,group_theory,False,pilot,,,,,3.292291969837
+group isomorphism,group_theory,False,confirmatory,,,,,5.19131378014572
+locally cyclic group,group_theory,False,confirmatory,,,,,4.745051704579964
+finitely generated group,group_theory,False,confirmatory,,,,,4.564756973995827
+cyclic group,group_theory,False,pilot,IsCyclic,Mathlib.Algebra.Group.DivInvMonoid,mathlib_yaml,10.0,4.5920594240694
+finite group,group_theory,False,confirmatory,,,,,4.612638967732589
+group automorphism,group_theory,False,confirmatory,,,,,5.332745706429705
+simple group,group_theory,False,confirmatory,IsSimpleGroup,Mathlib.GroupTheory.Subgroup.Simple,mathlib_yaml,47.0,5.03131858445704
+torsion group,group_theory,False,pilot,,,,,5.190280670921008
+cokernel,ring_module_theory,True,confirmatory,,,,,5.481824235854826
+torsion-free,ring_module_theory,True,confirmatory,,,,,4.6613830295779435
+pure submodule,ring_module_theory,True,confirmatory,,,,,5.139596171289061
+shapiro,ring_module_theory,True,confirmatory,,,,,4.345930900424719
+endomorphism,ring_module_theory,True,confirmatory,,,,,4.982559649506584
+finite length,ring_module_theory,True,confirmatory,IsFiniteLength,Mathlib.RingTheory.FiniteLength,camelcase,72.0,3.423162258521188
+nearring,ring_module_theory,True,confirmatory,,,,,5.003800733907458
+algebraically compact,ring_module_theory,True,confirmatory,,,,,5.412549446492146
+finitely presented,ring_module_theory,True,confirmatory,,,,,4.860449919942766
+semiprime,ring_module_theory,True,confirmatory,,,,,4.331568125945826
+structure theorem,ring_module_theory,True,confirmatory,Module.equiv_free_prod_directSum,Mathlib.Algebra.Module.PID,mathlib_yaml,91.0,5.203038929922816
+subring,ring_module_theory,True,pilot,Subring,Mathlib.Algebra.Ring.Subring.Defs,mathlib_yaml,29.0,4.63058368601681
+boolean,ring_module_theory,True,confirmatory,,,,,4.405694040042969
+submodule,ring_module_theory,True,confirmatory,,,,,4.921966627511817
+ext functor,ring_module_theory,True,pilot,,,,,6.0869050428736955
+exterior algebra,ring_module_theory,True,confirmatory,ExteriorAlgebra,Mathlib.LinearAlgebra.ExteriorAlgebra.Basic,mathlib_yaml,84.0,5.651267884143938
+completely reducible,ring_module_theory,True,pilot,,,,,4.80095076514408
+quasi-Frobenius,ring_module_theory,True,confirmatory,,,,,5.458225140658517
+countably generated,ring_module_theory,True,confirmatory,,,,,4.784558231127448
+bimodule,ring_module_theory,True,confirmatory,,,,,5.5884362646417385
+minimal and maximal,ring_module_theory,True,pilot,,,,,4.059780529118143
+clifford algebra,ring_module_theory,True,confirmatory,CliffordAlgebra,Mathlib.LinearAlgebra.CliffordAlgebra.Basic,mathlib_yaml,83.0,5.64512872666819
+commutative,ring_module_theory,True,pilot,,,,,4.308734954936274
+determinant,ring_module_theory,True,confirmatory,Matrix.det,Mathlib.LinearAlgebra.Matrix.Determinant.Basic,mathlib_yaml,73.0,4.763132020229629
+semiprimitive,ring_module_theory,True,confirmatory,,,,,4.965096139426653
+torsionless,ring_module_theory,True,confirmatory,,,,,4.889129081973806
+closed submodule,ring_module_theory,True,confirmatory,ClosedSubmodule,Mathlib.Topology.Algebra.Module.ClosedSubmodule,camelcase,85.0,5.029283165698871
+semiring,ring_module_theory,True,confirmatory,,,,,5.072953915999581
+enveloping algebra,ring_module_theory,True,confirmatory,,,,,5.720006150678576
+chain complex,ring_module_theory,True,confirmatory,ChainComplex,Mathlib.Algebra.Homology.HomologicalComplex,mathlib_yaml,72.0,5.067296580256273
+global,ring_module_theory,False,confirmatory,,,,,4.878774007937561
+smith,ring_module_theory,False,pilot,,,,,3.591283210708449
+sheaf of modules,ring_module_theory,False,confirmatory,SheafOfModules,Mathlib.Algebra.Category.ModuleCat.Sheaf,camelcase,79.0,6.213172877634254
+module,ring_module_theory,False,confirmatory,Module,Mathlib.Algebra.Module.Defs,mathlib_yaml,20.0,5.067261289999199
+Azumaya,ring_module_theory,False,confirmatory,,,,,5.2684516820979
+enough,ring_module_theory,False,confirmatory,,,,,4.38967669592239
+change,ring_module_theory,False,confirmatory,,,,,4.459895738322909
+fitting,ring_module_theory,False,confirmatory,,,,,4.6257980995966745
+generate,ring_module_theory,False,confirmatory,,,,,4.735162027645856
+filtered ring,ring_module_theory,False,confirmatory,,,,,5.332023485874136
+normally flat,commutative_algebra,True,confirmatory,,,,,4.631136829266325
+discrete valuation ring,commutative_algebra,True,confirmatory,IsDiscreteValuationRing,Mathlib.RingTheory.DiscreteValuationRing.Basic,camelcase,74.0,5.240026942958745
+quasi,commutative_algebra,True,confirmatory,,,,,4.605641659349203
+face ring,commutative_algebra,True,confirmatory,,,,,5.121049909153953
+affine ring,commutative_algebra,True,confirmatory,,,,,5.436069349719522
+conormal,commutative_algebra,True,confirmatory,,,,,5.1694347649657475
+residue field,commutative_algebra,True,pilot,,,,,5.313479545370986
+bass number,commutative_algebra,True,confirmatory,,,,,4.917130457159753
+tight closure,commutative_algebra,True,confirmatory,,,,,5.288295631452153
+tangent,commutative_algebra,True,pilot,,,,,4.5587688169519724
+modular system,commutative_algebra,True,confirmatory,,,,,4.773666211481516
+coCoA,commutative_algebra,True,confirmatory,,,,,4.888556479165952
+lying over property,commutative_algebra,True,confirmatory,,,,,5.046799712193509
+japanese ring,commutative_algebra,True,pilot,,,,,5.028569902759045
+mori domain,commutative_algebra,True,confirmatory,,,,,5.585786603818026
+pseudo,commutative_algebra,True,pilot,,,,,4.433432262546073
+seminormal,commutative_algebra,True,confirmatory,,,,,5.015332758814718
+divisible,commutative_algebra,True,confirmatory,,,,,3.9445868720601234
+determinantal,commutative_algebra,True,confirmatory,,,,,5.1273272507824
+going down,commutative_algebra,True,confirmatory,,,,,3.943663267108301
+equicharacteristic,commutative_algebra,True,pilot,,,,,4.712238015141338
+congruence ideal,commutative_algebra,True,confirmatory,,,,,5.527660445504201
+codimension,commutative_algebra,True,pilot,,,,,4.877030358358752
+coprimary,commutative_algebra,True,confirmatory,,,,,4.484963279838364
+fractional ideal,commutative_algebra,True,confirmatory,FractionalIdeal,Mathlib.RingTheory.FractionalIdeal.Basic,mathlib_yaml,77.0,5.57910531545834
+cotangent,commutative_algebra,True,confirmatory,,,,,4.623214826511685
+acceptable ring,commutative_algebra,True,confirmatory,,,,,5.114957456865038
+infinitely generated,commutative_algebra,True,confirmatory,,,,,5.591834049128617
+exact zero divisor,commutative_algebra,True,confirmatory,,,,,5.1395034415957825
+divisorial ideal,commutative_algebra,True,confirmatory,,,,,5.628261299221776
+Zariski,commutative_algebra,False,confirmatory,,,,,5.460499917545046
+Laskerian ring,commutative_algebra,False,confirmatory,,,,,5.826845702210751
+Prüfer domain,commutative_algebra,False,confirmatory,,,,,5.439500836073421
+Hironaka,commutative_algebra,False,confirmatory,,,,,5.259459621272981
+excellent,commutative_algebra,False,confirmatory,,,,,4.061589127406478
+linked,commutative_algebra,False,confirmatory,,,,,4.371829733485356
+clean,commutative_algebra,False,pilot,,,,,4.013323124187688
+Matlis,commutative_algebra,False,confirmatory,,,,,4.983869296032935
+Boolean ring,commutative_algebra,False,confirmatory,BooleanRing,Mathlib.Algebra.Ring.BooleanRing,camelcase,42.0,5.013068935251795
+semi-local,commutative_algebra,False,confirmatory,,,,,4.855219098584105
+simplicial set,category_theory,True,confirmatory,,,,,5.703005573964522
+comma,category_theory,True,confirmatory,,,,,3.920382757050296
+essentially surjective,category_theory,True,confirmatory,,,,,5.130278481869027
+preorder,category_theory,True,confirmatory,,,,,4.672849906608462
+forgetful functor,category_theory,True,confirmatory,,,,,5.38730365744171
+presheaf,category_theory,True,pilot,,,,,5.813234718788105
+diagonal functor,category_theory,True,confirmatory,,,,,5.880315785024625
+preadditive,category_theory,True,confirmatory,,,,,4.97277446789667
+parallel morphism,category_theory,True,pilot,,,,,5.3000031467915205
+diagram,category_theory,True,confirmatory,,,,,4.256378280115314
+coequalizer,category_theory,True,confirmatory,,,,,5.90528015117161
+colored operad,category_theory,True,confirmatory,,,,,6.006819397676736
+skeletal,category_theory,True,confirmatory,,,,,4.13943828184468
+distributor,category_theory,True,pilot,,,,,4.335327698849142
+groupoid,category_theory,True,confirmatory,,,,,5.276958850212395
+spherical,category_theory,True,confirmatory,,,,,4.256666917198648
+monadic,category_theory,True,pilot,,,,,5.054983925850441
+cartesian morphism,category_theory,True,confirmatory,,,,,5.542477196121278
+cartesian functor,category_theory,True,confirmatory,,,,,5.98206697187076
+free functor,category_theory,True,pilot,,,,,6.113509287572621
+semi-abelian,category_theory,True,confirmatory,,,,,5.189996890956536
+subcategory,category_theory,True,confirmatory,,,,,4.543986932374537
+cubical,category_theory,True,confirmatory,,,,,3.9885509125112244
+polygraph,category_theory,True,confirmatory,,,,,4.345609507833918
+inductive limit,category_theory,True,pilot,InductiveLimit,Mathlib.Topology.MetricSpace.Gluing,camelcase,83.0,5.504763725718173
+multicategory,category_theory,True,confirmatory,,,,,5.376627511655291
+coherence theorem,category_theory,True,pilot,,,,,5.351551286992617
+subquotient,category_theory,True,confirmatory,,,,,4.669976058260848
+coproduct,category_theory,True,confirmatory,,,,,5.283581224813436
+cartesian closed,category_theory,True,confirmatory,CategoryTheory.MonoidalClosed,Mathlib.CategoryTheory.Monoidal.Closed.Basic,mathlib_yaml,51.0,5.711270765867084
+simplicial category,category_theory,False,pilot,CategoryTheory.SimplicialCategory,Mathlib.AlgebraicTopology.SimplicialCategory.Basic,camelcase,75.0,5.929929084513181
+pseudo-tensor category,category_theory,False,confirmatory,,,,,6.422503916944454
+empty,category_theory,False,confirmatory,,,,,3.8863988121350608
+slice,category_theory,False,pilot,,,,,4.2584942256604945
+adequate,category_theory,False,confirmatory,,,,,4.196648930897936
+pointed,category_theory,False,pilot,,,,,3.809771629050374
+Lawvere,category_theory,False,confirmatory,,,,,5.09861330439647
+string,category_theory,False,pilot,,,,,4.537032243485252
+category of,category_theory,False,confirmatory,,,,,5.906258912378689
+simpson,category_theory,False,confirmatory,,,,,4.01037622258688
+anti-triangle,graph_theory,True,confirmatory,,,,,4.847452962033761
+free edge,graph_theory,True,confirmatory,,,,,4.3833258447897
+peripheral,graph_theory,True,confirmatory,,,,,4.197297595208511
+vertex cut,graph_theory,True,confirmatory,,,,,4.410831124677013
+pathwidth,graph_theory,True,pilot,,,,,4.637049740422905
+clique-width,graph_theory,True,pilot,,,,,5.049451247924783
+polytree,graph_theory,True,pilot,,,,,4.674393761514996
+minimum cut,graph_theory,True,confirmatory,,,,,4.595681413949933
+girth,graph_theory,True,confirmatory,,,,,4.160278345225379
+weakly connected,graph_theory,True,confirmatory,,,,,4.448077044837798
+square brackets,graph_theory,True,pilot,,,,,3.7918662349984515
+tree decomposition,graph_theory,True,confirmatory,,,,,4.806920108540605
+hyperarc,graph_theory,True,confirmatory,,,,,5.067651092909121
+cut space,graph_theory,True,confirmatory,,,,,5.374322634539567
+diconnected,graph_theory,True,confirmatory,,,,,4.874630076267446
+reachable,graph_theory,True,confirmatory,,,,,4.54482225101674
+directed edge,graph_theory,True,confirmatory,,,,,3.9095226756471675
+binding number,graph_theory,True,pilot,,,,,4.847544557803
+unary vertex,graph_theory,True,confirmatory,,,,,4.244771190957787
+hypercube,graph_theory,True,pilot,,,,,4.8544034055472975
+multiple adjacency,graph_theory,True,confirmatory,,,,,4.6638801135898875
+subgraph,graph_theory,True,confirmatory,,,,,4.206494679208845
+reachability,graph_theory,True,confirmatory,,,,,4.546795849348807
+coloring,graph_theory,True,pilot,,,,,4.190285107741754
+digon,graph_theory,True,confirmatory,,,,,3.7607844319039336
+pseudograph,graph_theory,True,confirmatory,,,,,4.707912770643209
+traceable,graph_theory,True,confirmatory,,,,,4.499176090330972
+sibling,graph_theory,True,confirmatory,,,,,3.6959229900191226
+sparse,graph_theory,True,confirmatory,,,,,4.3700954714828795
+supergraph,graph_theory,True,confirmatory,,,,,4.98706364511357
+arrow,graph_theory,False,confirmatory,,,,,4.290067022743945
+out-degree,graph_theory,False,pilot,,,,,4.249467228093029
+independent,graph_theory,False,confirmatory,,,,,4.5094656975416
+in-degree,graph_theory,False,confirmatory,,,,,4.199969025406365
+parent,graph_theory,False,confirmatory,,,,,3.856412645118932
+utility graph,graph_theory,False,confirmatory,,,,,4.822409543635634
+Meyniel,graph_theory,False,confirmatory,,,,,4.308272756636143
+block,graph_theory,False,confirmatory,,,,,4.331282787995103
+tournament,graph_theory,False,confirmatory,,,,,4.44604746857658
+Hamiltonian,graph_theory,False,confirmatory,,,,,5.048418486646066
+indecomposable ordinal,set_theory_logic,True,pilot,,,,,5.983350759022869
+relative complement,set_theory_logic,True,confirmatory,,,,,4.621442578073281
+supercompact,set_theory_logic,True,confirmatory,,,,,5.6145061221517
+axiom,set_theory_logic,True,confirmatory,,,,,4.908362097029264
+paradox of denotation,set_theory_logic,True,confirmatory,,,,,5.51951588812517
+jensen,set_theory_logic,True,confirmatory,,,,,4.459352200695624
+tuple,set_theory_logic,True,confirmatory,,,,,4.3587973441754
+poset,set_theory_logic,True,confirmatory,,,,,4.78742464488217
+gimel,set_theory_logic,True,confirmatory,,,,,4.261883019159238
+lower bound,set_theory_logic,True,confirmatory,,,,,4.289498477635789
+global choice,set_theory_logic,True,pilot,,,,,5.138739827321842
+cofinal,set_theory_logic,True,confirmatory,,,,,5.035015009654065
+epsilon,set_theory_logic,True,pilot,,,,,4.894184758576254
+morass,set_theory_logic,True,confirmatory,,,,,4.080421923504521
+class comprehension schema,set_theory_logic,True,confirmatory,,,,,5.659229377983138
+indescribable cardinal,set_theory_logic,True,pilot,,,,,6.307129497358498
+aleph,set_theory_logic,True,confirmatory,,,,,5.842916027953227
+symmetric model,set_theory_logic,True,confirmatory,,,,,4.585043211302643
+meager,set_theory_logic,True,confirmatory,,,,,5.008470703847706
+equipotent,set_theory_logic,True,confirmatory,,,,,4.716860794695094
+upper bound,set_theory_logic,True,confirmatory,,,,,4.288688312575687
+order type,set_theory_logic,True,confirmatory,,,,,5.341607598083404
+arithmetical,set_theory_logic,True,confirmatory,,,,,3.942111562627057
+improper,set_theory_logic,True,confirmatory,,,,,4.812926218418094
+uniformity,set_theory_logic,True,confirmatory,,,,,4.4187169211557675
+separation axiom,set_theory_logic,True,confirmatory,,,,,5.014892982435413
+zero function,set_theory_logic,True,confirmatory,,,,,4.045435648489122
+pantachy,set_theory_logic,True,confirmatory,,,,,3.9713199759523072
+equinumerous,set_theory_logic,True,confirmatory,,,,,4.718841017611946
+continuum problem,set_theory_logic,True,confirmatory,,,,,5.733605448932697
+pure set,set_theory_logic,False,confirmatory,,,,,5.475775470530304
+choice set,set_theory_logic,False,confirmatory,,,,,4.563355188001879
+Burali-Forti,set_theory_logic,False,pilot,,,,,5.781196378016223
+richard,set_theory_logic,False,confirmatory,,,,,3.869335207156837
+limitation-of-size conception of set,set_theory_logic,False,pilot,,,,,5.159327119006775
+union,set_theory_logic,False,confirmatory,,,,,4.077250725482979
+positive set theory,set_theory_logic,False,confirmatory,,,,,5.120630069170147
+Solovay,set_theory_logic,False,confirmatory,,,,,4.601993532851338
+second,set_theory_logic,False,confirmatory,,,,,4.305272288465251
+Vopenka,set_theory_logic,False,pilot,,,,,5.27500548089544
+ample,algebraic_geometry,True,confirmatory,,,,,4.115179613853495
+osculate,algebraic_geometry,True,confirmatory,,,,,4.757472994582106
+linearization,algebraic_geometry,True,confirmatory,,,,,4.556951112153911
+secundum,algebraic_geometry,True,confirmatory,,,,,3.866297358336548
+inscribed,algebraic_geometry,True,confirmatory,,,,,4.132116202459049
+linear system,algebraic_geometry,True,pilot,,,,,4.349770180077637
+spherical variety,algebraic_geometry,True,confirmatory,,,,,5.395008490808929
+proximate,algebraic_geometry,True,confirmatory,,,,,4.379597615916282
+hyperplane,algebraic_geometry,True,confirmatory,,,,,4.777045135347483
+subscheme,algebraic_geometry,True,confirmatory,,,,,5.170653352863155
+double point,algebraic_geometry,True,confirmatory,,,,,4.5741300147104385
+monoidal transformation,algebraic_geometry,True,confirmatory,,,,,5.324076364554155
+regulus,algebraic_geometry,True,confirmatory,,,,,4.70078975140738
+tetrastigm,algebraic_geometry,True,pilot,,,,,4.665449358755723
+elation,algebraic_geometry,True,confirmatory,,,,,3.7618206547728428
+undulation,algebraic_geometry,True,confirmatory,,,,,4.7168075402344884
+septic,algebraic_geometry,True,confirmatory,,,,,4.670886905863881
+postulation,algebraic_geometry,True,confirmatory,,,,,4.603256531913455
+valence,algebraic_geometry,True,pilot,,,,,4.444164846558124
+transvectant,algebraic_geometry,True,confirmatory,,,,,4.874771131163773
+kenotheme,algebraic_geometry,True,confirmatory,,,,,4.2926431510907905
+loop group,algebraic_geometry,True,pilot,,,,,5.593948018019243
+regular embedding,algebraic_geometry,True,confirmatory,,,,,4.943629758704144
+porism,algebraic_geometry,True,confirmatory,,,,,4.555950821842998
+perspectrix,algebraic_geometry,True,confirmatory,,,,,5.072101799189113
+finite fibers,algebraic_geometry,True,confirmatory,,,,,4.892020487653402
+homaloidal,algebraic_geometry,True,pilot,,,,,4.542108959984034
+node cusp,algebraic_geometry,True,confirmatory,,,,,4.652228727432278
+homographic,algebraic_geometry,True,confirmatory,,,,,4.656089866883121
+tripartite,algebraic_geometry,True,pilot,,,,,4.315677973499987
+cross-ratio,algebraic_geometry,False,confirmatory,,,,,5.069182884452554
+ruled,algebraic_geometry,False,confirmatory,,,,,4.166848363665243
+Lelong number,algebraic_geometry,False,confirmatory,,,,,5.805990222492255
+Euler sequence,algebraic_geometry,False,confirmatory,,,,,4.788371134626989
+Jacobian set,algebraic_geometry,False,pilot,,,,,5.340279163676314
+Cayleyan,algebraic_geometry,False,confirmatory,,,,,5.0411052179212374
+Artin stack,algebraic_geometry,False,pilot,,,,,6.461272580044654
+Hurwitz curve,algebraic_geometry,False,pilot,,,,,5.550348456017673
+locally Noetherian,algebraic_geometry,False,confirmatory,AlgebraicGeometry.IsLocallyNoetherian,Mathlib.AlgebraicGeometry.Noetherian,camelcase,106.0,5.370122335075091
+Jacobian variety,algebraic_geometry,False,confirmatory,,,,,5.84254354267614
+weights,number_theory,True,confirmatory,,,,,4.268444070197195
+automorphic form,number_theory,True,confirmatory,,,,,6.058560574039196
+valued field,number_theory,True,confirmatory,,,,,5.107171849696897
+canonical height,number_theory,True,pilot,,,,,5.33990954219674
+local zeta-function,number_theory,True,confirmatory,,,,,5.841641907977949
+flat cohomology,number_theory,True,confirmatory,,,,,5.676996036316268
+good reduction,number_theory,True,confirmatory,,,,,5.387157721095718
+diagonal forms,number_theory,True,confirmatory,,,,,4.78514882006372
+twin prime,number_theory,True,pilot,,,,,4.4111854441774385
+integer,number_theory,True,confirmatory,,,,,3.852854880077454
+modular form,number_theory,True,confirmatory,ModularForm,Mathlib.NumberTheory.ModularForms.Basic,camelcase,151.0,5.542305283520061
+unlikely intersection,number_theory,True,confirmatory,,,,,4.82357762385315
+function field analogy,number_theory,True,confirmatory,,,,,5.345589244583
+uniformity conjecture,number_theory,True,confirmatory,,,,,5.225396257126704
+linear torus,number_theory,True,pilot,,,,,4.91935813605475
+naive height,number_theory,True,confirmatory,,,,,4.417042311280966
+quadratic residue,number_theory,True,confirmatory,,,,,4.899952401474972
+chinese remainder theorem,number_theory,True,pilot,Ideal.quotientInfRingEquivPiQuotient,Mathlib.RingTheory.Ideal.Quotient.Operations,mathlib_yaml,67.0,4.845156084590902
+abc conjecture,number_theory,True,confirmatory,,,,,5.9877462849835865
+special set,number_theory,True,confirmatory,,,,,4.566506726900116
+geometric class field theory,number_theory,True,confirmatory,,,,,6.4220402736682445
+tate conjecture,number_theory,True,confirmatory,,,,,6.282615842394686
+bad reduction,number_theory,True,confirmatory,,,,,5.466701541949685
+tate curve,number_theory,True,confirmatory,,,,,5.52759235080642
+totient function,number_theory,True,confirmatory,,,,,4.6091211175662465
+non-abelian,number_theory,True,confirmatory,,,,,5.078642122990762
+height function,number_theory,True,confirmatory,,,,,4.258781729717157
+adele,number_theory,True,pilot,,,,,4.690006085981925
+quasi-algebraic closure,number_theory,True,pilot,,,,,5.843392792274244
+infinite descent,number_theory,True,confirmatory,,,,,5.359160962592189
+Dirichlet,number_theory,False,pilot,,,,,4.5734898227577405
+Mordell conjecture,number_theory,False,confirmatory,,,,,5.543217220964531
+Weil conjectures,number_theory,False,pilot,,,,,6.126300993530701
+Subspace theorem,number_theory,False,confirmatory,,,,,5.21631630063833
+Mersenne prime,number_theory,False,confirmatory,,,,,4.678886049427092
+Tamagawa numbers,number_theory,False,confirmatory,,,,,5.516226488941659
+Hecke,number_theory,False,confirmatory,,,,,5.204641321053107
+algebraic number field,number_theory,False,confirmatory,,,,,5.427134290550991
+Weil function,number_theory,False,confirmatory,,,,,5.396733352177155
+Étale cohomology,number_theory,False,pilot,,,,,6.525778325992481
+residue,real_complex_analysis,True,confirmatory,,,,,4.769504898712815
+subanalytic,real_complex_analysis,True,confirmatory,,,,,5.24370663620842
+microlocal,real_complex_analysis,True,confirmatory,,,,,5.51840066370399
+archimedean,real_complex_analysis,True,pilot,,,,,4.636897617174934
+subharmonic,real_complex_analysis,True,pilot,,,,,4.924437985173427
+hardy space,real_complex_analysis,True,confirmatory,,,,,5.676611919072457
+semicontinuous,real_complex_analysis,True,pilot,,,,,5.015986872642922
+argument principle,real_complex_analysis,True,confirmatory,,,,,5.1350532744157436
+measure space,real_complex_analysis,True,confirmatory,MeasureTheory.MeasureSpace,Mathlib.MeasureTheory.Measure.MeasureSpaceDef,camelcase,92.0,5.3014020012730425
+convolution,real_complex_analysis,True,confirmatory,MeasureTheory.convolution,Mathlib.Analysis.Convolution,mathlib_yaml,143.0,4.918863589982114
+measurable function,real_complex_analysis,True,confirmatory,Measurable,Mathlib.MeasureTheory.MeasurableSpace.Defs,mathlib_yaml,46.0,4.789308902506794
+whitney,real_complex_analysis,True,confirmatory,,,,,4.331938780844212
+hypoelliptic,real_complex_analysis,True,confirmatory,,,,,5.8066861347761005
+method of stationary phase,real_complex_analysis,True,confirmatory,,,,,5.353812643646961
+differentiation,real_complex_analysis,True,confirmatory,,,,,4.394036377760737
+fourier,real_complex_analysis,True,confirmatory,,,,,4.643589592926825
+clarke generalized derivative,real_complex_analysis,True,confirmatory,,,,,5.6242740119729815
+semianalytic,real_complex_analysis,True,confirmatory,,,,,5.05043716635555
+accumulation,real_complex_analysis,True,pilot,,,,,4.226786635699682
+oscillatory integral,real_complex_analysis,True,confirmatory,,,,,5.24162415387885
+microfunction,real_complex_analysis,True,pilot,,,,,5.008550365610669
+basel,real_complex_analysis,True,confirmatory,,,,,3.8107159066324434
+infinitesimal,real_complex_analysis,True,confirmatory,,,,,5.425877973825361
+power series,real_complex_analysis,True,confirmatory,PowerSeries,Mathlib.RingTheory.PowerSeries.Basic,mathlib_yaml,70.0,4.852064396992016
+measurable set,real_complex_analysis,True,confirmatory,MeasurableSet,Mathlib.MeasureTheory.MeasurableSpace.Defs,camelcase,46.0,4.850053032666135
+line integral,real_complex_analysis,True,pilot,,,,,4.909519676642958
+cutoff,real_complex_analysis,True,pilot,,,,,4.259669083461631
+finite interesection property,real_complex_analysis,True,confirmatory,,,,,4.759447482259323
+differentiable,real_complex_analysis,True,confirmatory,,,,,4.428912201634375
+subderivative,real_complex_analysis,True,confirmatory,,,,,5.370527510376026
+Euler,real_complex_analysis,False,confirmatory,,,,,4.496789918436359
+Egoroff,real_complex_analysis,False,pilot,,,,,4.728049470111728
+Hardy-Littlewood maximal inequality,real_complex_analysis,False,confirmatory,,,,,5.703339545541287
+Schwarz lemma,real_complex_analysis,False,confirmatory,Complex.norm_le_norm_of_mapsTo_ball,Mathlib.Analysis.Complex.Schwarz,mathlib_yaml,151.0,4.952882319611187
+Gauss,real_complex_analysis,False,confirmatory,,,,,4.304901549592614
+Lelong,real_complex_analysis,False,confirmatory,,,,,4.929929801728576
+Minkowski,real_complex_analysis,False,confirmatory,,,,,4.963922155865778
+Rellich,real_complex_analysis,False,confirmatory,,,,,4.791147770282502
+Fatou,real_complex_analysis,False,confirmatory,,,,,4.99998246494215
+Bolzano,real_complex_analysis,False,confirmatory,,,,,4.393491141342868
+ultraweak,functional_analysis,True,confirmatory,,,,,4.843511952940996
+uniform boundedness principle,functional_analysis,True,confirmatory,,,,,5.393800046217318
+infra-barrelled,functional_analysis,True,confirmatory,,,,,5.031538273363064
+self-adjoint,functional_analysis,True,confirmatory,,,,,5.059881048160605
+approximation property,functional_analysis,True,confirmatory,,,,,4.915996634052135
+orthogonal,functional_analysis,True,confirmatory,,,,,4.644029629950334
+noncommutative,functional_analysis,True,pilot,,,,,5.189423791870165
+locally convex algebra,functional_analysis,True,confirmatory,,,,,5.630031563981902
+projection,functional_analysis,True,confirmatory,,,,,4.408234907745888
+resolvent,functional_analysis,True,confirmatory,,,,,5.0723173064761795
+centraliser,functional_analysis,True,confirmatory,,,,,5.0282310106558725
+index group,functional_analysis,True,pilot,,,,,5.1380240659539895
+essentially selfadjoint,functional_analysis,True,confirmatory,,,,,5.51706798079734
+bornological,functional_analysis,True,confirmatory,,,,,5.569264780652399
+nondegenerate,functional_analysis,True,confirmatory,,,,,4.546723840777607
+orthonormal,functional_analysis,True,confirmatory,,,,,4.904598182203093
+semi-reflexive,functional_analysis,True,confirmatory,,,,,4.801809696286607
+inner product,functional_analysis,True,confirmatory,,,,,4.62548732895569
+bipolar,functional_analysis,True,confirmatory,,,,,4.284438615354399
+commutant,functional_analysis,True,confirmatory,,,,,5.224560278021575
+predual,functional_analysis,True,confirmatory,,,,,5.672023222471277
+unbounded operator,functional_analysis,True,confirmatory,,,,,5.595315448183101
+quasitrace,functional_analysis,True,confirmatory,,,,,5.738323859521188
+approximate identity,functional_analysis,True,confirmatory,,,,,4.963728717838724
+Bessel,functional_analysis,False,pilot,,,,,4.762243036025514
+Eidelheit,functional_analysis,False,confirmatory,,,,,4.447680869993444
+Dunford,functional_analysis,False,confirmatory,,,,,4.621551973434786
+Parseval,functional_analysis,False,confirmatory,,,,,4.704917083183925
+Mazur,functional_analysis,False,confirmatory,,,,,4.197419722254078
+Calkin,functional_analysis,False,confirmatory,,,,,4.225431458093226
+barrel,functional_analysis,False,confirmatory,,,,,3.6915056460226574
+Ryll-Nardzewski,functional_analysis,False,confirmatory,,,,,5.166825937728087
+Connes,functional_analysis,False,pilot,,,,,5.240038699780901
+douglas,functional_analysis,False,confirmatory,,,,,3.9247967052894333
+cofiber sequence,algebraic_topology,True,confirmatory,,,,,5.372051854695504
+path space,algebraic_topology,True,confirmatory,,,,,5.206182874787676
+local sphere,algebraic_topology,True,confirmatory,,,,,4.759694062794249
+kan complex,algebraic_topology,True,confirmatory,SSet.KanComplex,Mathlib.AlgebraicTopology.SimplicialSet.KanComplex,camelcase,80.0,5.47935113326336
+coherency,algebraic_topology,True,confirmatory,,,,,4.674546496244147
+infinite mapping telescope,algebraic_topology,True,confirmatory,,,,,5.577092699784164
+winding number,algebraic_topology,True,confirmatory,,,,,4.723239143301423
+homologous,algebraic_topology,True,pilot,,,,,4.876950718113221
+infinite loop space,algebraic_topology,True,confirmatory,,,,,5.893900510195333
+generalized cohomology theory,algebraic_topology,True,confirmatory,,,,,6.574151720143466
+cyclic homology,algebraic_topology,True,pilot,,,,,5.808675573711905
+transgression,algebraic_topology,True,pilot,,,,,4.690998278946306
+character variety,algebraic_topology,True,confirmatory,,,,,5.548908600118011
+chain map,algebraic_topology,True,confirmatory,,,,,4.817799665189038
+obstruction theory,algebraic_topology,True,confirmatory,,,,,5.81186525215162
+homotopy excision theorem,algebraic_topology,True,pilot,,,,,6.104540636491341
+well pointed,algebraic_topology,True,pilot,,,,,4.490718333904321
+orbit category,algebraic_topology,True,confirmatory,,,,,5.781444920071711
+locally constant sheaf,algebraic_topology,True,confirmatory,,,,,5.881178871146403
+fundamental class,algebraic_topology,True,confirmatory,,,,,5.572750378671723
+stable homotopy group,algebraic_topology,True,pilot,,,,,5.859538355492987
+change of fiber,algebraic_topology,True,confirmatory,,,,,4.864831151324324
+sullivan,algebraic_topology,True,pilot,,,,,4.466646751388907
+regulator,algebraic_topology,True,pilot,,,,,5.022199296528318
+annulus,algebraic_topology,True,confirmatory,,,,,4.193390089135694
+disjoint disk property,algebraic_topology,True,confirmatory,,,,,4.6597856943650795
+simple-homotopy equivalence,algebraic_topology,True,confirmatory,,,,,5.351387572241947
+homotopy fiber product,algebraic_topology,True,confirmatory,,,,,6.088220383273438
+factorization homology,algebraic_topology,True,confirmatory,,,,,5.826622909517027
+properly discontinuous,algebraic_topology,True,confirmatory,,,,,5.313967359097053
+Koszul duality,algebraic_topology,False,confirmatory,,,,,6.179464198920566
+Lazard ring,algebraic_topology,False,confirmatory,,,,,5.899221157984964
+analysis Situs,algebraic_topology,False,confirmatory,,,,,5.636710454981464
+super,algebraic_topology,False,confirmatory,,,,,4.298417454430212
+collapse,algebraic_topology,False,confirmatory,,,,,4.559785856244464
+Freedman,algebraic_topology,False,confirmatory,,,,,4.578544427951177
+abstract,algebraic_topology,False,confirmatory,,,,,5.953698220973213
+Lefschetz,algebraic_topology,False,confirmatory,,,,,5.124577632251506
+Rokhlin,algebraic_topology,False,confirmatory,,,,,5.1364444397234665
+Verdier,algebraic_topology,False,confirmatory,,,,,5.907417923522492
+shape operator,differential_geometry,True,confirmatory,,,,,5.057832160479545
+tree-graded space,differential_geometry,True,confirmatory,,,,,5.666072913717168
+scalar curvature,differential_geometry,True,confirmatory,,,,,5.017190652860639
+second fundamental form,differential_geometry,True,confirmatory,,,,,5.289293538914838
+orthonormal frame bundle,differential_geometry,True,confirmatory,,,,,6.031050990219228
+path isometry,differential_geometry,True,confirmatory,,,,,4.854996285052039
+smooth manifold,differential_geometry,True,confirmatory,,,,,5.436896627827082
+center of mass,differential_geometry,True,confirmatory,,,,,4.354504662091737
+conjugate points,differential_geometry,True,confirmatory,,,,,5.119546424287061
+flat manifold,differential_geometry,True,pilot,,,,,4.7399275211500935
+natural parametrization,differential_geometry,True,confirmatory,,,,,4.987238007190172
+complete manifold,differential_geometry,True,confirmatory,,,,,5.439295571937691
+conformally flat,differential_geometry,True,confirmatory,,,,,5.088048242032528
+quasi-isometry,differential_geometry,True,pilot,,,,,5.453016955056228
+first fundamental form,differential_geometry,True,confirmatory,,,,,4.816620689680955
+totally convex,differential_geometry,True,pilot,,,,,4.872636948556949
+principal direction,differential_geometry,True,confirmatory,,,,,4.661059760682595
+complex hyperbolic space,differential_geometry,True,confirmatory,,,,,6.0433422175507685
+linear connection,differential_geometry,True,confirmatory,,,,,4.973408698730054
+collapsing manifold,differential_geometry,True,confirmatory,,,,,5.727345975271116
+infranilmanifold,differential_geometry,True,confirmatory,,,,,6.124861909775063
+arc-wise isometry,differential_geometry,True,confirmatory,,,,,5.035933427279815
+geodesic equation,differential_geometry,True,confirmatory,,,,,5.19542443366178
+almost flat manifold,differential_geometry,True,confirmatory,,,,,5.265935268563529
+isoperimetric function,differential_geometry,True,confirmatory,,,,,4.829752259732534
+convexity radius,differential_geometry,True,confirmatory,,,,,4.736531304273133
+quasigeodesic,differential_geometry,True,confirmatory,,,,,5.215254083974287
+symmetric space,differential_geometry,True,confirmatory,,,,,5.296840822906233
+parallel transport,differential_geometry,True,pilot,,,,,5.154818527410195
+principal curvature,differential_geometry,True,confirmatory,,,,,4.866545705488534
+Koszul Connection,differential_geometry,False,confirmatory,,,,,5.7853743980328245
+connection,differential_geometry,False,pilot,,,,,4.768972067395225
+Banach space,differential_geometry,False,pilot,,,,,5.662892572911612
+proper metric space,differential_geometry,False,confirmatory,,,,,5.194182560585129
+Cartan connection,differential_geometry,False,confirmatory,,,,,5.653724475492102
+Autoparallel,differential_geometry,False,confirmatory,,,,,5.1436566597549245
+variation,differential_geometry,False,confirmatory,,,,,4.548252527582615
+Gromov-hyperbolic metric space,differential_geometry,False,confirmatory,,,,,5.737419601985796
+Asymptotic cone,differential_geometry,False,confirmatory,,,,,5.707128863577964
+Kähler-Einstein metric,differential_geometry,False,confirmatory,,,,,6.040233313688077
+complex reflection group,lie_representation_theory,True,confirmatory,,,,,5.614125947836631
+uniformly bounded,lie_representation_theory,True,confirmatory,,,,,4.500730446539819
+toral,lie_representation_theory,True,confirmatory,,,,,4.813648354029283
+equivariant,lie_representation_theory,True,pilot,,,,,5.253679972452422
+branching,lie_representation_theory,True,pilot,,,,,4.371974179074944
+subrepresentation,lie_representation_theory,True,confirmatory,,,,,5.026347792319332
+intertwining,lie_representation_theory,True,confirmatory,,,,,4.71322403960706
+complementary,lie_representation_theory,True,pilot,,,,,4.366240226799467
+highest weight,lie_representation_theory,True,confirmatory,,,,,5.5552212466330575
+steinberg,lie_representation_theory,True,confirmatory,,,,,4.832663364009932
+solvable,lie_representation_theory,True,confirmatory,,,,,4.649500582561207
+central series,lie_representation_theory,True,confirmatory,,,,,4.902809467942764
+cluster algebra,lie_representation_theory,True,confirmatory,,,,,5.50092832010705
+invariant convex cone,lie_representation_theory,True,confirmatory,,,,,5.467190651611115
+defined over,lie_representation_theory,True,pilot,,,,,4.523039779703443
+fiber functor,lie_representation_theory,True,confirmatory,CategoryTheory.PreGaloisCategory.FiberFunctor,Mathlib.CategoryTheory.Galois.Basic,camelcase,67.0,5.961346312697667
+parabolic,lie_representation_theory,True,confirmatory,,,,,4.524617617018521
+quaternionic,lie_representation_theory,True,confirmatory,,,,,5.556862902090264
+isotypic,lie_representation_theory,True,confirmatory,,,,,5.2269810511885835
+cuspidal,lie_representation_theory,True,confirmatory,,,,,4.859060369043921
+system of imprimitivity,lie_representation_theory,True,confirmatory,,,,,5.944251337302073
+matrix coefficient,lie_representation_theory,True,confirmatory,,,,,4.649835369362942
+subalgebra,lie_representation_theory,True,confirmatory,,,,,4.671177519766691
+coroot,lie_representation_theory,True,confirmatory,,,,,5.235931506729685
+quantized,lie_representation_theory,True,confirmatory,,,,,4.970838445238769
+coadjoint,lie_representation_theory,True,confirmatory,,,,,5.457279886701144
+automorphic,lie_representation_theory,True,confirmatory,,,,,5.4950409012186965
+induction,lie_representation_theory,True,confirmatory,,,,,4.620500789994064
+derived algebra,lie_representation_theory,True,confirmatory,,,,,5.197806191941102
+Kirillov,lie_representation_theory,False,confirmatory,,,,,4.772544069836537
+Harish-Chandra,lie_representation_theory,False,confirmatory,,,,,5.477386843257894
+Mackey theory,lie_representation_theory,False,pilot,,,,,5.8825558144211145
+Oscillator,lie_representation_theory,False,pilot,,,,,4.55990365772838
+Casimir,lie_representation_theory,False,pilot,,,,,5.0042075381691875
+category of representations,lie_representation_theory,False,pilot,,,,,5.9388809386194525
+Verma module,lie_representation_theory,False,confirmatory,,,,,6.027345726256802
+free Lie algebra,lie_representation_theory,False,pilot,FreeLieAlgebra,Mathlib.Algebra.Lie.Free,camelcase,76.0,5.921819075127132
+highest,lie_representation_theory,False,confirmatory,,,,,4.440555578640972
+Jacquet,lie_representation_theory,False,pilot,,,,,4.5811003325507045
+admissible decision rule,probability_statistics,True,confirmatory,,,,,5.240472752329272
+estimation theory,probability_statistics,True,confirmatory,,,,,5.153209401042356
+marginal likelihood,probability_statistics,True,confirmatory,,,,,5.379982126459557
+repeated measures design,probability_statistics,True,confirmatory,,,,,4.7219395618885756
+box plot,probability_statistics,True,confirmatory,,,,,4.10838539256171
+time series forecasting,probability_statistics,True,confirmatory,,,,,4.672746173537841
+frequentist inference,probability_statistics,True,confirmatory,,,,,4.658173423202243
+normal distribution,probability_statistics,True,confirmatory,,,,,4.700285669396787
+weighted arithmetic mean,probability_statistics,True,confirmatory,,,,,4.162907345374454
+mutual exclusivity,probability_statistics,True,confirmatory,,,,,4.222289959783666
+convenience sampling,probability_statistics,True,confirmatory,,,,,4.452287958469242
+discrete variable,probability_statistics,True,confirmatory,,,,,4.071633184600311
+dot plot,probability_statistics,True,pilot,,,,,3.6938319666320845
+expected value,probability_statistics,True,confirmatory,,,,,4.460698515456897
+survival function,probability_statistics,True,confirmatory,,,,,5.046155346402277
+spectrum bias,probability_statistics,True,confirmatory,,,,,5.279171627053681
+kernel density estimation,probability_statistics,True,confirmatory,,,,,4.7951966091641225
+binomial distribution,probability_statistics,True,pilot,,,,,4.8466692770889495
+elementary event,probability_statistics,True,pilot,,,,,3.883294962249541
+central limit theorem,probability_statistics,True,confirmatory,ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum_sub,Mathlib.Probability.CentralLimitTheorem,mathlib_yaml,156.0,4.867229832297501
+particle filter,probability_statistics,True,confirmatory,,,,,5.104241698495268
+population parameter,probability_statistics,True,confirmatory,,,,,5.055708318715915
+bar chart,probability_statistics,True,confirmatory,,,,,3.3527083690375243
+survey methodology,probability_statistics,True,confirmatory,,,,,4.6609993481542915
+multimodal distribution,probability_statistics,True,confirmatory,,,,,5.0331282975384966
+complementary event,probability_statistics,True,confirmatory,,,,,4.394567105434059
+time series,probability_statistics,True,confirmatory,,,,,4.592769130152495
+sampling error,probability_statistics,True,confirmatory,,,,,4.753773173511338
+optimal decision,probability_statistics,True,confirmatory,,,,,5.051193437965897
+frequency domain,probability_statistics,True,confirmatory,,,,,5.026368912484031
+sample,probability_statistics,False,pilot,,,,,4.231624436863058
+marginal probability,probability_statistics,False,confirmatory,,,,,4.577689838891577
+algebra of random variables,probability_statistics,False,confirmatory,,,,,5.514880425607164
+nonparametric statistics,probability_statistics,False,confirmatory,,,,,5.192951581052815
+Bayesian inference,probability_statistics,False,confirmatory,,,,,5.296214081715637
+recursive Bayesian estimation,probability_statistics,False,confirmatory,,,,,5.851371799779979
+statistics,probability_statistics,False,pilot,,,,,4.893766926388101
+multivariate random variable,probability_statistics,False,confirmatory,,,,,5.234494434989756
+probability plot,probability_statistics,False,pilot,,,,,4.754933827294735
+simple random sample,probability_statistics,False,pilot,,,,,4.148679547545423
+linear programming decoding,numerical_analysis,True,confirmatory,,,,,5.002680941290843
+eigenvalue perturbation,numerical_analysis,True,confirmatory,,,,,5.4144057297768695
+constructive function theory,numerical_analysis,True,pilot,,,,,5.246500740487439
+minimax approximation algorithm,numerical_analysis,True,confirmatory,,,,,5.170008930823921
+basis pursuit,numerical_analysis,True,confirmatory,,,,,4.776508108441097
+process optimization,numerical_analysis,True,confirmatory,,,,,4.639515875664074
+maxima and minima,numerical_analysis,True,confirmatory,,,,,4.21094335907037
+blossom,numerical_analysis,True,confirmatory,,,,,4.212127809102337
+subdivision surface,numerical_analysis,True,pilot,,,,,4.737715856870636
+highly optimized tolerance,numerical_analysis,True,confirmatory,,,,,4.978240127131964
+demand optimization,numerical_analysis,True,confirmatory,,,,,4.745548389172957
+least squares,numerical_analysis,True,confirmatory,,,,,4.491567617900728
+finite element updating,numerical_analysis,True,pilot,,,,,4.580760662696169
+feasible region,numerical_analysis,True,confirmatory,,,,,4.438682451623511
+difference quotient,numerical_analysis,True,confirmatory,,,,,4.419783639787056
+reduced cost,numerical_analysis,True,pilot,,,,,4.556688366622741
+pivot element,numerical_analysis,True,confirmatory,,,,,4.156547867380141
+multi-objective optimization,numerical_analysis,True,confirmatory,,,,,5.188711455790326
+perfectly matched layer,numerical_analysis,True,confirmatory,,,,,5.079195062678385
+high-resolution scheme,numerical_analysis,True,confirmatory,,,,,4.601442078671728
+discrete exterior calculus,numerical_analysis,True,confirmatory,,,,,5.616200192094159
+method of lines,numerical_analysis,True,confirmatory,,,,,4.549690839397954
+parallel tempering,numerical_analysis,True,pilot,,,,,5.140438662977734
+automatic label placement,numerical_analysis,True,pilot,,,,,4.649256868869998
+interval arithmetic,numerical_analysis,True,confirmatory,,,,,4.385637791109427
+block matrix pseudoinverse,numerical_analysis,True,confirmatory,,,,,5.577591581595091
+optimal computing budget allocation,numerical_analysis,True,confirmatory,,,,,4.849175211333204
+complementarity theory,numerical_analysis,True,confirmatory,,,,,5.296453239784266
+bilinear interpolation,numerical_analysis,True,confirmatory,,,,,4.343895918847314
+global optimization,numerical_analysis,True,confirmatory,,,,,5.190918796812184
+backward Euler method,numerical_analysis,False,pilot,,,,,4.468833884631749
+numerical resistivity,numerical_analysis,False,confirmatory,,,,,4.799123891580773
+Orthogonalization,numerical_analysis,False,confirmatory,,,,,4.583978588719522
+Iterated conditional modes,numerical_analysis,False,confirmatory,,,,,5.187959998787846
+Lanczos approximation,numerical_analysis,False,confirmatory,,,,,4.960456194976966
+Chebyshev nodes,numerical_analysis,False,confirmatory,,,,,4.726887827273458
+Superelement,numerical_analysis,False,confirmatory,,,,,5.037605025417482
+AGM method,numerical_analysis,False,pilot,,,,,4.900990056494872
+Linear-quadratic regulator,numerical_analysis,False,confirmatory,,,,,4.730390744865872
+hybrid Monte Carlo,numerical_analysis,False,confirmatory,,,,,5.112083322601393
+dummy,game_theory,True,confirmatory,,,,,3.5468818525162837
+dominated strategy,game_theory,True,confirmatory,,,,,4.690805167997799
+best reply,game_theory,True,confirmatory,,,,,4.846897202029747
+real numbers,game_theory,True,pilot,Real,Mathlib.Basic.Real.Basic,mathlib_yaml,41.0,4.7190561680060155
+mixed strategy,game_theory,True,confirmatory,,,,,5.116628455754835
+outcome space,game_theory,True,confirmatory,,,,,5.006012641650159
+condorcet winner,game_theory,True,pilot,,,,,4.710024780904253
+shannon number,game_theory,True,pilot,,,,,5.129962124008064
+complements,game_theory,True,confirmatory,,,,,4.454894880618667
+strategy space,game_theory,True,confirmatory,,,,,5.105236147899025
+dictator,game_theory,True,confirmatory,,,,,4.269840762717649
+allocation of goods,game_theory,True,pilot,,,,,4.448856080659122
+grand coalition,game_theory,True,confirmatory,,,,,4.7411219032170875
+dominated outcome,game_theory,True,confirmatory,,,,,4.838731224532239
+the set of players,game_theory,True,pilot,,,,,4.4874654618518734
+preference profile,game_theory,True,confirmatory,,,,,4.879272749472875
+finite game,game_theory,False,confirmatory,,,,,4.702701918936024
+effectiveness,game_theory,False,confirmatory,,,,,4.677561010078837
+weakly acceptable game,game_theory,False,confirmatory,,,,,4.840300207026303
+zero sum game,game_theory,False,confirmatory,,,,,4.361507697913718
+acceptable game,game_theory,False,confirmatory,,,,,4.723505426275854
+determined game,game_theory,False,confirmatory,,,,,4.649814574358364
+Payoffs,game_theory,False,confirmatory,,,,,4.230586533099995
+mixed Nash Equilibrium,game_theory,False,pilot,,,,,5.429584976751357
+Determinacy,game_theory,False,pilot,,,,,5.037924179652085
+Decidability,game_theory,False,pilot,,,,,5.100480299947473
