@@ -22,6 +22,7 @@ uv run python run.py paper --config configs/mvp.yaml
 - **Order.** A single-hue blue ramp, light → dark, interpolated between steps so that every item gets a distinct colour.
   - A 7-step ramp (days) passes the ordinal check.
   - A 12-step ramp (months, angles) cannot keep every adjacent lightness gap above the validator's threshold. Order is therefore never carried by colour alone: every point is labelled and joined to its neighbours by the ordered path.
+  - On the site's dark theme the ramp runs from step 600 to step 100 (dark → light), because the light-theme ramp's darkest step has only 1.5:1 contrast on the dark surface. The 7-step dark ramp passes the ordinal check.
 - **Roles.** Trained models are always blue and random-init twins always grey; nulls are grey bands or lines; signed similarity uses a blue ↔ red scale with a grey midpoint.
 - **Output.** PNG files have an opaque background so they read correctly in GitHub's dark mode. PDFs embed TrueType fonts (`pdf.fonttype=42`) and carry no timestamps, so regenerating them doesn't change the files.
 
@@ -38,15 +39,16 @@ uv run python run.py paper --config configs/mvp.yaml
 
 | Figure (file in `reports/figures/`) | Shows | Built by | Data |
 |---|---|---|---|
-| `hero` | Five-panel overview: field-map ρ in all models vs twins; the confirmatory field map; days; angles; axiom offsets | `figures/overview.py: draw_hero` | `map_fields`, `posthoc`, `shapes`, `lattice` + activations |
+| `hero` | Two-row overview: field-map ρ in all models vs twins and the arXiv / trained / twin maps; days, angles and axiom offsets | `figures/overview.py: draw_hero` | `map_fields`, `posthoc`, `shapes`, `lattice` + activations |
 | `forest` | Effect sizes with 95% CIs, faceted by metric | `overview.py: draw_forest` | `map_fields`, `baselines`, `compare`, `hierarchy`, `mathlib` |
 | `depth_curves` | Field-map ρ at every layer, per model, with the max-over-layers null | `overview.py: draw_depth` | `map_fields` layer curves |
 | `group_objects` | Group-object parallelograms and the parent ranks of "Lie group", all models | `overview.py: draw_group_objects` | `structures` |
+| `partial_operation` | Negative result: partial- vs total-operation offsets, all models and twins | `overview.py: draw_partial_operation` | `lattice` (`audit2`) |
 | `field_maps_<model>` | MDS of the arXiv, trained and twin distance matrices with ground-truth neighbour edges | `figures/maps.py` | activations, `field_distance.json` |
 | `field_rdms_<model>` | The same matrices as within-matrix ranks | `maps.py` | same |
 | `cyclic_<model>` | Days, months and angles in the PC plane, trained and twin | `figures/families.py` | activations, `posthoc` |
 | `circle_depth_<model>` (`.png`, `.gif`) | Days and months at fixed depths, and animated through every layer | `families.py` | activations, `posthoc` |
-| `angles_<model>` | Preregistered prediction vs observed angles vs bare numbers | `families.py` | activations, `shapes` |
+| `angles_<model>` | Preregistered prediction vs observed angles vs bare numbers, plus the twin as control; both halves of the decision rule | `families.py` | activations, `shapes` |
 | `chains_<model>` | Ordered chains with Robinson scores and the frequency control | `families.py` | activations, `shapes`, `chain_frequency` |
 | `lattice_axes_<model>` | Ideal axiom lattice and per-axiom PCA facets, trained and twin | `figures/lattice.py` | activations, `lattice` |
 | `lattice_cosines_<model>` | Difference-vector cosine matrices and per-axiom offset consistency | `lattice.py` | activations, `lattice` |

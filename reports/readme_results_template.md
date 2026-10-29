@@ -85,13 +85,15 @@ Each figure states what it shows, what to notice, and its main caveat. Pictures 
 
 - **What you see:** the same days and months planes through every layer, each frame rotated onto the preregistered layer's plane.
 - **What to notice:** both cycles are present from the first layers and hold at almost every depth, breaking mainly at the final layer; the twin never forms one.
-- **Caveat:** the cycle score is post-hoc and unadjusted per layer. Static version at fixed depths: [`circle_depth_qwen3.5-2b.png`](reports/figures/circle_depth_qwen3.5-2b.png).
+- **Caveat:** the cycle score is post-hoc and unadjusted per layer. Static version at fixed depths: [`circle_depth_qwen3.5-2b.png`](reports/figures/circle_depth_qwen3.5-2b.png). [Interactive, with a layer slider and play button](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
 
 ![angles: predicted vs found]({{fig:angles_qwen3.5-2b}})
 
-- **What you see:** the preregistered prediction (left), what the model does (middle), and the bare numbers 0–330 (right).
+- **What you see:** the preregistered prediction, what the model does, the bare numbers 0–330, and the random-init twin as a control.
 - **What to notice:** the angles' geometry matches the numbers' (ρ = {{num:mvp.shapes.qwen3.5-2b.angles.beyond_reference.rho_fam_ref:.2f}}). The model encodes "330 degrees" by its numeral, not by its angle, which falsifies our prediction.
-- **Caveat:** this is one prompt format at this model scale; larger models may differ. [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
+- **Caveat:**
+  - Every random-init twin *meets* the preregistered circle rule (Qwen3.5-2B twin: closure {{num:mvp.shapes.qwen3.5-2b__random.angles.closure:.2f}}), because a structureless cloud passes it by chance. The informative result is the trained models' line-like order, not the failed rule.
+  - This is one prompt format at this model scale. [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
 
 ![ordered chains]({{fig:chains_qwen3.5-2b}})
 
@@ -118,6 +120,12 @@ Each figure states what it shows, what to notice, and its main caveat. Pictures 
 - **What you see:** left, how parallel the three parallelograms are (for example, Lie group − topological group vs smooth manifold − topological space) in every model and twin. Right, where "group" and "smooth manifold" rank among the neighbours of "Lie group".
 - **What to notice:** every trained model clears the null (Qwen3.5-2B: {{num:mvp.structures.qwen3.5-2b.group_objects.parallelograms.cos:.2f}}). Trained models place "Lie group" near both parents. The twins put "group" nearest, and except for Gemma's twin place "smooth manifold" far away.
 - **Caveat:** exploratory, and the twins' closeness to "group" is purely lexical (shared token). [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-groups).
+
+![partial-operation lattice]({{fig:partial_operation}})
+
+- **What you see:** a negative result. Offset consistency for the partial-operation lattice (semigroupoid, small category, groupoid vs semigroup, monoid, group) in all models and twins, against the random-pair null.
+- **What to notice:** no axis clears the null in Qwen3.5-2B ("total" operation: {{num:mvp.lattice.qwen3.5-2b.audit2.partial_operation.offsets.total.consistency:.2f}}, null 95th percentile {{num:mvp.lattice.qwen3.5-2b.audit2.partial_operation.offsets.total.null95:.2f}}).
+- **Caveat:** with 6 items and 2–3 pairs per axis, this test has little power; "no evidence" is not evidence of absence.
 
 #### Concrete ↔ abstract
 

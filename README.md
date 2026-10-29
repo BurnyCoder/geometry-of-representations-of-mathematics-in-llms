@@ -20,7 +20,7 @@ As far as our literature search found, nobody had asked this of **abstract mathe
 
 **At a glance.** Blue is a trained model; grey is its random-init twin (same architecture and tokenizer, no learning).
 - **A:** in all five models, field centroids track how often mathematicians cross-list papers between fields; the twins do not.
-- **B:** the confirmatory model's map. Grey edges join each field to its two nearest arXiv neighbours; most stay short.
+- **B:** the map itself, shown for arXiv (ground truth), the confirmatory model and its twin. Grey edges join each field to its two nearest arXiv neighbours. They mostly stay short in the trained model and cross the twin's map.
 - **C:** days of the week close into a circle (the positive control).
 - **D:** angles do not, falsifying our preregistered prediction: 330° sits far from 0°.
 - **E:** "adding an axiom" moves a structure in a consistent direction, unlike in the twins. Diamonds show the value with the word-length (token-count) direction removed.
@@ -57,20 +57,20 @@ As far as our literature search found, nobody had asked this of **abstract mathe
 
 ### Scorecard: every test in every model
 
-| Test | Qwen3.5-2B | Qwen3.5-0.8B | Qwen2.5-1.5B | Qwen2.5-Math-1.5B | Gemma-4-E2B |
-|---|---|---|---|---|---|
-| Field map tracks arXiv beyond the twin (H-A1; Δρ CI) | ● 0.39 | ● 0.37 | ● 0.41 | ● 0.39 | ● 0.44 |
-| Field map is a hierarchy beyond the twin (H-A2; cophenetic Δ CI) | ○ 0.24 | ○ 0.25 | ○ 0.24 | ○ 0.11 | ○ 0.23 |
-| Days form a cycle (positive control; post-hoc PC plane) | ● 1.00 | ● 1.00 | ● 1.00 | ● 1.00 | ● 1.00 |
-| Ring chain ordered (Robinson; > twin) | ● 0.52 | ● 0.50 | ● 0.54 | ● 0.56 | ● 0.50 |
-| Space chain ordered (Robinson; > twin) | ● 0.65 | ● 0.64 | ● 0.71 | ● 0.68 | ● 0.57 |
-| Ring / space order beyond frequency | ● / ● | ● / ● | ● / ● | ● / ● | ○ / ○ |
-| Angles form a circle (closure < 2 and circle ρ > line ρ) | ✗ 2.11 | ✗ 2.59 | ✗ 2.15 | ✗ 1.84 | ✗ 2.03 |
-| Axiom direction: associative (offset consistency; Holm) | ● 0.43 | ● 0.47 | ● 0.38 | ● 0.35 | ● 0.56 |
-| Axiom direction: identity (offset consistency; Holm) | ◐ 0.24 | ○ 0.22 | ◐ 0.27 | ● 0.27 | ○ 0.19 |
-| Axiom direction: divisible (offset consistency; Holm) | ◐ 0.29 | ◐ 0.26 | ◐ 0.25 | ● 0.30 | ● 0.35 |
-| Axiom direction: commutative (offset consistency; Holm) | ● 0.53 | ● 0.57 | ● 0.41 | ● 0.45 | ● 0.74 |
-| Lie / topological / algebraic groups as parallelograms | ● 0.40 | ● 0.46 | ● 0.41 | ● 0.41 | ● 0.48 |
+| Test | Status | Qwen3.5-2B | Qwen3.5-0.8B | Qwen2.5-1.5B | Qwen2.5-Math-1.5B | Gemma-4-E2B |
+|---|---|---|---|---|---|---|
+| Field map tracks arXiv beyond the twin (H-A1; Δρ CI) | pre-registered, confirmatory | ● 0.39 | ● 0.37 | ● 0.41 | ● 0.39 | ● 0.44 |
+| Field map is a hierarchy beyond the twin (H-A2; cophenetic Δ CI) | pre-registered | ○ 0.24 | ○ 0.25 | ○ 0.24 | ○ 0.11 | ○ 0.23 |
+| Days form a cycle (positive control; PC plane) | positive control; post-hoc statistic | ● 1.00 | ● 1.00 | ● 1.00 | ● 1.00 | ● 1.00 |
+| Ring chain ordered (Robinson; > twin) | pre-registered, confirmatory | ● 0.52 | ● 0.50 | ● 0.54 | ● 0.56 | ● 0.50 |
+| Space chain ordered (Robinson; > twin) | pre-registered, confirmatory | ● 0.65 | ● 0.64 | ● 0.71 | ● 0.68 | ● 0.57 |
+| Ring / space order beyond frequency | added by plan audit | ● / ● | ● / ● | ● / ● | ● / ● | ○ / ○ |
+| Angles form a circle (closure < 2 and circle ρ > line ρ) | pre-registered, confirmatory | ✗ 2.11 | ✗ 2.59 | ✗ 2.15 | ✗ 1.84 | ✗ 2.03 |
+| Axiom direction: associative (offset consistency; Holm) | pre-registered, confirmatory | ● 0.43 | ● 0.47 | ● 0.38 | ● 0.35 | ● 0.56 |
+| Axiom direction: identity (offset consistency; Holm) | pre-registered, confirmatory | ◐ 0.24 | ○ 0.22 | ◐ 0.27 | ● 0.27 | ○ 0.19 |
+| Axiom direction: divisible (offset consistency; Holm) | pre-registered, confirmatory | ◐ 0.29 | ◐ 0.26 | ◐ 0.25 | ● 0.30 | ● 0.35 |
+| Axiom direction: commutative (offset consistency; Holm) | pre-registered, confirmatory | ● 0.53 | ● 0.57 | ● 0.41 | ● 0.45 | ● 0.74 |
+| Lie / topological / algebraic groups as parallelograms | pre-registered, exploratory | ● 0.40 | ● 0.46 | ● 0.41 | ● 0.41 | ● 0.48 |
 
 ● significant (Holm-adjusted for the axiom tests; 95% CI excludes 0 for Δ tests) · ◐ raw p < .05 only · ○ not significant · ✗ pre-registered prediction falsified. Numbers: the statistic for the trained model.
 
@@ -155,13 +155,15 @@ Each figure states what it shows, what to notice, and its main caveat. Pictures 
 
 - **What you see:** the same days and months planes through every layer, each frame rotated onto the preregistered layer's plane.
 - **What to notice:** both cycles are present from the first layers and hold at almost every depth, breaking mainly at the final layer; the twin never forms one.
-- **Caveat:** the cycle score is post-hoc and unadjusted per layer. Static version at fixed depths: [`circle_depth_qwen3.5-2b.png`](reports/figures/circle_depth_qwen3.5-2b.png).
+- **Caveat:** the cycle score is post-hoc and unadjusted per layer. Static version at fixed depths: [`circle_depth_qwen3.5-2b.png`](reports/figures/circle_depth_qwen3.5-2b.png). [Interactive, with a layer slider and play button](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
 
 ![angles: predicted vs found](reports/figures/angles_qwen3.5-2b.png)
 
-- **What you see:** the preregistered prediction (left), what the model does (middle), and the bare numbers 0–330 (right).
+- **What you see:** the preregistered prediction, what the model does, the bare numbers 0–330, and the random-init twin as a control.
 - **What to notice:** the angles' geometry matches the numbers' (ρ = 0.84). The model encodes "330 degrees" by its numeral, not by its angle, which falsifies our prediction.
-- **Caveat:** this is one prompt format at this model scale; larger models may differ. [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
+- **Caveat:**
+  - Every random-init twin *meets* the preregistered circle rule (Qwen3.5-2B twin: closure 0.80), because a structureless cloud passes it by chance. The informative result is the trained models' line-like order, not the failed rule.
+  - This is one prompt format at this model scale. [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
 
 ![ordered chains](reports/figures/chains_qwen3.5-2b.png)
 
@@ -188,6 +190,12 @@ Each figure states what it shows, what to notice, and its main caveat. Pictures 
 - **What you see:** left, how parallel the three parallelograms are (for example, Lie group − topological group vs smooth manifold − topological space) in every model and twin. Right, where "group" and "smooth manifold" rank among the neighbours of "Lie group".
 - **What to notice:** every trained model clears the null (Qwen3.5-2B: 0.40). Trained models place "Lie group" near both parents. The twins put "group" nearest, and except for Gemma's twin place "smooth manifold" far away.
 - **Caveat:** exploratory, and the twins' closeness to "group" is purely lexical (shared token). [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-groups).
+
+![partial-operation lattice](reports/figures/partial_operation.png)
+
+- **What you see:** a negative result. Offset consistency for the partial-operation lattice (semigroupoid, small category, groupoid vs semigroup, monoid, group) in all models and twins, against the random-pair null.
+- **What to notice:** no axis clears the null in Qwen3.5-2B ("total" operation: 0.29, null 95th percentile 0.54).
+- **Caveat:** with 6 items and 2–3 pairs per axis, this test has little power; "no evidence" is not evidence of absence.
 
 #### Concrete ↔ abstract
 

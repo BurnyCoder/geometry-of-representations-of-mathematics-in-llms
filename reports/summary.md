@@ -73,23 +73,59 @@ The figures show what the model's internal vectors look like, squashed down to t
 
 **All results in one picture.**
 - **A:** every trained model has a map of mathematics; no twin has one.
-- **B:** in that map, fields that mathematicians often combine sit close together.
+- **B:** the map itself. On the left is how mathematicians combine fields on arXiv, in the middle the model's map, on the right the untrained twin's. Grey lines join fields that mathematicians often combine; they stay short in the model's map and cross the twin's.
 - **C:** days of the week form a circle.
 - **D:** angles do not form a circle, although we predicted they would.
 - **E:** adding an axiom moves a structure in a consistent direction.
 
-![circle forming](figures/circle_depth_qwen3.5-2b.gif)
+![effect sizes](figures/forest.png)
 
-**The circle through the layers.** Days and months, layer by layer. The circle is there almost from the start.
+**How big the effects are.** Each line is a range of plausible values (95% confidence interval). A blue line does not cross zero, so the effect is reliably there.
 
 ![field maps](figures/field_maps_qwen3.5-2b.png)
 
 **The map of mathematics.** Each dot is a field. The grey lines join fields that mathematicians often combine. In the trained model most of these lines stay short; in the untrained twin they cross the whole picture.
 
+![distance matrices](figures/field_rdms_qwen3.5-2b.png)
+
+**The same map as a table of colours.** Each square shows how far apart two fields are; light means close. The model's table partly repeats the pattern of the mathematicians' table; the twin's is random.
+
+![map across layers](figures/depth_curves.png)
+
+**When the map appears.** For each model, how well the map matches arXiv at every layer, from input to output. It appears within the first few layers and holds at almost every depth; Gemma dips below the significance line in two stretches.
+
+![days, months, angles](figures/cyclic_qwen3.5-2b.png)
+
+**Circles.** Days and months come out as circles; the untrained twin scrambles them. Angles do not close: 330° lands far from 0°.
+
+![circle forming](figures/circle_depth_qwen3.5-2b.gif)
+
+**The circle through the layers.** Days and months, layer by layer. The circle is there almost from the start.
+
+![angles](figures/angles_qwen3.5-2b.png)
+
+**Our failed prediction.** We expected a circle (left). The model instead arranges angles like the plain numbers 0–330 (third panel), so "330 degrees" is far from "0 degrees".
+
+![chains](figures/chains_qwen3.5-2b.png)
+
+**Chains of definitions.** Each chain goes from general to special, such as "ring ⊃ commutative ring ⊃ … ⊃ field". The model lays them out in order; the twin does not.
+
 ![axioms](figures/lattice_axes_qwen3.5-2b.png)
 
 **Axioms as arrows.** Each panel highlights all pairs of structures that differ by one axiom. In the trained model those arrows point roughly the same way.
 
-![effect sizes](figures/forest.png)
+![arrow similarity](figures/lattice_cosines_qwen3.5-2b.png)
 
-**How big the effects are.** Each line is a range of plausible values (95% confidence interval). A blue line does not cross zero, so the effect is reliably there.
+**How parallel the arrows are.** Red squares along the diagonal mean "adding this axiom" always points the same way. It is strongest for associativity and commutativity.
+
+![Lie groups](figures/group_objects.png)
+
+**Lie groups sit between their parents.** A Lie group is both a group and a smooth manifold, and the model places it near both. The untrained twin places it near "group" because the two names share a word.
+
+![partial operations](figures/partial_operation.png)
+
+**A test that found nothing.** Turning a "partial" structure (like a small category) into a "total" one (like a monoid) is not a consistent arrow. With so few examples, the test is weak.
+
+![abstraction](figures/abstraction_qwen3.5-2b.png)
+
+**Concrete to abstract.** The model's biggest axis runs from concrete ideas ("bar chart") to abstract ones ("generalized cohomology theory"). On the right, the judges' abstraction ratings agree with how deep each idea sits in a formal mathematics library (Mathlib).
