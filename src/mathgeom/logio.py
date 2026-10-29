@@ -31,6 +31,8 @@ def setup_logging(log_dir: Path, run_name: str) -> Path:
     for h in (logging.StreamHandler(sys.stdout), logging.FileHandler(log_dir / f"{stamp}_{run_name}.log", encoding="utf-8")):
         h.setFormatter(fmt)
         root.addHandler(h)
+    for noisy in ("httpx", "httpx2", "httpcore", "urllib3", "filelock"):  # one line per HTTP range request otherwise
+        logging.getLogger(noisy).setLevel(logging.WARNING)
     _PROMPT_FILE = log_dir / f"{stamp}_{run_name}_prompts.jsonl"
     return _PROMPT_FILE
 
