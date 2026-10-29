@@ -1,0 +1,816 @@
+concept,field,kind,pa,page,revid,leak_own,leak_any,eponym,multi_field,head,zipf,polysemous,primary,split
+point of closure,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,closure,4.09,False,True,pilot
+completely regular,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,regular,4.67,False,True,confirmatory
+first-countable,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,first-countable,2.51,False,True,confirmatory
+perfectly normal,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,normal,4.46,False,True,confirmatory
+other glossaries,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,glossarie,1.98,False,True,confirmatory
+open ball,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,ball,4.91,False,True,confirmatory
+clopen set,general_topology,math,pure,Glossary of general topology,1357877906,False,True,False,False,set,1.01,False,True,confirmatory
+isolated point,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,point,4.22,False,True,confirmatory
+locally finite,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,finite,3.59,False,True,confirmatory
+path-connected component,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,component,4.05,False,True,confirmatory
+identification map,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,map,4.08,False,True,confirmatory
+locally compact,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,compact,3.78,False,True,pilot
+simply connected,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,connected,4.53,False,True,confirmatory
+sober,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,sober,3.94,False,True,confirmatory
+weakly countably compact,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,compact,1.78,False,True,confirmatory
+ultrametric,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,ultrametric,0.0,False,True,confirmatory
+semiregular,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,semiregular,0.0,False,True,confirmatory
+frontier,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,frontier,3.97,False,True,confirmatory
+semi-preopen,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,semi-preopen,0.0,False,True,confirmatory
+uniform structure,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,structure,4.21,False,True,confirmatory
+pseudocompact,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,pseudocompact,0.0,False,True,confirmatory
+subbase,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,subbase,1.39,False,True,confirmatory
+metric invariant,general_topology,math,pure,Glossary of general topology,1357877906,False,True,False,False,invariant,2.97,False,True,confirmatory
+core-compact space,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,space,3.95,False,True,confirmatory
+polyadic,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,polyadic,0.0,False,True,confirmatory
+closed function,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,function,4.54,False,True,confirmatory
+countably locally finite,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,finite,1.79,False,True,confirmatory
+hemicompact,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,hemicompact,0.0,False,True,pilot
+homeomorphism,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,homeomorphism,1.65,False,True,confirmatory
+identification space,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,space,4.14,False,True,confirmatory
+Kolmogorov axiom,general_topology,math,pure,Glossary of general topology,1357877906,False,False,True,False,axiom,2.03,False,False,confirmatory
+smaller topology,general_topology,math,pure,Glossary of general topology,1357877906,True,True,False,False,topology,3.19,False,False,confirmatory
+discrete topology,general_topology,math,pure,Glossary of general topology,1357877906,True,True,False,False,topology,3.04,False,False,pilot
+well-connected,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,well-connected,4.66,True,False,confirmatory
+semi-open,general_topology,math,pure,Glossary of general topology,1357877906,False,False,False,False,semi-open,4.47,True,False,pilot
+regular Hausdorff,general_topology,math,pure,Glossary of general topology,1357877906,False,False,True,False,hausdorff,2.0,False,False,confirmatory
+topologically complete,general_topology,math,pure,Glossary of general topology,1357877906,True,True,False,False,complete,2.03,False,False,confirmatory
+Vietoris,general_topology,math,pure,Glossary of general topology,1357877906,False,False,True,False,vietori,0.0,False,False,confirmatory
+Cauchy sequence,general_topology,math,pure,Glossary of general topology,1357877906,False,False,True,False,sequence,2.39,False,False,pilot
+Borel set,general_topology,math,pure,Glossary of general topology,1357877906,False,True,True,False,set,2.28,False,False,confirmatory
+subgroup,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,subgroup,3.08,False,True,pilot
+characteristic subgroup,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,subgroup,3.03,False,True,pilot
+conjugate subgroups,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,subgroup,2.61,False,True,confirmatory
+conjugate elements,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,element,2.85,False,True,confirmatory
+direct product,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,product,4.63,False,True,confirmatory
+transitively normal subgroup,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,subgroup,1.54,False,True,pilot
+commutator subgroup,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,subgroup,2.09,False,True,confirmatory
+derived subgroup,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,subgroup,3.05,False,True,confirmatory
+contranormal subgroup,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,subgroup,0.0,False,True,pilot
+subgroup series,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,serie,3.08,False,True,confirmatory
+normal subgroup,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,subgroup,3.08,False,True,confirmatory
+ascendant subgroup,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,subgroup,2.66,False,True,confirmatory
+normal closure,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,closure,4.06,False,True,confirmatory
+normal series,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,serie,4.85,False,True,confirmatory
+no small subgroup,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,subgroup,3.08,False,True,confirmatory
+real element,group_theory,math,pure,Glossary of group theory,1353640923,False,True,False,False,element,4.43,False,True,confirmatory
+conjugacy-closed subgroup,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,subgroup,1.5,False,True,confirmatory
+normal core,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,core,4.55,False,True,confirmatory
+central subgroup,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,subgroup,3.08,False,True,confirmatory
+perfect core,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,core,4.6,False,True,confirmatory
+commutator,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,commutator,2.14,False,True,confirmatory
+serial subgroup,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,subgroup,3.05,False,True,confirmatory
+composition series,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,serie,4.29,False,True,confirmatory
+subnormal subgroup,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,subgroup,1.84,False,True,confirmatory
+conjugacy class,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,class,1.51,False,True,confirmatory
+lattice of subgroups,group_theory,math,pure,Glossary of group theory,1353640923,False,False,False,False,subgroup,2.81,False,True,confirmatory
+permutation group,group_theory,math,pure,Glossary of group theory,1353640923,True,True,False,False,group,2.64,False,False,confirmatory
+trivial group,group_theory,math,pure,Glossary of group theory,1353640923,True,True,False,False,group,3.66,False,False,pilot
+group isomorphism,group_theory,math,pure,Glossary of group theory,1353640923,True,True,False,False,isomorphism,2.41,False,False,confirmatory
+locally cyclic group,group_theory,math,pure,Glossary of group theory,1353640923,True,True,False,False,group,3.11,False,False,confirmatory
+finitely generated group,group_theory,math,pure,Glossary of group theory,1353640923,True,True,False,False,group,2.3,False,False,confirmatory
+cyclic group,group_theory,math,pure,Glossary of group theory,1353640923,True,True,False,False,group,3.16,False,False,pilot
+finite group,group_theory,math,pure,Glossary of group theory,1353640923,True,True,False,False,group,3.74,False,False,confirmatory
+group automorphism,group_theory,math,pure,Glossary of group theory,1353640923,True,True,False,False,automorphism,1.93,False,False,confirmatory
+simple group,group_theory,math,pure,Glossary of group theory,1353640923,True,True,False,False,group,4.96,False,False,confirmatory
+torsion group,group_theory,math,pure,Glossary of group theory,1353640923,True,True,False,False,group,2.85,False,False,pilot
+cokernel,ring_module_theory,math,pure,Glossary of module theory,1350455074,False,False,False,False,cokernel,0.0,False,True,confirmatory
+torsion-free,ring_module_theory,math,pure,Glossary of module theory,1350455074,False,False,False,False,torsion-free,2.85,False,True,confirmatory
+pure submodule,ring_module_theory,math,pure,Glossary of module theory,1350455074,False,False,False,False,submodule,1.65,False,True,confirmatory
+shapiro,ring_module_theory,math,pure,Glossary of module theory,1350455074,False,False,False,False,shapiro,3.38,False,True,confirmatory
+endomorphism,ring_module_theory,math,pure,Glossary of ring theory,1370098282,False,False,False,False,endomorphism,1.37,False,True,confirmatory
+finite length,ring_module_theory,math,pure,Glossary of module theory,1350455074,False,False,False,False,length,3.71,False,True,confirmatory
+nearring,ring_module_theory,math,pure,Glossary of ring theory,1370098282,False,False,False,False,nearring,0.0,False,True,confirmatory
+algebraically compact,ring_module_theory,math,pure,Glossary of module theory,1350455074,False,True,False,False,compact,2.16,False,True,confirmatory
+finitely presented,ring_module_theory,math,pure,Glossary of ring theory,1370098282,False,False,False,False,presented,2.3,False,True,confirmatory
+semiprime,ring_module_theory,math,pure,Glossary of ring theory,1370098282,False,False,False,False,semiprime,0.0,False,True,confirmatory
+structure theorem,ring_module_theory,math,pure,Glossary of module theory,1350455074,False,False,False,False,theorem,3.68,False,True,confirmatory
+subring,ring_module_theory,math,pure,Glossary of ring theory,1370098282,False,False,False,False,subring,1.21,False,True,pilot
+boolean,ring_module_theory,math,pure,Glossary of ring theory,1370098282,False,False,False,False,boolean,2.95,False,True,confirmatory
+submodule,ring_module_theory,math,pure,Glossary of module theory,1350455074,False,False,False,False,submodule,1.65,False,True,confirmatory
+ext functor,ring_module_theory,math,pure,Glossary of module theory,1350455074,False,False,False,False,functor,2.11,False,True,pilot
+exterior algebra,ring_module_theory,math,pure,Glossary of ring theory,1370098282,False,True,False,False,algebra,3.53,False,True,confirmatory
+completely reducible,ring_module_theory,math,pure,Glossary of module theory,1350455074,False,False,False,False,reducible,2.25,False,True,pilot
+quasi-Frobenius,ring_module_theory,math,pure,Glossary of ring theory,1370098282,False,False,False,False,quasi-frobeniu,1.84,False,True,confirmatory
+countably generated,ring_module_theory,math,pure,Glossary of module theory,1350455074,False,False,False,False,generated,1.8,False,True,confirmatory
+bimodule,ring_module_theory,math,pure,Glossary of module theory,1350455074,False,False,False,False,bimodule,0.0,False,True,confirmatory
+minimal and maximal,ring_module_theory,math,pure,Glossary of ring theory,1370098282,False,False,False,False,maximal,3.02,False,True,pilot
+clifford algebra,ring_module_theory,math,pure,Glossary of ring theory,1370098282,False,True,False,False,algebra,3.47,False,True,confirmatory
+commutative,ring_module_theory,math,pure,Glossary of ring theory,1370098282,False,True,False,False,commutative,2.51,False,True,pilot
+determinant,ring_module_theory,math,pure,Glossary of module theory,1350455074,False,False,False,False,determinant,2.9,False,True,confirmatory
+semiprimitive,ring_module_theory,math,pure,Glossary of ring theory,1370098282,False,False,False,False,semiprimitive,0.0,False,True,confirmatory
+torsionless,ring_module_theory,math,pure,Glossary of module theory,1350455074,False,False,False,False,torsionless,0.0,False,True,confirmatory
+closed submodule,ring_module_theory,math,pure,Glossary of module theory,1350455074,False,False,False,False,submodule,1.65,False,True,confirmatory
+semiring,ring_module_theory,math,pure,Glossary of ring theory,1370098282,False,False,False,False,semiring,1.04,False,True,confirmatory
+enveloping algebra,ring_module_theory,math,pure,Glossary of ring theory,1370098282,False,True,False,False,algebra,2.6,False,True,confirmatory
+chain complex,ring_module_theory,math,pure,Glossary of module theory,1350455074,False,True,False,False,complex,4.44,False,True,confirmatory
+global,ring_module_theory,math,pure,Glossary of module theory,1350455074,False,False,False,False,global,4.95,True,False,confirmatory
+smith,ring_module_theory,math,pure,Glossary of module theory,1350455074,False,False,False,False,smith,4.89,True,False,pilot
+sheaf of modules,ring_module_theory,math,pure,Glossary of module theory,1350455074,True,True,False,False,module,2.57,False,False,confirmatory
+module,ring_module_theory,math,pure,Glossary of module theory,1350455074,True,True,False,False,module,3.89,False,False,confirmatory
+Azumaya,ring_module_theory,math,pure,Glossary of ring theory,1370098282,False,False,True,False,azumaya,0.0,False,False,confirmatory
+enough,ring_module_theory,math,pure,Glossary of module theory,1350455074,False,False,False,False,enough,5.54,True,False,confirmatory
+change,ring_module_theory,math,pure,Glossary of ring theory,1370098282,False,False,False,False,change,5.54,True,False,confirmatory
+fitting,ring_module_theory,math,pure,Glossary of module theory,1350455074,False,False,False,False,fitting,4.1,True,False,confirmatory
+generate,ring_module_theory,math,pure,Glossary of ring theory,1370098282,False,False,False,False,generate,4.22,True,False,confirmatory
+filtered ring,ring_module_theory,math,pure,Glossary of ring theory,1370098282,True,True,False,False,ring,3.49,False,False,confirmatory
+normally flat,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,flat,4.34,False,True,confirmatory
+discrete valuation ring,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,True,False,False,ring,3.33,False,True,confirmatory
+quasi,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,quasi,3.49,False,True,confirmatory
+face ring,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,True,False,False,ring,4.72,False,True,confirmatory
+affine ring,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,True,False,False,ring,2.43,False,True,confirmatory
+conormal,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,conormal,0.0,False,True,confirmatory
+residue field,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,field,3.52,False,True,pilot
+bass number,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,True,False,False,number,4.26,False,True,confirmatory
+tight closure,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,closure,3.98,False,True,confirmatory
+tangent,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,tangent,3.19,False,True,pilot
+modular system,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,system,3.51,False,True,confirmatory
+coCoA,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,cocoa,3.64,False,True,confirmatory
+lying over property,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,property,4.52,False,True,confirmatory
+japanese ring,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,True,False,False,ring,4.51,False,True,pilot
+mori domain,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,domain,3.09,False,True,confirmatory
+pseudo,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,pseudo,3.61,False,True,pilot
+seminormal,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,seminormal,0.0,False,True,confirmatory
+divisible,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,divisible,2.69,False,True,confirmatory
+determinantal,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,determinantal,0.0,False,True,confirmatory
+going down,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,down,5.61,False,True,confirmatory
+equicharacteristic,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,equicharacteristic,0.0,False,True,pilot
+congruence ideal,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,ideal,2.44,False,True,confirmatory
+codimension,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,codimension,1.55,False,True,pilot
+coprimary,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,coprimary,0.0,False,True,confirmatory
+fractional ideal,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,ideal,3.03,False,True,confirmatory
+cotangent,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,cotangent,1.52,False,True,confirmatory
+acceptable ring,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,True,False,False,ring,4.16,False,True,confirmatory
+infinitely generated,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,generated,3.45,False,True,confirmatory
+exact zero divisor,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,divisor,2.41,False,True,confirmatory
+divisorial ideal,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,ideal,0.0,False,True,confirmatory
+Zariski,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,True,False,zariski,1.25,False,False,confirmatory
+Laskerian ring,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,True,True,False,ring,0.0,False,False,confirmatory
+Prüfer domain,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,True,False,domain,0.0,False,False,confirmatory
+Hironaka,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,True,False,hironaka,1.3,False,False,confirmatory
+excellent,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,excellent,4.73,True,False,confirmatory
+linked,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,linked,4.54,True,False,confirmatory
+clean,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,clean,4.97,True,False,pilot
+Matlis,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,True,False,matli,0.0,False,False,confirmatory
+Boolean ring,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,True,True,False,ring,2.94,False,False,confirmatory
+semi-local,commutative_algebra,math,pure,Glossary of commutative algebra,1355326396,False,False,False,False,semi-local,4.46,True,False,confirmatory
+simplicial set,category_theory,math,pure,Glossary of category theory,1376093804,False,True,False,False,set,1.72,False,True,confirmatory
+comma,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,comma,3.27,False,True,confirmatory
+essentially surjective,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,surjective,1.57,False,True,confirmatory
+preorder,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,preorder,3.03,False,True,confirmatory
+forgetful functor,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,functor,2.08,False,True,confirmatory
+presheaf,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,presheaf,0.0,False,True,pilot
+diagonal functor,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,functor,2.12,False,True,confirmatory
+preadditive,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,preadditive,0.0,False,True,confirmatory
+parallel morphism,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,morphism,1.89,False,True,pilot
+diagram,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,diagram,3.85,False,True,confirmatory
+coequalizer,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,coequalizer,0.0,False,True,confirmatory
+colored operad,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,operad,0.0,False,True,confirmatory
+skeletal,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,skeletal,3.39,False,True,confirmatory
+distributor,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,distributor,3.66,False,True,pilot
+groupoid,category_theory,math,pure,Glossary of category theory,1376093804,False,True,False,False,groupoid,1.34,False,True,confirmatory
+spherical,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,spherical,3.39,False,True,confirmatory
+monadic,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,monadic,1.82,False,True,pilot
+cartesian morphism,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,morphism,1.84,False,True,confirmatory
+cartesian functor,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,functor,2.06,False,True,confirmatory
+free functor,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,functor,2.15,False,True,pilot
+semi-abelian,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,semi-abelian,2.4,False,True,confirmatory
+subcategory,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,subcategory,2.37,False,True,confirmatory
+cubical,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,cubical,2.05,False,True,confirmatory
+polygraph,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,polygraph,2.78,False,True,confirmatory
+inductive limit,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,limit,2.89,False,True,pilot
+multicategory,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,multicategory,0.0,False,True,confirmatory
+coherence theorem,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,theorem,3.0,False,True,pilot
+subquotient,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,subquotient,0.0,False,True,confirmatory
+coproduct,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,coproduct,1.25,False,True,confirmatory
+cartesian closed,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,closed,2.77,False,True,confirmatory
+simplicial category,category_theory,math,pure,Glossary of category theory,1376093804,True,True,False,False,category,1.72,False,False,pilot
+pseudo-tensor category,category_theory,math,pure,Glossary of category theory,1376093804,True,True,False,False,category,2.92,False,False,confirmatory
+empty,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,empty,4.59,True,False,confirmatory
+slice,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,slice,4.0,True,False,pilot
+adequate,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,adequate,4.05,True,False,confirmatory
+pointed,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,pointed,4.46,True,False,pilot
+Lawvere,category_theory,math,pure,Glossary of category theory,1376093804,False,False,True,False,lawvere,0.0,False,False,confirmatory
+string,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,string,4.4,True,False,pilot
+category of,category_theory,math,pure,Glossary of category theory,1376093804,True,True,False,False,of,4.57,False,False,confirmatory
+simpson,category_theory,math,pure,Glossary of category theory,1376093804,False,False,False,False,simpson,4.01,True,False,confirmatory
+anti-triangle,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,anti-triangle,3.9,False,True,confirmatory
+free edge,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,edge,4.69,False,True,confirmatory
+peripheral,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,peripheral,3.66,False,True,confirmatory
+vertex cut,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,cut,3.21,False,True,confirmatory
+pathwidth,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,pathwidth,0.0,False,True,pilot
+clique-width,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,clique-width,3.09,False,True,pilot
+polytree,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,polytree,0.0,False,True,pilot
+minimum cut,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,cut,4.58,False,True,confirmatory
+girth,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,girth,2.92,False,True,confirmatory
+weakly connected,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,connected,3.16,False,True,confirmatory
+square brackets,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,bracket,3.57,False,True,pilot
+tree decomposition,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,decomposition,3.25,False,True,confirmatory
+hyperarc,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,hyperarc,0.0,False,True,confirmatory
+cut space,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,space,4.93,False,True,confirmatory
+diconnected,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,diconnected,0.0,False,True,confirmatory
+reachable,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,reachable,2.71,False,True,confirmatory
+directed edge,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,edge,4.36,False,True,confirmatory
+binding number,graph_theory,math,pure,Glossary of graph theory,1373839425,False,True,False,False,number,4.13,False,True,pilot
+unary vertex,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,vertex,1.91,False,True,confirmatory
+hypercube,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,hypercube,2.01,False,True,pilot
+multiple adjacency,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,adjacency,2.25,False,True,confirmatory
+subgraph,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,subgraph,1.95,False,True,confirmatory
+reachability,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,reachability,1.9,False,True,confirmatory
+coloring,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,coloring,3.59,False,True,pilot
+digon,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,digon,0.0,False,True,confirmatory
+pseudograph,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,pseudograph,0.0,False,True,confirmatory
+traceable,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,traceable,2.8,False,True,confirmatory
+sibling,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,sibling,3.61,False,True,confirmatory
+sparse,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,sparse,3.36,False,True,confirmatory
+supergraph,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,supergraph,0.0,False,True,confirmatory
+arrow,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,arrow,4.13,True,False,confirmatory
+out-degree,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,out-degree,4.92,True,False,pilot
+independent,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,independent,4.93,True,False,confirmatory
+in-degree,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,in-degree,4.94,True,False,confirmatory
+parent,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,parent,4.57,True,False,confirmatory
+utility graph,graph_theory,math,pure,Glossary of graph theory,1373839425,True,True,False,False,graph,3.85,False,False,confirmatory
+Meyniel,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,True,False,meyniel,0.0,False,False,confirmatory
+block,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,block,4.88,True,False,confirmatory
+tournament,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,False,False,tournament,4.56,True,False,confirmatory
+Hamiltonian,graph_theory,math,pure,Glossary of graph theory,1373839425,False,False,True,False,hamiltonian,2.75,False,False,confirmatory
+indecomposable ordinal,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,ordinal,1.51,False,True,pilot
+relative complement,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,complement,3.69,False,True,confirmatory
+supercompact,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,supercompact,0.0,False,True,confirmatory
+axiom,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,axiom,3.02,False,True,confirmatory
+paradox of denotation,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,denotation,1.89,False,True,confirmatory
+jensen,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,jensen,3.55,False,True,confirmatory
+tuple,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,tuple,2.44,False,True,confirmatory
+poset,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,poset,1.37,False,True,confirmatory
+gimel,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,gimel,1.33,False,True,confirmatory
+lower bound,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,bound,4.37,False,True,confirmatory
+global choice,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,choice,4.71,False,True,pilot
+cofinal,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,cofinal,0.0,False,True,confirmatory
+epsilon,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,epsilon,2.88,False,True,pilot
+morass,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,morass,2.36,False,True,confirmatory
+class comprehension schema,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,schema,2.99,False,True,confirmatory
+indescribable cardinal,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,cardinal,2.86,False,True,pilot
+aleph,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,aleph,2.39,False,True,confirmatory
+symmetric model,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,model,3.2,False,True,confirmatory
+meager,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,meager,3.05,False,True,confirmatory
+equipotent,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,equipotent,1.05,False,True,confirmatory
+upper bound,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,bound,4.27,False,True,confirmatory
+order type,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,type,5.06,False,True,confirmatory
+arithmetical,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,True,False,False,arithmetical,2.1,False,True,confirmatory
+improper,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,improper,3.58,False,True,confirmatory
+uniformity,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,uniformity,3.03,False,True,confirmatory
+separation axiom,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,axiom,2.99,False,True,confirmatory
+zero function,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,function,4.4,False,True,confirmatory
+pantachy,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,pantachy,0.0,False,True,confirmatory
+equinumerous,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,equinumerou,0.0,False,True,confirmatory
+continuum problem,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,problem,3.41,False,True,confirmatory
+pure set,set_theory_logic,math,pure,Glossary of set theory,1360947732,True,True,False,False,set,4.59,False,False,confirmatory
+choice set,set_theory_logic,math,pure,Glossary of set theory,1360947732,True,True,False,False,set,4.96,False,False,confirmatory
+Burali-Forti,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,True,False,burali-forti,0.0,False,False,pilot
+richard,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,richard,4.79,True,False,confirmatory
+limitation-of-size conception of set,set_theory_logic,math,pure,Glossary of set theory,1360947732,True,True,False,False,set,3.42,False,False,pilot
+union,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,union,5.08,True,False,confirmatory
+positive set theory,set_theory_logic,math,pure,Glossary of set theory,1360947732,True,True,False,False,theory,4.59,False,False,confirmatory
+Solovay,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,True,False,solovay,0.0,False,False,confirmatory
+second,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,False,False,second,5.63,True,False,confirmatory
+Vopenka,set_theory_logic,math,pure,Glossary of set theory,1360947732,False,False,True,False,vopenka,0.0,False,False,pilot
+ample,algebraic_geometry,math,pure,Glossary of algebraic geometry,1351541925,False,False,False,False,ample,3.71,False,True,confirmatory
+osculate,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,osculate,0.0,False,True,confirmatory
+linearization,algebraic_geometry,math,pure,Glossary of algebraic geometry,1351541925,False,False,False,False,linearization,1.85,False,True,confirmatory
+secundum,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,secundum,2.05,False,True,confirmatory
+inscribed,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,inscribed,3.38,False,True,confirmatory
+linear system,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,system,4.1,False,True,pilot
+spherical variety,algebraic_geometry,math,pure,Glossary of algebraic geometry,1351541925,False,False,False,False,variety,3.37,False,True,confirmatory
+proximate,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,proximate,2.62,False,True,confirmatory
+hyperplane,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,hyperplane,1.92,False,True,confirmatory
+subscheme,algebraic_geometry,math,pure,Glossary of algebraic geometry,1351541925,False,False,False,False,subscheme,0.0,False,True,confirmatory
+double point,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,point,4.9,False,True,confirmatory
+monoidal transformation,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,transformation,1.32,False,True,confirmatory
+regulus,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,regulu,2.3,False,True,confirmatory
+tetrastigm,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,tetrastigm,0.0,False,True,pilot
+elation,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,elation,2.7,False,True,confirmatory
+undulation,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,undulation,1.73,False,True,confirmatory
+septic,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,septic,3.21,False,True,confirmatory
+postulation,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,postulation,1.78,False,True,confirmatory
+valence,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,valence,2.9,False,True,pilot
+transvectant,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,transvectant,0.0,False,True,confirmatory
+kenotheme,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,kenotheme,0.0,False,True,confirmatory
+loop group,algebraic_geometry,math,pure,Glossary of algebraic geometry,1351541925,False,True,False,False,group,4.27,False,True,pilot
+regular embedding,algebraic_geometry,math,pure,Glossary of algebraic geometry,1351541925,False,False,False,False,embedding,3.0,False,True,confirmatory
+porism,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,porism,0.0,False,True,confirmatory
+perspectrix,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,perspectrix,0.0,False,True,confirmatory
+finite fibers,algebraic_geometry,math,pure,Glossary of algebraic geometry,1351541925,False,False,False,False,fiber,3.39,False,True,confirmatory
+homaloidal,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,homaloidal,0.0,False,True,pilot
+node cusp,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,cusp,2.99,False,True,confirmatory
+homographic,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,homographic,0.0,False,True,confirmatory
+tripartite,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,tripartite,2.75,False,True,pilot
+cross-ratio,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,cross-ratio,4.28,True,False,confirmatory
+ruled,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,False,False,ruled,4.3,True,False,confirmatory
+Lelong number,algebraic_geometry,math,pure,Glossary of algebraic geometry,1351541925,False,True,True,False,number,1.66,False,False,confirmatory
+Euler sequence,algebraic_geometry,math,pure,Glossary of algebraic geometry,1351541925,False,False,True,False,sequence,2.78,False,False,confirmatory
+Jacobian set,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,True,True,False,set,2.06,False,False,pilot
+Cayleyan,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,True,False,cayleyan,0.0,False,False,confirmatory
+Artin stack,algebraic_geometry,math,pure,Glossary of algebraic geometry,1351541925,False,False,True,False,stack,1.75,False,False,pilot
+Hurwitz curve,algebraic_geometry,math,pure,Glossary of classical algebraic geometry,1362286631,False,False,True,False,curve,2.37,False,False,pilot
+locally Noetherian,algebraic_geometry,math,pure,Glossary of algebraic geometry,1351541925,False,False,True,False,noetherian,1.55,False,False,confirmatory
+Jacobian variety,algebraic_geometry,math,pure,Glossary of algebraic geometry,1351541925,False,False,True,False,variety,2.06,False,False,confirmatory
+weights,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,False,False,False,False,weight,3.86,False,True,confirmatory
+automorphic form,number_theory,math,pure,Glossary of number theory,1321562544,False,False,False,False,form,1.65,False,True,confirmatory
+valued field,number_theory,math,pure,Glossary of number theory,1321562544,False,False,False,False,field,4.04,False,True,confirmatory
+canonical height,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,False,False,False,False,height,3.29,False,True,pilot
+local zeta-function,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,False,False,False,False,zeta-function,3.07,False,True,confirmatory
+flat cohomology,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,False,False,False,False,cohomology,2.14,False,True,confirmatory
+good reduction,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,False,False,False,False,reduction,4.38,False,True,confirmatory
+diagonal forms,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,False,False,False,False,form,3.34,False,True,confirmatory
+twin prime,number_theory,math,pure,Glossary of number theory,1321562544,False,False,False,False,prime,4.21,False,True,pilot
+integer,number_theory,math,pure,Glossary of number theory,1321562544,False,False,False,False,integer,3.39,False,True,confirmatory
+modular form,number_theory,math,pure,Glossary of number theory,1321562544,False,False,False,False,form,3.5,False,True,confirmatory
+unlikely intersection,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,False,False,False,False,intersection,3.74,False,True,confirmatory
+function field analogy,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,False,False,False,False,analogy,3.66,False,True,confirmatory
+uniformity conjecture,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,False,False,False,False,conjecture,2.86,False,True,confirmatory
+linear torus,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,False,False,False,False,toru,2.56,False,True,pilot
+naive height,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,False,False,False,False,height,3.68,False,True,confirmatory
+quadratic residue,number_theory,math,pure,Glossary of number theory,1321562544,False,False,False,False,residue,2.87,False,True,confirmatory
+chinese remainder theorem,number_theory,math,pure,Glossary of number theory,1321562544,False,False,False,False,theorem,3.53,False,True,pilot
+abc conjecture,number_theory,math,pure,Glossary of number theory,1321562544,False,False,False,False,conjecture,3.3,False,True,confirmatory
+special set,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,False,True,False,False,set,5.15,False,True,confirmatory
+geometric class field theory,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,False,True,False,False,theory,3.55,False,True,confirmatory
+tate conjecture,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,False,False,False,False,conjecture,3.2,False,True,confirmatory
+bad reduction,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,False,False,False,False,reduction,4.36,False,True,confirmatory
+tate curve,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,False,False,False,False,curve,3.58,False,True,confirmatory
+totient function,number_theory,math,pure,Glossary of number theory,1321562544,False,False,False,False,function,0.0,False,True,confirmatory
+non-abelian,number_theory,math,pure,Glossary of number theory,1321562544,False,False,False,False,non-abelian,2.4,False,True,confirmatory
+height function,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,False,False,False,False,function,4.34,False,True,confirmatory
+adele,number_theory,math,pure,Glossary of number theory,1321562544,False,False,False,False,adele,3.45,False,True,pilot
+quasi-algebraic closure,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,False,True,False,False,closure,2.98,False,True,pilot
+infinite descent,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,False,False,False,False,descent,3.73,False,True,confirmatory
+Dirichlet,number_theory,math,pure,Glossary of number theory,1321562544,False,False,True,False,dirichlet,2.22,False,False,pilot
+Mordell conjecture,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,False,False,True,False,conjecture,1.03,False,False,confirmatory
+Weil conjectures,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,False,False,True,False,conjecture,2.39,False,False,pilot
+Subspace theorem,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,False,False,True,False,theorem,2.83,False,False,confirmatory
+Mersenne prime,number_theory,math,pure,Glossary of number theory,1321562544,False,False,True,False,prime,1.83,False,False,confirmatory
+Tamagawa numbers,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,True,True,True,False,number,1.46,False,False,confirmatory
+Hecke,number_theory,math,pure,Glossary of number theory,1321562544,False,False,True,False,hecke,1.55,False,False,confirmatory
+algebraic number field,number_theory,math,pure,Glossary of number theory,1321562544,True,True,False,False,field,3.18,False,False,confirmatory
+Weil function,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,False,False,True,False,function,2.93,False,False,confirmatory
+Étale cohomology,number_theory,math,pure,Glossary of arithmetic and diophantine geometry,1346525707,False,False,True,False,cohomology,0.0,False,False,pilot
+residue,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,residue,3.53,False,True,confirmatory
+subanalytic,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,subanalytic,0.0,False,True,confirmatory
+microlocal,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,microlocal,0.0,False,True,confirmatory
+archimedean,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,archimedean,1.86,False,True,pilot
+subharmonic,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,subharmonic,1.49,False,True,pilot
+hardy space,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,space,3.84,False,True,confirmatory
+semicontinuous,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,semicontinuou,0.0,False,True,pilot
+argument principle,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,principle,4.16,False,True,confirmatory
+measure space,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,space,4.55,False,True,confirmatory
+convolution,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,convolution,2.47,False,True,confirmatory
+measurable function,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,function,3.31,False,True,confirmatory
+whitney,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,whitney,3.72,False,True,confirmatory
+hypoelliptic,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,hypoelliptic,0.0,False,True,confirmatory
+method of stationary phase,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,phase,3.56,False,True,confirmatory
+differentiation,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,differentiation,3.49,False,True,confirmatory
+fourier,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,fourier,3.07,False,True,confirmatory
+clarke generalized derivative,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,derivative,3.16,False,True,confirmatory
+semianalytic,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,semianalytic,0.0,False,True,confirmatory
+accumulation,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,accumulation,3.59,False,True,pilot
+oscillatory integral,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,integral,2.18,False,True,confirmatory
+microfunction,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,microfunction,0.0,False,True,pilot
+basel,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,basel,3.42,False,True,confirmatory
+infinitesimal,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,infinitesimal,2.63,False,True,confirmatory
+power series,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,serie,5.13,False,True,confirmatory
+measurable set,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,True,False,False,set,3.32,False,True,confirmatory
+line integral,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,integral,3.95,False,True,pilot
+cutoff,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,cutoff,3.21,False,True,pilot
+finite interesection property,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,property,0.0,False,True,confirmatory
+differentiable,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,differentiable,2.34,False,True,confirmatory
+subderivative,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,False,False,subderivative,0.0,False,True,confirmatory
+Euler,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,True,False,euler,2.79,False,False,confirmatory
+Egoroff,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,True,False,egoroff,0.0,False,False,pilot
+Hardy-Littlewood maximal inequality,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,True,False,inequality,2.2,False,False,confirmatory
+Schwarz lemma,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,True,False,lemma,2.52,False,False,confirmatory
+Gauss,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,True,False,gauss,2.83,False,False,confirmatory
+Lelong,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,True,False,lelong,1.66,False,False,confirmatory
+Minkowski,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,True,False,minkowski,2.25,False,False,confirmatory
+Rellich,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,True,False,rellich,0.0,False,False,confirmatory
+Fatou,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,True,False,fatou,1.9,False,False,confirmatory
+Bolzano,real_complex_analysis,math,pure,Glossary of real and complex analysis,1365904789,False,False,True,False,bolzano,2.02,False,False,confirmatory
+ultraweak,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,False,False,ultraweak,0.0,False,True,confirmatory
+uniform boundedness principle,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,False,False,principle,1.55,False,True,confirmatory
+infra-barrelled,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,False,False,infra-barrelled,2.21,False,True,confirmatory
+self-adjoint,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,False,False,self-adjoint,2.31,False,True,confirmatory
+approximation property,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,False,False,property,3.31,False,True,confirmatory
+orthogonal,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,False,False,orthogonal,2.98,False,True,confirmatory
+noncommutative,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,False,False,noncommutative,2.01,False,True,pilot
+locally convex algebra,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,True,False,False,algebra,3.1,False,True,confirmatory
+projection,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,False,False,projection,3.79,False,True,confirmatory
+resolvent,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,False,False,resolvent,1.51,False,True,confirmatory
+centraliser,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,False,False,centraliser,0.0,False,True,confirmatory
+index group,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,True,False,False,group,4.53,False,True,pilot
+essentially selfadjoint,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,False,False,selfadjoint,0.0,False,True,confirmatory
+bornological,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,False,False,bornological,0.0,False,True,confirmatory
+nondegenerate,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,False,False,nondegenerate,1.47,False,True,confirmatory
+orthonormal,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,False,False,orthonormal,2.01,False,True,confirmatory
+semi-reflexive,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,False,False,semi-reflexive,2.83,False,True,confirmatory
+inner product,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,False,False,product,4.37,False,True,confirmatory
+bipolar,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,False,False,bipolar,3.62,False,True,confirmatory
+commutant,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,False,False,commutant,0.0,False,True,confirmatory
+predual,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,False,False,predual,0.0,False,True,confirmatory
+unbounded operator,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,False,False,operator,2.53,False,True,confirmatory
+quasitrace,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,False,False,quasitrace,0.0,False,True,confirmatory
+approximate identity,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,False,False,identity,3.6,False,True,confirmatory
+Bessel,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,True,False,bessel,2.23,False,False,pilot
+Eidelheit,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,True,False,eidelheit,0.0,False,False,confirmatory
+Dunford,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,True,False,dunford,2.25,False,False,confirmatory
+Parseval,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,True,False,parseval,1.16,False,False,confirmatory
+Mazur,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,True,False,mazur,2.32,False,False,confirmatory
+Calkin,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,True,False,calkin,1.42,False,False,confirmatory
+barrel,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,False,False,barrel,4.17,True,False,confirmatory
+Ryll-Nardzewski,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,True,False,ryll-nardzewski,0.0,False,False,confirmatory
+Connes,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,True,False,conne,1.3,False,False,pilot
+douglas,functional_analysis,math,pure,Glossary of functional analysis,1354505619,False,False,False,False,dougla,4.21,True,False,confirmatory
+cofiber sequence,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,sequence,0.0,False,True,confirmatory
+path space,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,space,4.6,False,True,confirmatory
+local sphere,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,sphere,3.9,False,True,confirmatory
+kan complex,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,True,False,False,complex,3.36,False,True,confirmatory
+coherency,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,coherency,2.05,False,True,confirmatory
+infinite mapping telescope,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,telescope,3.42,False,True,confirmatory
+winding number,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,True,False,False,number,3.71,False,True,confirmatory
+homologous,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,homologou,2.78,False,True,pilot
+infinite loop space,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,space,3.9,False,True,confirmatory
+generalized cohomology theory,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,theory,2.12,False,True,confirmatory
+cyclic homology,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,homology,2.59,False,True,pilot
+transgression,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,transgression,2.89,False,True,pilot
+character variety,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,variety,4.59,False,True,confirmatory
+chain map,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,map,4.4,False,True,confirmatory
+obstruction theory,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,theory,3.53,False,True,confirmatory
+homotopy excision theorem,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,theorem,2.06,False,True,pilot
+well pointed,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,pointed,4.45,False,True,pilot
+orbit category,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,True,False,False,category,3.92,False,True,confirmatory
+locally constant sheaf,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,sheaf,2.58,False,True,confirmatory
+fundamental class,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,class,4.29,False,True,confirmatory
+stable homotopy group,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,True,False,False,group,2.18,False,True,pilot
+change of fiber,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,fiber,4.05,False,True,confirmatory
+sullivan,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,sullivan,3.93,False,True,pilot
+regulator,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,regulator,3.62,False,True,pilot
+annulus,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,annulu,2.26,False,True,confirmatory
+disjoint disk property,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,property,2.47,False,True,confirmatory
+simple-homotopy equivalence,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,equivalence,2.14,False,True,confirmatory
+homotopy fiber product,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,product,2.17,False,True,confirmatory
+factorization homology,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,homology,2.24,False,True,confirmatory
+properly discontinuous,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,discontinuou,2.64,False,True,confirmatory
+Koszul duality,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,True,False,duality,0.0,False,False,confirmatory
+Lazard ring,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,True,True,False,ring,2.23,False,False,confirmatory
+analysis Situs,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,True,True,False,situ,2.0,False,False,confirmatory
+super,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,super,5.08,True,False,confirmatory
+collapse,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,collapse,4.18,True,False,confirmatory
+Freedman,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,True,False,freedman,2.96,False,False,confirmatory
+abstract,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,False,False,abstract,4.14,True,False,confirmatory
+Lefschetz,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,True,False,lefschetz,1.23,False,False,confirmatory
+Rokhlin,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,True,False,rokhlin,0.0,False,False,confirmatory
+Verdier,algebraic_topology,math,pure,Glossary of algebraic topology,1382041788,False,False,True,False,verdier,1.75,False,False,confirmatory
+shape operator,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,operator,4.17,False,True,confirmatory
+tree-graded space,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,space,3.43,False,True,confirmatory
+scalar curvature,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,curvature,2.75,False,True,confirmatory
+second fundamental form,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,form,4.27,False,True,confirmatory
+orthonormal frame bundle,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,bundle,2.0,False,True,confirmatory
+path isometry,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,isometry,1.6,False,True,confirmatory
+smooth manifold,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,manifold,3.29,False,True,confirmatory
+center of mass,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,mass,4.7,False,True,confirmatory
+conjugate points,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,point,2.86,False,True,confirmatory
+flat manifold,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,manifold,3.3,False,True,pilot
+natural parametrization,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,parametrization,1.79,False,True,confirmatory
+complete manifold,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,manifold,3.31,False,True,confirmatory
+conformally flat,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,flat,1.46,False,True,confirmatory
+quasi-isometry,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,quasi-isometry,1.59,False,True,pilot
+first fundamental form,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,form,4.28,False,True,confirmatory
+totally convex,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,convex,3.25,False,True,pilot
+principal direction,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,direction,4.38,False,True,confirmatory
+complex hyperbolic space,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,True,False,False,space,3.14,False,True,confirmatory
+linear connection,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,connection,4.03,False,True,confirmatory
+collapsing manifold,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,manifold,3.05,False,True,confirmatory
+infranilmanifold,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,infranilmanifold,0.0,False,True,confirmatory
+arc-wise isometry,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,isometry,1.6,False,True,confirmatory
+geodesic equation,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,equation,2.39,False,True,confirmatory
+almost flat manifold,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,manifold,3.3,False,True,confirmatory
+isoperimetric function,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,function,1.34,False,True,confirmatory
+convexity radius,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,radiu,2.1,False,True,confirmatory
+quasigeodesic,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,quasigeodesic,0.0,False,True,confirmatory
+symmetric space,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,space,3.21,False,True,confirmatory
+parallel transport,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,transport,4.13,False,True,pilot
+principal curvature,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,curvature,3.2,False,True,confirmatory
+Koszul Connection,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,True,False,connection,0.0,False,False,confirmatory
+connection,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,connection,4.76,True,False,pilot
+Banach space,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,True,False,space,2.41,False,False,pilot
+proper metric space,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,True,True,False,False,space,3.8,False,False,confirmatory
+Cartan connection,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,True,False,connection,1.78,False,False,confirmatory
+Autoparallel,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,True,False,autoparallel,0.0,False,False,confirmatory
+variation,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,False,False,variation,4.08,True,False,confirmatory
+Gromov-hyperbolic metric space,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,True,True,True,False,space,1.74,False,False,confirmatory
+Asymptotic cone,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,False,False,True,False,cone,2.66,False,False,confirmatory
+Kähler-Einstein metric,differential_geometry,math,pure,Glossary of Riemannian and metric geometry,1360693640,True,True,True,False,metric,1.26,False,False,confirmatory
+complex reflection group,lie_representation_theory,math,pure,Glossary of Lie groups and Lie algebras,1355327888,False,True,False,False,group,4.08,False,True,confirmatory
+uniformly bounded,lie_representation_theory,math,pure,Glossary of representation theory,1351912484,False,False,False,False,bounded,3.02,False,True,confirmatory
+toral,lie_representation_theory,math,pure,Glossary of Lie groups and Lie algebras,1355327888,False,False,False,False,toral,1.81,False,True,confirmatory
+equivariant,lie_representation_theory,math,pure,Glossary of representation theory,1351912484,False,False,False,False,equivariant,1.56,False,True,pilot
+branching,lie_representation_theory,math,pure,Glossary of representation theory,1351912484,False,False,False,False,branching,3.24,False,True,pilot
+subrepresentation,lie_representation_theory,math,pure,Glossary of representation theory,1351912484,False,False,False,False,subrepresentation,0.0,False,True,confirmatory
+intertwining,lie_representation_theory,math,pure,Glossary of representation theory,1351912484,False,False,False,False,intertwining,2.36,False,True,confirmatory
+complementary,lie_representation_theory,math,pure,Glossary of representation theory,1351912484,False,False,False,False,complementary,3.56,False,True,pilot
+highest weight,lie_representation_theory,math,pure,Glossary of representation theory,1351912484,False,False,False,False,weight,4.63,False,True,confirmatory
+steinberg,lie_representation_theory,math,pure,Glossary of representation theory,1351912484,False,False,False,False,steinberg,3.03,False,True,confirmatory
+solvable,lie_representation_theory,math,pure,Glossary of Lie groups and Lie algebras,1355327888,False,False,False,False,solvable,2.58,False,True,confirmatory
+central series,lie_representation_theory,math,pure,Glossary of Lie groups and Lie algebras,1355327888,False,False,False,False,serie,4.92,False,True,confirmatory
+cluster algebra,lie_representation_theory,math,pure,Glossary of representation theory,1351912484,False,True,False,False,algebra,3.56,False,True,confirmatory
+invariant convex cone,lie_representation_theory,math,pure,Glossary of Lie groups and Lie algebras,1355327888,False,False,False,False,cone,2.79,False,True,confirmatory
+defined over,lie_representation_theory,math,pure,Glossary of representation theory,1351912484,False,False,False,False,over,4.55,False,True,pilot
+fiber functor,lie_representation_theory,math,pure,Glossary of representation theory,1351912484,False,False,False,False,functor,2.15,False,True,confirmatory
+parabolic,lie_representation_theory,math,pure,Glossary of Lie groups and Lie algebras,1355327888,False,False,False,False,parabolic,2.79,False,True,confirmatory
+quaternionic,lie_representation_theory,math,pure,Glossary of representation theory,1351912484,False,False,False,False,quaternionic,1.16,False,True,confirmatory
+isotypic,lie_representation_theory,math,pure,Glossary of representation theory,1351912484,False,False,False,False,isotypic,0.0,False,True,confirmatory
+cuspidal,lie_representation_theory,math,pure,Glossary of representation theory,1351912484,False,False,False,False,cuspidal,1.13,False,True,confirmatory
+system of imprimitivity,lie_representation_theory,math,pure,Glossary of representation theory,1351912484,False,False,False,False,imprimitivity,0.0,False,True,confirmatory
+matrix coefficient,lie_representation_theory,math,pure,Glossary of representation theory,1351912484,False,False,False,False,coefficient,3.31,False,True,confirmatory
+subalgebra,lie_representation_theory,math,pure,Glossary of Lie groups and Lie algebras,1355327888,False,False,False,False,subalgebra,1.64,False,True,confirmatory
+coroot,lie_representation_theory,math,pure,Glossary of Lie groups and Lie algebras,1355327888,False,False,False,False,coroot,0.0,False,True,confirmatory
+quantized,lie_representation_theory,math,pure,Glossary of Lie groups and Lie algebras,1355327888,False,False,False,False,quantized,2.27,False,True,confirmatory
+coadjoint,lie_representation_theory,math,pure,Glossary of representation theory,1351912484,False,False,False,False,coadjoint,0.0,False,True,confirmatory
+automorphic,lie_representation_theory,math,pure,Glossary of representation theory,1351912484,False,False,False,False,automorphic,1.65,False,True,confirmatory
+induction,lie_representation_theory,math,pure,Glossary of representation theory,1351912484,False,False,False,False,induction,3.71,False,True,confirmatory
+derived algebra,lie_representation_theory,math,pure,Glossary of Lie groups and Lie algebras,1355327888,False,True,False,False,algebra,3.66,False,True,confirmatory
+Kirillov,lie_representation_theory,math,pure,Glossary of Lie groups and Lie algebras,1355327888,False,False,True,False,kirillov,1.42,False,False,confirmatory
+Harish-Chandra,lie_representation_theory,math,pure,Glossary of Lie groups and Lie algebras,1355327888,False,False,True,False,harish-chandra,2.21,False,False,confirmatory
+Mackey theory,lie_representation_theory,math,pure,Glossary of representation theory,1351912484,False,False,True,False,theory,2.94,False,False,pilot
+Oscillator,lie_representation_theory,math,pure,Glossary of representation theory,1351912484,False,False,True,False,oscillator,2.96,False,False,pilot
+Casimir,lie_representation_theory,math,pure,Glossary of Lie groups and Lie algebras,1355327888,False,False,True,False,casimir,2.41,False,False,pilot
+category of representations,lie_representation_theory,math,pure,Glossary of representation theory,1351912484,True,True,False,False,representation,3.62,False,False,pilot
+Verma module,lie_representation_theory,math,pure,Glossary of representation theory,1351912484,False,True,True,False,module,2.74,False,False,confirmatory
+free Lie algebra,lie_representation_theory,math,pure,Glossary of Lie groups and Lie algebras,1355327888,True,True,True,False,algebra,3.73,False,False,pilot
+highest,lie_representation_theory,math,pure,Glossary of Lie groups and Lie algebras,1355327888,False,False,False,False,highest,4.86,True,False,confirmatory
+Jacquet,lie_representation_theory,math,pure,Glossary of representation theory,1351912484,False,False,True,False,jacquet,1.93,False,False,pilot
+admissible decision rule,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,rule,2.86,False,True,confirmatory
+estimation theory,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,theory,3.44,False,True,confirmatory
+marginal likelihood,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,likelihood,3.5,False,True,confirmatory
+repeated measures design,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,design,4.09,False,True,confirmatory
+box plot,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,plot,4.45,False,True,confirmatory
+time series forecasting,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,forecasting,3.46,False,True,confirmatory
+frequentist inference,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,inference,1.65,False,True,confirmatory
+normal distribution,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,distribution,4.49,False,True,confirmatory
+weighted arithmetic mean,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,True,False,False,mean,3.21,False,True,confirmatory
+mutual exclusivity,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,exclusivity,3.04,False,True,confirmatory
+convenience sampling,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,sampling,3.56,False,True,confirmatory
+discrete variable,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,variable,3.45,False,True,confirmatory
+dot plot,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,plot,3.94,False,True,pilot
+expected value,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,value,4.74,False,True,confirmatory
+survival function,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,function,4.23,False,True,confirmatory
+spectrum bias,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,bia,3.92,False,True,confirmatory
+kernel density estimation,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,estimation,3.18,False,True,confirmatory
+binomial distribution,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,distribution,2.69,False,True,pilot
+elementary event,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,event,4.27,False,True,pilot
+central limit theorem,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,theorem,3.65,False,True,confirmatory
+particle filter,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,filter,3.75,False,True,confirmatory
+population parameter,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,parameter,3.56,False,True,confirmatory
+bar chart,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,chart,4.34,False,True,confirmatory
+survey methodology,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,methodology,3.76,False,True,confirmatory
+multimodal distribution,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,distribution,2.54,False,True,confirmatory
+complementary event,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,event,3.55,False,True,confirmatory
+time series,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,serie,5.3,False,True,confirmatory
+sampling error,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,error,3.69,False,True,confirmatory
+optimal decision,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,decision,3.91,False,True,confirmatory
+frequency domain,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,domain,4.03,False,True,confirmatory
+sample,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,False,False,sample,4.53,True,False,pilot
+marginal probability,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,True,True,False,False,probability,3.54,False,False,confirmatory
+algebra of random variables,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,True,True,False,False,variable,3.52,False,False,confirmatory
+nonparametric statistics,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,True,True,False,False,statistic,2.14,False,False,confirmatory
+Bayesian inference,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,True,False,inference,2.77,False,False,confirmatory
+recursive Bayesian estimation,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,False,False,True,False,estimation,2.56,False,False,confirmatory
+statistics,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,True,True,False,False,statistic,4.6,True,False,pilot
+multivariate random variable,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,True,True,False,False,variable,2.83,False,False,confirmatory
+probability plot,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,True,True,False,False,plot,3.91,False,False,pilot
+simple random sample,probability_statistics,math,applied,Glossary of probability and statistics,1363373483,True,True,False,False,sample,4.19,False,False,pilot
+linear programming decoding,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,decoding,3.0,False,True,confirmatory
+eigenvalue perturbation,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,perturbation,2.2,False,True,confirmatory
+constructive function theory,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,theory,3.71,False,True,pilot
+minimax approximation algorithm,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,algorithm,1.99,False,True,confirmatory
+basis pursuit,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,pursuit,4.04,False,True,confirmatory
+process optimization,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,optimization,3.65,False,True,confirmatory
+maxima and minima,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,minima,2.41,False,True,confirmatory
+blossom,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,blossom,3.62,False,True,confirmatory
+subdivision surface,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,surface,3.6,False,True,pilot
+highly optimized tolerance,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,tolerance,3.3,False,True,confirmatory
+demand optimization,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,optimization,3.63,False,True,confirmatory
+least squares,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,square,3.72,False,True,confirmatory
+finite element updating,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,updating,3.38,False,True,pilot
+feasible region,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,region,3.7,False,True,confirmatory
+difference quotient,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,quotient,2.95,False,True,confirmatory
+reduced cost,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,cost,4.54,False,True,pilot
+pivot element,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,element,3.45,False,True,confirmatory
+multi-objective optimization,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,optimization,3.54,False,True,confirmatory
+perfectly matched layer,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,layer,3.79,False,True,confirmatory
+high-resolution scheme,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,scheme,4.26,False,True,confirmatory
+discrete exterior calculus,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,calculu,3.19,False,True,confirmatory
+method of lines,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,line,4.57,False,True,confirmatory
+parallel tempering,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,tempering,2.51,False,True,pilot
+automatic label placement,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,placement,3.76,False,True,pilot
+interval arithmetic,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,True,False,False,arithmetic,3.25,False,True,confirmatory
+block matrix pseudoinverse,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,pseudoinverse,0.0,False,True,confirmatory
+optimal computing budget allocation,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,allocation,3.4,False,True,confirmatory
+complementarity theory,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,theory,2.29,False,True,confirmatory
+bilinear interpolation,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,interpolation,2.11,False,True,confirmatory
+global optimization,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,False,False,optimization,3.64,False,True,confirmatory
+backward Euler method,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,True,False,method,2.74,False,False,pilot
+numerical resistivity,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,True,True,False,False,resistivity,2.4,False,False,confirmatory
+Orthogonalization,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,True,False,orthogonalization,0.0,False,False,confirmatory
+Iterated conditional modes,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,True,False,mode,2.37,False,False,confirmatory
+Lanczos approximation,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,True,False,approximation,1.42,False,False,confirmatory
+Chebyshev nodes,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,True,False,node,1.95,False,False,confirmatory
+Superelement,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,True,False,superelement,0.0,False,False,confirmatory
+AGM method,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,True,False,method,3.0,False,False,pilot
+Linear-quadratic regulator,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,True,False,regulator,2.87,False,False,confirmatory
+hybrid Monte Carlo,numerical_analysis,math,applied,List of numerical analysis topics,1380814340,False,False,True,False,carlo,3.31,False,False,confirmatory
+dummy,game_theory,math,applied,Glossary of game theory,1259269808,False,False,False,False,dummy,3.64,False,True,confirmatory
+dominated strategy,game_theory,math,applied,Glossary of game theory,1259269808,False,False,False,False,strategy,4.08,False,True,confirmatory
+best reply,game_theory,math,applied,Glossary of game theory,1259269808,False,False,False,False,reply,4.48,False,True,confirmatory
+real numbers,game_theory,math,applied,Glossary of game theory,1259269808,False,True,False,False,number,4.89,False,True,pilot
+mixed strategy,game_theory,math,applied,Glossary of game theory,1259269808,False,False,False,False,strategy,4.39,False,True,confirmatory
+outcome space,game_theory,math,applied,Glossary of game theory,1259269808,False,False,False,False,space,4.3,False,True,confirmatory
+condorcet winner,game_theory,math,applied,Glossary of game theory,1259269808,False,False,False,False,winner,2.1,False,True,pilot
+shannon number,game_theory,math,applied,Glossary of game theory,1259269808,False,True,False,False,number,3.75,False,True,pilot
+complements,game_theory,math,applied,Glossary of game theory,1259269808,False,False,False,False,complement,3.05,False,True,confirmatory
+strategy space,game_theory,math,applied,Glossary of game theory,1259269808,False,False,False,False,space,4.62,False,True,confirmatory
+dictator,game_theory,math,applied,Glossary of game theory,1259269808,False,False,False,False,dictator,3.66,False,True,confirmatory
+allocation of goods,game_theory,math,applied,Glossary of game theory,1259269808,False,False,False,False,good,3.68,False,True,pilot
+grand coalition,game_theory,math,applied,Glossary of game theory,1259269808,False,False,False,False,coalition,4.15,False,True,confirmatory
+dominated outcome,game_theory,math,applied,Glossary of game theory,1259269808,False,False,False,False,outcome,3.96,False,True,confirmatory
+the set of players,game_theory,math,applied,Glossary of game theory,1259269808,False,True,False,False,player,5.12,False,True,pilot
+preference profile,game_theory,math,applied,Glossary of game theory,1259269808,False,False,False,False,profile,4.03,False,True,confirmatory
+finite game,game_theory,math,applied,Glossary of game theory,1259269808,True,True,False,False,game,3.75,False,False,confirmatory
+effectiveness,game_theory,math,applied,Glossary of game theory,1259269808,False,False,False,False,effectiveness,4.05,True,False,confirmatory
+weakly acceptable game,game_theory,math,applied,Glossary of game theory,1259269808,True,True,False,False,game,3.14,False,False,confirmatory
+zero sum game,game_theory,math,applied,Glossary of game theory,1259269808,True,True,False,False,game,4.15,False,False,confirmatory
+acceptable game,game_theory,math,applied,Glossary of game theory,1259269808,True,True,False,False,game,4.26,False,False,confirmatory
+determined game,game_theory,math,applied,Glossary of game theory,1259269808,True,True,False,False,game,4.61,False,False,confirmatory
+Payoffs,game_theory,math,applied,Glossary of game theory,1259269808,False,False,True,False,payoff,2.69,False,False,confirmatory
+mixed Nash Equilibrium,game_theory,math,applied,Glossary of game theory,1259269808,False,False,True,False,equilibrium,3.38,False,False,pilot
+Determinacy,game_theory,math,applied,Glossary of game theory,1259269808,False,False,True,False,determinacy,1.51,False,False,pilot
+Decidability,game_theory,math,applied,Glossary of game theory,1259269808,False,False,True,False,decidability,1.43,False,False,pilot
+habituation,biology,control,control,Glossary of biology,1358416505,False,False,False,False,habituation,2.16,False,True,confirmatory
+protist,biology,control,control,Glossary of biology,1358416505,False,False,False,False,protist,1.45,False,True,confirmatory
+prokaryote,biology,control,control,Glossary of biology,1358416505,False,False,False,False,prokaryote,1.45,False,True,confirmatory
+taxonomy,biology,control,control,Glossary of biology,1358416505,False,False,False,False,taxonomy,3.08,False,True,confirmatory
+endocytosis,biology,control,control,Glossary of biology,1358416505,False,False,False,False,endocytosi,2.23,False,True,confirmatory
+vasodilation,biology,control,control,Glossary of biology,1358416505,False,False,False,False,vasodilation,2.04,False,True,confirmatory
+circadian rhythm,biology,control,control,Glossary of biology,1358416505,False,False,False,False,rhythm,2.94,False,True,confirmatory
+external fertilization,biology,control,control,Glossary of biology,1358416505,False,False,False,False,fertilization,3.04,False,True,confirmatory
+depolarization,biology,control,control,Glossary of biology,1358416505,False,False,False,False,depolarization,2.21,False,True,pilot
+meiosis,biology,control,control,Glossary of biology,1358416505,False,False,False,False,meiosi,2.56,False,True,pilot
+acetyl-CoA,biology,control,control,Glossary of biology,1358416505,False,False,False,False,acetyl-coa,2.58,False,True,confirmatory
+metabolism,biology,control,control,Glossary of biology,1358416505,False,False,False,False,metabolism,3.78,False,True,confirmatory
+acclimatization,biology,control,control,Glossary of biology,1358416505,False,False,False,False,acclimatization,2.01,False,True,confirmatory
+vesicle,biology,control,control,Glossary of biology,1358416505,False,False,False,False,vesicle,2.42,False,True,confirmatory
+fertilization,biology,control,control,Glossary of biology,1358416505,False,False,False,False,fertilization,3.05,False,True,pilot
+telophase,biology,control,control,Glossary of biology,1358416505,False,False,False,False,telophase,1.31,False,True,confirmatory
+ligament,biology,control,control,Glossary of biology,1358416505,False,False,False,False,ligament,3.34,False,True,confirmatory
+synthetic biology,biology,control,control,Glossary of biology,1358416505,False,False,False,False,biology,3.76,False,True,confirmatory
+cloning,biology,control,control,Glossary of biology,1358416505,False,False,False,False,cloning,3.23,False,True,confirmatory
+nitrogen fixation,biology,control,control,Glossary of biology,1358416505,False,False,False,False,fixation,3.15,False,True,confirmatory
+parasite,biology,control,control,Glossary of biology,1358416505,False,False,False,False,parasite,3.51,False,True,confirmatory
+cell plate,biology,control,control,Glossary of biology,1358416505,False,False,False,False,plate,4.38,False,True,confirmatory
+pathobiology,biology,control,control,Glossary of biology,1358416505,False,False,False,False,pathobiology,1.54,False,True,confirmatory
+autotroph,biology,control,control,Glossary of biology,1358416505,False,False,False,False,autotroph,0.0,False,True,confirmatory
+phloem,biology,control,control,Glossary of biology,1358416505,False,False,False,False,phloem,2.11,False,True,confirmatory
+niche,biology,control,control,Glossary of biology,1358416505,False,False,False,False,niche,3.85,False,True,pilot
+immunoglobulin,biology,control,control,Glossary of biology,1358416505,False,False,False,False,immunoglobulin,2.65,False,True,confirmatory
+endosymbiotic theory,biology,control,control,Glossary of biology,1358416505,False,False,False,False,theory,1.45,False,True,confirmatory
+trait,biology,control,control,Glossary of biology,1358416505,False,False,False,False,trait,3.69,False,True,confirmatory
+ichthyology,biology,control,control,Glossary of biology,1358416505,False,False,False,False,ichthyology,1.8,False,True,pilot
+translation,biology,control,control,Glossary of biology,1358416505,False,False,False,False,translation,4.39,True,False,confirmatory
+biology,biology,control,control,Glossary of biology,1358416505,False,False,False,False,biology,4.22,True,False,pilot
+protein,biology,control,control,Glossary of biology,1358416505,False,False,False,False,protein,4.53,True,False,confirmatory
+DNA sequencing,biology,control,control,Glossary of biology,1358416505,False,False,True,False,sequencing,3.35,False,False,confirmatory
+birth,biology,control,control,Glossary of biology,1358416505,False,False,False,False,birth,4.77,True,False,confirmatory
+law of Independent Assortment,biology,control,control,Glossary of biology,1358416505,False,False,True,False,assortment,3.25,False,False,confirmatory
+kingdom,biology,control,control,Glossary of biology,1358416505,False,False,False,False,kingdom,4.62,True,False,confirmatory
+disease,biology,control,control,Glossary of biology,1358416505,False,False,False,False,disease,4.9,True,False,confirmatory
+colony,biology,control,control,Glossary of biology,1358416505,False,False,False,False,colony,4.12,True,False,confirmatory
+RNA polymerase,biology,control,control,Glossary of biology,1358416505,False,False,True,False,polymerase,2.88,False,False,confirmatory
+electromagnetism,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,electromagnetism,2.41,False,True,confirmatory
+ketone,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,ketone,2.64,False,True,confirmatory
+fractionation,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,fractionation,2.37,False,True,confirmatory
+nucleophile,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,nucleophile,1.79,False,True,pilot
+solid-phase extraction,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,extraction,3.7,False,True,pilot
+ideal gas,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,gas,4.34,False,True,confirmatory
+adhesion,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,adhesion,3.14,False,True,confirmatory
+alkene,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,alkene,1.91,False,True,confirmatory
+pnictogen,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,pnictogen,0.0,False,True,pilot
+equation of state,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,state,4.01,False,True,confirmatory
+stereochemistry,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,stereochemistry,2.05,False,True,confirmatory
+ductility,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,ductility,2.09,False,True,pilot
+acetyl,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,acetyl,2.72,False,True,confirmatory
+pentoxide,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,pentoxide,1.63,False,True,confirmatory
+aromatic,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,aromatic,3.32,False,True,confirmatory
+solvation shell,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,shell,1.86,False,True,confirmatory
+volatility,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,volatility,3.49,False,True,confirmatory
+molal concentration,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,concentration,0.0,False,True,confirmatory
+ethyl,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,ethyl,2.93,False,True,confirmatory
+desiccation,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,desiccation,2.21,False,True,confirmatory
+diatomic,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,diatomic,1.96,False,True,confirmatory
+liquefaction point,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,point,2.42,False,True,confirmatory
+diffusion,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,diffusion,3.4,False,True,pilot
+protective group,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,group,4.11,False,True,confirmatory
+pentyl,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,pentyl,1.27,False,True,confirmatory
+mass spectrometry,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,spectrometry,2.95,False,True,confirmatory
+conduction,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,conduction,2.98,False,True,confirmatory
+deliquescence,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,deliquescence,0.0,False,True,pilot
+hydroxy,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,hydroxy,2.73,False,True,pilot
+molar concentration,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,concentration,2.97,False,True,confirmatory
+Erlenmeyer flask,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,True,False,flask,1.61,False,False,confirmatory
+CAS Registry Number,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,True,False,number,3.32,False,False,pilot
+Brownian motion,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,True,False,motion,2.33,False,False,confirmatory
+water,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,water,5.52,True,False,confirmatory
+accuracy,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,accuracy,4.24,True,False,confirmatory
+metal,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,metal,4.82,True,False,confirmatory
+oxygen,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,oxygen,4.25,True,False,confirmatory
+Avogadro constant,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,True,False,constant,1.71,False,False,confirmatory
+yield,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,yield,4.16,True,False,pilot
+non-metal,chemistry,control,control,Glossary of chemistry terms,1371138704,False,False,False,False,non-metal,4.69,True,False,confirmatory
+ilmenite,geology,control,control,Glossary of geology,1366012276,False,False,False,False,ilmenite,1.9,False,True,confirmatory
+sanidine,geology,control,control,Glossary of geology,1366012276,False,False,False,False,sanidine,1.15,False,True,confirmatory
+triclinic,geology,control,control,Glossary of geology,1366012276,False,False,False,False,triclinic,1.59,False,True,confirmatory
+xyloid coal,geology,control,control,Glossary of geology,1366012276,False,False,False,False,coal,0.0,False,True,confirmatory
+allochthon,geology,control,control,Glossary of geology,1366012276,False,False,False,False,allochthon,0.0,False,True,confirmatory
+carbonate hardgrounds,geology,control,control,Glossary of geology,1366012276,False,False,False,False,hardground,0.0,False,True,pilot
+lithology,geology,control,control,Glossary of geology,1366012276,False,False,False,False,lithology,2.04,False,True,confirmatory
+oligoclase,geology,control,control,Glossary of geology,1366012276,False,False,False,False,oligoclase,0.0,False,True,confirmatory
+syntaxis,geology,control,control,Glossary of geology,1366012276,False,False,False,False,syntaxi,0.0,False,True,confirmatory
+non-clastic,geology,control,control,Glossary of geology,1366012276,False,False,False,False,non-clastic,1.9,False,True,confirmatory
+tempestite,geology,control,control,Glossary of geology,1366012276,False,False,False,False,tempestite,0.0,False,True,pilot
+estuary,geology,control,control,Glossary of geology,1366012276,False,False,False,False,estuary,3.26,False,True,confirmatory
+tenacity,geology,control,control,Glossary of geology,1366012276,False,False,False,False,tenacity,3.11,False,True,confirmatory
+hornfels,geology,control,control,Glossary of geology,1366012276,False,False,False,False,hornfel,1.23,False,True,pilot
+titanite,geology,control,control,Glossary of geology,1366012276,False,False,False,False,titanite,1.7,False,True,confirmatory
+marine terrace,geology,control,control,Glossary of geology,1366012276,False,False,False,False,terrace,3.79,False,True,confirmatory
+muscovite,geology,control,control,Glossary of geology,1366012276,False,False,False,False,muscovite,2.41,False,True,confirmatory
+ignimbrite,geology,control,control,Glossary of geology,1366012276,False,False,False,False,ignimbrite,1.32,False,True,confirmatory
+chalk,geology,control,control,Glossary of geology,1366012276,False,False,False,False,chalk,3.69,False,True,confirmatory
+mineralogy,geology,control,control,Glossary of geology,1366012276,False,False,False,False,mineralogy,2.75,False,True,confirmatory
+metamorphic rock,geology,control,control,Glossary of geology,1366012276,False,False,False,False,rock,2.67,False,True,confirmatory
+hydrothermal,geology,control,control,Glossary of geology,1366012276,False,False,False,False,hydrothermal,2.69,False,True,pilot
+fossiliferous,geology,control,control,Glossary of geology,1366012276,False,False,False,False,fossiliferou,2.34,False,True,pilot
+cryptocrystalline,geology,control,control,Glossary of geology,1366012276,False,False,False,False,cryptocrystalline,1.24,False,True,pilot
+concretion,geology,control,control,Glossary of geology,1366012276,False,False,False,False,concretion,1.61,False,True,confirmatory
+polysynthetic twinning,geology,control,control,Glossary of geology,1366012276,False,False,False,False,twinning,1.39,False,True,pilot
+gravel,geology,control,control,Glossary of geology,1366012276,False,False,False,False,gravel,3.7,False,True,confirmatory
+rhyolite,geology,control,control,Glossary of geology,1366012276,False,False,False,False,rhyolite,2.15,False,True,confirmatory
+orthorhombic,geology,control,control,Glossary of geology,1366012276,False,False,False,False,orthorhombic,2.02,False,True,confirmatory
+aquifer,geology,control,control,Glossary of geology,1366012276,False,False,False,False,aquifer,2.9,False,True,confirmatory
+Ordovician,geology,control,control,Glossary of geology,1366012276,False,False,True,False,ordovician,2.66,False,False,confirmatory
+earthquake,geology,control,control,Glossary of geology,1366012276,False,False,False,False,earthquake,4.15,True,False,confirmatory
+Tygerberg formation,geology,control,control,Glossary of geology,1366012276,False,False,True,False,formation,1.07,False,False,confirmatory
+Tethys Ocean,geology,control,control,Glossary of geology,1366012276,False,False,True,False,ocean,2.07,False,False,confirmatory
+Cenozoic Era,geology,control,control,Glossary of geology,1366012276,False,False,True,False,era,2.43,False,False,confirmatory
+habit,geology,control,control,Glossary of geology,1366012276,False,False,False,False,habit,4.24,True,False,confirmatory
+accident,geology,control,control,Glossary of geology,1366012276,False,False,False,False,accident,4.71,True,False,pilot
+Flandrian transgression,geology,control,control,Glossary of geology,1366012276,False,False,True,False,transgression,0.0,False,False,confirmatory
+Urgonian,geology,control,control,Glossary of geology,1366012276,False,False,True,False,urgonian,0.0,False,False,confirmatory
+casting,geology,control,control,Glossary of geology,1366012276,False,False,False,False,casting,4.15,True,False,confirmatory
+geocenter,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,geocenter,0.0,False,True,confirmatory
+sidereal day,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,day,2.21,False,True,confirmatory
+pseudo-synchronous rotation,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,rotation,2.88,False,True,confirmatory
+dust astronomy,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,astronomy,3.56,False,True,confirmatory
+observation arc,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,arc,3.87,False,True,confirmatory
+minor axis,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,axi,3.92,False,True,confirmatory
+planetary system,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,system,3.56,False,True,pilot
+blazar,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,blazar,1.32,False,True,confirmatory
+meteoroid,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,meteoroid,1.95,False,True,confirmatory
+astrogeology,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,astrogeology,0.0,False,True,pilot
+velocity dispersion,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,dispersion,3.11,False,True,confirmatory
+theoretical astronomy,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,astronomy,3.48,False,True,confirmatory
+neutrino,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,neutrino,2.84,False,True,confirmatory
+proplyd,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,proplyd,0.0,False,True,confirmatory
+apoapsis,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,apoapsi,1.19,False,True,pilot
+equator,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,equator,3.26,False,True,confirmatory
+azimuth,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,azimuth,2.51,False,True,confirmatory
+color index,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,index,4.41,False,True,pilot
+tangential velocity,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,velocity,2.7,False,True,confirmatory
+king radius,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,radiu,3.84,False,True,confirmatory
+scattered disc,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,disc,3.74,False,True,confirmatory
+ring system,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,system,4.74,False,True,confirmatory
+interstellar reddening,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,reddening,1.99,False,True,confirmatory
+critical velocity,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,velocity,3.87,False,True,confirmatory
+quadrature,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,quadrature,2.35,False,True,confirmatory
+elliptical orbit,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,orbit,3.15,False,True,confirmatory
+planetary differentiation,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,differentiation,3.22,False,True,confirmatory
+stellar,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,stellar,3.76,False,True,confirmatory
+equatorial coordinate system,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,system,3.11,False,True,confirmatory
+coudé spectrograph,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,spectrograph,0.0,False,True,confirmatory
+milky Way,astronomy,control,control,Glossary of astronomy,1382096008,False,False,True,False,way,3.5,False,False,pilot
+first Point of Libra,astronomy,control,control,Glossary of astronomy,1382096008,False,False,True,False,libra,2.93,False,False,pilot
+zone of Avoidance,astronomy,control,control,Glossary of astronomy,1382096008,False,False,True,False,avoidance,3.51,False,False,confirmatory
+aspect,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,aspect,4.41,True,False,confirmatory
+OB association,astronomy,control,control,Glossary of astronomy,1382096008,False,False,True,False,association,3.42,False,False,confirmatory
+local Group,astronomy,control,control,Glossary of astronomy,1382096008,False,False,True,False,group,5.19,False,False,confirmatory
+galaxy,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,galaxy,4.28,True,False,confirmatory
+light-year,astronomy,control,control,Glossary of astronomy,1382096008,False,False,False,False,light-year,5.24,True,False,pilot
+Lagrangian point,astronomy,control,control,Glossary of astronomy,1382096008,False,False,True,False,point,2.55,False,False,pilot
+international Astronomical Union,astronomy,control,control,Glossary of astronomy,1382096008,False,False,True,False,union,3.47,False,False,confirmatory

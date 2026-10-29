@@ -1,0 +1,116 @@
+# Curated concept families for H-B (ordered chains / circles) and H-B2 (axiom lattices).
+# Pre-registered before any activation was analyzed. `domain` fills the {D} slot of the family
+# templates (constant within a family, so it cannot create within-family differences).
+# `items` are listed in ground-truth order (chains: general → specific; cycles: cyclic order).
+
+chains:
+  days:  # POSITIVE CONTROL — Engels et al. 2024 (arXiv:2405.14860) circle
+    domain: "the days of the week"
+    expected: circle
+    role: positive_control
+    items: [Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday]
+  months:  # POSITIVE CONTROL
+    domain: "the months of the year"
+    expected: circle
+    role: positive_control
+    items: [January, February, March, April, May, June, July, August, September, October, November, December]
+  ring_chain:  # class inclusions, e.g. https://en.wikipedia.org/wiki/Integral_domain ("rngs ⊃ rings ⊃ … ⊃ fields ⊃ algebraically closed fields")
+    domain: "abstract algebra"
+    expected: line
+    role: test
+    items: [rng, ring, commutative ring, integral domain, integrally closed domain, GCD domain, unique factorization domain, principal ideal domain, Euclidean domain, field, algebraically closed field]
+  space_chain:  # separation axioms https://en.wikipedia.org/wiki/Separation_axiom + metric/normed/Banach/Hilbert inclusions
+    domain: "topology and analysis"
+    expected: line
+    role: test
+    items: [T0 space, T1 space, Hausdorff space, regular space, Tychonoff space, normal space, metrizable space, metric space, normed vector space, Banach space, Hilbert space]
+  number_systems:  # https://en.wikipedia.org/wiki/Number#Classification ; n=7 < 8 → exploratory
+    domain: "mathematics"
+    expected: line
+    role: exploratory
+    items: [natural numbers, integers, rational numbers, real numbers, complex numbers, quaternions, octonions]
+  ngons:  # follows the integer n = 3..12; compared against the number-word reference
+    domain: "geometry"
+    expected: number_reference
+    role: test
+    reference: number_words_3_12
+    items: [triangle, quadrilateral, pentagon, hexagon, heptagon, octagon, nonagon, decagon, hendecagon, dodecagon]
+  dimensions:
+    domain: "geometry"
+    expected: number_reference
+    role: test
+    reference: number_words_0_10
+    items: [zero-dimensional space, one-dimensional space, two-dimensional space, three-dimensional space, four-dimensional space, five-dimensional space, six-dimensional space, seven-dimensional space, eight-dimensional space, nine-dimensional space, ten-dimensional space]
+  angles:  # true mod-360 cycle; a pure number-line code would put 330 far from 0
+    domain: "angles in geometry"
+    expected: circle
+    role: test
+    reference: digits_0_330
+    items: [0 degrees, 30 degrees, 60 degrees, 90 degrees, 120 degrees, 150 degrees, 180 degrees, 210 degrees, 240 degrees, 270 degrees, 300 degrees, 330 degrees]
+
+references:  # lexical-number references (not hypotheses themselves)
+  number_words_3_12:
+    domain: "arithmetic"
+    items: [three, four, five, six, seven, eight, nine, ten, eleven, twelve]
+  number_words_0_10:
+    domain: "arithmetic"
+    items: [zero, one, two, three, four, five, six, seven, eight, nine, ten]
+  digits_0_330:
+    domain: "arithmetic"
+    items: ["0", "30", "60", "90", "120", "150", "180", "210", "240", "270", "300", "330"]
+
+# H-B2 axiom lattices. Bits are ground truth from the cited sources.
+lattices:
+  group_like:  # https://en.wikipedia.org/wiki/Magma_(algebra) group-like structures table; commutativity added
+    domain: "abstract algebra"
+    role: test
+    axioms: [associative, identity, divisible, commutative]
+    items:
+      magma: [0, 0, 0, 0]
+      commutative magma: [0, 0, 0, 1]
+      quasigroup: [0, 0, 1, 0]
+      commutative quasigroup: [0, 0, 1, 1]
+      unital magma: [0, 1, 0, 0]
+      loop: [0, 1, 1, 0]
+      commutative loop: [0, 1, 1, 1]
+      semigroup: [1, 0, 0, 0]
+      commutative semigroup: [1, 0, 0, 1]
+      monoid: [1, 1, 0, 0]
+      commutative monoid: [1, 1, 0, 1]
+      group: [1, 1, 1, 0]
+      abelian group: [1, 1, 1, 1]
+    flagged:  # analyzed separately
+      associative quasigroup: [1, 0, 1, 0]  # non-empty ⇒ already a group: semantic-collapse probe
+      inverse semigroup: null  # weaker than divisibility; no clean bit vector
+  self_distributive:  # https://en.wikipedia.org/wiki/Racks_and_quandles ; https://ncatlab.org/nlab/show/shelf ; spindle = idempotent shelf (Crans 2004, arXiv:math/0409602, §3.1)
+    domain: "abstract algebra"
+    role: exploratory
+    axioms: [self_distributive, invertible, idempotent, involutory]
+    items:
+      shelf: [1, 0, 0, 0]
+      rack: [1, 1, 0, 0]
+      spindle: [1, 0, 1, 0]
+      quandle: [1, 1, 1, 0]
+      kei: [1, 1, 1, 1]
+
+group_objects:  # https://en.wikipedia.org/wiki/Lie_group ("a group that is also a smooth manifold")
+  domain: "mathematics"
+  role: exploratory
+  objects:
+    topological group: [group, topological space]
+    Lie group: [group, smooth manifold]
+    algebraic group: [group, algebraic variety]
+  parallelograms:  # a:b :: c:d  meaning  b − a ≈ d − c
+    - [group, topological group, set, topological space]
+    - [topological group, Lie group, topological space, smooth manifold]
+    - [group, algebraic group, set, algebraic variety]
+
+transfer:  # learned on group_like pairs, tested on these held-out pairs (pre-registered secondary)
+  domain: "abstract algebra"
+  identity: [[rng, ring]]
+  commutative: [[ring, commutative ring], [division ring, field]]
+
+analogy_control:  # positive control for offset consistency (gender offset in everyday words)
+  domain: "everyday language"
+  pairs: [[man, woman], [king, queen], [boy, girl], [brother, sister], [father, mother], [uncle, aunt], [husband, wife], [son, daughter]]
+  distractors: [table, river, music, doctor, garden, window, teacher, mountain]

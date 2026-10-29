@@ -1,0 +1,108 @@
+# Field taxonomy for H-A1 (map of fields). Pre-registered before any activation was analyzed.
+#
+# Each field = one or more Wikipedia concept-source pages (glossaries, or "List of ... topics"
+# pages for applied fields lacking a glossary) + the arXiv categories used to compute the
+# ground-truth field distance from cross-listing statistics (librarian-bots/arxiv-metadata-snapshot,
+# CC0 mirror of the Kaggle arXiv metadata). `root_words` are substrings that, if present in a
+# concept name, reveal its field ("leak" flag → excluded from the primary set).
+# `kind`: math | control (non-math control domain). `pa`: pure | applied (pre-specified split,
+# following the MSC2020 convention that 60 probability, 62 statistics, 65 numerical analysis,
+# 91 game theory/economics are applied areas).
+
+math:
+  - id: general_topology
+    pages: ["Glossary of general topology"]
+    arxiv: ["math.GN"]
+    pa: pure
+    root_words: ["topolog"]
+  - id: group_theory
+    pages: ["Glossary of group theory"]
+    arxiv: ["math.GR"]
+    pa: pure
+    root_words: ["group"]
+  - id: ring_module_theory
+    pages: ["Glossary of ring theory", "Glossary of module theory"]
+    arxiv: ["math.RA"]
+    pa: pure
+    root_words: ["ring", "module"]
+  - id: commutative_algebra
+    pages: ["Glossary of commutative algebra"]
+    arxiv: ["math.AC"]
+    pa: pure
+    root_words: ["commutative", "algebra"]
+  - id: category_theory
+    pages: ["Glossary of category theory"]
+    arxiv: ["math.CT"]
+    pa: pure
+    root_words: ["categor"]
+  - id: graph_theory
+    pages: ["Glossary of graph theory"]
+    arxiv: ["math.CO"]
+    pa: pure
+    root_words: ["graph"]
+  - id: set_theory_logic
+    pages: ["Glossary of set theory"]
+    arxiv: ["math.LO"]
+    pa: pure
+    root_words: ["set"]
+  - id: algebraic_geometry
+    pages: ["Glossary of algebraic geometry", "Glossary of classical algebraic geometry"]
+    arxiv: ["math.AG"]
+    pa: pure
+    root_words: ["algebraic", "geometr"]
+  - id: number_theory
+    pages: ["Glossary of number theory", "Glossary of arithmetic and diophantine geometry"]
+    arxiv: ["math.NT"]
+    pa: pure
+    root_words: ["number", "arithmetic", "diophant"]
+  - id: real_complex_analysis
+    pages: ["Glossary of real and complex analysis"]
+    arxiv: ["math.CA", "math.CV"]
+    pa: pure
+    root_words: ["real", "complex", "analy"]
+  - id: functional_analysis
+    pages: ["Glossary of functional analysis"]
+    arxiv: ["math.FA"]
+    pa: pure
+    root_words: ["functional", "analy"]
+  - id: algebraic_topology
+    pages: ["Glossary of algebraic topology"]
+    arxiv: ["math.AT"]
+    pa: pure
+    root_words: ["algebraic", "topolog"]
+  - id: differential_geometry
+    pages: ["Glossary of Riemannian and metric geometry", "Glossary of differential geometry and topology"]
+    arxiv: ["math.DG", "math.MG"]
+    pa: pure
+    root_words: ["riemann", "metric", "geometr", "differential"]
+  - id: lie_representation_theory
+    pages: ["Glossary of Lie groups and Lie algebras", "Glossary of representation theory"]
+    arxiv: ["math.RT"]
+    pa: pure
+    root_words: ["lie", "representation"]
+  - id: probability_statistics
+    pages: ["Glossary of probability and statistics"]
+    arxiv: ["math.PR", "math.ST"]
+    pa: applied
+    root_words: ["probab", "statist", "random"]
+  - id: numerical_analysis
+    pages: ["List of numerical analysis topics"]
+    arxiv: ["math.NA"]
+    pa: applied
+    root_words: ["numerical"]
+  - id: game_theory
+    pages: ["Glossary of game theory"]
+    arxiv: ["cs.GT"]
+    pa: applied
+    root_words: ["game"]
+
+# Non-math control domain: same pipeline, same-vs-different-glossary distance only.
+control:
+  - id: biology
+    pages: ["Glossary of biology"]
+  - id: chemistry
+    pages: ["Glossary of chemistry terms"]
+  - id: geology
+    pages: ["Glossary of geology"]
+  - id: astronomy
+    pages: ["Glossary of astronomy"]
