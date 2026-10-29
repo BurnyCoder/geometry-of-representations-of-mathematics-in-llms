@@ -160,6 +160,13 @@ def phase_map(cfg: Config) -> None:
             maxnull = np.max(np.stack([mantel_field_perm(v, target, 2000, np.random.default_rng(cfg.seed + 7)) for v in vecs]), 0)
             r["layer_curve"] = {"trained": curve_tr, "random_init": curve_rnd, "max_null95": float(np.percentile(maxnull, 95)),
                                 "best_layer": int(np.argmax(curve_tr) + 1), "best_p_maxstat": float((1 + (maxnull >= max(curve_tr)).sum()) / (1 + len(maxnull)))}
+            if subset == "math_primary":  # H-A2: tree-likeness w.r.t. the pre-registered super-tree
+                branch = {f["id"]: f["branch"] for f in load_yaml("fields.yaml")["math"]}
+                tree = _tree_distance(names, branch)
+                hnull = np.array([field_rsa(reps["trained"], lab, names, _tree_distance(names, dict(zip(names, rng.permutation([branch[n] for n in names]))))) for _ in range(2000)])
+                hb = paired_bootstrap(reps, lab, names, tree, cfg.n_boot // 2, cfg.seed)
+                r["hierarchy"] = {"rho": {k: field_rsa(v, lab, names, tree) for k, v in reps.items()}, "shuffled_tree_null95": float(np.percentile(hnull, 95)),
+                                  "p_shuffled_tree": float((1 + (hnull >= field_rsa(reps["trained"], lab, names, tree)).sum()) / (1 + len(hnull))), "boot": hb}
             r["variants"] = {"abtt": field_rsa(all_but_the_top(reps["trained"]), lab, names, target), "pool": field_rsa(tr["pool"][idx, Lp], lab, names, target)}
             r["split_half"] = split_half_reliability(tr["last_a"][idx, Lp], tr["last_b"][idx, Lp], lab, names)
             r["concept_level_regression"] = concept_level_regression(reps["trained"], df, field_D[np.ix_([all_names.index(f) for f in lab], [all_names.index(f) for f in lab])], reps["layer0"], reps["random_init"], max(cfg.n_perm // 10, 200), cfg.seed)
@@ -178,6 +185,14 @@ def phase_map(cfg: Config) -> None:
             log.info("[%s] clustering %s: trained=%.3f random=%.3f layer0=%.3f (chance %.3f)", m["key"], dom, correct["trained"].mean(), correct["random_init"].mean(), correct["layer0"].mean(), 1 / len(set(lab)))
         results[m["key"]] = res
     _save(cfg, "map_fields.json", results)
+
+
+def _tree_distance(names: list[str], branch: dict[str, str]) -> np.ndarray:
+    """Super-tree distance between fields: 1 within a branch, 2 across branches (0 on diagonal)."""
+    b = np.array([branch[n] for n in names])
+    D = np.where(b[:, None] == b[None, :], 1.0, 2.0)
+    np.fill_diagonal(D, 0.0)
+    return D
 
 
 def phase_shapes(cfg: Config) -> None:
@@ -256,6 +271,16 @@ def phase_lattice(cfg: Config) -> None:
             res["analogy_control"] = {"consistency": offset_consistency(Xa, pairs), "null95": float(np.percentile(null, 95)), "king_queen_rank": analogy_rank(Xa, 0, 1, 2, 3, np.arange(len(words)))}
             results[key] = res
     _save(cfg, "lattice.json", results)
+
+
+def phase_calibration(cfg: Config) -> None:
+    """Simulation study of RDM-test calibration (motivates the paired-contrast design)."""
+    from mathgeom.analyses.calibration import run_calibration
+
+    res = run_calibration(n_sims=cfg.raw.get("calibration_sims", 200), seed=cfg.seed)
+    for k, v in res.items():
+        log.info("calibration %s: reject@.05 = %.3f ± %.3f (n=%d)", k, v["reject_rate_0.05"], v["se"], v["n_sims"])
+    _save(cfg, "calibration.json", res)
 
 
 def _save(cfg: Config, name: str, obj) -> None:

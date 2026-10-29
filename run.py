@@ -11,6 +11,7 @@ from mathgeom.config import ROOT, load_config
 from mathgeom.logio import setup_logging
 
 PHASES = {
+    "calibration": pipeline.phase_calibration,  # simulation study of RDM-test type-I error → results/<cfg>/calibration.json
     "concepts": pipeline.phase_concepts,  # Wikipedia glossaries (pinned revisions) → data/concepts.csv
     "arxiv": pipeline.phase_arxiv,  # arXiv cross-listing → data/field_distance.json
     "extract": pipeline.phase_extract,  # residual-stream activations → artifacts/acts/<model>/

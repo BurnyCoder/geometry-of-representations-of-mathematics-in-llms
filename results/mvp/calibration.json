@@ -1,0 +1,32 @@
+{
+ "concept_linear_null": {
+  "reject_rate_0.05": 0.065,
+  "se": 0.017432010784760317,
+  "n_sims": 200,
+  "n_perm": 199
+ },
+ "concept_itemnoise_null": {
+  "reject_rate_0.05": 0.22,
+  "se": 0.02929163703175362,
+  "n_sims": 200,
+  "n_perm": 199
+ },
+ "field_pure_null": {
+  "reject_rate_0.05": 0.02,
+  "se": 0.009899494936611665,
+  "n_sims": 200,
+  "n_perm": 199
+ },
+ "field_confounded_null": {
+  "reject_rate_0.05": 0.525,
+  "se": 0.035311117229563836,
+  "n_sims": 200,
+  "n_perm": 199
+ },
+ "field_alternative": {
+  "reject_rate_0.05": 0.995,
+  "se": 0.004987484335815003,
+  "n_sims": 200,
+  "n_perm": 199
+ }
+}
