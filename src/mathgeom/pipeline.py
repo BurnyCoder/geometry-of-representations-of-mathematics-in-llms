@@ -458,6 +458,29 @@ def phase_posthoc(cfg: Config) -> None:
                         "explained_var_top5": (S[:5] ** 2 / (S**2).sum()).tolist(), "eta2_field_pc1_20": eta}
             out[key]["abtt_sweep"]["0"] = field_rsa(X, lab, names, target)
             log.info("[posthoc %s] abtt sweep %s", key, {k: round(v, 3) for k, v in out[key]["abtt_sweep"].items()})
+    # POST-HOC 3: matched-k clustering — LOO accuracy among random 4-field subsets of math vs the 4 control fields
+    from mathgeom.analyses.map_fields import loo_centroid_correct
+
+    for m in cfg.models:
+        for key in (m["key"], m["key"] + "__random"):
+            X = _load(cfg, key, "field_neutral")["last"]
+            Lp = _primary_layer(X.shape[1], cfg.primary_rel_depth)
+            base = (concepts.primary & (concepts.split == split)).values
+            ctrl = base & (concepts.kind == "control").values
+            k = concepts.field.values[ctrl].tolist()
+            n_ctrl_fields = len(set(k))
+            acc_ctrl = float(loo_centroid_correct(X[ctrl, Lp], concepts.field.values[ctrl]).mean())
+            mfields = sorted(set(concepts.field.values[base & (concepts.kind == "math").values]))
+            rs = np.random.default_rng(cfg.seed + 3)
+            accs = []
+            for _ in range(200):
+                pick = rs.choice(mfields, n_ctrl_fields, replace=False)
+                mm = base & np.isin(concepts.field.values, pick)
+                accs.append(float(loo_centroid_correct(X[mm, Lp], concepts.field.values[mm]).mean()))
+            out.setdefault(key, {})["matched_clustering"] = {"k_fields": n_ctrl_fields, "control_acc": acc_ctrl, "math_subsets_mean": float(np.mean(accs)),
+                                                            "math_subsets_ci": [float(np.percentile(accs, 2.5)), float(np.percentile(accs, 97.5))], "frac_math_subsets_ge_control": float(np.mean(np.array(accs) >= acc_ctrl))}
+            log.info("[posthoc %s] matched %d-field clustering: control %.3f vs math subsets %.3f", key, n_ctrl_fields, acc_ctrl, np.mean(accs))
+
     # POST-HOC 2: cyclic order in the top-2-PC plane, every family, every layer (debug of the positive control)
     from mathgeom.geometry.manifold import pc_plane_cycle_score
 

@@ -1,0 +1,15 @@
+# Cross-family replication (robustness phase): Gemma-4-E2B base + random-init twin.
+# Separate config because the multimodal checkpoint needs the CPU-offload device map.
+name: gemma
+models:
+  - key: gemma-4-e2b
+    id: google/gemma-4-E2B
+    device_map: offload_ple  # PLE tables + audio/vision towers on CPU, decoder on GPU
+conditions: [field_neutral, family]
+analysis_split: confirmatory
+n_perm: 10000
+n_boot: 2000
+seed: 0
+max_concepts_per_field: 30
+pilot_fraction: 0.2
+primary_rel_depth: 0.5

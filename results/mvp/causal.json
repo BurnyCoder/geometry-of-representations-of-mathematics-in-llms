@@ -1,0 +1,53 @@
+{
+ "qwen3.5-2b": {
+  "layer": 12,
+  "ring_chain": {
+   "baseline_acc": 0.6909090909090909,
+   "n_questions": 110,
+   "gate": 0.7,
+   "passed_gate": false,
+   "scales": {}
+  },
+  "space_chain": {
+   "baseline_acc": 0.8636363636363636,
+   "n_questions": 110,
+   "gate": 0.7,
+   "passed_gate": true,
+   "scales": {
+    "1.0": {
+     "acc_chain_subspace": 0.8636363636363636,
+     "acc_random_subspace_mean": 0.8472727272727273,
+     "acc_random_subspace": [
+      0.8454545454545455,
+      0.8454545454545455,
+      0.8454545454545455,
+      0.8363636363636363,
+      0.8636363636363636
+     ]
+    },
+    "2.0": {
+     "acc_chain_subspace": 0.8363636363636363,
+     "acc_random_subspace_mean": 0.8563636363636364,
+     "acc_random_subspace": [
+      0.8636363636363636,
+      0.8636363636363636,
+      0.8545454545454545,
+      0.8545454545454545,
+      0.8454545454545455
+     ]
+    },
+    "4.0": {
+     "acc_chain_subspace": 0.7909090909090909,
+     "acc_random_subspace_mean": 0.8218181818181819,
+     "acc_random_subspace": [
+      0.8,
+      0.8090909090909091,
+      0.8363636363636363,
+      0.8363636363636363,
+      0.8272727272727273
+     ]
+    }
+   }
+  }
+ }
+}

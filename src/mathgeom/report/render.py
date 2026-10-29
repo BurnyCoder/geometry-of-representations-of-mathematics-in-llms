@@ -117,6 +117,65 @@ def table_cycles(ph: dict, layer_of: dict) -> str:
     return "\n".join(rows)
 
 
+def holm_rows(mp: dict, sh: dict, la: dict, key: str) -> list[tuple[str, float]]:
+    """The 8 pre-registered confirmatory tests of the MVP (docs/prereg.md §4) and their p-values."""
+    rows = [("H-A1 Δρ trained − random-init ≤ 0 (bootstrap)", mp[key]["math_primary"]["rsa_boot"]["delta_vs_random_init"]["p_le_0"]),
+            ("H-B ring chain Robinson", sh[key]["ring_chain"]["robinson_p"]), ("H-B space chain Robinson", sh[key]["space_chain"]["robinson_p"])]
+    rows += [(f"H-B2 {a} offset consistency", o["p"]) for a, o in la[key]["group_like"]["offsets"].items()]
+    return rows
+
+
+def table_holm(mp: dict, sh: dict, la: dict) -> str:
+    """Holm over the p-valued confirmatory tests; the angles prediction is a pre-registered decision
+    rule (closure < 2 AND circle ρ > line ρ) with no p-value, so it is listed but not adjusted."""
+    from statsmodels.stats.multitest import multipletests
+
+    out = ["| Test | Model | p | Holm-adjusted p | reject at α=0.05 |", "|---|---|---|---|---|"]
+    for key in mp:
+        rows = holm_rows(mp, sh, la, key)
+        rej, padj, _, _ = multipletests([max(p, 1e-12) for _, p in rows], alpha=0.05, method="holm")
+        out += [f"| {n} | {key} | {_p(p)} | {_p(pa)} | {'yes' if r else 'no'} |" for (n, p), pa, r in zip(rows, padj, rej)]
+        a = sh[key]["angles"]
+        met = a["closure"] < 2 and a["circle_rho"] > a["line_rho"]
+        out.append(f"| H-B angles circle prediction (decision rule: closure {a['closure']:.2f} < 2 and circle ρ {a['circle_rho']:.2f} > line ρ {a['line_rho']:.2f}) | {key} | — | — | {'met' if met else 'not met (prediction falsified)'} |")
+    return "\n".join(out)
+
+
+def table_judges(j: dict) -> str:
+    rows = ["| Judges | n concepts | mean pairwise Spearman | ICC(2,1) | ICC(2,k) |", "|---|---|---|---|---|",
+            f"| {', '.join(j['judges'])} | {j['n']} | {j['mean_pairwise_spearman']:.3f} | {j['icc2_1']:.3f} | {j['icc2_k']:.3f} |"]
+    return "\n".join(rows)
+
+
+def table_axes(a: dict) -> str:
+    rows = ["| Model | PC | explained var | ρ with applied (p) | ρ with abstraction (p) |", "|---|---|---|---|---|"]
+    for key, r in a.items():
+        for pc, ev in zip(r["pcs"], r["explained_var"]):
+            rows.append(f"| {key} | {pc['pc']} | {ev:.3f} | {pc['rho_applied']:+.3f} ({_p(pc['p_applied'])}) | {pc['rho_abstraction']:+.3f} ({_p(pc['p_abstraction'])}) |")
+        rows.append(f"| {key} | 5-fold CV ridge readout of abstraction | | | ρ = {r['cv_ridge_rho_abstraction']:+.3f} |")
+    return "\n".join(rows)
+
+
+def table_causal(c: dict) -> str:
+    rows = ["| Model | Chain | baseline acc (gate) | noise scale | acc, chain-subspace noise | acc, random-subspace noise (mean of 5) |", "|---|---|---|---|---|---|"]
+    for key, r in c.items():
+        for name, v in r.items():
+            if not isinstance(v, dict):
+                continue
+            if not v["scales"]:
+                rows.append(f"| {key} | {name} | {v['baseline_acc']:.3f} ({v['gate']}) — gate not passed | — | — | — |")
+            for s, sv in v["scales"].items():
+                rows.append(f"| {key} | {name} | {v['baseline_acc']:.3f} ({v['gate']}) | {s} | {sv['acc_chain_subspace']:.3f} | {sv['acc_random_subspace_mean']:.3f} |")
+    return "\n".join(rows)
+
+
+def table_sae(s: dict) -> str:
+    rows = ["| Model | SAE block | ρ field map (SAE code) | LOO acc math / control | features math-only / shared / control-only |", "|---|---|---|---|---|"]
+    for key, r in s.items():
+        rows.append(f"| {key} | {r['sae_block']} | {r['math']['rsa_sae']:.3f} | {r['math']['loo_acc_sae']:.3f} / {r['control']['loo_acc_sae']:.3f} | {r['features_math_only']} / {r['features_shared']} / {r['features_control_only']} |")
+    return "\n".join(rows)
+
+
 def table_calibration(cal: dict) -> str:
     desc = {
         "concept_linear_null": "concept level, nuisance correctly specified (null)",
@@ -299,12 +358,19 @@ def phase_report(cfg: Config) -> None:
         "H-A1 field map (field-centroid RSA vs arXiv cross-listing distance; LOO nearest-centroid field accuracy)": table_field_map(mp),
         "POST-HOC: field-map ρ after removing the top-k principal components (all-but-the-top sweep)": table_posthoc(_j(cfg, "posthoc.json")) if _j(cfg, "posthoc.json") else "*not run*",
         "POST-HOC: cyclic order in the top-2-PC plane at the pre-registered layer (1 = perfect cycle; positive-control debug)": table_cycles(_j(cfg, "posthoc.json"), {k: v["primary_layer"] for k, v in _j(cfg, "shapes.json").items()}) if _j(cfg, "posthoc.json") else "*not run*",
+        "Multiplicity: Holm correction over the 8 pre-registered confirmatory tests (bootstrap p for H-A1 is the fraction of resamples with Δ ≤ 0; 0 means < 1/2000)": table_holm(mp, sh, la),
         "H-A1c clustering specificity: math fields vs non-math control fields": table_clustering(mp),
         "H-B shape families (primary layer; permutation p-values; † = post-hoc statistic, see docs/deviations.md)": table_shapes(sh, fams),
         "H-B negative control: random 11-item lists of math concepts (should reject ≈5%)": table_negative_control(sh),
         "H-B number-coded families: structure beyond the number reference": table_beyond_reference(sh, fams),
         "H-B2 axiom lattices (offset consistency = mean cosine of same-axiom difference vectors)": table_lattice(la),
     }
+    for title, name, fn in (("H-A4 judges: agreement of LLM abstraction raters", "judges.json", table_judges),
+                            ("H-A4 axes: top PCs vs pure/applied and abstraction (residualized on frequency, token count)", "axes.json", table_axes),
+                            ("H-B causal test (gated on baseline accuracy ≥ 0.70)", "causal.json", table_causal),
+                            ("Exploratory: Qwen-Scope SAE codes", "sae.json", table_sae)):
+        if _j(cfg, name):
+            sections[title] = fn(_j(cfg, name))
     md = f"# Results: `{cfg.name}` run\n\nGenerated by `python run.py report --config configs/{cfg.name}.yaml` from `results/{cfg.name}/*.json`. Do not edit by hand.\n\n"
     for title, tab in sections.items():
         md += f"## {title}\n\n{tab}\n\n"
@@ -312,14 +378,8 @@ def phase_report(cfg: Config) -> None:
     (ROOT / "reports" / f"{cfg.name}_results.md").write_text(md, encoding="utf-8")
     numbers = {"map_fields": mp, "shapes": sh, "lattice": la}
     (cfg.results_dir / "numbers.json").write_text(json.dumps(numbers, indent=1, default=float))
-    # README block: headline tables + key figures
-    block = (f"<!-- RESULTS:START -->\n*Auto-generated from `results/{cfg.name}/` by `run.py report`. Full tables: [`reports/{cfg.name}_results.md`](reports/{cfg.name}_results.md).*\n\n"
-             f"**H-A1 field map.**\n\n{table_field_map(mp)}\n\n**Clustering specificity.**\n\n{table_clustering(mp)}\n\n**H-B shape families.**\n\n{table_shapes(sh, fams)}\n\n"
-             f"**H-B2 axiom lattices.**\n\n{table_lattice(la)}\n\n" + "\n\n".join(f"![{f}](reports/figures/{f})" for f in figs) + "\n<!-- RESULTS:END -->")
-    readme = (ROOT / "README.md").read_text(encoding="utf-8")
-    readme = re.sub(r"<!-- RESULTS:START -->.*<!-- RESULTS:END -->", lambda _: block, readme, flags=re.S)
-    (ROOT / "README.md").write_text(readme, encoding="utf-8")
+    # README results block is rendered across all configs by `run.py paper` (report/paper.py)
     from mathgeom.report.site import export_site
 
     export_site(cfg, mp, sh, la)
-    log.info("report written: %d figures, reports/%s_results.md, README results block", len(figs), cfg.name)
+    log.info("report written: %d figures, reports/%s_results.md, site data", len(figs), cfg.name)

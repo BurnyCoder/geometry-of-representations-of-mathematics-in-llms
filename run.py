@@ -29,7 +29,7 @@ PHASES = {
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("phase", choices=[*PHASES, "report", "all"])
+    ap.add_argument("phase", choices=[*PHASES, "report", "paper", "all"])
     ap.add_argument("--config", default="configs/mvp.yaml")
     args = ap.parse_args()
     cfg = load_config(args.config)
@@ -38,6 +38,13 @@ def main() -> None:
         from mathgeom.report.render import phase_report
 
         PHASES["report"] = phase_report
+    if args.phase == "paper":  # needs results of all configs (mvp, robustness, gemma)
+        from mathgeom.report.paper import build_paper, build_readme_block, build_summary
+
+        build_readme_block()
+        build_summary()
+        build_paper()
+        return
     todo = [*PHASES] if args.phase == "all" else [args.phase]
     for p in todo:
         PHASES[p](cfg)

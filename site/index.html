@@ -9,6 +9,8 @@
   :root { --bg:#fbfbfa; --fg:#1d1d1f; --muted:#666; --card:#fff; --line:#e3e3e0; --accent:#1f5fa8; }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#141416; --fg:#ececec; --muted:#9a9a9a; --card:#1d1d20; --line:#333; --accent:#6aa6ff; } }
   :root[data-theme="dark"] { --bg:#141416; --fg:#ececec; --muted:#9a9a9a; --card:#1d1d20; --line:#333; --accent:#6aa6ff; }
+  *, *::before, *::after { box-sizing:border-box; }
+  html, body { overflow-x:hidden; }
   body { background:var(--bg); color:var(--fg); font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif; margin:0; }
   main { max-width:1180px; margin:0 auto; padding:24px 16px 64px; }
   h1 { font-size:1.6rem; margin:0 0 4px; } h2 { font-size:1.15rem; margin:32px 0 6px; }
@@ -42,7 +44,7 @@
   <div class="row"><div id="fa_trained" class="plot card"></div><div id="fa_random" class="plot card"></div></div>
 
   <h2>4 · Group-like axiom lattice</h2>
-  <p class="note">Each arrow adds one axiom (associative / identity / divisible / commutative). If an axiom is a consistent direction, its arrows are parallel.</p>
+  <p class="note">Each arrow adds one axiom: <span style="color:#1f77b4">associative</span> · <span style="color:#2ca02c">identity</span> · <span style="color:#d62728">divisible</span> · <span style="color:#9467bd">commutative</span>. If an axiom is a consistent direction, its arrows are parallel.</p>
   <div class="row"><div id="la_trained" class="plot card"></div><div id="la_random" class="plot card"></div></div>
 </main>
 <script>
@@ -84,7 +86,7 @@ function renderLattice(m){
   for (const [id,key] of [["la_trained","trained"],["la_random","random_init"]]){
     const P = L[key], tr = [{type:"scatter", mode:"markers+text", x:P.map(p=>p[0]), y:P.map(p=>p[1]), text:L.items, textposition:"top center", textfont:{size:9}, marker:{size:7,color:css("--fg")}}];
     const ann = []; L.edges.forEach(e => e.pairs.forEach(([a,b]) => ann.push({x:P[b][0],y:P[b][1],ax:P[a][0],ay:P[a][1],xref:"x",yref:"y",axref:"x",ayref:"y",showarrow:true,arrowhead:2,arrowcolor:AX[e.axiom],arrowwidth:1.4,opacity:.8})));
-    const lay = layout((key==="trained"?"trained":"random-init twin") + " · blue assoc · green identity · red divisible · purple commutative"); lay.annotations = ann;
+    const lay = layout(key==="trained"?"trained":"random-init twin"); lay.annotations = ann;
     Plotly.react(id, tr, lay, {responsive:true}); }
 }
 </script>

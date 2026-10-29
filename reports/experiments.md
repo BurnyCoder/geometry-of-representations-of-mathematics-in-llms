@@ -71,7 +71,60 @@ A second test failure was a bug in the test itself: the synthetic shape was smal
 
 ## E3: MVP extraction and analysis (Qwen3.5-2B-Base + random-init twin)
 
-See the results files. The interpretation is added after the run, in [`summary.md`](summary.md).
+**What ran.**
+- 815 concepts and 171 family items, 8 templates each, through the trained model and its twin.
+- All 25 hidden states were stored. Extraction took about 1 s per item, because Qwen3.5's hybrid linear-attention layers fall back to the PyTorch implementation.
+
+**Field map.** It is clearly present and absent in the twin. Results: [`mvp_results.md`](mvp_results.md).
+
+**Problem 1: all-but-the-top reversed the effect.**
+- The preregistered all-but-the-top variant (remove the top d/100 principal components) *reversed* the field-map correlation.
+- *Hypothesis:* the map lives in the dominant components rather than in a few rogue dimensions, so removing 20 components removes the map.
+- *Test:* a post-hoc sweep over the removal depth plus per-component field variance (η²). Removing the first component helps, removing more steadily destroys the map, and field variance is spread over the top ~10 components.
+- *Decision:* report the preregistered variant as it came out, and add the sweep as an explicitly post-hoc explanation.
+
+**Problem 2: the positive control (days/months) failed its preregistered criterion.**
+- Circle-template ρ was significant and the closure ratio was near 1. But "circle ρ > line ρ" failed at the preregistered layer.
+- The twin also had a closure ratio near 1, which revealed that the closure ratio cannot tell a circle from structureless points.
+- Following the prereg, we debugged before interpreting anything else. Engels et al. found circles in low-dimensional projections, so we tested cyclic order in the top-2-PC plane.
+- Days and months are *perfect* cycles there in the trained model, and nothing in the twin. So the pipeline works and the full-space criterion was the weak link.
+- *Decision:* keep the failed criterion in the report, add the PC-plane statistic as post-hoc, and add `closure_far` as post-hoc as well.
+
+**Problem 3: the specificity comparison was confounded.**
+- 17 math fields were being compared with 4 control fields, so chance levels differ.
+- We added a post-hoc matched comparison over random 4-field subsets of the math fields.
+- Math fields cluster about as strongly as science topics, not more.
+
+**Bug.** Activations are stored as float16, which LAPACK rejects. A regression test now covers this.
+
+## E4: Robustness (scale, model family, math training)
+
+**Qwen.** Qwen3.5-0.8B, Qwen2.5-1.5B and Qwen2.5-Math-1.5B ran without changes.
+
+**Gemma-4-E2B needed two attempts.**
+- *Attempt 1:* an accelerate `device_map` with "cpu" entries for the 2.35B-parameter per-layer-embedding table. It failed with "Cannot copy out of meta tensor", because accelerate treats "cpu" as offload-to-GPU-on-use and Gemma reads that table directly.
+- *Attempt 2:* explicit placement. The table and the unused audio and vision towers stay in CPU RAM, the decoder goes to the GPU, and two forward hooks move the lookup's input and output between devices.
+- We also moved Gemma to its own config, so the Qwen analyses could proceed meanwhile.
+
+**H-A3 (math pretraining sharpens the map)** is a clean null with a tight CI. We report it as such.
+
+## E5: Judges, axes, causal test, SAE
+
+**Judges.**
+- One judge (Granite) puts essentially all next-token probability on the digits 1–7. The others put most of it there, and we renormalize over the digits.
+- Rank agreement is moderate and absolute agreement low, because the judges use different scale offsets. Only rank-based statistics use the ratings.
+
+**Causal test.**
+- The preregistered accuracy gate (≥ 0.70 on "which is more general?") was set *before* running it. The ring chain missed it narrowly, so it was not intervened on.
+- The space chain passed. Chain-subspace noise hurt only marginally more than random-subspace noise, so we call this inconclusive.
+- With five random subspaces, the smallest attainable rank p-value is about 0.17. A stronger test needs more random draws and more questions; this is future work.
+
+**SAE.** Qwen-Scope SAEs show field-selective features, but the graded field map is much weaker in the sparse code than in the dense residual.
+
+## Tooling learnings (continued)
+
+- **Line endings.** On Windows, `Path.write_text` translates `\n` to `\r\n`. Python heredoc scripts that search-and-replace code containing `"\n"` literals therefore corrupted files three times. The fix was to make code edits with the editor tool.
+- **Timing.** The shape-statistic negative control (100 random lists, each with a leave-one-out permutation null) dominates analysis time.
 
 ## Infrastructure learnings
 

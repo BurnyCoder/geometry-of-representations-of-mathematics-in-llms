@@ -39,6 +39,16 @@
    0.23106051560346733,
    0.1177033744191823
   ],
+  "matched_clustering": {
+   "k_fields": 4,
+   "control_acc": 0.8144329896907216,
+   "math_subsets_mean": 0.7291037455387175,
+   "math_subsets_ci": [
+    0.5729166666666666,
+    0.8544619845360825
+   ],
+   "frac_math_subsets_ge_control": 0.115
+  },
   "pc_plane_cycle": {
    "days": [
     {
@@ -1058,6 +1068,16 @@
    0.05493271335746864,
    0.04892898875847515
   ],
+  "matched_clustering": {
+   "k_fields": 4,
+   "control_acc": 0.26804123711340205,
+   "math_subsets_mean": 0.3004823765896831,
+   "math_subsets_ci": [
+    0.17851890756302521,
+    0.41769841269841274
+   ],
+   "frac_math_subsets_ge_control": 0.67
+  },
   "pc_plane_cycle": {
    "days": [
     {
