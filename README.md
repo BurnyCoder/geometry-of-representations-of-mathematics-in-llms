@@ -14,6 +14,7 @@ As far as our literature search found, nobody had asked this of **abstract mathe
 - 🧭 Interactive explorer: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/>
 - 📝 Plain-language summary: [`reports/summary.md`](reports/summary.md)
 - 🔒 Preregistration: [`docs/prereg.md`](docs/prereg.md), frozen as git tag `prereg-v1` before any activation was extracted
+- 🤗 Data and activations: [dataset](https://huggingface.co/datasets/BurnyCoder/geometry-of-mathematics-in-llms) · [collection](https://huggingface.co/collections/BurnyCoder/geometry-of-mathematics-in-llms-6ae31ee0d9b29a69547607cc)
 
 ## Highlights
 
