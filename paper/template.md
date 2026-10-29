@@ -201,6 +201,27 @@ In this model's random-init twin, all four consistencies are ≈ 0.
 - **Across the replication models (Appendix A):** all four offsets are positive in every model. They are near zero in the Qwen twins and weaker in Gemma's twin, which has small lexical offsets for associativity and divisibility. Divisibility reaches raw p < .05 in all five models, identity in three.
 - **Our reading:** strong evidence for associativity and commutativity directions, and suggestive evidence for divisibility and identity.
 
+**Lie groups and other group objects (exploratory).** A Lie group is a group that is also a smooth manifold; topological and algebraic groups are defined analogously. We tested three parallelograms:
+- topological group − group ≈ topological space − set;
+- Lie group − topological group ≈ smooth manifold − topological space;
+- algebraic group − group ≈ algebraic variety − set.
+
+{{table:structures:mvp}}
+
+{{table:structures:robustness}}
+
+{{table:structures:gemma}}
+
+**Group objects: supported.**
+- The parallelograms hold in all five trained models: mean cosine {{num:mvp.structures.qwen3.5-2b.group_objects.parallelograms.cos:.2f}} in Qwen3.5-2B (p = {{num:mvp.structures.qwen3.5-2b.group_objects.parallelograms.p:.4f}}). The twins are near zero; the Qwen2.5 twins show a weak lexical signal.
+- Trained models place "Lie group" close to *both* parents: "group" and "smooth manifold" rank {{num:mvp.structures.qwen3.5-2b.group_objects.parent_ranks.Lie group.0}} and {{num:mvp.structures.qwen3.5-2b.group_objects.parent_ranks.Lie group.1}} among {{num:mvp.structures.qwen3.5-2b.group_objects.pool_size}} items.
+- The twins place it next to "group" only, because of the shared token; "smooth manifold" ranks {{num:mvp.structures.qwen3.5-2b__random.group_objects.parent_ranks.Lie group.1}} in the Qwen3.5-2B twin.
+
+**Axiom transfer: inconclusive.**
+- The commutativity direction learned on group-like pairs transfers only weakly to ring → commutative ring and division ring → field ({{num:mvp.structures.qwen3.5-2b.transfer.commutative.cos:.2f}}, p = {{num:mvp.structures.qwen3.5-2b.transfer.commutative.p:.3f}}).
+- Some Qwen twins show similar values. "Commutative ring" literally contains the token "commutative", so we consider transfer not established.
+- Identity transfer, from the single pair rng → ring, is null.
+
 ## 4.5 Secondary analyses
 
 ### H-A4: concrete ↔ abstract and pure ↔ applied are the main axes
@@ -248,6 +269,7 @@ At block {{num:mvp.sae.qwen3.5-2b.sae_block}}, we encoded the template-averaged 
 - **Positive control.** It passed only under a post-hoc statistic.
 - **Family size.** Families are small (n = 7–13), so shape claims rest on permutation tests with limited resolution.
 - **Correlation, not mechanism.** All tests except §4.5 are correlational.
+- **Not run.** The exploratory field-revealing template condition and the Mathlib-depth validation of judge ratings were planned but not run (`docs/deviations.md`).
 
 # 7 Conclusion
 

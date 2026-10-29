@@ -273,6 +273,43 @@ def phase_lattice(cfg: Config) -> None:
     _save(cfg, "lattice.json", results)
 
 
+def phase_structures(cfg: Config) -> None:
+    """H-B2 exploratory/secondary (pre-registered tests 4–5): axiom transfer to ring-like pairs and
+    group objects (topological / Lie / algebraic groups) relative to their parents."""
+    from mathgeom.analyses.lattice import axiom_pairs, parallelogram_test, parent_rank, transfer_test
+
+    fams = load_yaml("families.yaml")
+    fam = json.loads((cfg.artifacts / "acts" / "family_index.json").read_text())
+    pos = {(f, c): i for i, (f, c, _) in enumerate(fam)}
+    pool = np.array([i for i, (f, _, _) in enumerate(fam) if f not in ("analogy_control", "number_words_3_12", "number_words_0_10", "digits_0_330")])
+    lat = fams["lattices"]["group_like"]
+    gl = list(lat["items"])
+    bits = np.array([lat["items"][c] for c in gl])
+    go, tr = fams["group_objects"], fams["transfer"]
+    results = {}
+    for m in cfg.models:
+        for key in (m["key"], m["key"] + "__random"):
+            A = _load(cfg, key, "family")["last"]
+            Lp = _primary_layer(A.shape[1], cfg.primary_rel_depth)
+            X = A[:, Lp].astype(np.float64)
+            Xg = X[[pos[("group_like", c)] for c in gl]]
+            res = {"primary_layer": Lp, "transfer": {}, "group_objects": {}}
+            for axis_name in ("commutative", "identity"):
+                train = axiom_pairs(bits, lat["axioms"].index(axis_name))
+                test = [(pos[("transfer", a)], pos[("transfer", b)]) for a, b in tr[axis_name]]
+                res["transfer"][axis_name] = transfer_test(Xg, train, X, test, pool, seed=cfg.seed)
+            quads = [tuple(pos[("group_objects", c)] for c in q) for q in go["parallelograms"]]
+            res["group_objects"]["parallelograms"] = parallelogram_test(X, quads, pool, seed=cfg.seed)
+            res["group_objects"]["parent_ranks"] = {o: parent_rank(X, pos[("group_objects", o)], [pos[("group_objects", p)] for p in ps], pool)
+                                                    for o, ps in go["objects"].items()}
+            res["group_objects"]["pool_size"] = int(len(pool) - 1)
+            log.info("[structures %s] transfer %s | parallelograms %s | parent ranks %s", key,
+                     {k: (round(v["cos"], 3), round(v["p"], 4)) for k, v in res["transfer"].items()},
+                     (round(res["group_objects"]["parallelograms"]["cos"], 3), round(res["group_objects"]["parallelograms"]["p"], 4)), res["group_objects"]["parent_ranks"])
+            results[key] = res
+    _save(cfg, "structures.json", results)
+
+
 def phase_compare(cfg: Config) -> None:
     """H-A3: paired concept-bootstrap contrast of field-map strength between two trained models
     (e.g. Qwen2.5-Math-1.5B vs its base Qwen2.5-1.5B), each at its own pre-registered layer."""

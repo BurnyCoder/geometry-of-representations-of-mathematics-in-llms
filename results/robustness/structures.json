@@ -1,0 +1,242 @@
+{
+ "qwen3.5-0.8b": {
+  "primary_layer": 12,
+  "transfer": {
+   "commutative": {
+    "cos": 0.18761428331222788,
+    "null95": 0.212270397547989,
+    "p": 0.07596201899050475,
+    "n_test": 2
+   },
+   "identity": {
+    "cos": 0.07500509817064804,
+    "null95": 0.2528774241969761,
+    "p": 0.1794102948525737,
+    "n_test": 1
+   }
+  },
+  "group_objects": {
+   "parallelograms": {
+    "cos": 0.45707478008368074,
+    "null95": 0.2406010992856129,
+    "p": 0.0024987506246876563,
+    "n": 3
+   },
+   "parent_ranks": {
+    "topological group": [
+     5,
+     15
+    ],
+    "Lie group": [
+     4,
+     6
+    ],
+    "algebraic group": [
+     4,
+     5
+    ]
+   },
+   "pool_size": 113
+  }
+ },
+ "qwen3.5-0.8b__random": {
+  "primary_layer": 12,
+  "transfer": {
+   "commutative": {
+    "cos": 0.009984451355556942,
+    "null95": 0.14395513745664917,
+    "p": 0.40379810094952523,
+    "n_test": 2
+   },
+   "identity": {
+    "cos": -0.013884331730204019,
+    "null95": 0.23419929298453215,
+    "p": 0.6551724137931034,
+    "n_test": 1
+   }
+  },
+  "group_objects": {
+   "parallelograms": {
+    "cos": -0.027946627278118003,
+    "null95": 0.05829263441527265,
+    "p": 0.7941029485257372,
+    "n": 3
+   },
+   "parent_ranks": {
+    "topological group": [
+     1,
+     72
+    ],
+    "Lie group": [
+     1,
+     65
+    ],
+    "algebraic group": [
+     2,
+     88
+    ]
+   },
+   "pool_size": 113
+  }
+ },
+ "qwen2.5-1.5b": {
+  "primary_layer": 14,
+  "transfer": {
+   "commutative": {
+    "cos": 0.1825786139108716,
+    "null95": 0.164574120368805,
+    "p": 0.03798100949525238,
+    "n_test": 2
+   },
+   "identity": {
+    "cos": 0.019697426820779414,
+    "null95": 0.27288017936708386,
+    "p": 0.3933033483258371,
+    "n_test": 1
+   }
+  },
+  "group_objects": {
+   "parallelograms": {
+    "cos": 0.4055703920369149,
+    "null95": 0.2209029152507179,
+    "p": 0.0034982508745627187,
+    "n": 3
+   },
+   "parent_ranks": {
+    "topological group": [
+     4,
+     6
+    ],
+    "Lie group": [
+     3,
+     6
+    ],
+    "algebraic group": [
+     4,
+     6
+    ]
+   },
+   "pool_size": 113
+  }
+ },
+ "qwen2.5-1.5b__random": {
+  "primary_layer": 14,
+  "transfer": {
+   "commutative": {
+    "cos": 0.14202395195239806,
+    "null95": 0.1352442914084251,
+    "p": 0.043478260869565216,
+    "n_test": 2
+   },
+   "identity": {
+    "cos": 0.037657206137990604,
+    "null95": 0.2130016302200732,
+    "p": 0.1424287856071964,
+    "n_test": 1
+   }
+  },
+  "group_objects": {
+   "parallelograms": {
+    "cos": 0.15643512206816312,
+    "null95": 0.13817580999252382,
+    "p": 0.03498250874562719,
+    "n": 3
+   },
+   "parent_ranks": {
+    "topological group": [
+     1,
+     2
+    ],
+    "Lie group": [
+     1,
+     18
+    ],
+    "algebraic group": [
+     1,
+     2
+    ]
+   },
+   "pool_size": 113
+  }
+ },
+ "qwen2.5-math-1.5b": {
+  "primary_layer": 14,
+  "transfer": {
+   "commutative": {
+    "cos": 0.20210881576750825,
+    "null95": 0.15992370360176408,
+    "p": 0.020989505247376312,
+    "n_test": 2
+   },
+   "identity": {
+    "cos": 0.09648129580186321,
+    "null95": 0.2278943808375153,
+    "p": 0.12443778110944528,
+    "n_test": 1
+   }
+  },
+  "group_objects": {
+   "parallelograms": {
+    "cos": 0.40915540001883466,
+    "null95": 0.20833781206107113,
+    "p": 0.0014992503748125937,
+    "n": 3
+   },
+   "parent_ranks": {
+    "topological group": [
+     4,
+     7
+    ],
+    "Lie group": [
+     3,
+     6
+    ],
+    "algebraic group": [
+     3,
+     6
+    ]
+   },
+   "pool_size": 113
+  }
+ },
+ "qwen2.5-math-1.5b__random": {
+  "primary_layer": 14,
+  "transfer": {
+   "commutative": {
+    "cos": 0.12440064999251427,
+    "null95": 0.13687812499483787,
+    "p": 0.05997001499250375,
+    "n_test": 2
+   },
+   "identity": {
+    "cos": 0.005212368300011401,
+    "null95": 0.21495806939632367,
+    "p": 0.4357821089455272,
+    "n_test": 1
+   }
+  },
+  "group_objects": {
+   "parallelograms": {
+    "cos": 0.1499314033776205,
+    "null95": 0.1388163695877372,
+    "p": 0.04097951024487756,
+    "n": 3
+   },
+   "parent_ranks": {
+    "topological group": [
+     1,
+     2
+    ],
+    "Lie group": [
+     1,
+     15
+    ],
+    "algebraic group": [
+     1,
+     2
+    ]
+   },
+   "pool_size": 113
+  }
+ }
+}

@@ -1,0 +1,82 @@
+{
+ "gemma-4-e2b": {
+  "primary_layer": 18,
+  "transfer": {
+   "commutative": {
+    "cos": 0.12923839223582828,
+    "null95": 0.2707795664245099,
+    "p": 0.23238380809595202,
+    "n_test": 2
+   },
+   "identity": {
+    "cos": -0.17963125976891137,
+    "null95": 0.21456428486835738,
+    "p": 0.9320339830084957,
+    "n_test": 1
+   }
+  },
+  "group_objects": {
+   "parallelograms": {
+    "cos": 0.4838890766086263,
+    "null95": 0.30318697456568355,
+    "p": 0.00849575212393803,
+    "n": 3
+   },
+   "parent_ranks": {
+    "topological group": [
+     41,
+     6
+    ],
+    "Lie group": [
+     2,
+     10
+    ],
+    "algebraic group": [
+     7,
+     3
+    ]
+   },
+   "pool_size": 113
+  }
+ },
+ "gemma-4-e2b__random": {
+  "primary_layer": 18,
+  "transfer": {
+   "commutative": {
+    "cos": 0.00309453082043553,
+    "null95": 0.0628735950436012,
+    "p": 0.4567716141929036,
+    "n_test": 2
+   },
+   "identity": {
+    "cos": 0.036586841501805675,
+    "null95": 0.2835430794276995,
+    "p": 0.23438280859570215,
+    "n_test": 1
+   }
+  },
+  "group_objects": {
+   "parallelograms": {
+    "cos": -0.0030814326497741926,
+    "null95": 0.1405125688099462,
+    "p": 0.5337331334332833,
+    "n": 3
+   },
+   "parent_ranks": {
+    "topological group": [
+     2,
+     31
+    ],
+    "Lie group": [
+     2,
+     6
+    ],
+    "algebraic group": [
+     2,
+     7
+    ]
+   },
+   "pool_size": 113
+  }
+ }
+}

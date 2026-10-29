@@ -52,6 +52,8 @@ All models are base (pretrained) checkpoints, measured at relative depth 0.5. Fi
 | Ring/space chains ordered | yes | **supported**: Robinson p = 0.010 / 0.000; twin ≈ chance | correlation |
 | Angles form a circle | yes | **falsified**: line-like; ρ with the digit RDM = 0.84 | correlation |
 | Group-like axioms are consistent directions | yes | **supported for associativity and commutativity** (they survive Holm correction). Divisibility and identity are positive in all 5 models but significant only before correction (5/5 and 3/5 models). | correlation; paired control |
+| Lie/topological/algebraic groups combine their parents (parallelograms) | yes (exploratory) | **supported** in all 5 models: cos = 0.40 (Qwen3.5-2B); twins ≈ 0 to weak | correlation; paired control |
+| Commutativity direction transfers from group-like to ring-like structures | yes (secondary) | **not established**: weak and partly lexical | correlation |
 | Concrete↔abstract is the top principal axis (H-A4) | yes (secondary) | **supported** (LLM-judge ratings): PC1 ρ = 0.49 vs twin 0.06 | correlation |
 | Pure↔applied is a main axis (H-A4) | yes (secondary) | **supported**: PC2 ρ = -0.41 | correlation |
 | Chain geometry is used causally | yes | **inconclusive**: ring chain below the accuracy gate; space chain shows a small, non-significant effect | intervention (noise injection) |

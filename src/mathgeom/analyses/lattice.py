@@ -37,6 +37,39 @@ def parallelograms(bits: np.ndarray) -> list[tuple[int, int, int, int]]:
     return out
 
 
+def _unit(v: np.ndarray) -> np.ndarray:
+    return v / (np.linalg.norm(v, axis=-1, keepdims=True) + 1e-12)
+
+
+def transfer_test(X_train: np.ndarray, train_pairs: list[tuple[int, int]], X: np.ndarray, test_pairs: list[tuple[int, int]],
+                  pool: np.ndarray, n_null: int = 2000, seed: int = 0) -> dict:
+    """Does an axiom direction learned on group-like pairs transfer to held-out pairs (e.g. ring → commutative ring)?
+
+    direction = mean unit difference over training pairs; statistic = mean cosine of held-out unit
+    differences with it; null = same statistic for random pairs drawn from `pool` (rows of X).
+    """
+    d = _unit(np.mean([_unit(X_train[b] - X_train[a]) for a, b in train_pairs], 0))
+    obs = float(np.mean([_unit(X[b] - X[a]) @ d for a, b in test_pairs]))
+    rng = np.random.default_rng(seed)
+    null = np.array([np.mean([_unit(X[q] - X[p]) @ d for p, q in (rng.choice(pool, 2, replace=False) for _ in test_pairs)]) for _ in range(n_null)])
+    return {"cos": obs, "null95": float(np.percentile(null, 95)), "p": float((1 + (null >= obs).sum()) / (1 + n_null)), "n_test": len(test_pairs)}
+
+
+def parallelogram_test(X: np.ndarray, quads: list[tuple[int, int, int, int]], pool: np.ndarray, n_null: int = 2000, seed: int = 0) -> dict:
+    """Mean cos(X[b]−X[a], X[d]−X[c]) over quads (a:b :: c:d) vs random quadruples from `pool`."""
+    obs = float(np.mean([_unit(X[b] - X[a]) @ _unit(X[d] - X[c]) for a, b, c, d in quads]))
+    rng = np.random.default_rng(seed)
+    null = np.array([np.mean([_unit(X[q[1]] - X[q[0]]) @ _unit(X[q[3]] - X[q[2]]) for q in (rng.choice(pool, 4, replace=False) for _ in quads)]) for _ in range(n_null)])
+    return {"cos": obs, "null95": float(np.percentile(null, 95)), "p": float((1 + (null >= obs).sum()) / (1 + n_null)), "n": len(quads)}
+
+
+def parent_rank(X: np.ndarray, obj: int, parents: list[int], pool: np.ndarray) -> list[int]:
+    """Rank (1 = nearest, Euclidean) of each parent among all pool items for a group object."""
+    cand = np.array([k for k in pool if k != obj])
+    order = cand[np.argsort(np.linalg.norm(X[cand] - X[obj], axis=1))]
+    return [int(np.flatnonzero(order == p)[0]) + 1 for p in parents]
+
+
 def lattice_stats(X: np.ndarray, names: list[str], bits: np.ndarray, axioms: list[str], n_perm: int = 5000, seed: int = 0) -> dict:
     """All H-B2 statistics for one lattice at one (model, layer)."""
     Xc = center(X.astype(np.float64))
