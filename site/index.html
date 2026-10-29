@@ -51,7 +51,7 @@
 <p>Then we ask simple geometric questions of those vectors. Are related fields close? Do chains of definitions line up in order? Are differences such as monoid − semigroup parallel to loop − quasigroup? All views below are <b>unsupervised</b> projections (PCA, MDS): nothing is fitted to the labels, because with a dozen points in thousands of dimensions a fitted projection can draw any shape.</p>
 </div>
 
-<figure class="fig" id="fig-method">
+<figure class="fig" id="fig-method" data-paper="#3-methods" data-section="3">
   <div class="fig-head"><span class="fig-num">Figure 1</span><span class="fig-title">From prompts to geometry</span></div>
   <svg viewBox="0 0 1100 190" width="100%" role="img" aria-label="Pipeline: templates, residual stream, average, field centroids, distance matrix compared with arXiv; the random-init twin follows the same path">
     <style>.b{fill:var(--page);stroke:var(--axis);rx:10}.t{fill:var(--ink);font:13px system-ui}.s{fill:var(--ink2);font:11px system-ui}.a{stroke:var(--axis);stroke-width:1.5;marker-end:url(#ar)}.tw{fill:var(--twin);font:12px system-ui}</style>
@@ -75,7 +75,7 @@
 </div>
 <div class="tiles" id="tiles"></div>
 
-<figure class="fig" id="fig-scorecard">
+<figure class="fig" id="fig-scorecard" data-paper="#4-results" data-section="4">
   <div class="fig-head"><span class="fig-num">Figure 2</span><span class="fig-title">Scorecard: every test in every model</span>
     <div class="fig-tools chips" id="score-filter"></div></div>
   <div style="overflow-x:auto"><table class="scorecard" id="scorecard"></table></div>
@@ -83,7 +83,7 @@
   <figcaption><span class="read">Each cell gives a verdict symbol and the trained model’s statistic. The axiom tests are Holm-corrected within each model; Δ tests use 95% bootstrap CIs.</span></figcaption>
 </figure>
 
-<figure class="fig" id="fig-forest">
+<figure class="fig" id="fig-forest" data-paper="#4-results" data-section="4">
   <div class="fig-head"><span class="fig-num">Figure 3</span><span class="fig-title">Effect sizes with 95% confidence intervals</span>
     <div class="fig-tools"><button data-table="forest-table">Table view</button></div></div>
   <div id="forest"></div>
@@ -102,7 +102,7 @@
 <p>Use the <b>layer slider</b> above to scrub through depth, and the model menu to switch models. Hover a field to highlight it in all three maps and in the matrices below.</p>
 </div>
 
-<figure class="fig" id="fig-map">
+<figure class="fig" id="fig-map" data-paper="#41-h-a1-a-map-of-mathematical-fields" data-section="4.1">
   <div class="fig-head"><span class="fig-num">Figure 4</span><span class="fig-title">Related fields stay close in the trained model; the twin scrambles them</span>
     <div class="fig-tools"><button id="edges-toggle" aria-pressed="true">Neighbour edges</button><button data-table="map-table">Table view</button></div></div>
   <div class="panels">
@@ -115,7 +115,7 @@
   </figcaption>
 </figure>
 
-<figure class="fig" id="fig-rdm">
+<figure class="fig" id="fig-rdm" data-paper="#41-h-a1-a-map-of-mathematical-fields" data-section="4.1" data-tableid="rdm-table">
   <div class="fig-head"><span class="fig-num">Figure 5</span><span class="fig-title">The same comparison as distance matrices</span></div>
   <div class="panels">
     <div class="panel tall" id="rdm-arxiv"></div><div class="panel tall" id="rdm-trained"></div><div class="panel tall" id="rdm-twin"></div>
@@ -126,7 +126,7 @@
   </figcaption>
 </figure>
 
-<figure class="fig" id="fig-depth">
+<figure class="fig" id="fig-depth" data-paper="#41-h-a1-a-map-of-mathematical-fields" data-section="4.1" data-tableid="depth-table">
   <div class="fig-head"><span class="fig-num">Figure 6</span><span class="fig-title">The map appears early and persists through depth</span>
     <div class="fig-tools"><button id="all-models" aria-pressed="false">Compare all models</button></div></div>
   <div class="panel" id="depth"></div>
@@ -140,7 +140,7 @@
 <h2 class="section" id="s-cloud"><span class="num">4</span>The concept cloud</h2>
 <p>All <span data-num="results.map_fields.qwen3.5-2b.math_primary.n" data-fmt="d"></span> primary concepts in the first three principal components, at the preregistered layer. Search for a concept, or click one, to see its nearest neighbours in the trained model and in its twin.</p>
 </div>
-<figure class="fig" id="fig-concepts">
+<figure class="fig" id="fig-concepts" data-paper="#h-a4-concrete--abstract-and-pure--applied-are-the-main-axes" data-section="4.5" data-tableid="cloud-table">
   <div class="fig-head"><span class="fig-num">Figure 7</span><span class="fig-title">Every concept, and its neighbours</span>
     <div class="fig-tools">
       <input id="search" type="search" placeholder="Find a concept…" list="concept-list" aria-label="Find a concept">
@@ -159,7 +159,7 @@
 <p>Ordered families should trace a path through activation space. Days and months are our <b>positive control</b>: Engels et al. found them on circles. The <i>ring chain</i> (rng ⊃ ring ⊃ commutative ring ⊃ integral domain ⊃ … ⊃ field) and the <i>space chain</i> (T0 ⊃ T1 ⊃ Hausdorff ⊃ … ⊃ Hilbert space) are inclusions of definitions. We predicted that angles from 0° to 330° would close into a circle, with 330° next to 0°.</p>
 <span class="sidenote"><b>Cycle score.</b> The fraction of items whose angular neighbour in the PC plane is the true next item. 1 = perfect cycle. Post-hoc. <b>Robinson score:</b> the fraction of item triples consistent with the true order; chance is 1/3.</span>
 </div>
-<figure class="fig" id="fig-families">
+<figure class="fig" id="fig-families" data-paper="#43-h-b-shapes-of-ordered-families" data-section="4.3" data-tableid="fam-table">
   <div class="fig-head"><span class="fig-num">Figure 8</span><span class="fig-title" id="fam-title">Family geometry across depth</span></div>
   <div class="chips" id="fam-chips"></div>
   <div class="panels">
@@ -167,8 +167,8 @@
   </div>
   <figcaption>
     <span id="fam-takeaway"></span>
-    <span class="read">Top-2 PCA plane at the slider layer; colour runs light → dark along the true order and the path joins consecutive items. The orange edge on angles is the 330° → 0° closure the preregistration predicted. Right: the post-hoc cycle score at every layer.</span>
-    <span class="caveat">With 7–13 items per family, every statistic is tested against an order-permutation null; supervised fits are avoided because they would find any order.</span>
+    <span class="read">Top-2 PCA plane at the slider layer; colour runs light → dark along the true order and the path joins consecutive items. The orange edge on angles is the 330° → 0° closure the preregistration predicted. Right: the post-hoc cycle score at every layer. <b>Ideal shape</b> overlays the expected circle or line, rotated and scaled onto the points. It is drawn the same way for the twin.</span>
+    <span class="caveat">With 7–13 items per family, every statistic is tested against an order-permutation null; supervised fits are avoided because they would find any order. The ideal-shape overlay is a reading aid, not a statistic.</span>
   </figcaption>
 </figure>
 
@@ -177,7 +177,7 @@
 <p>Thirteen group-like structures, from magma to abelian group, are each a set of four axioms: associativity, identity, divisibility (inverses) and commutativity. If “adding an axiom” is a direction in the model, then every pair of structures that differs only in that axiom should have the same difference vector. Examples are semigroup → monoid, quasigroup → loop and magma → unital magma. This is the parallelogram picture of word analogies (man : woman :: king : queen).</p>
 <span class="sidenote"><b>Offset consistency.</b> The mean cosine between same-axiom difference vectors. 0 = unrelated arrows; 1 = parallel. Compared with random pairs of structures, and with the twin.</span>
 </div>
-<figure class="fig" id="fig-lattice">
+<figure class="fig" id="fig-lattice" data-paper="#44-h-b2-axioms-as-directions" data-section="4.4" data-tableid="lat-table">
   <div class="fig-head"><span class="fig-num">Figure 9</span><span class="fig-title">Highlight one axiom: in the trained model its arrows run parallel</span></div>
   <div class="chips" id="axiom-chips"></div>
   <div class="panels two"><div class="panel tall" id="lat-trained"></div><div class="panel tall" id="lat-twin"></div></div>
@@ -188,7 +188,7 @@
   </figcaption>
 </figure>
 
-<figure class="fig" id="fig-cosines">
+<figure class="fig" id="fig-cosines" data-paper="#44-h-b2-axioms-as-directions" data-section="4.4">
   <div class="fig-head"><span class="fig-num">Figure 10</span><span class="fig-title">The full-dimensional evidence: diagonal blocks of parallel arrows</span>
     <div class="fig-tools"><button data-table="cos-table">Table view</button></div></div>
   <div class="panels two"><div class="panel tall" id="cos-trained"></div><div class="panel tall" id="cos-twin"></div></div>
@@ -199,7 +199,7 @@
   </figcaption>
 </figure>
 
-<figure class="fig" id="fig-analogy">
+<figure class="fig" id="fig-analogy" data-paper="#44-h-b2-axioms-as-directions" data-section="4.4">
   <div class="fig-head"><span class="fig-num">Figure 11</span><span class="fig-title">Analogy playground: a is to b as c is to … ?</span></div>
   <div class="chips">
     <label>a <select id="an-a"></select></label><label>b <select id="an-b"></select></label><label>c <select id="an-c"></select></label>
@@ -211,12 +211,21 @@
   </figcaption>
 </figure>
 
+<figure class="fig" id="fig-groups" data-paper="#44-h-b2-axioms-as-directions" data-section="4.4" data-tableid="groups-table">
+  <div class="fig-head"><span class="fig-num">Figure 12</span><span class="fig-title">Lie groups sit between “group” and “smooth manifold”</span><div class="fig-tools"></div></div>
+  <div class="panels two"><div class="panel short" id="groups-par"></div><div class="panel short" id="groups-rank"></div></div>
+  <figcaption>
+    <span class="read">Left: mean cosine of three parallelograms, such as Lie group − topological group vs smooth manifold − topological space, for every model and its twin, against a random-quadruple null. Right: where “group” (circle) and “smooth manifold” (diamond) rank among the nearest neighbours of “Lie group”.</span>
+    <span class="caveat">Exploratory. The twins put “group” nearest to “Lie group” because the two names share a token.</span>
+  </figcaption>
+</figure>
+
 <div class="prose">
 <h2 class="section" id="s-abstract"><span class="num">7</span>Concrete to abstract</h2>
 <p>Three LLM judges from model families we do not probe rated every concept’s abstraction from 1 to 7. After removing word frequency and length, the first principal component of the concept cloud correlates with these ratings: ρ = <span data-num="results.axes.qwen3.5-2b.pcs.0.rho_abstraction" data-fmt=".2f"></span>. The second correlates with the pure/applied label. As an outside check, the judges’ ratings rise with how deep a concept’s definition sits in Mathlib’s import graph, though only <span data-num="results.mathlib.n_matched" data-fmt="d"></span> of <span data-num="results.mathlib.n_math_concepts" data-fmt="d"></span> concepts could be matched.</p>
 </div>
-<figure class="fig" id="fig-abstraction">
-  <div class="fig-head"><span class="fig-num">Figure 12</span><span class="fig-title">Judges’ abstraction vs Mathlib definitional depth</span></div>
+<figure class="fig" id="fig-abstraction" data-paper="#h-a4-concrete--abstract-and-pure--applied-are-the-main-axes" data-section="4.5" data-tableid="ml-table">
+  <div class="fig-head"><span class="fig-num">Figure 13</span><span class="fig-title">Judges’ abstraction vs Mathlib definitional depth</span></div>
   <div class="panel" id="mathlib"></div>
   <figcaption><span class="read">Each dot is a concept matched to a Mathlib declaration. x = longest chain of Mathlib imports below its defining module; y = mean judge rating. Hover for the declaration.</span>
   <span class="caveat">Only a few percent of glossary terms match Mathlib names, and import depth differs systematically between areas of Mathlib.</span></figcaption>
