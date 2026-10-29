@@ -63,6 +63,7 @@ def render_template(tpl: str, fig_prefix: str = "../reports/figures/") -> str:
             "beyond_reference": lambda: render.table_beyond_reference(r["shapes"], fams),
             "lattice": lambda: render.table_lattice(r["lattice"]),
             "calibration": lambda: render.table_calibration(r["calibration"]),
+            "holm": lambda: render.table_holm(r["map_fields"], r["shapes"], r["lattice"]),
             "posthoc": lambda: render.table_posthoc(r["posthoc"]),
             "cycles": lambda: render.table_cycles(r["posthoc"], {k: v["primary_layer"] for k, v in r["shapes"].items()}),
         }[name]
@@ -82,13 +83,22 @@ def build_summary() -> None:
     (ROOT / "reports" / "summary.md").write_text(render_template(tpl, fig_prefix="figures/"), encoding="utf-8")
 
 
+def build_readme_block() -> None:
+    """Replace README's <!-- RESULTS:START/END --> block with the rendered cross-model template."""
+    block = render_template((ROOT / "reports" / "readme_results_template.md").read_text(encoding="utf-8"), fig_prefix="reports/figures/")
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    readme = re.sub(r"<!-- RESULTS:START -->.*<!-- RESULTS:END -->", lambda _: f"<!-- RESULTS:START -->\n{block}\n<!-- RESULTS:END -->", readme, flags=re.S)
+    (ROOT / "README.md").write_text(readme, encoding="utf-8")
+
+
 def build_paper() -> None:
     out = render_template((ROOT / "paper" / "template.md").read_text(encoding="utf-8"))
     md = ROOT / "paper" / "paper.md"
     md.write_text(out, encoding="utf-8")
     pdf = ROOT / "paper" / "paper.pdf"
-    cmd = ["pandoc", str(md), "-o", str(pdf), "--pdf-engine=xelatex", "--resource-path", str(ROOT / "paper"),
-           "-V", "geometry:margin=2cm", "-V", "mainfont=DejaVu Serif", "-V", "monofont=DejaVu Sans Mono", "-V", "fontsize=10pt", "--citeproc"]
+    cmd = ["pandoc", str(md), "-f", "markdown+lists_without_preceding_blankline", "-o", str(pdf), "--pdf-engine=xelatex",
+           "--resource-path", str(ROOT / "paper"), "-V", "colorlinks=true", "--include-in-header", str(ROOT / "paper" / "header.tex"),
+           "-V", "geometry:margin=2cm", "-V", "mainfont=Cambria Math", "-V", "monofont=Consolas", "-V", "fontsize=10pt"]  # Cambria Math covers ρ Δ ⊃ ℕ ↔ …
     r = subprocess.run(cmd, capture_output=True, text=True, cwd=ROOT / "paper")
     if r.returncode != 0:
         log.warning("pandoc failed (paper.md still written): %s", r.stderr[-2000:])

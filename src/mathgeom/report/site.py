@@ -71,4 +71,9 @@ def export_site(cfg: Config, mp: dict, sh: dict, la: dict) -> None:
         data["models"][key] = d
     out = ROOT / "site"
     out.mkdir(exist_ok=True)
-    (out / "data.json").write_text(json.dumps(data, default=float))
+    path = out / "data.json"
+    merged = json.loads(path.read_text()) if path.exists() else {"models": {}}
+    merged["models"].update(data["models"])  # one explorer for all configs (mvp, robustness, gemma)
+    order = ["qwen3.5-2b", "qwen3.5-0.8b", "qwen2.5-1.5b", "qwen2.5-math-1.5b", "gemma-4-e2b"]
+    merged["models"] = dict(sorted(merged["models"].items(), key=lambda kv: order.index(kv[0]) if kv[0] in order else 99))
+    path.write_text(json.dumps(merged, default=float))
