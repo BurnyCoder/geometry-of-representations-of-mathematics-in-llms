@@ -39,7 +39,7 @@ def _score(model, tok, prompt: str, cont: str, hook_fn=None, layer_module=None) 
     """Sum log p(cont tokens | prompt), optionally with a forward hook on one decoder block."""
     ids_p = tok(prompt, return_tensors="pt").input_ids
     ids_c = tok(cont, add_special_tokens=False, return_tensors="pt").input_ids
-    ids = torch.cat([ids_p, ids_c], 1).to(next(model.parameters()).device)
+    ids = torch.cat([ids_p, ids_c], 1).to(model.get_input_embeddings().weight.device)
     h = layer_module.register_forward_hook(hook_fn) if hook_fn else None
     try:
         logp = torch.log_softmax(model(input_ids=ids).logits[0].float(), -1)
@@ -94,7 +94,7 @@ def chain_causal_test(model, tok, layer_module, items: list[str], domain: str, f
         _, _, Vt = np.linalg.svd(X, full_matrices=False)
         return torch.tensor(Vt[:k], dtype=torch.float32)
 
-    dev = next(model.parameters()).device
+    dev = model.get_input_embeddings().weight.device
     for s in scales:
         sigma = s * spread / np.sqrt(k)
         acc_chain = run(lambda a, b, p: _make_hook(_spans(tok, p, items[a], items[b]), chain_basis(a, b).to(dev), sigma, gen))

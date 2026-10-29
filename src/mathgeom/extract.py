@@ -48,7 +48,7 @@ def concept_token_span(tok, full: str, prefix: str) -> list[int]:
 @torch.inference_mode()
 def extract(model, tok, items: list[Item], templates: list[str], tag: str, echo: bool = True) -> dict[str, np.ndarray]:
     """Run all items × templates; return dict of float16 arrays and per-item token counts."""
-    dev = next(model.parameters()).device
+    dev = model.get_input_embeddings().weight.device
     half = len(templates) // 2
     sums = {k: None for k in ("last", "last_a", "last_b", "pool")}
     n_tok = np.zeros(len(items), dtype=np.int32)
