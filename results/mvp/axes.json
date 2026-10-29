@@ -44,7 +44,19 @@
     "p_abstraction": 1.165996230560229e-06
    }
   ],
-  "cv_ridge_rho_abstraction": 0.7358893480679662
+  "cv_ridge_rho_abstraction": 0.7358893480679662,
+  "pcs_with_infinigram": [
+   {
+    "pc": 1,
+    "rho_applied": 0.013557208591774235,
+    "rho_abstraction": 0.44289086195356236
+   },
+   {
+    "pc": 2,
+    "rho_applied": -0.4062671456561229,
+    "rho_abstraction": 0.26128664191775713
+   }
+  ]
  },
  "qwen3.5-2b__random": {
   "explained_var": [
@@ -91,6 +103,18 @@
     "p_abstraction": 0.9833367719270253
    }
   ],
-  "cv_ridge_rho_abstraction": -0.06151027480730484
+  "cv_ridge_rho_abstraction": -0.06151027480730484,
+  "pcs_with_infinigram": [
+   {
+    "pc": 1,
+    "rho_applied": -0.0002279346201662276,
+    "rho_abstraction": 0.06616280584757464
+   },
+   {
+    "pc": 2,
+    "rho_applied": 0.14477103229828808,
+    "rho_abstraction": 0.02112996755905053
+   }
+  ]
  }
 }
