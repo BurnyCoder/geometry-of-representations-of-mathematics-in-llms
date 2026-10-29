@@ -191,6 +191,46 @@ def table_structures(s: dict) -> str:
     return "\n".join(rows)
 
 
+def table_mathlib(m: dict) -> str:
+    """H-A4 judge validation against Mathlib import depth, and Mathlib coverage per field (second audit)."""
+    src = m["n_by_source"]
+    rows = ["| Matched concepts (curated YAML / CamelCase) | median import depth | ρ(mean judge rating, depth) [95% CI] (p) | ρ partialling Zipf | ρ per judge |", "|---|---|---|---|---|",
+            f"| {m['n_matched']} of {m['n_math_concepts']} ({src.get('mathlib_yaml', 0)} / {src.get('camelcase', 0)}) | {m['depth_median']:.0f} | "
+            f"{m['rho_mean_rating_depth']:+.3f} {_ci(m['ci95'])} ({_p(m['p'])}) | {m['rho_partial_zipf']:+.3f} | " + "; ".join(f"{j.split('/')[-1]}: {r:+.2f}" for j, r in m["rho_per_judge"].items()) + " |",
+            "", "| Field | Mathlib coverage (fraction of concepts matched) |", "|---|---|"]
+    return "\n".join(rows + [f"| {f} | {c:.3f} |" for f, c in m["coverage_by_field"].items()])
+
+
+def table_chain_frequency(cf: dict) -> str:
+    """Plan H-B frequency control: chain order beyond log-frequency and token count (second audit)."""
+    rows = ["| Chain | Model | ρ(order, Zipf) | ρ(order, token count) | LOO order beyond covariates (null95, p) |", "|---|---|---|---|---|"]
+    for name in next(iter(cf.values())):
+        for key, res in cf.items():
+            b = res[name]
+            rows.append(f"| {name} | {key} | {b['rho_rank_covariates'][0]:+.2f} | {b['rho_rank_covariates'][1]:+.2f} | {b['loo_order_beyond']:+.2f} ({b['null95']:.2f}, {_p(b['p'])}) |")
+    return "\n".join(rows)
+
+
+def table_lattice_probes(la: dict, st: dict) -> str:
+    """Flagged lattice items and lattice-like identity transfer (second audit, exploratory)."""
+    rows = ["| Model | associative quasigroup: d(·, group) / d(·, quasigroup) (3 nearest) | inverse semigroup: 3 nearest | identity direction → lattice-like pairs: cos (null95, p) |", "|---|---|---|---|"]
+    for key, res in la.items():
+        a, t = res["audit2"], st[key]["transfer"]["identity_lattice"]
+        rows.append(f"| {key} | {a['associative_quasigroup']['ratio']:.2f} ({', '.join(a['associative_quasigroup']['nearest'])}) | {', '.join(a['inverse_semigroup']['nearest'])} | {t['cos']:+.3f} ({t['null95']:.3f}, {_p(t['p'])}) |")
+    return "\n".join(rows)
+
+
+def table_lattice_variants(la: dict) -> str:
+    """Group-like offsets on mean-pooled tokens / with the token-count direction removed; partial-operation lattice."""
+    rows = ["| Model | Variant | offset consistency per axiom: obs / null95 (p) |", "|---|---|---|"]
+    for key, res in la.items():
+        a = res["audit2"]
+        for name, offs in (("group-like, mean-pooled tokens", a["group_like_offsets"]["pool"]), ("group-like, token-count direction removed", a["group_like_offsets"]["length_projected"]),
+                           ("partial-operation lattice", a["partial_operation"]["offsets"])):
+            rows.append(f"| {key} | {name} | " + "; ".join(f"{ax}: {o['consistency']:.2f} / {o['null95']:.2f} ({_p(o['p'])})" for ax, o in offs.items()) + " |")
+    return "\n".join(rows)
+
+
 def table_judges(j: dict) -> str:
     rows = ["| Judges | n concepts | mean pairwise Spearman | ICC(2,1) | ICC(2,k) |", "|---|---|---|---|---|",
             f"| {', '.join(j['judges'])} | {j['n']} | {j['mean_pairwise_spearman']:.3f} | {j['icc2_1']:.3f} | {j['icc2_k']:.3f} |"]
@@ -420,11 +460,18 @@ def phase_report(cfg: Config) -> None:
         "H-B number-coded families: structure beyond the number reference": table_beyond_reference(sh, fams),
         "H-B2 axiom lattices (offset consistency = mean cosine of same-axiom difference vectors)": table_lattice(la),
     }
+    st = _j(cfg, "structures.json")
+    if _j(cfg, "chain_frequency.json"):
+        sections["H-B frequency control (plan; second audit): chain order beyond Zipf frequency and token count"] = table_chain_frequency(_j(cfg, "chain_frequency.json"))
+    if all("audit2" in r for r in la.values()) and st:
+        sections["H-B2 exploratory (second audit): flagged items and lattice-like identity transfer"] = table_lattice_probes(la, st)
+        sections["H-B2 exploratory (second audit): offset variants and the partial-operation lattice"] = table_lattice_variants(la)
     for title, name, fn in (("H-A2 hierarchy as pre-registered: cophenetic correlation (UPGMA) vs super-tree; spectrum-matched Gaussian and Gromov δ (plan)", "hierarchy.json", table_hierarchy),
                             ("Baselines: field map from fastText and Qwen3-Embedding vs the LLM (paired bootstrap); infini-gram covariate", "baselines.json", table_baselines),
                             ("Secondary: SMDS line vs discrete-circle fits, each vs label-shuffled refits", "smds.json", table_smds),
                             ("H-B2 tests 4–5: axiom transfer to ring-like pairs; group objects (parent ranks = nearest-neighbour rank of [group, other parent])", "structures.json", table_structures),
                             ("H-A4 judges: agreement of LLM abstraction raters", "judges.json", table_judges),
+                            ("H-A4 judge validation: mean rating vs Mathlib import depth; Mathlib coverage per field (plan; second audit)", "mathlib.json", table_mathlib),
                             ("H-A4 axes: top PCs vs pure/applied and abstraction (residualized on frequency, token count)", "axes.json", table_axes),
                             ("H-B causal test (gated on baseline accuracy ≥ 0.70)", "causal.json", table_causal),
                             ("Exploratory: Qwen-Scope SAE codes", "sae.json", table_sae)):

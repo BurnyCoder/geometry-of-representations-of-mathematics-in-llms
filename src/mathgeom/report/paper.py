@@ -70,6 +70,10 @@ def render_template(tpl: str, fig_prefix: str = "../reports/figures/") -> str:
             "smds": lambda: render.table_smds(r["smds"]),
             "posthoc": lambda: render.table_posthoc(r["posthoc"]),
             "cycles": lambda: render.table_cycles(r["posthoc"], {k: v["primary_layer"] for k, v in r["shapes"].items()}),
+            "mathlib": lambda: render.table_mathlib(r["mathlib"]),
+            "chain_frequency": lambda: render.table_chain_frequency(r["chain_frequency"]),
+            "lattice_probes": lambda: render.table_lattice_probes(r["lattice"], r["structures"]),
+            "lattice_variants": lambda: render.table_lattice_variants(r["lattice"]),
         }[name]
         return fn()
 

@@ -103,3 +103,23 @@ def test_smds_needs_shuffle_null_and_then_picks_right_template():
     th = 2 * np.pi * np.arange(n) / n
     res = smds_family(_embed(5 * np.c_[np.cos(th), np.sin(th)], d=256, noise=0.1), n_shuffle=39)  # min p = 1/40 < .05
     assert res["preferred"] == "discrete_circular" and res["discrete_circular"]["p"] < 0.05 and res["euclidean"]["p"] > 0.05
+
+
+def test_order_beyond_covariates_credits_real_order_not_frequency():
+    """Plan H-B frequency control: an order carried by the representation survives partialling unrelated
+    covariates; an 'order' that is only a frequency code does not."""
+    from mathgeom.analyses.shapes import order_beyond_covariates
+
+    rng = np.random.default_rng(3)
+    t = np.arange(11.0)
+    line = _embed(np.c_[t, np.zeros(11)], noise=0.05, seed=3)
+    real = order_beyond_covariates(line, rng.normal(size=(11, 2)), n_perm=200, seed=0)
+    assert real["loo_order_beyond"] > 0.8 and real["p"] < 0.05
+    freq = t + rng.normal(scale=0.5, size=11)  # frequency rises along the chain
+    freq_only = _embed(np.c_[freq, np.zeros(11)], noise=0.05, seed=4)  # representation encodes frequency only
+    fake = order_beyond_covariates(freq_only, np.c_[freq, rng.normal(size=11)], n_perm=200, seed=0)
+    assert fake["p"] > 0.05
+    # large-scale noise (like a random-init twin): residualizing on all items at once leaked the held-out
+    # item into the training span and gave ρ ≈ 1 for every order; fold-wise residualization must not
+    big = order_beyond_covariates(300 * rng.normal(size=(11, 256)), np.c_[freq, rng.normal(size=11)], n_perm=200, seed=0)
+    assert big["p"] > 0.05 and big["null95"] < 0.99
