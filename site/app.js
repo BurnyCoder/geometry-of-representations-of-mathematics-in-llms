@@ -40,9 +40,12 @@ const label = (f) => S.I.fields.labels[S.I.fields.names.indexOf(f)] || f;
 function fillNums(root = document) {
   root.querySelectorAll("[data-num]").forEach((el) => { el.textContent = fmt(get(S.I, el.dataset.num), el.dataset.fmt); });
 }
-function ramp(n) {  // ordinal blue ramp (light → dark), matching report/style.py ordinal()
-  const a = [134, 182, 239], b = [13, 54, 107];
-  return Array.from({ length: n }, (_, i) => { const t = n > 1 ? i / (n - 1) : 0; return `rgb(${a.map((x, k) => Math.round(x + (b[k] - x) * t)).join(",")})`; });
+function ramp(n) {  // ordinal ramp, piecewise-linear through the --ord stops (light and dark steps validated separately)
+  const stops = css("--ord").split(",").map((h) => [1, 3, 5].map((k) => parseInt(h.trim().slice(k, k + 2), 16)));
+  return Array.from({ length: n }, (_, i) => {
+    const t = (n > 1 ? i / (n - 1) : 0) * (stops.length - 1), j = Math.min(stops.length - 2, Math.floor(t)), u = t - j;
+    return `rgb(${stops[j].map((x, k) => Math.round(x + (stops[j + 1][k] - x) * u)).join(",")})`;
+  });
 }
 function table(el, head, rows) {
   el.innerHTML = `<table><thead><tr>${head.map((h) => `<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.map((r) => `<tr>${r.map((c) => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
@@ -93,12 +96,13 @@ function renderTiles() {
 function renderScorecard(filter = "all") {
   const sc = S.I.scorecard, groups = { map: /field map/i, shapes: /days|chain|angles|order/i, axioms: /axiom|groups/i };
   const rows = sc.rows.filter((r) => filter === "all" || groups[filter].test(r.test));
-  $("scorecard").innerHTML = `<thead><tr><th>Test</th>${sc.models.map((m) => `<th class="num">${m}</th>`).join("")}</tr></thead>` +
-    `<tbody>${rows.map((r) => `<tr><td>${r.test}</td>${r.cells.map((c) => `<td class="cell num">${minus(c)}</td>`).join("")}</tr>`).join("")}</tbody>`;
+  $("scorecard").innerHTML = `<thead><tr><th>Test</th><th>Status</th>${sc.models.map((m) => `<th class="num">${m}</th>`).join("")}</tr></thead>` +
+    `<tbody>${rows.map((r) => `<tr><td>${r.test}</td><td class="muted">${r.status}</td>${r.cells.map((c, j) => `<td class="cell num" title="${sc.models[j]} · ${r.test} · ${r.status}">${minus(c)}</td>`).join("")}</tr>`).join("")}</tbody>`;
   $("score-legend").textContent = sc.legend;
   $("score-filter").innerHTML = ["all", "map", "shapes", "axioms"].map((g) => `<button data-g="${g}" aria-pressed="${g === filter}">${g[0].toUpperCase() + g.slice(1)}</button>`).join("");
   $("score-filter").querySelectorAll("button").forEach((b) => b.onclick = () => renderScorecard(b.dataset.g));
 }
+const holmText = (r) => (r.holm === null ? "not in the Holm family" : `Holm: ${r.holm ? "significant" : "not significant"}`);
 function renderForest() {
   const p = P(), box = $("forest");
   box.innerHTML = S.I.forest.map((_, i) => `<div id="forest-${i}"></div>`).join("");
@@ -106,16 +110,16 @@ function renderForest() {
   S.I.forest.forEach((f, i) => {
     const traces = [true, false].map((sig) => {
       const rows = f.rows.filter((r) => (r.ci[0] > 0 || r.ci[1] < 0) === sig);
-      rows.forEach((r) => all.push([f.title, r.label, fmt(r.est), `[${fmt(r.ci[0])}, ${fmt(r.ci[1])}]`, r.status]));
+      rows.forEach((r) => all.push([f.title, r.label, fmt(r.est), `[${fmt(r.ci[0])}, ${fmt(r.ci[1])}]`, r.n, r.status, holmText(r)]));
       return { type: "scatter", mode: "markers", x: rows.map((r) => r.est), y: rows.map((r) => r.label),
         error_x: { type: "data", symmetric: false, array: rows.map((r) => r.ci[1] - r.est), arrayminus: rows.map((r) => r.est - r.ci[0]), color: sig ? p.blue : p.twin, thickness: 3, width: 0 },
         marker: { size: 10, color: sig ? p.blue : p.twin, line: { color: p.surface, width: 1.5 } },
-        hovertemplate: rows.map((r) => `<b>${r.label}</b><br>estimate ${fmt(r.est)}<br>95% CI [${fmt(r.ci[0])}, ${fmt(r.ci[1])}]<br>${r.status}<extra></extra>`) };
+        hovertemplate: rows.map((r) => `<b>${r.label}</b><br>estimate ${fmt(r.est)}<br>95% CI [${fmt(r.ci[0])}, ${fmt(r.ci[1])}] (unadjusted)<br>n = ${r.n}<br>${r.status}${r.holm === null ? "" : "<br>" + holmText(r)}<extra></extra>`) };
     });
     plot(`forest-${i}`, traces, layout(f.title, { height: 70 + 30 * f.rows.length, margin: { l: 150, r: 20, t: 34, b: 28 },
       xaxis: { range: span(f.rows), zeroline: true, zerolinecolor: p.ink2, gridcolor: p.grid, color: p.muted }, yaxis: { autorange: "reversed", color: p.ink2, categoryorder: "array", categoryarray: f.rows.map((r) => r.label) } }));
   });
-  table($("forest-table"), ["Comparison", "Row", "Estimate", "95% CI", "Status"], all);
+  table($("forest-table"), ["Comparison", "Row", "Estimate", "95% CI (unadjusted)", "n", "Status", "Holm decision"], all);
 }
 
 // ---------------------------------------------------------------- figure 4–6: field map, matrices, depth
@@ -227,7 +231,12 @@ function renderCloud() {
   plot("cloud", traces, layout(`${model().name}${S.cloudTwin ? " · random-init twin" : ""} · layer ${model().primary_layer} · PC1–3`,
     { margin: { l: 0, r: 0, t: 40, b: 0 }, scene: { xaxis: ax, yaxis: ax, zaxis: ax, aspectmode: "cube", camera: { eye: { x: 0.95, y: 0.95, z: 0.7 } } } }));
   const el = $("cloud");
-  if (!el._linked) { el._linked = true; el.on("plotly_click", (e) => { const i = e.points[0].customdata; if (i !== undefined) pick(i); }); }
+  if (!el._linked) {
+    el._linked = true;
+    el.on("plotly_click", (e) => { const i = e.points[0].customdata; if (i !== undefined) pick(i); });
+    el.on("plotly_hover", (e) => { const i = e.points[0].customdata; if (i === undefined) return; S.hover = S.I.fields.names.indexOf(C.field[i]); rerender(["fig-map", "fig-rdm"]); });
+    el.on("plotly_unhover", () => { S.hover = null; rerender(["fig-map", "fig-rdm"]); });
+  }
   if (!$("cloud-table").childElementCount) table($("cloud-table"), ["Concept", "Field", "Judge abstraction (1–7)", "Mathlib declaration (import depth)"],
     C.concept.map((c, i) => [c, label(C.field[i]), fmt(C.abstraction[i]), C.mathlib[i] ? `<code>${C.mathlib[i].decl}</code> (${C.mathlib[i].depth})` : "—"]));
 }
@@ -235,7 +244,7 @@ function pick(i) {
   S.picked = i;
   const C = S.I.concepts, M = S.M[S.key].concepts, nn = (side) => M[side].nn[i].map((j) => `<li>${C.concept[j]} <span class="muted">· ${label(C.field[j])}</span></li>`).join("");
   const ml = C.mathlib[i];
-  $("concept-card").innerHTML = `<h4>${C.concept[i]}</h4><div class="muted">${label(C.field[i])} · judge abstraction ${fmt(C.abstraction[i])} / 7${ml ? ` · Mathlib <code>${ml.decl}</code>, import depth ${ml.depth}` : ""}</div>
+  $("concept-card").innerHTML = `<h4>${C.concept[i]}</h4><div class="muted">${label(C.field[i])} · flags: none (primary set: name does not leak the field, no eponym, not an everyday word) · judge abstraction ${fmt(C.abstraction[i])} / 7${ml ? ` · Mathlib <code>${ml.decl}</code>, import depth ${ml.depth}` : " · no Mathlib match"}</div>
     <div class="nn"><div><b>Nearest in ${model().name}</b><ol>${nn("trained")}</ol></div><div><b>Nearest in the twin</b><ol>${nn("random_init")}</ol></div></div>`;
   rerender(["fig-concepts"]);
 }
@@ -290,6 +299,8 @@ function renderFamilies() {
   plot("fam-twin", famTraces(F.random_init[L], F.items, closed, ang, cycT && cycT[L]), layout(`${name} · random-init twin`, tr));
   table($("fam-table"), ["Item", "Position", `${model().name} PC1`, "PC2", "Twin PC1", "Twin PC2"],
     F.items.map((it, i) => [it, i + 1, fmt(F.trained[L][i][0]), fmt(F.trained[L][i][1]), fmt(F.random_init[L][i][0]), fmt(F.random_init[L][i][1])]));
+  if (cyc) $("fam-table").insertAdjacentHTML("beforeend", `<table><thead><tr><th>Layer</th><th>Cycle score, trained</th><th>Cycle score, twin</th></tr></thead><tbody>${
+    cyc.map((v, l) => `<tr><td>${l + 1}</td><td>${fmt(v)}</td><td>${fmt(cycT[l])}</td></tr>`).join("")}</tbody></table>`);
   $("fam-takeaway").innerHTML = `<b>${FAM_TAKE[f] || ""}</b>`;
   if (cyc) {
     const tw = cycT, x = cyc.map((_, i) => (i + 1) / cyc.length);
@@ -335,6 +346,16 @@ function renderLattice() {
   table($("lat-table"), ["Structure", ...Lt.axioms, `+ ${S.axiom} leads to`], Lt.items.map((it, i) => [it, ...Lt.bits[i].map((b) => (b ? "✓" : "")),
     Lt.pairs.filter(([a], k) => a === i && Lt.group[k] === Lt.axioms.indexOf(S.axiom)).map(([, b]) => Lt.items[b]).join(", ") || "—"]));
   const o = R(`lattice.${S.key}.group_like.offsets.${S.axiom}`), ot = R(`lattice.${S.key}__random.group_like.offsets.${S.axiom}`);
+  ["lat-trained", "lat-twin"].forEach((id) => {
+    const el = $(id);
+    if (el._linked) return;
+    el._linked = true;
+    el.on("plotly_click", (e) => {
+      const i = e.points[0].pointIndex, Ltc = S.M[S.key].lattice;
+      if (e.points[0].curveNumber !== 1) return;
+      $("lat-bits").innerHTML = `<b>${Ltc.items[i]}</b>: ` + Ltc.axioms.map((a, q) => `${a} ${Ltc.bits[i][q] ? "✓" : "✗"}`).join(" · ");
+    });
+  });
   $("lat-note").innerHTML = `<b>+ ${S.axiom}:</b> offset consistency ${fmt(o.consistency)} (random-pair null 95th percentile ${fmt(o.null95)}, p ${fmt(o.p, ".3f")}); twin ${fmt(ot.consistency)}. Values at the preregistered layer.`;
   $("axiom-chips").innerHTML = Lt.axioms.map((a) => `<button data-a="${a}" aria-pressed="${a === S.axiom}">+ ${a}</button>`).join("");
   $("axiom-chips").querySelectorAll("button").forEach((b) => b.onclick = () => { S.axiom = b.dataset.a; renderLattice(); });
@@ -439,11 +460,20 @@ function decorate() {
 }
 
 // ---------------------------------------------------------------- controls, state, boot
+function drawSpark() {  // depth inset: trained (blue) and twin (grey) ρ with arXiv by layer; dot = current layer
+  const p = P(), lc = R(`map_fields.${S.key}.math_primary.layer_curve`), W = 150, H = 28, n = lc.trained.length;
+  const lo = Math.min(...lc.random_init, 0), hi = Math.max(...lc.trained), X = (i) => 3 + (i * (W - 6)) / (n - 1), Y = (v) => H - 3 - ((v - lo) * (H - 6)) / (hi - lo || 1);
+  const line = (ys, c, w) => `<polyline fill="none" stroke="${c}" stroke-width="${w}" points="${ys.map((v, i) => `${X(i)},${Y(v)}`).join(" ")}"/>`;
+  $("spark").innerHTML = `<title>ρ with arXiv by layer (trained blue, twin grey)</title>${line(lc.random_init, p.twin, 1.2)}${line(lc.trained, p.blue, 1.8)}` +
+    `<line x1="${X(model().primary_layer - 1)}" x2="${X(model().primary_layer - 1)}" y1="2" y2="${H - 2}" stroke="${p.axis}"/>` +
+    `<circle cx="${X(S.layer - 1)}" cy="${Y(lc.trained[S.layer - 1])}" r="3.5" fill="${p.orange}"/>`;
+}
 function setLayer(l) {
   S.layer = Math.max(1, Math.min(model().n_layers, l));
   $("layer").value = S.layer;
   $("layer-readout").textContent = `layer ${S.layer} of ${model().n_layers}${S.layer === model().primary_layer ? " · pre-registered" : ""}`;
   history.replaceState(null, "", `?model=${S.key}&layer=${S.layer}${location.hash}`);
+  drawSpark();
   rerender(["fig-map", "fig-rdm", "fig-depth", "fig-families", "fig-lattice"]);
 }
 async function setModel(key) {
@@ -471,6 +501,7 @@ function wire() {
     document.documentElement.dataset.theme = dark ? "light" : "dark";
     try { localStorage.setItem("theme", document.documentElement.dataset.theme); } catch (_) { /* storage may be blocked */ }
     rerender();
+    drawSpark();
   };
   $("edges-toggle").onclick = (e) => { S.edges = !S.edges; e.target.setAttribute("aria-pressed", String(S.edges)); rerender(["fig-map"]); };
   $("all-models").onclick = (e) => { S.allModels = !S.allModels; e.target.setAttribute("aria-pressed", String(S.allModels)); rerender(["fig-depth"]); };
