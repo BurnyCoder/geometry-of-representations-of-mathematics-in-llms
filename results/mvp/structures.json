@@ -1,0 +1,82 @@
+{
+ "qwen3.5-2b": {
+  "primary_layer": 12,
+  "transfer": {
+   "commutative": {
+    "cos": 0.19805783925776999,
+    "null95": 0.19811545881780673,
+    "p": 0.050974512743628186,
+    "n_test": 2
+   },
+   "identity": {
+    "cos": 0.014632174052503038,
+    "null95": 0.20336086797900657,
+    "p": 0.3983008495752124,
+    "n_test": 1
+   }
+  },
+  "group_objects": {
+   "parallelograms": {
+    "cos": 0.3979512994870909,
+    "null95": 0.23455777720127197,
+    "p": 0.004497751124437781,
+    "n": 3
+   },
+   "parent_ranks": {
+    "topological group": [
+     5,
+     8
+    ],
+    "Lie group": [
+     3,
+     7
+    ],
+    "algebraic group": [
+     3,
+     6
+    ]
+   },
+   "pool_size": 113
+  }
+ },
+ "qwen3.5-2b__random": {
+  "primary_layer": 12,
+  "transfer": {
+   "commutative": {
+    "cos": -0.01721664844315054,
+    "null95": 0.1667588412685694,
+    "p": 0.7126436781609196,
+    "n_test": 2
+   },
+   "identity": {
+    "cos": 0.0009185467168438578,
+    "null95": 0.23392347470089545,
+    "p": 0.47426286856571714,
+    "n_test": 1
+   }
+  },
+  "group_objects": {
+   "parallelograms": {
+    "cos": 0.005834771585742543,
+    "null95": 0.030836557801954073,
+    "p": 0.37681159420289856,
+    "n": 3
+   },
+   "parent_ranks": {
+    "topological group": [
+     2,
+     44
+    ],
+    "Lie group": [
+     1,
+     18
+    ],
+    "algebraic group": [
+     3,
+     71
+    ]
+   },
+   "pool_size": 113
+  }
+ }
+}
