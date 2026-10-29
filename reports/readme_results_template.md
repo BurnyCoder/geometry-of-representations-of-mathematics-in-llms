@@ -20,6 +20,7 @@ The columns are:
 **Abstraction axis (H-A4, Qwen3.5-2B).** After partialling out frequency and token count:
 - PC1 correlates with LLM-judge abstraction at ρ = {{num:mvp.axes.qwen3.5-2b.pcs.0.rho_abstraction:.2f}} (twin {{num:mvp.axes.qwen3.5-2b__random.pcs.0.rho_abstraction:.2f}}).
 - PC2 correlates with pure/applied at ρ = {{num:mvp.axes.qwen3.5-2b.pcs.1.rho_applied:.2f}}.
+- The judges' ratings agree with an external, non-LLM measure, the import depth of each concept's definition in [Mathlib](https://github.com/leanprover-community/mathlib4): ρ = {{num:mvp.mathlib.rho_mean_rating_depth:.2f}}, 95% CI [{{num:mvp.mathlib.ci95.0:.2f}}, {{num:mvp.mathlib.ci95.1:.2f}}]. Only {{num:mvp.mathlib.n_matched}} of {{num:mvp.mathlib.n_math_concepts}} concepts could be matched, so this validation is weak.
 
 **Methods check.** Partial RDM regression rejects a true null {{num:mvp.calibration.field_confounded_null.reject_rate_0.05:.0%}} of the time when the nuisance is a noisy proxy of a confounder. That is why the primary tests are paired twin contrasts.
 

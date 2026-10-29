@@ -60,6 +60,7 @@ The columns are:
 **Abstraction axis (H-A4, Qwen3.5-2B).** After partialling out frequency and token count:
 - PC1 correlates with LLM-judge abstraction at ρ = 0.49 (twin 0.06).
 - PC2 correlates with pure/applied at ρ = -0.41.
+- The judges' ratings agree with an external, non-LLM measure, the import depth of each concept's definition in [Mathlib](https://github.com/leanprover-community/mathlib4): ρ = 0.37, 95% CI [0.07, 0.62]. Only 39 of 655 concepts could be matched, so this validation is weak.
 
 **Methods check.** Partial RDM regression rejects a true null 52% of the time when the nuisance is a noisy proxy of a confounder. That is why the primary tests are paired twin contrasts.
 
@@ -109,7 +110,7 @@ flowchart LR
 | `extract` | Runs every item through 8 templates for the trained model and its random-init twin. Stores the residual stream at the concept's last token (and the token mean) for every layer, and logs every prompt plus the greedy next token | `artifacts/acts/<model>/*.npz`, `logs/*_prompts.jsonl` |
 | `map`, `shapes`, `lattice` | Preregistered statistics at relative depth 0.5, plus layer curves | `results/<cfg>/*.json` |
 | `posthoc` | Labelled post-hoc analyses: all-but-the-top sweep, PC-plane cycles, matched clustering | `results/<cfg>/posthoc.json` |
-| `judges`, `axes` | LLM-judge abstraction ratings; principal axes vs abstraction and pure/applied | `data/judge_ratings.csv`, `results/<cfg>/axes.json` |
+| `judges`, `mathlib`, `axes` | LLM-judge abstraction ratings; their validation against Mathlib import depth; principal axes vs abstraction and pure/applied | `data/judge_ratings.csv`, `data/mathlib_depth.csv`, `results/<cfg>/{judges,mathlib,axes}.json` |
 | `causal`, `sae`, `compare` | Gated noise-injection test; Qwen-Scope SAE codes; paired model contrast (H-A3) | `results/<cfg>/*.json` |
 | `report` | Tables, figures and explorer data for one config | `reports/<cfg>_results.md`, `reports/figures/`, `site/data.json` |
 | `paper` | README results block, `reports/summary.md`, `paper/paper.md` and PDF, with every number resolved from the results JSON | |
@@ -201,5 +202,6 @@ PyTorch 2.14 (CUDA 13), Hugging Face `transformers` 5.x and `huggingface_hub`, N
 - Models: Apache-2.0.
 - Qwen-Scope SAEs: Qwen licence, research use.
 - Judge models: Apache-2.0 / MIT.
+- Mathlib4 (judge validation; only names, docs maps and import headers are read): Apache-2.0.
 
 The dataset card is in [`docs/data_card.md`](docs/data_card.md).

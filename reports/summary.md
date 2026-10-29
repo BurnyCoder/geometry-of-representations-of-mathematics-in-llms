@@ -51,11 +51,16 @@ All models are base (pretrained) checkpoints, measured at relative depth 0.5. Fi
 | Field map specific to math | yes (specificity check) | **no**: science topics are organized comparably (post-hoc matched test) | correlation |
 | Days/months circle (positive control) | yes | **full-space criterion failed**; post-hoc PC-plane cycle = 1.00 (days) and 1.00 (months) | correlation |
 | Ring/space chains ordered | yes | **supported**: Robinson p = 0.010 / 0.000; twin ≈ chance | correlation |
+| Chain order survives removing word frequency and token count | added (plan) | **yes in the 4 Qwen models, no in Gemma**: ring/space ρ = 0.94 / 0.81 in Qwen3.5-2B (p = 0.003 / 0.017); two twins also order the ring chain (word form) | correlation; cross-validated confound regression |
 | Angles form a circle | yes | **falsified**: line-like; ρ with the digit RDM = 0.84 | correlation |
 | Group-like axioms are consistent directions | yes | **supported for associativity and commutativity** (they survive Holm correction). Divisibility and identity are positive in all 5 models but significant only before correction (5/5 and 3/5 models). | correlation; paired control |
+| Axiom offsets are not a word-length artifact | added (plan) | **yes**: with the token-count direction removed, associativity, commutativity and divisibility stay significant in all 5 models, identity in 4 | correlation; distractor removal |
+| "Associative quasigroup" collapses onto "group" (a non-empty one is a group) | added (plan; exploratory) | **no** in any model: 2.8× farther from group than from quasigroup (Qwen3.5-2B) | correlation |
+| Partial-operation lattice (semigroupoid, small category, groupoid); identity transfer to lattice-like pairs | added (plan; exploratory) | **no evidence** in any model (2–3 pairs per axis: weak tests) | correlation |
 | Lie/topological/algebraic groups combine their parents (parallelograms) | yes (exploratory) | **supported** in all 5 models: cos = 0.40 (Qwen3.5-2B); twins ≈ 0 to weak | correlation; paired control |
 | Commutativity direction transfers from group-like to ring-like structures | yes (secondary) | **not established**: weak and partly lexical | correlation |
 | Concrete↔abstract is the top principal axis (H-A4) | yes (secondary) | **supported** (LLM-judge ratings): PC1 ρ = 0.49 vs twin 0.06 | correlation |
+| LLM-judge abstraction ratings agree with Mathlib definitional depth | added (plan; specified before computing) | **weakly supported**: ρ = 0.37, CI [0.07, 0.62], but only 39 of 655 concepts could be matched to Mathlib | correlation (external validity check) |
 | Pure↔applied is a main axis (H-A4) | yes (secondary) | **supported**: PC2 ρ = -0.41 | correlation |
 | Chain geometry is used causally | yes | **inconclusive**: ring chain below the accuracy gate; space chain shows a small, non-significant effect | intervention (noise injection) |
 | Field map visible in SAE features | exploratory | **weak**: SAE-code ρ = 0.15; field-selective features exist | correlation |
