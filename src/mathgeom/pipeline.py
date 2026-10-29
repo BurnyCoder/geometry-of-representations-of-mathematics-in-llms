@@ -273,6 +273,216 @@ def phase_lattice(cfg: Config) -> None:
     _save(cfg, "lattice.json", results)
 
 
+def phase_compare(cfg: Config) -> None:
+    """H-A3: paired concept-bootstrap contrast of field-map strength between two trained models
+    (e.g. Qwen2.5-Math-1.5B vs its base Qwen2.5-1.5B), each at its own pre-registered layer."""
+    from mathgeom.analyses.map_fields import field_rsa, paired_bootstrap
+
+    concepts = pd.read_csv(cfg.data_dir / "concepts.csv")
+    fd = json.loads((cfg.data_dir / "field_distance.json").read_text())
+    split = cfg.raw.get("analysis_split", "confirmatory")
+    mask = ((concepts.kind == "math") & concepts.primary & (concepts.split == split)).values
+    lab = concepts.field.values[mask]
+    names = [n for n in fd["names"] if n in set(lab)]
+    sel = [fd["names"].index(n) for n in names]
+    target = np.array(fd["distance"])[np.ix_(sel, sel)]
+    out = {}
+    for a, b in cfg.raw.get("comparisons", []):
+        reps = {}
+        for k in (a, b):
+            X = _load(cfg, k, "field_neutral")["last"]
+            reps[k] = X[mask, _primary_layer(X.shape[1], cfg.primary_rel_depth)]
+        boot = paired_bootstrap(reps, lab, names, target, cfg.n_boot, cfg.seed)
+        out[f"{a}_vs_{b}"] = {"rho": {k: field_rsa(v, lab, names, target) for k, v in reps.items()}, "boot": boot}
+        log.info("[compare] %s vs %s: rho %s; delta CI %s", a, b, out[f"{a}_vs_{b}"]["rho"], boot[f"delta_vs_{b}"]["ci"])
+    _save(cfg, "compare.json", out)
+
+
+def phase_sae(cfg: Config) -> None:
+    """Exploratory: field map and field-selective features in Qwen-Scope SAE codes (models with `sae:`)."""
+    from mathgeom.analyses.map_fields import field_rsa, loo_centroid_correct
+    from mathgeom.analyses.sae import encode, field_selectivity, load_sae
+
+    concepts = pd.read_csv(cfg.data_dir / "concepts.csv")
+    fd = json.loads((cfg.data_dir / "field_distance.json").read_text())
+    split = cfg.raw.get("analysis_split", "confirmatory")
+    out = {}
+    for m in [m for m in cfg.models if m.get("sae")]:
+        X = _load(cfg, m["key"], "field_neutral")["last"]
+        Lp = _primary_layer(X.shape[1], cfg.primary_rel_depth)
+        sae = load_sae(m["sae"]["repo"], Lp - 1)  # hidden_states[Lp] = output of block Lp-1
+        res = {"sae_repo": m["sae"]["repo"], "sae_block": Lp - 1, "k": m["sae"]["k"]}
+        for dom in ("math", "control"):
+            mask = ((concepts.kind == dom) & concepts.primary & (concepts.split == split)).values
+            lab = concepts.field.values[mask]
+            codes = encode(X[mask, Lp], sae, m["sae"]["k"])
+            r = {"loo_acc_sae": float(loo_centroid_correct(codes, lab).mean()), "selective": field_selectivity(codes, lab),
+                 "mean_active": float((codes > 0).sum(1).mean()), "n_features_used": int((codes > 0).any(0).sum())}
+            if dom == "math":
+                names = [n for n in fd["names"] if n in set(lab)]
+                sel = [fd["names"].index(n) for n in names]
+                r["rsa_sae"] = field_rsa(codes, lab, names, np.array(fd["distance"])[np.ix_(sel, sel)])
+                math_used = (codes > 0).any(0)
+            else:
+                ctrl_used = (codes > 0).any(0)
+            res[dom] = r
+        res["features_math_only"] = int((math_used & ~ctrl_used).sum())
+        res["features_control_only"] = int((ctrl_used & ~math_used).sum())
+        res["features_shared"] = int((math_used & ctrl_used).sum())
+        log.info("[sae %s] rsa_sae=%.3f loo_acc math=%.3f control=%.3f; math-only %d, shared %d, control-only %d features",
+                 m["key"], res["math"]["rsa_sae"], res["math"]["loo_acc_sae"], res["control"]["loo_acc_sae"], res["features_math_only"], res["features_shared"], res["features_control_only"])
+        out[m["key"]] = res
+    _save(cfg, "sae.json", out)
+
+
+def phase_judges(cfg: Config) -> None:
+    """Abstraction ratings for all math concepts from the judge panel → data/judge_ratings.csv."""
+    from scipy.stats import spearmanr
+
+    from mathgeom.data.judges import icc2, rate
+
+    if not cfg.raw.get("judges"):
+        log.info("judges: none configured, skipping")
+        return
+    concepts = pd.read_csv(cfg.data_dir / "concepts.csv")
+    math = concepts[concepts.kind == "math"].reset_index(drop=True)
+    path = cfg.data_dir / "judge_ratings.csv"
+    df = pd.read_csv(path) if path.exists() else math[["concept", "field"]].copy()
+    for jid in cfg.raw.get("judges", []):
+        if jid not in df:
+            df[jid] = rate(jid, df.concept.tolist())
+            df.to_csv(path, index=False)
+    J = df[cfg.raw["judges"]].values
+    pair = [spearmanr(J[:, a], J[:, b])[0] for a in range(J.shape[1]) for b in range(a + 1, J.shape[1])]
+    i1, ik = icc2(J)
+    res = {"judges": cfg.raw["judges"], "n": len(df), "mean_pairwise_spearman": float(np.mean(pair)), "pairwise_spearman": [float(x) for x in pair], "icc2_1": i1, "icc2_k": ik,
+           "field_mean_rating": df.assign(mean=J.mean(1)).groupby("field")["mean"].mean().round(3).to_dict()}
+    log.info("judges: mean pairwise rho=%.3f ICC(2,1)=%.3f ICC(2,k)=%.3f", res["mean_pairwise_spearman"], i1, ik)
+    _save(cfg, "judges.json", res)
+
+
+def phase_axes(cfg: Config) -> None:
+    """H-A4 (secondary): do the top PCs of math concepts align with pure/applied and judge abstraction?
+    Spearman of each PC score with the covariate after residualizing both on zipf & token count."""
+    from scipy.stats import spearmanr
+
+    concepts = pd.read_csv(cfg.data_dir / "concepts.csv")
+    ratings = pd.read_csv(cfg.data_dir / "judge_ratings.csv")
+    judges = [c for c in ratings.columns if "/" in c]  # judge columns are HF repo ids
+    abstr = ratings.set_index("concept")[judges].mean(1)
+    split = cfg.raw.get("analysis_split", "confirmatory")
+    mask = ((concepts.kind == "math") & concepts.primary & (concepts.split == split)).values
+    df = concepts[mask].reset_index(drop=True)
+    pa = (df.pa == "applied").astype(float).values
+    ab = df.concept.map(abstr).values
+    out = {}
+    for m in cfg.models:
+        for key in (m["key"], m["key"] + "__random"):
+            acts = _load(cfg, key, "field_neutral")
+            Lp = _primary_layer(acts["last"].shape[1], cfg.primary_rel_depth)
+            X = acts["last"][mask, Lp].astype(np.float64)
+            X = X - X.mean(0)
+            _, S, Vt = np.linalg.svd(X, full_matrices=False)
+            pcs = X @ Vt[:5].T
+            Z = np.c_[np.ones(len(df)), df.zipf.values, acts["n_tokens"][mask]]
+            res_ = lambda v: v - Z @ np.linalg.lstsq(Z, v, rcond=None)[0]  # noqa: E731
+            r = {"explained_var": (S[:5] ** 2 / (S**2).sum()).round(4).tolist(), "pcs": []}
+            for k in range(5):
+                pc = res_(pcs[:, k])
+                rp, pp = spearmanr(pc, res_(pa))
+                ra, pa_ = spearmanr(pc, res_(ab))
+                r["pcs"].append({"pc": k + 1, "rho_applied": float(rp), "p_applied": float(pp), "rho_abstraction": float(ra), "p_abstraction": float(pa_)})
+            # best single linear readout (5-fold CV ridge) of abstraction rating, for reference
+            from sklearn.linear_model import RidgeCV
+            from sklearn.model_selection import cross_val_predict
+
+            pred = cross_val_predict(RidgeCV(alphas=np.logspace(-1, 4, 12)), X, res_(ab), cv=5)
+            r["cv_ridge_rho_abstraction"] = float(spearmanr(pred, res_(ab))[0])
+            out[key] = r
+            log.info("[axes %s] PC1-5 rho(applied)=%s rho(abstraction)=%s cv-ridge rho=%.3f", key, [round(x["rho_applied"], 2) for x in r["pcs"]], [round(x["rho_abstraction"], 2) for x in r["pcs"]], r["cv_ridge_rho_abstraction"])
+    _save(cfg, "axes.json", out)
+
+
+def phase_causal(cfg: Config) -> None:
+    """H-B causal test on the ring and space chains (trained model only; gated on baseline accuracy)."""
+    import torch
+
+    from mathgeom.analyses.causal import chain_causal_test
+    from mathgeom.models.load import load_model
+
+    fams = load_yaml("families.yaml")
+    fam = json.loads((cfg.artifacts / "acts" / "family_index.json").read_text())
+    out = {}
+    for m in cfg.models:
+        acts = _load(cfg, m["key"], "family")["last"]
+        Lp = _primary_layer(acts.shape[1], cfg.primary_rel_depth)
+        model, tok = load_model(m["id"], device_map=m.get("device_map", "cuda"))
+        layers = model.model.layers if hasattr(model.model, "layers") else model.model.language_model.layers
+        res = {"layer": Lp}
+        for name in cfg.raw.get("causal_families", ["ring_chain", "space_chain"]):
+            f = fams["chains"][name]
+            idx = [i for i, (g, _, _) in enumerate(fam) if g == name]
+            res[name] = chain_causal_test(model, tok, layers[Lp - 1], f["items"], f["domain"], acts[idx, Lp].astype(np.float64), seed=cfg.seed)
+            log.info("[causal %s] %s: %s", m["key"], name, {k: v for k, v in res[name].items() if k != "scales"} | {"scales": {s: (round(v["acc_chain_subspace"], 3), round(v["acc_random_subspace_mean"], 3)) for s, v in res[name]["scales"].items()}})
+        out[m["key"]] = res
+        del model
+        torch.cuda.empty_cache()
+    _save(cfg, "causal.json", out)
+
+
+def phase_posthoc(cfg: Config) -> None:
+    """POST-HOC (docs/deviations.md): all-but-the-top removal-depth sweep and per-PC field variance (η²),
+    run after the pre-registered ABTT variant (k = d/100) reversed the field-map correlation."""
+    from mathgeom.analyses.map_fields import field_rsa
+    from mathgeom.geometry.preprocess import all_but_the_top, center
+
+    concepts = pd.read_csv(cfg.data_dir / "concepts.csv")
+    fd = json.loads((cfg.data_dir / "field_distance.json").read_text())
+    split = cfg.raw.get("analysis_split", "confirmatory")
+    mask = ((concepts.kind == "math") & concepts.primary & (concepts.split == split)).values
+    lab = concepts.field.values[mask]
+    names = [n for n in fd["names"] if n in set(lab)]
+    sel = [fd["names"].index(n) for n in names]
+    target = np.array(fd["distance"])[np.ix_(sel, sel)]
+    out = {}
+    for m in cfg.models:
+        for key in (m["key"], m["key"] + "__random"):
+            X = _load(cfg, key, "field_neutral")["last"]
+            Lp = _primary_layer(X.shape[1], cfg.primary_rel_depth)
+            X = X[mask, Lp].astype(np.float64)
+            Xc = center(X)
+            _, S, Vt = np.linalg.svd(Xc, full_matrices=False)
+            P = Xc @ Vt[:20].T
+            eta = [float(pd.Series(P[:, i]).groupby(lab).transform("mean").var() / P[:, i].var()) for i in range(20)]
+            out[key] = {"abtt_sweep": {str(k): field_rsa(all_but_the_top(X, k), lab, names, target) for k in (0, 1, 2, 3, 5, 10, 20, 40)},
+                        "explained_var_top5": (S[:5] ** 2 / (S**2).sum()).tolist(), "eta2_field_pc1_20": eta}
+            out[key]["abtt_sweep"]["0"] = field_rsa(X, lab, names, target)
+            log.info("[posthoc %s] abtt sweep %s", key, {k: round(v, 3) for k, v in out[key]["abtt_sweep"].items()})
+    # POST-HOC 2: cyclic order in the top-2-PC plane, every family, every layer (debug of the positive control)
+    from mathgeom.geometry.manifold import pc_plane_cycle_score
+
+    fams = load_yaml("families.yaml")
+    fam = json.loads((cfg.artifacts / "acts" / "family_index.json").read_text())
+    rng = np.random.default_rng(cfg.seed)
+    for m in cfg.models:
+        for key in (m["key"], m["key"] + "__random"):
+            acts = _load(cfg, key, "family")["last"]
+            cyc = {}
+            for name in fams["chains"]:
+                idx = [i for i, (f, _, _) in enumerate(fam) if f == name]
+                o = np.arange(len(idx))
+                per_layer = []
+                for l in range(1, acts.shape[1]):
+                    X = acts[idx, l].astype(np.float64)
+                    sc = pc_plane_cycle_score(X, o)
+                    null = np.array([pc_plane_cycle_score(X, rng.permutation(len(idx))) for _ in range(500)])
+                    per_layer.append({"layer": l, "score": sc, "p": float((1 + (null >= sc).sum()) / 501)})
+                cyc[name] = per_layer
+            out.setdefault(key, {})["pc_plane_cycle"] = cyc
+            log.info("[posthoc %s] PC-plane cycle score at primary layer: %s", key, {n: round(v[_primary_layer(acts.shape[1], cfg.primary_rel_depth) - 1]["score"], 2) for n, v in cyc.items()})
+    _save(cfg, "posthoc.json", out)
+
+
 def phase_calibration(cfg: Config) -> None:
     """Simulation study of RDM-test calibration (motivates the paired-contrast design)."""
     from mathgeom.analyses.calibration import run_calibration

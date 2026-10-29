@@ -18,6 +18,12 @@ PHASES = {
     "map": pipeline.phase_map,  # H-A1 field map → results/<cfg>/map_fields.json
     "shapes": pipeline.phase_shapes,  # H-B chains/circles → results/<cfg>/shapes.json
     "lattice": pipeline.phase_lattice,  # H-B2 axiom lattices → results/<cfg>/lattice.json
+    "judges": pipeline.phase_judges,  # H-A4 covariate: LLM-judge abstraction ratings → data/judge_ratings.csv
+    "axes": pipeline.phase_axes,  # H-A4: PCs vs pure/applied & abstraction → results/<cfg>/axes.json
+    "causal": pipeline.phase_causal,  # H-B causal: chain-subspace vs random-subspace noise → results/<cfg>/causal.json
+    "sae": pipeline.phase_sae,  # exploratory Qwen-Scope SAE check → results/<cfg>/sae.json
+    "posthoc": pipeline.phase_posthoc,  # POST-HOC: ABTT depth sweep + per-PC field variance → results/<cfg>/posthoc.json
+    "compare": pipeline.phase_compare,  # H-A3 paired model contrasts (config `comparisons`) → results/<cfg>/compare.json
 }
 
 

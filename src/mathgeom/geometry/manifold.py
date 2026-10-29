@@ -89,3 +89,20 @@ def permutation_null(
 def perm_p(observed: float, null: np.ndarray) -> float:
     """One-sided permutation p-value with the +1 correction (Phipson & Smyth 2010)."""
     return float((1 + (null >= observed).sum()) / (1 + len(null)))
+
+
+def pc_plane_cycle_score(X: np.ndarray, order: np.ndarray) -> float:
+    """POST-HOC: fraction of items whose angular successor in the top-2-PC plane is the true next
+    item (cyclically; best of the two directions). 1 = perfect cycle in the plane, as in the 2-D
+    projections of Engels et al. 2024 (arXiv:2405.14860); ≈ 1/(n-1)·2 for random arrangements."""
+    Xc = X - X.mean(0)
+    _, _, Vt = np.linalg.svd(Xc, full_matrices=False)
+    P = Xc @ Vt[:2].T
+    n = len(order)
+    pos = np.empty(n, dtype=int)
+    pos[order] = np.arange(n)  # pos[item] = index in the true cyclic order
+    ang_order = np.argsort(np.arctan2(P[:, 1], P[:, 0]))
+    succ = {ang_order[i]: ang_order[(i + 1) % n] for i in range(n)}
+    fwd = np.mean([pos[succ[i]] == (pos[i] + 1) % n for i in range(n)])
+    bwd = np.mean([pos[succ[i]] == (pos[i] - 1) % n for i in range(n)])
+    return float(max(fwd, bwd))
