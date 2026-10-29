@@ -114,3 +114,21 @@ analogy_control:  # positive control for offset consistency (gender offset in ev
   domain: "everyday language"
   pairs: [[man, woman], [king, queen], [boy, girl], [brother, sister], [father, mother], [uncle, aunt], [husband, wife], [son, daughter]]
   distractors: [table, river, music, doctor, garden, window, teacher, mountain]
+
+# Second plan audit (docs/deviations.md, 2026-10-29), exploratory. Kept as its own section and
+# appended last in pipeline.family_items, so the indices and activations of all earlier items are unchanged.
+extra:
+  domain: "abstract algebra"
+  partial_operation:  # plan H-B2 partial-operation variants; Wikipedia Magma_(algebra) group-like table (Total column)
+    axioms: [total, identity, divisible]  # all six are associative
+    items:
+      semigroupoid: [0, 0, 0]
+      small category: [0, 1, 0]
+      groupoid: [0, 1, 1]  # also an old name for "magma" (polysemous)
+      semigroup: [1, 0, 0]
+      monoid: [1, 1, 0]
+      group: [1, 1, 1]
+  lattice_transfer:  # plan H-B2 test 4, lattice-like held-out pairs for the identity direction
+    # https://en.wikipedia.org/wiki/Semilattice ("A bounded semilattice is an idempotent commutative monoid");
+    # https://en.wikipedia.org/wiki/Lattice_(order) (bounded lattice: top and bottom are identities of meet and join)
+    identity: [[semilattice, bounded semilattice], [lattice, bounded lattice]]

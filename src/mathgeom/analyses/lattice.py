@@ -70,6 +70,18 @@ def parent_rank(X: np.ndarray, obj: int, parents: list[int], pool: np.ndarray) -
     return [int(np.flatnonzero(order == p)[0]) + 1 for p in parents]
 
 
+def length_direction(X_all: np.ndarray, n_tokens: np.ndarray) -> np.ndarray:
+    """Unit direction of maximal covariance with token count across `X_all` (rows = items).
+
+    A one-direction analogue of the distractor removal of Li et al. 2024 (arXiv:2410.19750 §3), who
+    project out word-length-like directions with LDA; with 13 lattice items in d ≥ 1536 a fitted LDA
+    would be degenerate, so the direction is estimated on all family items instead.
+    """
+    Xc = X_all - X_all.mean(0)
+    w = Xc.T @ (n_tokens - n_tokens.mean())
+    return w / np.linalg.norm(w)
+
+
 def lattice_stats(X: np.ndarray, names: list[str], bits: np.ndarray, axioms: list[str], n_perm: int = 5000, seed: int = 0) -> dict:
     """All H-B2 statistics for one lattice at one (model, layer)."""
     Xc = center(X.astype(np.float64))

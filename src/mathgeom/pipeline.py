@@ -54,6 +54,10 @@ def family_items(fams: dict) -> list[tuple[str, str, str]]:
     out += [("transfer", c, tr["domain"]) for c in sorted({x for k in ("identity", "commutative") for pr in tr[k] for x in pr})]
     ac = fams["analogy_control"]
     out += [("analogy_control", c, ac["domain"]) for c in [x for pr in ac["pairs"] for x in pr] + ac["distractors"]]
+    ex = fams.get("extra")  # appended last so earlier item indices never move (see phase_extract)
+    if ex:
+        out += [("partial_operation", c, ex["domain"]) for c in ex["partial_operation"]["items"]]
+        out += [("lattice_transfer", c, ex["domain"]) for c in sorted({x for pr in ex["lattice_transfer"]["identity"] for x in pr})]
     return out
 
 
@@ -70,25 +74,39 @@ def phase_extract(cfg: Config) -> None:
     fam = family_items(fams)
     field_names = {f["id"]: f["id"].replace("_", " ") for k in ("math", "control") for f in load_yaml("fields.yaml")[k]}
     conds = cfg.raw.get("conditions", ["field_neutral", "family"])
+    idx_path = cfg.artifacts / "acts" / "family_index.json"
+    old_fam = [tuple(x) for x in json.loads(idx_path.read_text())] if idx_path.exists() else []
+
+    def n_missing(path, cond):  # family-type caches may lack items appended to families.yaml later
+        if not path.exists():
+            return None
+        if cond in ("field_neutral", "field_revealing"):
+            return 0
+        n = len(np.load(path)["n_tokens"])
+        assert [tuple(x) for x in fam[:n]] == old_fam[:n], "cached family items must be a prefix of family_items()"
+        return len(fam) - n
+
     for m in cfg.models:
         for rnd in ([False, True] if m.get("random_control", True) else [False]):
             key = m["key"] + ("__random" if rnd else "")
             odir = cfg.artifacts / "acts" / key
-            if all((odir / f"{c}.npz").exists() for c in conds):
+            if all(n_missing(odir / f"{c}.npz", c) == 0 for c in conds):
                 log.info("skip %s (cached)", key)
                 continue
             model, tok = load_model(m["id"], random_init=rnd, seed=cfg.seed, device_map=m.get("device_map", "cuda"))
             odir.mkdir(parents=True, exist_ok=True)
             for cond in conds:
-                if (odir / f"{cond}.npz").exists():
+                miss = n_missing(odir / f"{cond}.npz", cond)
+                if miss == 0:
                     continue
                 if cond in ("field_neutral", "field_revealing"):
                     items = [Item(r.concept, "mathematics" if r.kind == "math" else "science", field_names[r.field]) for r in concepts.itertuples()]
-                    tpl = TEMPLATE_SETS[cond]
-                else:  # family / no_domain
-                    items = [Item(c, d) for _, c, d in fam]
-                    tpl = TEMPLATE_SETS[cond]
-                arrs = extract(model, tok, items, tpl, tag=f"{key}/{cond}")
+                else:  # family / no_domain: only the items not yet cached (batch size 1 ⇒ identical to a full run)
+                    items = [Item(c, d) for _, c, d in (fam if miss is None else fam[-miss:])]
+                arrs = extract(model, tok, items, TEMPLATE_SETS[cond], tag=f"{key}/{cond}")
+                if miss:
+                    old = np.load(odir / f"{cond}.npz")
+                    arrs = {k: np.concatenate([old[k], v]) for k, v in arrs.items()}
                 np.savez(odir / f"{cond}.npz", **arrs)
                 log.info("saved %s/%s: %s", key, cond, {k: v.shape for k, v in arrs.items()})
             del model
@@ -228,6 +246,31 @@ def phase_shapes(cfg: Config) -> None:
     _save(cfg, "shapes.json", results)
 
 
+def phase_chainfreq(cfg: Config) -> None:
+    """Plan H-B frequency control (second audit, docs/deviations.md): is each line-type chain ordered
+    beyond wordfreq Zipf frequency and model token count? Cross-validated confound regression."""
+    from wordfreq import zipf_frequency
+
+    from mathgeom.analyses.shapes import order_beyond_covariates
+
+    fams = load_yaml("families.yaml")
+    fam = json.loads((cfg.artifacts / "acts" / "family_index.json").read_text())
+    results = {}
+    for m in cfg.models:
+        for key in (m["key"], m["key"] + "__random"):
+            raw = _load(cfg, key, "family")
+            Lp = _primary_layer(raw["last"].shape[1], cfg.primary_rel_depth)
+            results[key] = {}
+            for name, f in fams["chains"].items():
+                if f["expected"] != "line":
+                    continue
+                rows = [i for i, (fn, _, _) in enumerate(fam) if fn == name]
+                Z = np.c_[[zipf_frequency(fam[i][1], "en") for i in rows], raw["n_tokens"][rows]]
+                results[key][name] = order_beyond_covariates(raw["last"][rows, Lp], Z, seed=cfg.seed)
+            log.info("[chainfreq %s] %s", key, {k: (round(v["loo_order_beyond"], 3), round(v["p"], 4)) for k, v in results[key].items()})
+    _save(cfg, "chain_frequency.json", results)
+
+
 def _negative_control(cfg: Config, key: str, Lp: int, n_lists: int = 100) -> dict:
     """Shape stats on random 11-item 'chains' of math concepts: rejection rate must be ≈5%."""
     from mathgeom.analyses.shapes import family_stats
@@ -273,8 +316,43 @@ def phase_lattice(cfg: Config) -> None:
             pairs = [(2 * k, 2 * k + 1) for k in range(len(ac["pairs"]))]
             null = random_pair_null(Xa, np.arange(len(words)), len(pairs), seed=cfg.seed)
             res["analogy_control"] = {"consistency": offset_consistency(Xa, pairs), "null95": float(np.percentile(null, 95)), "king_queen_rank": analogy_rank(Xa, 0, 1, 2, 3, np.arange(len(words)))}
+            if "extra" in fams:  # second plan audit, exploratory (docs/deviations.md)
+                res["audit2"] = _lattice_audit2(cfg, fams, pos, key, Lp)
             results[key] = res
     _save(cfg, "lattice.json", results)
+
+
+def _lattice_audit2(cfg: Config, fams: dict, pos: dict, key: str, Lp: int) -> dict:
+    """Exploratory H-B2 plan items (second audit): flagged-item probes, pooled / length-projected
+    group-like offsets, and the partial-operation lattice. All at the primary layer."""
+    from mathgeom.analyses.lattice import lattice_stats, length_direction
+    from mathgeom.geometry.preprocess import center, euclid_rdm
+
+    acts = _load(cfg, key, "family")
+    g = fams["lattices"]["group_like"]
+    names = list(g["items"]) + list(g["flagged"])
+    rows = [pos[("group_like", c)] for c in names]
+    D = euclid_rdm(center(acts["last"][rows, Lp].astype(np.float64)))
+    d = lambda a, b: float(D[names.index(a), names.index(b)])  # noqa: E731
+    near = lambda a: [names[j] for j in np.argsort(D[names.index(a)]) if names[j] != a][:3]  # noqa: E731
+    out = {"associative_quasigroup": {"d_group": d("associative quasigroup", "group"), "d_quasigroup": d("associative quasigroup", "quasigroup"),
+                                      "ratio": d("associative quasigroup", "group") / d("associative quasigroup", "quasigroup"), "nearest": near("associative quasigroup")},
+           "inverse_semigroup": {"nearest": near("inverse semigroup")}}
+    gnames = list(g["items"])
+    gi = [pos[("group_like", c)] for c in gnames]
+    bits = np.array([g["items"][c] for c in gnames])
+    w = length_direction(acts["last"][:, Lp].astype(np.float64), acts["n_tokens"].astype(np.float64))
+    Xg = acts["last"][gi, Lp].astype(np.float64)
+    out["group_like_offsets"] = {
+        "pool": lattice_stats(acts["pool"][gi, Lp], gnames, bits, g["axioms"], seed=cfg.seed)["offsets"],
+        "length_projected": lattice_stats(Xg - np.outer(Xg @ w, w), gnames, bits, g["axioms"], seed=cfg.seed)["offsets"],
+    }
+    po = fams["extra"]["partial_operation"]
+    pn = list(po["items"])
+    out["partial_operation"] = lattice_stats(acts["last"][[pos[("partial_operation", c)] for c in pn], Lp], pn, np.array([po["items"][c] for c in pn]), po["axioms"], seed=cfg.seed)
+    log.info("[%s] audit2: AQ d(group)/d(quasigroup)=%.3f nearest=%s; inverse semigroup nearest=%s; partial-op offsets=%s", key, out["associative_quasigroup"]["ratio"],
+             out["associative_quasigroup"]["nearest"], out["inverse_semigroup"]["nearest"], {k: round(v["consistency"], 3) for k, v in out["partial_operation"]["offsets"].items()})
+    return out
 
 
 def phase_baselines(cfg: Config) -> None:
@@ -397,7 +475,8 @@ def phase_structures(cfg: Config) -> None:
     fams = load_yaml("families.yaml")
     fam = json.loads((cfg.artifacts / "acts" / "family_index.json").read_text())
     pos = {(f, c): i for i, (f, c, _) in enumerate(fam)}
-    pool = np.array([i for i, (f, _, _) in enumerate(fam) if f not in ("analogy_control", "number_words_3_12", "number_words_0_10", "digits_0_330")])
+    # pool of the first analysis; items appended by the second audit stay out so earlier nulls/ranks are unchanged
+    pool = np.array([i for i, (f, _, _) in enumerate(fam) if f not in ("analogy_control", "number_words_3_12", "number_words_0_10", "digits_0_330", "partial_operation", "lattice_transfer")])
     lat = fams["lattices"]["group_like"]
     gl = list(lat["items"])
     bits = np.array([lat["items"][c] for c in gl])
@@ -414,6 +493,9 @@ def phase_structures(cfg: Config) -> None:
                 train = axiom_pairs(bits, lat["axioms"].index(axis_name))
                 test = [(pos[("transfer", a)], pos[("transfer", b)]) for a, b in tr[axis_name]]
                 res["transfer"][axis_name] = transfer_test(Xg, train, X, test, pool, seed=cfg.seed)
+            if "extra" in fams:  # second audit (exploratory): identity direction → lattice-like held-out pairs
+                test = [(pos[("lattice_transfer", a)], pos[("lattice_transfer", b)]) for a, b in fams["extra"]["lattice_transfer"]["identity"]]
+                res["transfer"]["identity_lattice"] = transfer_test(Xg, axiom_pairs(bits, lat["axioms"].index("identity")), X, test, pool, seed=cfg.seed)
             quads = [tuple(pos[("group_objects", c)] for c in q) for q in go["parallelograms"]]
             res["group_objects"]["parallelograms"] = parallelogram_test(X, quads, pool, seed=cfg.seed)
             res["group_objects"]["parent_ranks"] = {o: parent_rank(X, pos[("group_objects", o)], [pos[("group_objects", p)] for p in ps], pool)
@@ -513,6 +595,56 @@ def phase_judges(cfg: Config) -> None:
            "field_mean_rating": df.assign(mean=J.mean(1)).groupby("field")["mean"].mean().round(3).to_dict()}
     log.info("judges: mean pairwise rho=%.3f ICC(2,1)=%.3f ICC(2,k)=%.3f", res["mean_pairwise_spearman"], i1, ik)
     _save(cfg, "judges.json", res)
+
+
+def phase_mathlib(cfg: Config) -> None:
+    """H-A4 judge validation (plan; pre-specified in docs/deviations.md, second audit): Spearman ρ of the
+    mean judge abstraction rating with Mathlib import depth, plus Mathlib coverage per field."""
+    import subprocess
+
+    from scipy.stats import spearmanr
+
+    from mathgeom.data.mathlib_depth import declarations, import_depth, match_concepts, module_imports
+
+    rev = cfg.raw.get("mathlib_rev")
+    if not rev:
+        log.info("mathlib: no mathlib_rev configured, skipping")
+        return
+    root = cfg.artifacts / "mathlib4"
+    git = lambda *a: subprocess.run(["git", "-C", str(root), *a], check=True, capture_output=True, text=True).stdout.strip()  # noqa: E731
+    if not root.exists():  # sparse, blob-less clone: only Mathlib/ sources and docs/ name maps (~120 MB)
+        subprocess.run(["git", "clone", "--filter=blob:none", "--sparse", "--no-checkout", "https://github.com/leanprover-community/mathlib4", str(root)], check=True)
+        git("sparse-checkout", "set", "Mathlib", "docs")
+    if git("rev-parse", "HEAD") != rev:
+        git("fetch", "--depth", "1", "origin", rev)
+        git("checkout", "--detach", rev)
+    depth = import_depth(module_imports(root))
+    concepts = pd.read_csv(cfg.data_dir / "concepts.csv")
+    ratings = pd.read_csv(cfg.data_dir / "judge_ratings.csv")
+    judges = [c for c in ratings.columns if "/" in c]
+    df = concepts[concepts.kind == "math"].merge(ratings[["concept", "field", *judges]], on=["concept", "field"]).reset_index(drop=True)
+    match = match_concepts(df.concept.tolist(), [root / "docs" / "overview.yaml", root / "docs" / "undergrad.yaml"], declarations(root))
+    for k in ("decl", "module", "source"):
+        df[k] = df.concept.map(lambda c, k=k: match.get(c, {}).get(k))
+    df["depth"] = df.module.map(depth)
+    df["mean_rating"] = df[judges].mean(1)
+    df[["concept", "field", "primary", "split", "decl", "module", "source", "depth", "mean_rating"]].to_csv(cfg.data_dir / "mathlib_depth.csv", index=False)
+    m = df.dropna(subset=["depth"]).reset_index(drop=True)
+    rho = lambda a, b: float(spearmanr(a, b)[0])  # noqa: E731
+    rng = np.random.default_rng(cfg.seed)
+    boot = [rho(m.mean_rating.values[i], m.depth.values[i]) for i in (rng.integers(0, len(m), len(m)) for _ in range(cfg.raw.get("n_boot", 2000)))]
+    Z = np.c_[np.ones(len(m)), m.zipf.values]
+    res_ = lambda v: v - Z @ np.linalg.lstsq(Z, v, rcond=None)[0]  # noqa: E731
+    out = {"mathlib_rev": rev, "n_modules": len(depth), "n_math_concepts": len(df), "n_matched": len(m),
+           "n_by_source": m.source.value_counts().to_dict(), "depth_median": float(m.depth.median()),
+           "coverage_by_field": df.assign(hit=df.depth.notna()).groupby("field")["hit"].mean().round(3).to_dict(),
+           "rho_mean_rating_depth": rho(m.mean_rating, m.depth), "p": float(spearmanr(m.mean_rating, m.depth)[1]),
+           "ci95": [float(np.nanpercentile(boot, 2.5)), float(np.nanpercentile(boot, 97.5))],
+           "rho_per_judge": {j: rho(m[j], m.depth) for j in judges},
+           "rho_partial_zipf": rho(res_(m.mean_rating.values), res_(m.depth.values.astype(float)))}
+    log.info("mathlib: %d/%d concepts matched (%s); rho(rating, depth)=%.3f CI [%.3f, %.3f]", out["n_matched"], out["n_math_concepts"], out["n_by_source"],
+             out["rho_mean_rating_depth"], *out["ci95"])
+    _save(cfg, "mathlib.json", out)
 
 
 def phase_axes(cfg: Config) -> None:

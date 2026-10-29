@@ -11,6 +11,8 @@ underlying number code (Kantamneni & Tegmark 2025, arXiv:2502.00873).
 from __future__ import annotations
 
 import numpy as np
+from scipy.stats import spearmanr
+from sklearn.linear_model import Ridge
 
 from mathgeom.geometry.manifold import (
     closure_ratio,
@@ -55,6 +57,40 @@ def family_stats(X: np.ndarray, n_perm: int = 2000, seed: int = 0) -> dict:
     return out
 
 
+def order_beyond_covariates(X: np.ndarray, Z: np.ndarray, n_perm: int = 300, seed: int = 0) -> dict:
+    """Plan H-B frequency control: is the chain order recoverable beyond per-item covariates Z
+    (log-frequency, token count)?
+
+    Cross-validated confound regression (Snoek, Miletić & Scholte 2019, NeuroImage 184:741,
+    doi:10.1016/j.neuroimage.2018.09.074): in each leave-one-out fold, the representation and the ranks
+    are regressed on [1, Z] using the training items only, and the held-out item is residualized with
+    those coefficients; a ridge fit on the training residuals predicts the held-out residual rank. The
+    statistic is the Spearman ρ of held-out predictions with held-out residual ranks, against an
+    order-permutation null. Residualizing on all items at once leaks the held-out item into the
+    training span and made the statistic ≈ 1 for any order in the random-init twin (docs/deviations.md).
+    Simulation: 5% / 2.5% rejections under a frequency-only and a large-scale-noise null; 100% power
+    when X encodes the order, also when Z is a noisy copy of the order.
+    """
+    X = center(X.astype(np.float64))
+    n = len(X)
+    Z1 = np.c_[np.ones(n), Z]
+
+    def stat(p):  # p = order of items; rank[item] = position
+        rank = np.empty(n)
+        rank[p] = np.arange(n)
+        pred, true = np.empty(n), np.empty(n)
+        for i in range(n):
+            tr = np.arange(n) != i
+            R = np.c_[X, rank] - Z1 @ np.linalg.lstsq(Z1[tr], np.c_[X[tr], rank[tr]], rcond=None)[0]  # fold-wise confound fit
+            pred[i], true[i] = Ridge(alpha=10.0).fit(R[tr, :-1], R[tr, -1]).predict(R[i : i + 1, :-1])[0], R[i, -1]
+        return float(spearmanr(pred, true)[0])
+
+    obs = stat(np.arange(n))
+    null = permutation_null(stat, n, n_perm=n_perm, seed=seed)
+    return {"loo_order_beyond": obs, "p": perm_p(obs, null), "null95": float(np.percentile(null, 95)),
+            "rho_rank_covariates": [float(spearmanr(np.arange(n), Z[:, k])[0]) for k in range(Z.shape[1])]}
+
+
 def residual_beyond_reference(X_fam: np.ndarray, X_ref: np.ndarray, kind: str, n_perm: int = 5000, seed: int = 0) -> dict:
     """Does the family RDM fit its predicted template beyond the reference (number) RDM?
 
@@ -66,6 +102,4 @@ def residual_beyond_reference(X_fam: np.ndarray, X_ref: np.ndarray, kind: str, n
     D_f = euclid_rdm(X_fam)
     D_r = euclid_rdm(X_ref)
     res = rdm_regression(D_f, {"template": template_rdm(n, kind), "reference": D_r}, "template", n_perm=n_perm, seed=seed)
-    from scipy.stats import spearmanr
-
     return {"beta_template": res.beta, "p": res.p, "beta_reference": res.betas["reference"], "rho_fam_ref": float(spearmanr(upper(D_f), upper(D_r))[0])}

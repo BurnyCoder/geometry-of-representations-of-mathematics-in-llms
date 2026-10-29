@@ -1,0 +1,42 @@
+{
+ "mathlib_rev": "4bc4670bf916c8dc2ede840e3ead86301e52a40d",
+ "n_modules": 8672,
+ "n_math_concepts": 655,
+ "n_matched": 39,
+ "n_by_source": {
+  "mathlib_yaml": 22,
+  "camelcase": 17
+ },
+ "depth_median": 72.0,
+ "coverage_by_field": {
+  "algebraic_geometry": 0.025,
+  "algebraic_topology": 0.025,
+  "category_theory": 0.075,
+  "commutative_algebra": 0.075,
+  "differential_geometry": 0.0,
+  "functional_analysis": 0.0,
+  "game_theory": 0.038,
+  "general_topology": 0.1,
+  "graph_theory": 0.0,
+  "group_theory": 0.139,
+  "lie_representation_theory": 0.051,
+  "number_theory": 0.05,
+  "numerical_analysis": 0.0,
+  "probability_statistics": 0.025,
+  "real_complex_analysis": 0.15,
+  "ring_module_theory": 0.25,
+  "set_theory_logic": 0.0
+ },
+ "rho_mean_rating_depth": 0.372841920131803,
+ "p": 0.01940623049147198,
+ "ci95": [
+  0.07111392494624527,
+  0.6164913672605957
+ ],
+ "rho_per_judge": {
+  "ibm-granite/granite-4.0-micro": 0.28434006293593234,
+  "HuggingFaceTB/SmolLM3-3B": 0.0513391780300989,
+  "microsoft/Phi-4-mini-instruct": 0.5380993926073876
+ },
+ "rho_partial_zipf": 0.3115542288518577
+}

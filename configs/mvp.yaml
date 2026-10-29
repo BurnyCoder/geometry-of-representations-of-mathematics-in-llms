@@ -10,6 +10,7 @@ judges:  # H-A4 abstraction raters from families we do not probe (newest ungated
   - ibm-granite/granite-4.0-micro
   - HuggingFaceTB/SmolLM3-3B
   - microsoft/Phi-4-mini-instruct
+mathlib_rev: 4bc4670bf916c8dc2ede840e3ead86301e52a40d  # leanprover-community/mathlib4 master, 2026-10-29 (judge validation)
 analysis_split: confirmatory  # "pilot" is only used for debugging before the prereg tag
 n_perm: 10000
 n_boot: 2000

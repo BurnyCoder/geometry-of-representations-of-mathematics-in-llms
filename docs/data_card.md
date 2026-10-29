@@ -21,6 +21,7 @@ These are the data behind [github.com/BurnyCoder/geometry-of-representations-of-
 | `field_distance.json` | Field × field Ochiai distance from arXiv cross-listing, with the dataset commit and per-field paper counts | `librarian-bots/arxiv-metadata-snapshot`, CC0 |
 | `families.yaml` | Chains, angles, n-gons, and axiom lattices with ground-truth bits; each entry cites its source | Wikipedia / nLab definitions |
 | `judge_ratings.csv` | 1–7 abstraction ratings from three judge LLMs, each the expectation over digit probabilities | Model outputs |
+| `mathlib_depth.csv` | Per math concept: matched Mathlib declaration and module (if any), match source (curated YAML or CamelCase), module import depth, mean judge rating | [Mathlib4](https://github.com/leanprover-community/mathlib4) at the commit in `configs/mvp.yaml`, Apache-2.0 |
 | `acts/<model>/<condition>.npz` | float16 arrays of shape `[items × (layers+1) × d_model]`. Keys: <ul><li>`last`: concept's last token, averaged over 8 templates</li><li>`last_a` / `last_b`: averages over the two template halves</li><li>`pool`: mean over the concept's tokens</li><li>`n_tokens`</li></ul> | Computed |
 | `logs/*_prompts.jsonl` | Every prompt sent to every model, with its greedy next token, or the judge's digit distribution | Computed |
 

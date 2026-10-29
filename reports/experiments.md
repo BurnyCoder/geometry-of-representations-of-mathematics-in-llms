@@ -149,7 +149,34 @@ Asked to double-check completeness, we compared every commitment in the approved
 - Qwen3.5-4B in 8-bit: its random-init twin does not fit.
 - OctoThinker: optional.
 - Ripser: no family has ≥30 points.
-- Mathlib validation of the judges.
+- Mathlib validation of the judges. *(Run in E7.)*
+
+## E7: Second plan audit
+
+A second line-by-line pass over the approved plan found six items still missing or partial. Each analysis was specified in `docs/deviations.md` before it was computed.
+
+**Mathlib validation of the judges (H-A4).** This was the user's chosen abstraction ground truth ("Judges + Mathlib") and had not been run.
+- *Method.* Mathlib4 was cloned sparsely (sources and `docs/` only) at a pinned commit. Each concept was matched to a Lean declaration, first through Mathlib's curated English-name maps (`docs/overview.yaml`, `docs/undergrad.yaml`), then through exact CamelCase names for multi-word concepts. Depth is the defining module's longest import chain, computed with the standard library's `graphlib.TopologicalSorter`.
+- *Why module depth.* Declaration-level dependency depth needs a compiled Mathlib, which takes hours. Import depth needs only the sources.
+- *What we learned.* Coverage is low: glossary vocabulary ("point of closure", "completely regular") rarely matches Mathlib names, and single words ("kernel", "ideal") are too ambiguous to match by name, so they were excluded by design. Every match was inspected by hand; all name the intended concept, and one ("inductive limit") points to Mathlib's metric-space construction.
+
+**Chain frequency control (plan H-B).** The plan required partialling log-frequency and token count from the chain-order test; the preregistration had dropped it without a logged deviation.
+- *Issue.* The first specification residualized the LOO predictions and the ranks on the covariates and kept the usual order-permutation null. Before touching real data, a simulation in which the representation encodes *only* a frequency that tracks the order rejected 42% of the time at α = .05. Permuting the order breaks the order–frequency link that this null hypothesis keeps, so the null distribution was the wrong one.
+- *First fix.* Residualize the representation as well as the ranks, then predict the residual order from the residual representation. The same simulation gave 2.5% rejections under the frequency-only null and 92.5% power even when frequency is a noisy copy of the order.
+- *Second issue, found on real data.* In the random-init twin, the first fix scored ρ = 1.0 for the true order and for every permuted one: a degenerate statistic. The residualization had used all 11 items. Residuals sum to zero, so each held-out residual is an exact linear combination of the training residuals, for both the representation and the target. The twin's large-scale activations make ridge regularization negligible, so LOO "predicted" any order. This is data leakage across the cross-validation split.
+- *Final fix.* Cross-validated confound regression ([Snoek, Miletić & Scholte 2019](https://doi.org/10.1016/j.neuroimage.2018.09.074)): fit the covariate regression on each fold's training items only and apply it to the held-out item. Simulation: 5% / 2.5% rejections under the frequency-only and large-scale-noise nulls, and 100% power. A regression test now covers the large-scale-noise case. Because this change came after seeing the confirmatory output, it is logged as post-hoc, and the leaky version's numbers are kept in `docs/deviations.md`.
+- *Lessons.* A permutation null is valid only if it is exchangeable under the specific null hypothesis being tested. Any preprocessing fitted on data, including confound regression, belongs inside the cross-validation fold. Check a new statistic on the random-init twin's regime (large, structureless activations), not only on unit-scale synthetic data.
+
+**Lattice items from the plan that had been extracted or planned but never analysed:**
+- associative quasigroup, the semantic-collapse probe (a non-empty one is a group);
+- inverse semigroup;
+- the partial-operation lattice (semigroupoid, small category, groupoid);
+- lattice-like held-out pairs for the identity-direction transfer;
+- offsets on mean-pooled tokens, and with the token-count direction removed (a one-direction analogue of Li et al.'s LDA distractor removal).
+
+The new items were appended after the existing ones. Extraction runs at batch size 1, so every earlier activation and every earlier result is unchanged. We verified this in two ways:
+- items extracted twice ("semigroup", "monoid", "group", appearing in both the group-like and partial-operation lattices) have bit-identical activations;
+- diffing every results file before and after the rerun showed no changed value, only added keys.
 
 ## Tooling learnings (continued)
 

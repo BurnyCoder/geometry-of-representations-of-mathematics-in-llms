@@ -192,6 +192,14 @@ This statistic is post-hoc. We conclude that the pipeline works, and that the fu
 
 {{table:negative_control:mvp}}
 
+**Frequency control (plan; added in the second audit).** Could the chain order just be a frequency or word-length order? We removed wordfreq Zipf frequency and model token count from both the representation and the ranks, fitting that regression inside each leave-one-out fold to avoid leakage ([Snoek et al., 2019](https://doi.org/10.1016/j.neuroimage.2018.09.074)), then predicted the residual order.
+- *Result.* Both preregistered chains stay ordered: ring chain ρ = {{num:mvp.chain_frequency.qwen3.5-2b.ring_chain.loo_order_beyond:.2f}} (p = {{num:mvp.chain_frequency.qwen3.5-2b.ring_chain.p:.3f}}), space chain ρ = {{num:mvp.chain_frequency.qwen3.5-2b.space_chain.loo_order_beyond:.2f}} (p = {{num:mvp.chain_frequency.qwen3.5-2b.space_chain.p:.3f}}). The twin gives {{num:mvp.chain_frequency.qwen3.5-2b__random.ring_chain.loo_order_beyond:.2f}} and {{num:mvp.chain_frequency.qwen3.5-2b__random.space_chain.loo_order_beyond:.2f}}.
+- *Replication (Appendix A).* Both chains stay ordered in all four Qwen models (p ≤ {{num:robustness.chain_frequency.qwen2.5-1.5b.ring_chain.p:.3f}}), but not in Gemma-4-E2B (ring p = {{num:gemma.chain_frequency.gemma-4-e2b.ring_chain.p:.2f}}, space p = {{num:gemma.chain_frequency.gemma-4-e2b.space_chain.p:.3f}}).
+- *Word form carries part of the ring-chain order.* Some twins also order the ring chain beyond frequency: Qwen2.5-1.5B's twin (p = {{num:robustness.chain_frequency.qwen2.5-1.5b__random.ring_chain.p:.3f}}) and Gemma's twin (p = {{num:gemma.chain_frequency.gemma-4-e2b__random.ring_chain.p:.3f}}). A plausible lexical cue is that the middle items all end in "domain". The space chain's twins are weaker: none reaches p < .05, though the two Qwen2.5 twins come close (p = {{num:robustness.chain_frequency.qwen2.5-1.5b__random.space_chain.p:.3f}}).
+- *Caveat.* The fold-wise version was adopted post-hoc. A first, whole-sample version leaked the held-out item into the training span and was degenerate in the twin. Both versions are reported in `docs/deviations.md`.
+
+{{table:chain_frequency:mvp}}
+
 **Angles: preregistered prediction falsified.** Angles are not circular: closure ratio {{num:mvp.shapes.qwen3.5-2b.angles.closure:.2f}} and no cycle in the PC plane. Their geometry closely matches that of the bare digits 0–330 (ρ = {{num:mvp.shapes.qwen3.5-2b.angles.beyond_reference.rho_fam_ref:.2f}}). At this scale, "330 degrees" sits next to "300 degrees", not next to "0 degrees".
 
 {{table:beyond_reference:mvp}}
@@ -256,6 +264,18 @@ In this model's random-init twin, all four consistencies are ≈ 0.
 - Some Qwen twins show similar values. "Commutative ring" literally contains the token "commutative", so we consider transfer not established.
 - Identity transfer, from the single pair rng → ring, is null.
 
+**Further lattice items from the plan (exploratory; second audit).**
+
+{{table:lattice_probes:mvp}}
+
+{{table:lattice_variants:mvp}}
+
+- *No semantic collapse.* A non-empty associative quasigroup is a group, but the model does not place it there. It is {{num:mvp.lattice.qwen3.5-2b.audit2.associative_quasigroup.ratio:.1f}}× farther from "group" than from "quasigroup" (twin {{num:mvp.lattice.qwen3.5-2b__random.audit2.associative_quasigroup.ratio:.1f}}×), and its nearest neighbours are quasigroup-like. The representation follows the name's parts, not this theorem.
+- *Inverse semigroup* sits next to semigroup, commutative semigroup and monoid in the trained model, which is sensible.
+- *Not a length artifact.* Removing the token-count direction (fitted on all family items) leaves the group-like offsets intact: commutativity {{num:mvp.lattice.qwen3.5-2b.audit2.group_like_offsets.length_projected.commutative.consistency:.2f}} (p = {{num:mvp.lattice.qwen3.5-2b.audit2.group_like_offsets.length_projected.commutative.p:.4f}}), associativity {{num:mvp.lattice.qwen3.5-2b.audit2.group_like_offsets.length_projected.associative.consistency:.2f}} (p = {{num:mvp.lattice.qwen3.5-2b.audit2.group_like_offsets.length_projected.associative.p:.4f}}). Across the five models (Appendix A), associativity, commutativity and divisibility stay significant in all five after this projection, and identity in four. Mean-pooling the concept's tokens gives a similar pattern, with divisibility no longer significant (table above). This is a one-direction analogue of the LDA distractor removal of [Li et al. (2024)](https://arxiv.org/abs/2410.19750).
+- *Partial-operation lattice: no evidence.* The "total operation" offset (semigroupoid → semigroup, small category → monoid, groupoid → group) is {{num:mvp.lattice.qwen3.5-2b.audit2.partial_operation.offsets.total.consistency:.2f}}, below its null's 95th percentile ({{num:mvp.lattice.qwen3.5-2b.audit2.partial_operation.offsets.total.null95:.2f}}). With 6 items and 2–3 pairs per axis, the test is weak.
+- *Identity transfer to lattice-like pairs* (semilattice → bounded semilattice, lattice → bounded lattice) is null too: cos = {{num:mvp.structures.qwen3.5-2b.transfer.identity_lattice.cos:.2f}}, p = {{num:mvp.structures.qwen3.5-2b.transfer.identity_lattice.p:.2f}}.
+
 **Template variants (exploratory; Qwen3.5-2B).** We reran every analysis with two other template sets.
 
 *Field-revealing concept templates* name the field, e.g. "In group theory, the notion of X":
@@ -279,6 +299,14 @@ Full tables: `reports/mvp_variants_results.md`.
 - Rank agreement is moderate (mean pairwise Spearman {{num:mvp.judges.mean_pairwise_spearman:.2f}}).
 - Absolute agreement is low (ICC(2,1) = {{num:mvp.judges.icc2_1:.2f}}; ICC(2,k) = {{num:mvp.judges.icc2_k:.2f}}), because the judges use the scale with different offsets.
 - The ratings have face validity. The least abstract concepts include "trivial group", "bar chart" and "dot plot"; the most abstract include étale cohomology, Artin stacks and generalized cohomology theories.
+
+**Validation against Mathlib (plan; specified before computing, `docs/deviations.md`).** As an external, non-LLM measure, we matched concepts to declarations in [Mathlib4](https://github.com/leanprover-community/mathlib4) (commit `{{num:mvp.mathlib.mathlib_rev}}`).
+- *Matching.* First through Mathlib's curated English-name maps (`docs/overview.yaml`, `docs/undergrad.yaml`), then through exact CamelCase names for multi-word concepts ("compact space" → `CompactSpace`).
+- *Depth.* The longest chain of Mathlib imports below the defining module ({{num:mvp.mathlib.n_modules}} modules).
+- *Result.* The mean judge rating correlates with depth: ρ = {{num:mvp.mathlib.rho_mean_rating_depth:.2f}}, 95% CI [{{num:mvp.mathlib.ci95.0:.2f}}, {{num:mvp.mathlib.ci95.1:.2f}}], meeting the pre-specified criterion.
+- *Caveat.* Only {{num:mvp.mathlib.n_matched}} of {{num:mvp.mathlib.n_math_concepts}} concepts could be matched, and coverage is uneven across fields (table below). The judges also differ: Phi-4-mini's ratings track depth (ρ = {{num:mvp.mathlib.rho_per_judge.microsoft/Phi-4-mini-instruct:.2f}}), SmolLM3's barely (ρ = {{num:mvp.mathlib.rho_per_judge.HuggingFaceTB/SmolLM3-3B:.2f}}).
+
+{{table:mathlib:mvp}}
 
 **Axes.** We first residualized on word frequency and token count. The top principal component of the math-concept cloud then correlates with abstraction (ρ = {{num:mvp.axes.qwen3.5-2b.pcs.0.rho_abstraction:.2f}}), and the second with the pure/applied label (ρ = {{num:mvp.axes.qwen3.5-2b.pcs.1.rho_applied:.2f}}). In the twin these correlations are {{num:mvp.axes.qwen3.5-2b__random.pcs.0.rho_abstraction:.2f}} and {{num:mvp.axes.qwen3.5-2b__random.pcs.1.rho_applied:.2f}}. A 5-fold cross-validated linear readout predicts abstraction with ρ = {{num:mvp.axes.qwen3.5-2b.cv_ridge_rho_abstraction:.2f}}, against {{num:mvp.axes.qwen3.5-2b__random.cv_ridge_rho_abstraction:.2f}} in the twin. We also partialled out pretraining-scale frequency: infini-gram counts in Dolma v1.7, which correlate ρ = {{num:mvp.baselines.infinigram.rho_zipf_vs_log_count:.2f}} with wordfreq. The axes are essentially unchanged: PC1 ↔ abstraction ρ = {{num:mvp.axes.qwen3.5-2b.pcs_with_infinigram.0.rho_abstraction:.2f}}, PC2 ↔ applied ρ = {{num:mvp.axes.qwen3.5-2b.pcs_with_infinigram.1.rho_applied:.2f}}.
 
@@ -305,7 +333,7 @@ At block {{num:mvp.sae.qwen3.5-2b.sae_block}}, we encoded the template-averaged 
 
 **What the geometry is.** Relatedness between fields is encoded at the level of field centroids, in the dominant principal components, from the first few layers onward. It is equally strong in models with very different pretraining mixtures. Combined with the null effect of math continued pretraining, this suggests the map is learned from general co-occurrence statistics, as [Karkada et al. (2026)](https://arxiv.org/abs/2602.15029) predict. It does not seem to require math-specific training. The control fields cluster about as strongly once the number of fields is matched. That supports this reading: the "map of mathematics" is one instance of a general topical map.
 
-**Axioms as directions.** Axioms of group-like structures behave like the man→woman offset. Whether the model uses these directions in reasoning, for example to decide that a monoid with inverses is a group, needs causal tests; see §6 and the causal results.
+**Axioms as directions.** Axioms of group-like structures behave like the man→woman offset. The geometry follows definitions stated in the names, not consequences that must be derived: "associative quasigroup" stays with the quasigroups, although a non-empty one is a group. Whether the model uses these directions in reasoning, for example to decide that a monoid with inverses is a group, needs causal tests; see §6 and the causal results.
 
 **Angles.** "330 degrees" is not near "0 degrees". This mirrors the finding of [Kantamneni & Tegmark (2025)](https://arxiv.org/abs/2502.00873) that numbers lie on a helix whose dominant axis is linear. A model this size appears to encode degrees by their numerals rather than by their angular meaning.
 
@@ -318,8 +346,8 @@ At block {{num:mvp.sae.qwen3.5-2b.sae_block}}, we encoded the template-averaged 
 - **Positive control.** It passed only under a post-hoc statistic.
 - **Family size.** Families are small (n = 7–13), so shape claims rest on permutation tests with limited resolution.
 - **Correlation, not mechanism.** All tests except §4.5 are correlational.
-- **Not run.** Four planned items were not run; reasons are in `docs/deviations.md`:
-  - the Mathlib-depth validation of judge ratings;
+- **Abstraction ground truth.** Abstraction ratings come from LLM judges. Their validation against Mathlib import depth rests on only {{num:mvp.mathlib.n_matched}} of {{num:mvp.mathlib.n_math_concepts}} concepts that could be matched to Mathlib, and import depth also differs systematically between areas of Mathlib.
+- **Not run.** Three planned items were not run; reasons are in `docs/deviations.md`:
   - Qwen3.5-4B in 8-bit, whose random-init twin cannot be held in 8 GB;
   - the optional OctoThinker pair;
   - persistent homology, since no family has ≥30 points.
@@ -343,6 +371,12 @@ See the inline links. Code, data, preregistration and every number: <https://git
 
 {{table:cycles:robustness}}
 
+{{table:chain_frequency:robustness}}
+
+{{table:lattice_probes:robustness}}
+
+{{table:lattice_variants:robustness}}
+
 **Gemma-4-E2B** with its twin:
 
 {{table:shapes:gemma}}
@@ -350,6 +384,12 @@ See the inline links. Code, data, preregistration and every number: <https://git
 {{table:lattice:gemma}}
 
 {{table:cycles:gemma}}
+
+{{table:chain_frequency:gemma}}
+
+{{table:lattice_probes:gemma}}
+
+{{table:lattice_variants:gemma}}
 
 Matched 4-field clustering in Gemma-4-E2B:
 - math subsets: mean {{num:gemma.posthoc.gemma-4-e2b.matched_clustering.math_subsets_mean:.3f}};

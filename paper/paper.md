@@ -259,6 +259,21 @@ This statistic is post-hoc. We conclude that the pipeline works, and that the fu
 | qwen3.5-2b | 0.04 | 0.04 | 0.04 | 100 |
 | qwen3.5-2b__random | 0.04 | 0.04 | 0.05 | 100 |
 
+**Frequency control (plan; added in the second audit).** Could the chain order just be a frequency or word-length order? We removed wordfreq Zipf frequency and model token count from both the representation and the ranks, fitting that regression inside each leave-one-out fold to avoid leakage ([Snoek et al., 2019](https://doi.org/10.1016/j.neuroimage.2018.09.074)), then predicted the residual order.
+- *Result.* Both preregistered chains stay ordered: ring chain ρ = 0.94 (p = 0.003), space chain ρ = 0.81 (p = 0.017). The twin gives 0.13 and -0.04.
+- *Replication (Appendix A).* Both chains stay ordered in all four Qwen models (p ≤ 0.023), but not in Gemma-4-E2B (ring p = 0.17, space p = 0.056).
+- *Word form carries part of the ring-chain order.* Some twins also order the ring chain beyond frequency: Qwen2.5-1.5B's twin (p = 0.037) and Gemma's twin (p = 0.027). A plausible lexical cue is that the middle items all end in "domain". The space chain's twins are weaker: none reaches p < .05, though the two Qwen2.5 twins come close (p = 0.053).
+- *Caveat.* The fold-wise version was adopted post-hoc. A first, whole-sample version leaked the held-out item into the training span and was degenerate in the twin. Both versions are reported in `docs/deviations.md`.
+
+| Chain | Model | ρ(order, Zipf) | ρ(order, token count) | LOO order beyond covariates (null95, p) |
+|---|---|---|---|---|
+| ring_chain | qwen3.5-2b | -0.04 | +0.29 | +0.94 (0.65, 0.0033) |
+| ring_chain | qwen3.5-2b__random | -0.04 | +0.29 | +0.13 (0.42, 0.2791) |
+| space_chain | qwen3.5-2b | -0.10 | -0.05 | +0.81 (0.60, 0.0166) |
+| space_chain | qwen3.5-2b__random | -0.10 | -0.05 | -0.04 (0.41, 0.5349) |
+| number_systems | qwen3.5-2b | -0.57 | +0.80 | +0.21 (0.86, 0.3920) |
+| number_systems | qwen3.5-2b__random | -0.57 | +0.80 | -0.21 (0.89, 0.5681) |
+
 **Angles: preregistered prediction falsified.** Angles are not circular: closure ratio 2.11 and no cycle in the PC plane. Their geometry closely matches that of the bare digits 0–330 (ρ = 0.84). At this scale, "330 degrees" sits next to "300 degrees", not next to "0 degrees".
 
 | Family | Model | ρ(family RDM, reference RDM) | template β beyond reference (p) |
@@ -376,6 +391,28 @@ In this model's random-init twin, all four consistencies are ≈ 0.
 - Some Qwen twins show similar values. "Commutative ring" literally contains the token "commutative", so we consider transfer not established.
 - Identity transfer, from the single pair rng → ring, is null.
 
+**Further lattice items from the plan (exploratory; second audit).**
+
+| Model | associative quasigroup: d(·, group) / d(·, quasigroup) (3 nearest) | inverse semigroup: 3 nearest | identity direction → lattice-like pairs: cos (null95, p) |
+|---|---|---|---|
+| qwen3.5-2b | 2.81 (commutative quasigroup, quasigroup, commutative loop) | semigroup, commutative semigroup, monoid | +0.074 (0.157, 0.1359) |
+| qwen3.5-2b__random | 1.11 (quasigroup, semigroup, monoid) | semigroup, quasigroup, loop | +0.054 (0.149, 0.1454) |
+
+| Model | Variant | offset consistency per axiom: obs / null95 (p) |
+|---|---|---|
+| qwen3.5-2b | group-like, mean-pooled tokens | associative: 0.30 / 0.22 (0.0235); identity: 0.26 / 0.23 (0.0305); divisible: 0.21 / 0.24 (0.0750); commutative: 0.60 / 0.19 (0.0005) |
+| qwen3.5-2b | group-like, token-count direction removed | associative: 0.44 / 0.23 (0.0035); identity: 0.26 / 0.22 (0.0360); divisible: 0.31 / 0.22 (0.0235); commutative: 0.46 / 0.20 (0.0010) |
+| qwen3.5-2b | partial-operation lattice | total: 0.29 / 0.54 (0.1704); identity: 0.07 / 0.82 (0.4518); divisible: -0.22 / 0.80 (0.5817) |
+| qwen3.5-2b__random | group-like, mean-pooled tokens | associative: 0.03 / 0.17 (0.3378); identity: 0.03 / 0.16 (0.3283); divisible: 0.01 / 0.17 (0.4058); commutative: 0.10 / 0.14 (0.1084) |
+| qwen3.5-2b__random | group-like, token-count direction removed | associative: 0.02 / 0.16 (0.3633); identity: 0.04 / 0.16 (0.3068); divisible: 0.01 / 0.16 (0.4278); commutative: -0.02 / 0.14 (0.5487) |
+| qwen3.5-2b__random | partial-operation lattice | total: -0.03 / 0.38 (0.5272); identity: -0.08 / 0.55 (0.6872); divisible: -0.07 / 0.55 (0.6707) |
+
+- *No semantic collapse.* A non-empty associative quasigroup is a group, but the model does not place it there. It is 2.8× farther from "group" than from "quasigroup" (twin 1.1×), and its nearest neighbours are quasigroup-like. The representation follows the name's parts, not this theorem.
+- *Inverse semigroup* sits next to semigroup, commutative semigroup and monoid in the trained model, which is sensible.
+- *Not a length artifact.* Removing the token-count direction (fitted on all family items) leaves the group-like offsets intact: commutativity 0.46 (p = 0.0010), associativity 0.44 (p = 0.0035). Across the five models (Appendix A), associativity, commutativity and divisibility stay significant in all five after this projection, and identity in four. Mean-pooling the concept's tokens gives a similar pattern, with divisibility no longer significant (table above). This is a one-direction analogue of the LDA distractor removal of [Li et al. (2024)](https://arxiv.org/abs/2410.19750).
+- *Partial-operation lattice: no evidence.* The "total operation" offset (semigroupoid → semigroup, small category → monoid, groupoid → group) is 0.29, below its null's 95th percentile (0.54). With 6 items and 2–3 pairs per axis, the test is weak.
+- *Identity transfer to lattice-like pairs* (semilattice → bounded semilattice, lattice → bounded lattice) is null too: cos = 0.07, p = 0.14.
+
 **Template variants (exploratory; Qwen3.5-2B).** We reran every analysis with two other template sets.
 
 *Field-revealing concept templates* name the field, e.g. "In group theory, the notion of X":
@@ -399,6 +436,36 @@ Full tables: `reports/mvp_variants_results.md`.
 - Rank agreement is moderate (mean pairwise Spearman 0.63).
 - Absolute agreement is low (ICC(2,1) = 0.24; ICC(2,k) = 0.49), because the judges use the scale with different offsets.
 - The ratings have face validity. The least abstract concepts include "trivial group", "bar chart" and "dot plot"; the most abstract include étale cohomology, Artin stacks and generalized cohomology theories.
+
+**Validation against Mathlib (plan; specified before computing, `docs/deviations.md`).** As an external, non-LLM measure, we matched concepts to declarations in [Mathlib4](https://github.com/leanprover-community/mathlib4) (commit `4bc4670bf916c8dc2ede840e3ead86301e52a40d`).
+- *Matching.* First through Mathlib's curated English-name maps (`docs/overview.yaml`, `docs/undergrad.yaml`), then through exact CamelCase names for multi-word concepts ("compact space" → `CompactSpace`).
+- *Depth.* The longest chain of Mathlib imports below the defining module (8672 modules).
+- *Result.* The mean judge rating correlates with depth: ρ = 0.37, 95% CI [0.07, 0.62], meeting the pre-specified criterion.
+- *Caveat.* Only 39 of 655 concepts could be matched, and coverage is uneven across fields (table below). The judges also differ: Phi-4-mini's ratings track depth (ρ = 0.54), SmolLM3's barely (ρ = 0.05).
+
+| Matched concepts (curated YAML / CamelCase) | median import depth | ρ(mean judge rating, depth) [95% CI] (p) | ρ partialling Zipf | ρ per judge |
+|---|---|---|---|---|
+| 39 of 655 (22 / 17) | 72 | +0.373 [0.071, 0.616] (0.0194) | +0.312 | granite-4.0-micro: +0.28; SmolLM3-3B: +0.05; Phi-4-mini-instruct: +0.54 |
+
+| Field | Mathlib coverage (fraction of concepts matched) |
+|---|---|
+| algebraic_geometry | 0.025 |
+| algebraic_topology | 0.025 |
+| category_theory | 0.075 |
+| commutative_algebra | 0.075 |
+| differential_geometry | 0.000 |
+| functional_analysis | 0.000 |
+| game_theory | 0.038 |
+| general_topology | 0.100 |
+| graph_theory | 0.000 |
+| group_theory | 0.139 |
+| lie_representation_theory | 0.051 |
+| number_theory | 0.050 |
+| numerical_analysis | 0.000 |
+| probability_statistics | 0.025 |
+| real_complex_analysis | 0.150 |
+| ring_module_theory | 0.250 |
+| set_theory_logic | 0.000 |
 
 **Axes.** We first residualized on word frequency and token count. The top principal component of the math-concept cloud then correlates with abstraction (ρ = 0.49), and the second with the pure/applied label (ρ = -0.41). In the twin these correlations are 0.06 and 0.14. A 5-fold cross-validated linear readout predicts abstraction with ρ = 0.74, against -0.06 in the twin. We also partialled out pretraining-scale frequency: infini-gram counts in Dolma v1.7, which correlate ρ = 0.32 with wordfreq. The axes are essentially unchanged: PC1 ↔ abstraction ρ = 0.44, PC2 ↔ applied ρ = -0.41.
 
@@ -425,7 +492,7 @@ At block 11, we encoded the template-averaged residuals with the official Qwen-S
 
 **What the geometry is.** Relatedness between fields is encoded at the level of field centroids, in the dominant principal components, from the first few layers onward. It is equally strong in models with very different pretraining mixtures. Combined with the null effect of math continued pretraining, this suggests the map is learned from general co-occurrence statistics, as [Karkada et al. (2026)](https://arxiv.org/abs/2602.15029) predict. It does not seem to require math-specific training. The control fields cluster about as strongly once the number of fields is matched. That supports this reading: the "map of mathematics" is one instance of a general topical map.
 
-**Axioms as directions.** Axioms of group-like structures behave like the man→woman offset. Whether the model uses these directions in reasoning, for example to decide that a monoid with inverses is a group, needs causal tests; see §6 and the causal results.
+**Axioms as directions.** Axioms of group-like structures behave like the man→woman offset. The geometry follows definitions stated in the names, not consequences that must be derived: "associative quasigroup" stays with the quasigroups, although a non-empty one is a group. Whether the model uses these directions in reasoning, for example to decide that a monoid with inverses is a group, needs causal tests; see §6 and the causal results.
 
 **Angles.** "330 degrees" is not near "0 degrees". This mirrors the finding of [Kantamneni & Tegmark (2025)](https://arxiv.org/abs/2502.00873) that numbers lie on a helix whose dominant axis is linear. A model this size appears to encode degrees by their numerals rather than by their angular meaning.
 
@@ -438,8 +505,8 @@ At block 11, we encoded the template-averaged residuals with the official Qwen-S
 - **Positive control.** It passed only under a post-hoc statistic.
 - **Family size.** Families are small (n = 7–13), so shape claims rest on permutation tests with limited resolution.
 - **Correlation, not mechanism.** All tests except §4.5 are correlational.
-- **Not run.** Four planned items were not run; reasons are in `docs/deviations.md`:
-  - the Mathlib-depth validation of judge ratings;
+- **Abstraction ground truth.** Abstraction ratings come from LLM judges. Their validation against Mathlib import depth rests on only 39 of 655 concepts that could be matched to Mathlib, and import depth also differs systematically between areas of Mathlib.
+- **Not run.** Three planned items were not run; reasons are in `docs/deviations.md`:
   - Qwen3.5-4B in 8-bit, whose random-init twin cannot be held in 8 GB;
   - the optional OctoThinker pair;
   - persistent homology, since no family has ≥30 points.
@@ -540,6 +607,57 @@ See the inline links. Code, data, preregistration and every number: <https://git
 | dimensions | 0.55 (p=0.0080) | 0.09 (p=0.8942) | 0.73 (p=0.0020) | 0.09 (p=0.9082) | 1.00 (p=0.0020) | 0.00 (p=1.0000) |
 | angles | 0.33 (p=0.0559) | 0.08 (p=0.8922) | 0.33 (p=0.0579) | 0.25 (p=0.2076) | 0.25 (p=0.1836) | 0.25 (p=0.2136) |
 
+| Chain | Model | ρ(order, Zipf) | ρ(order, token count) | LOO order beyond covariates (null95, p) |
+|---|---|---|---|---|
+| ring_chain | qwen3.5-0.8b | -0.04 | +0.29 | +0.75 (0.51, 0.0066) |
+| ring_chain | qwen3.5-0.8b__random | -0.04 | +0.29 | +0.50 (0.59, 0.0963) |
+| ring_chain | qwen2.5-1.5b | -0.04 | +0.29 | +0.79 (0.71, 0.0233) |
+| ring_chain | qwen2.5-1.5b__random | -0.04 | +0.29 | +0.71 (0.65, 0.0365) |
+| ring_chain | qwen2.5-math-1.5b | -0.04 | +0.29 | +0.97 (0.70, 0.0033) |
+| ring_chain | qwen2.5-math-1.5b__random | -0.04 | +0.29 | +0.71 (0.71, 0.0565) |
+| space_chain | qwen3.5-0.8b | -0.10 | -0.05 | +0.85 (0.61, 0.0033) |
+| space_chain | qwen3.5-0.8b__random | -0.10 | -0.05 | +0.22 (0.57, 0.2724) |
+| space_chain | qwen2.5-1.5b | -0.10 | -0.08 | +0.89 (0.64, 0.0066) |
+| space_chain | qwen2.5-1.5b__random | -0.10 | -0.08 | +0.58 (0.57, 0.0532) |
+| space_chain | qwen2.5-math-1.5b | -0.10 | -0.08 | +0.84 (0.65, 0.0133) |
+| space_chain | qwen2.5-math-1.5b__random | -0.10 | -0.08 | +0.59 (0.57, 0.0532) |
+| number_systems | qwen3.5-0.8b | -0.57 | +0.80 | +0.21 (0.82, 0.3887) |
+| number_systems | qwen3.5-0.8b__random | -0.57 | +0.80 | -0.39 (0.86, 0.7043) |
+| number_systems | qwen2.5-1.5b | -0.57 | +0.80 | +0.18 (0.93, 0.3920) |
+| number_systems | qwen2.5-1.5b__random | -0.57 | +0.80 | +0.43 (0.89, 0.2392) |
+| number_systems | qwen2.5-math-1.5b | -0.57 | +0.80 | +0.18 (0.89, 0.3854) |
+| number_systems | qwen2.5-math-1.5b__random | -0.57 | +0.80 | +0.04 (0.86, 0.5316) |
+
+| Model | associative quasigroup: d(·, group) / d(·, quasigroup) (3 nearest) | inverse semigroup: 3 nearest | identity direction → lattice-like pairs: cos (null95, p) |
+|---|---|---|---|
+| qwen3.5-0.8b | 3.36 (commutative quasigroup, quasigroup, commutative semigroup) | commutative semigroup, semigroup, commutative monoid | +0.027 (0.185, 0.3248) |
+| qwen3.5-0.8b__random | 1.28 (quasigroup, semigroup, inverse semigroup) | semigroup, quasigroup, associative quasigroup | -0.018 (0.153, 0.6817) |
+| qwen2.5-1.5b | 2.49 (commutative quasigroup, quasigroup, commutative semigroup) | semigroup, commutative semigroup, commutative monoid | +0.072 (0.183, 0.1519) |
+| qwen2.5-1.5b__random | 1.71 (quasigroup, commutative quasigroup, semigroup) | semigroup, quasigroup, commutative semigroup | -0.001 (0.130, 0.5022) |
+| qwen2.5-math-1.5b | 2.48 (commutative quasigroup, quasigroup, commutative loop) | semigroup, commutative semigroup, commutative monoid | +0.133 (0.167, 0.0770) |
+| qwen2.5-math-1.5b__random | 1.67 (quasigroup, commutative quasigroup, semigroup) | semigroup, quasigroup, commutative semigroup | -0.012 (0.130, 0.6662) |
+
+| Model | Variant | offset consistency per axiom: obs / null95 (p) |
+|---|---|---|
+| qwen3.5-0.8b | group-like, mean-pooled tokens | associative: 0.26 / 0.22 (0.0305); identity: 0.29 / 0.22 (0.0220); divisible: 0.17 / 0.24 (0.1000); commutative: 0.53 / 0.19 (0.0005) |
+| qwen3.5-0.8b | group-like, token-count direction removed | associative: 0.46 / 0.24 (0.0040); identity: 0.25 / 0.23 (0.0400); divisible: 0.29 / 0.23 (0.0330); commutative: 0.48 / 0.20 (0.0015) |
+| qwen3.5-0.8b | partial-operation lattice | total: 0.28 / 0.52 (0.1714); identity: -0.10 / 0.78 (0.5617); divisible: -0.19 / 0.78 (0.5897) |
+| qwen3.5-0.8b__random | group-like, mean-pooled tokens | associative: 0.04 / 0.17 (0.3123); identity: 0.05 / 0.16 (0.2549); divisible: 0.05 / 0.18 (0.2819); commutative: 0.13 / 0.15 (0.0675) |
+| qwen3.5-0.8b__random | group-like, token-count direction removed | associative: 0.06 / 0.17 (0.2339); identity: 0.07 / 0.16 (0.1914); divisible: 0.05 / 0.17 (0.2764); commutative: -0.01 / 0.14 (0.5067) |
+| qwen3.5-0.8b__random | partial-operation lattice | total: -0.08 / 0.42 (0.5427); identity: -0.09 / 0.60 (0.6412); divisible: -0.11 / 0.62 (0.6502) |
+| qwen2.5-1.5b | group-like, mean-pooled tokens | associative: 0.23 / 0.21 (0.0355); identity: 0.23 / 0.22 (0.0440); divisible: 0.14 / 0.24 (0.1289); commutative: 0.51 / 0.19 (0.0010) |
+| qwen2.5-1.5b | group-like, token-count direction removed | associative: 0.38 / 0.23 (0.0065); identity: 0.29 / 0.22 (0.0245); divisible: 0.27 / 0.23 (0.0335); commutative: 0.36 / 0.19 (0.0055) |
+| qwen2.5-1.5b | partial-operation lattice | total: 0.24 / 0.52 (0.2034); identity: -0.08 / 0.77 (0.5557); divisible: -0.22 / 0.77 (0.6062) |
+| qwen2.5-1.5b__random | group-like, mean-pooled tokens | associative: 0.08 / 0.19 (0.2129); identity: 0.09 / 0.18 (0.1694); divisible: 0.08 / 0.20 (0.2104); commutative: 0.25 / 0.16 (0.0180) |
+| qwen2.5-1.5b__random | group-like, token-count direction removed | associative: 0.12 / 0.17 (0.1179); identity: 0.10 / 0.17 (0.1319); divisible: 0.11 / 0.18 (0.1474); commutative: 0.14 / 0.15 (0.0645) |
+| qwen2.5-1.5b__random | partial-operation lattice | total: -0.07 / 0.45 (0.5347); identity: 0.01 / 0.61 (0.4818); divisible: -0.09 / 0.67 (0.5677) |
+| qwen2.5-math-1.5b | group-like, mean-pooled tokens | associative: 0.21 / 0.21 (0.0520); identity: 0.21 / 0.21 (0.0580); divisible: 0.18 / 0.24 (0.0895); commutative: 0.54 / 0.20 (0.0005) |
+| qwen2.5-math-1.5b | group-like, token-count direction removed | associative: 0.35 / 0.22 (0.0105); identity: 0.29 / 0.22 (0.0200); divisible: 0.31 / 0.22 (0.0175); commutative: 0.42 / 0.20 (0.0020) |
+| qwen2.5-math-1.5b | partial-operation lattice | total: 0.23 / 0.51 (0.2004); identity: -0.06 / 0.75 (0.5382); divisible: -0.15 / 0.75 (0.5597) |
+| qwen2.5-math-1.5b__random | group-like, mean-pooled tokens | associative: 0.06 / 0.19 (0.2464); identity: 0.08 / 0.18 (0.1929); divisible: 0.07 / 0.20 (0.2229); commutative: 0.24 / 0.16 (0.0190) |
+| qwen2.5-math-1.5b__random | group-like, token-count direction removed | associative: 0.10 / 0.17 (0.1529); identity: 0.09 / 0.16 (0.1484); divisible: 0.10 / 0.18 (0.1579); commutative: 0.14 / 0.15 (0.0660) |
+| qwen2.5-math-1.5b__random | partial-operation lattice | total: -0.07 / 0.45 (0.5322); identity: 0.00 / 0.62 (0.4898); divisible: -0.09 / 0.67 (0.5672) |
+
 **Gemma-4-E2B** with its twin:
 
 | Family | Expected | Model | line ρ | circle ρ | closure (d first-last / adjacent) | closure_far† (null 5%) | Robinson (p) | PCA order \|ρ\| (p) | LOO order ρ (p) |
@@ -580,6 +698,29 @@ See the inline links. Code, data, preregistration and every number: <https://git
 | ngons | 0.30 (p=0.2176) | 0.10 (p=0.9182) |
 | dimensions | 0.45 (p=0.0140) | 0.18 (p=0.5509) |
 | angles | 0.25 (p=0.2176) | 0.17 (p=0.5549) |
+
+| Chain | Model | ρ(order, Zipf) | ρ(order, token count) | LOO order beyond covariates (null95, p) |
+|---|---|---|---|---|
+| ring_chain | gemma-4-e2b | -0.04 | +0.38 | +0.44 (0.66, 0.1728) |
+| ring_chain | gemma-4-e2b__random | -0.04 | +0.38 | +0.68 (0.58, 0.0266) |
+| space_chain | gemma-4-e2b | -0.10 | -0.39 | +0.75 (0.76, 0.0565) |
+| space_chain | gemma-4-e2b__random | -0.10 | -0.39 | -0.37 (0.69, 0.8173) |
+| number_systems | gemma-4-e2b | -0.57 | +0.67 | +0.96 (0.89, 0.0266) |
+| number_systems | gemma-4-e2b__random | -0.57 | +0.67 | -0.61 (0.88, 0.7907) |
+
+| Model | associative quasigroup: d(·, group) / d(·, quasigroup) (3 nearest) | inverse semigroup: 3 nearest | identity direction → lattice-like pairs: cos (null95, p) |
+|---|---|---|---|
+| gemma-4-e2b | 2.03 (commutative quasigroup, quasigroup, commutative monoid) | commutative semigroup, semigroup, quasigroup | +0.122 (0.160, 0.0870) |
+| gemma-4-e2b__random | 2.29 (quasigroup, commutative quasigroup, monoid) | semigroup, commutative semigroup, magma | -0.023 (0.161, 0.7111) |
+
+| Model | Variant | offset consistency per axiom: obs / null95 (p) |
+|---|---|---|
+| gemma-4-e2b | group-like, mean-pooled tokens | associative: 0.41 / 0.24 (0.0075); identity: 0.17 / 0.24 (0.0915); divisible: 0.16 / 0.25 (0.1139); commutative: 0.59 / 0.21 (0.0005) |
+| gemma-4-e2b | group-like, token-count direction removed | associative: 0.56 / 0.26 (0.0020); identity: 0.20 / 0.25 (0.0830); divisible: 0.37 / 0.25 (0.0185); commutative: 0.71 / 0.22 (0.0005) |
+| gemma-4-e2b | partial-operation lattice | total: 0.41 / 0.56 (0.1184); identity: 0.18 / 0.84 (0.4068); divisible: 0.03 / 0.84 (0.4688) |
+| gemma-4-e2b__random | group-like, mean-pooled tokens | associative: 0.17 / 0.20 (0.0855); identity: 0.15 / 0.20 (0.0925); divisible: 0.22 / 0.21 (0.0410); commutative: 0.25 / 0.17 (0.0190) |
+| gemma-4-e2b__random | group-like, token-count direction removed | associative: 0.22 / 0.21 (0.0470); identity: 0.15 / 0.20 (0.0940); divisible: 0.23 / 0.21 (0.0415); commutative: 0.02 / 0.18 (0.3673) |
+| gemma-4-e2b__random | partial-operation lattice | total: -0.11 / 0.55 (0.5847); identity: -0.33 / 0.84 (0.7111); divisible: -0.39 / 0.84 (0.7461) |
 
 Matched 4-field clustering in Gemma-4-E2B:
 - math subsets: mean 0.663;
