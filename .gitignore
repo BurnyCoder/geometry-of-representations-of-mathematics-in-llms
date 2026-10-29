@@ -1,0 +1,19 @@
+# Python / uv
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.venv
+.pytest_cache/
+
+# secrets
+.env
+
+# large artifacts (junction to D:\AI on the author's machine)
+artifacts
+data/raw/
+
+# logs (prompt logs are uploaded with the dataset, not committed)
+logs/
