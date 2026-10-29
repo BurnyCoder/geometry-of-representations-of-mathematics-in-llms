@@ -251,10 +251,22 @@ infini-gram (v4_dolma-v1_7_llama): Spearman ρ(wordfreq Zipf, log count) = 0.316
 
 ## Figures
 
-![field_map_layers_qwen3.5-2b.png](figures/field_map_layers_qwen3.5-2b.png)
-
 ![field_maps_qwen3.5-2b.png](figures/field_maps_qwen3.5-2b.png)
 
-![families_pca_qwen3.5-2b.png](figures/families_pca_qwen3.5-2b.png)
+![field_rdms_qwen3.5-2b.png](figures/field_rdms_qwen3.5-2b.png)
 
-![lattice_group_like_qwen3.5-2b.png](figures/lattice_group_like_qwen3.5-2b.png)
+![cyclic_qwen3.5-2b.png](figures/cyclic_qwen3.5-2b.png)
+
+![chains_qwen3.5-2b.png](figures/chains_qwen3.5-2b.png)
+
+![circle_depth_qwen3.5-2b.png](figures/circle_depth_qwen3.5-2b.png)
+
+![angles_qwen3.5-2b.png](figures/angles_qwen3.5-2b.png)
+
+![circle_depth_qwen3.5-2b.gif](figures/circle_depth_qwen3.5-2b.gif)
+
+![lattice_axes_qwen3.5-2b.png](figures/lattice_axes_qwen3.5-2b.png)
+
+![lattice_cosines_qwen3.5-2b.png](figures/lattice_cosines_qwen3.5-2b.png)
+
+![abstraction_qwen3.5-2b.png](figures/abstraction_qwen3.5-2b.png)

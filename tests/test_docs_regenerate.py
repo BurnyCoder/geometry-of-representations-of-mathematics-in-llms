@@ -21,7 +21,7 @@ def test_generated_docs_match_results():
 
     summary = render_template((ROOT / "reports" / "summary_template.md").read_text(encoding="utf-8"), fig_prefix="figures/")
     assert summary == (ROOT / "reports" / "summary.md").read_text(encoding="utf-8")
-    paper = render_template((ROOT / "paper" / "template.md").read_text(encoding="utf-8"))
+    paper = render_template((ROOT / "paper" / "template.md").read_text(encoding="utf-8"), fig_ext=".pdf")
     assert paper == (ROOT / "paper" / "paper.md").read_text(encoding="utf-8")
     block = render_template((ROOT / "reports" / "readme_results_template.md").read_text(encoding="utf-8"), fig_prefix="reports/figures/")
     readme = (ROOT / "README.md").read_text(encoding="utf-8")

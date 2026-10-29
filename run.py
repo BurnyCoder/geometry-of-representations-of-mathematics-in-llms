@@ -45,8 +45,9 @@ def main() -> None:
 
         PHASES["report"] = phase_report
     if args.phase == "paper":  # needs results of all configs (mvp, robustness, gemma)
-        from mathgeom.report.paper import build_paper, build_readme_block, build_summary
+        from mathgeom.report.paper import build_cross_figures, build_paper, build_readme_block, build_summary
 
+        build_cross_figures()
         build_readme_block()
         build_summary()
         build_paper()

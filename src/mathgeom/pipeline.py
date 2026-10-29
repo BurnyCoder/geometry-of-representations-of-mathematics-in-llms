@@ -115,12 +115,24 @@ def phase_extract(cfg: Config) -> None:
 
 
 # ---------------------------------------------------------------- analyses
-def _load(cfg: Config, key: str, cond: str) -> dict:
+class _NpzCache(dict):
+    """Reads each array of an .npz on first access and keeps it (most callers need only `last`)."""
+
+    def __init__(self, path):
+        super().__init__()
+        self._z = np.load(path)
+
+    def __missing__(self, k):
+        self[k] = self._z[k]
+        return self[k]
+
+
+def load_acts(cfg: Config, key: str, cond: str) -> dict:
     """Load cached activations; a config may swap the template condition used by every analysis
     (`concept_condition` for "field_neutral", `family_condition` for "family") — used by the
     exploratory template-variant run configs/mvp_variants.yaml."""
     cond = {"field_neutral": cfg.raw.get("concept_condition", "field_neutral"), "family": cfg.raw.get("family_condition", "family")}.get(cond, cond)
-    return dict(np.load(cfg.artifacts / "acts" / key / f"{cond}.npz"))
+    return _NpzCache(cfg.artifacts / "acts" / key / f"{cond}.npz")
 
 
 def _primary_layer(n_layers_plus1: int, rel: float) -> int:
@@ -150,7 +162,7 @@ def phase_map(cfg: Config) -> None:
     rng = np.random.default_rng(cfg.seed)
     results = {}
     for m in cfg.models:
-        tr, rnd = _load(cfg, m["key"], "field_neutral"), _load(cfg, m["key"] + "__random", "field_neutral")
+        tr, rnd = load_acts(cfg, m["key"], "field_neutral"), load_acts(cfg, m["key"] + "__random", "field_neutral")
         concepts["n_tokens"] = tr["n_tokens"]
         L1 = tr["last"].shape[1]
         Lp = _primary_layer(L1, cfg.primary_rel_depth)
@@ -226,7 +238,7 @@ def phase_shapes(cfg: Config) -> None:
     results = {}
     for m in cfg.models:
         for key in (m["key"], m["key"] + "__random"):
-            acts = _load(cfg, key, "family")["last"]
+            acts = load_acts(cfg, key, "family")["last"]
             L1 = acts.shape[1]
             Lp = _primary_layer(L1, cfg.primary_rel_depth)
             rows = lambda name: [i for i, (f, _, _) in enumerate(fam) if f == name]  # noqa: E731
@@ -258,7 +270,7 @@ def phase_chainfreq(cfg: Config) -> None:
     results = {}
     for m in cfg.models:
         for key in (m["key"], m["key"] + "__random"):
-            raw = _load(cfg, key, "family")
+            raw = load_acts(cfg, key, "family")
             Lp = _primary_layer(raw["last"].shape[1], cfg.primary_rel_depth)
             results[key] = {}
             for name, f in fams["chains"].items():
@@ -276,7 +288,7 @@ def _negative_control(cfg: Config, key: str, Lp: int, n_lists: int = 100) -> dic
     from mathgeom.analyses.shapes import family_stats
 
     concepts = pd.read_csv(cfg.data_dir / "concepts.csv")
-    X = _load(cfg, key, "field_neutral")["last"][:, Lp]
+    X = load_acts(cfg, key, "field_neutral")["last"][:, Lp]
     pool = np.flatnonzero((concepts.kind == "math").values)
     rng = np.random.default_rng(cfg.seed + 1)
     ps = {"robinson_p": [], "pca_order_p": [], "line_rho_p": []}
@@ -299,7 +311,7 @@ def phase_lattice(cfg: Config) -> None:
     results = {}
     for m in cfg.models:
         for key in (m["key"], m["key"] + "__random"):
-            acts = _load(cfg, key, "family")["last"]
+            acts = load_acts(cfg, key, "family")["last"]
             Lp = _primary_layer(acts.shape[1], cfg.primary_rel_depth)
             res = {"primary_layer": Lp}
             for name, lat in fams["lattices"].items():
@@ -328,7 +340,7 @@ def _lattice_audit2(cfg: Config, fams: dict, pos: dict, key: str, Lp: int) -> di
     from mathgeom.analyses.lattice import lattice_stats, length_direction
     from mathgeom.geometry.preprocess import center, euclid_rdm
 
-    acts = _load(cfg, key, "family")
+    acts = load_acts(cfg, key, "family")
     g = fams["lattices"]["group_like"]
     names = list(g["items"]) + list(g["flagged"])
     rows = [pos[("group_like", c)] for c in names]
@@ -378,7 +390,7 @@ def phase_baselines(cfg: Config) -> None:
     out = {"infinigram": {"index": "v4_dolma-v1_7_llama", "rho_zipf_vs_log_count": float(spearmanr(concepts.zipf.values[ok], logc[ok])[0]),
                           "frac_zero": float(np.mean(concepts.concept.map(counts).values[ok] == 0)), "n_missing": int((~ok).sum())}}
     for m in cfg.models:
-        X = _load(cfg, m["key"], "field_neutral")["last"]
+        X = load_acts(cfg, m["key"], "field_neutral")["last"]
         Lp = _primary_layer(X.shape[1], cfg.primary_rel_depth)
         base = ((concepts.kind == "math") & concepts.primary & (concepts.split == split)).values
         res = {}
@@ -409,7 +421,7 @@ def phase_smds(cfg: Config) -> None:
     out = {}
     for m in cfg.models:
         for key in (m["key"], m["key"] + "__random"):
-            A = _load(cfg, key, "family")["last"]
+            A = load_acts(cfg, key, "family")["last"]
             Lp = _primary_layer(A.shape[1], cfg.primary_rel_depth)
             res = {"primary_layer": Lp}
             for name in fams["chains"]:
@@ -437,7 +449,7 @@ def phase_hierarchy(cfg: Config) -> None:
     rng = np.random.default_rng(cfg.seed)
     out = {}
     for m in cfg.models:
-        tr, rnd = _load(cfg, m["key"], "field_neutral")["last"], _load(cfg, m["key"] + "__random", "field_neutral")["last"]
+        tr, rnd = load_acts(cfg, m["key"], "field_neutral")["last"], load_acts(cfg, m["key"] + "__random", "field_neutral")["last"]
         Lp = _primary_layer(tr.shape[1], cfg.primary_rel_depth)
         reps = {"trained": tr[mask, Lp], "random_init": rnd[mask, Lp], "layer0": tr[mask, 0]}
         cents = {k: field_centroids(v, lab, names) for k, v in reps.items()}
@@ -484,7 +496,7 @@ def phase_structures(cfg: Config) -> None:
     results = {}
     for m in cfg.models:
         for key in (m["key"], m["key"] + "__random"):
-            A = _load(cfg, key, "family")["last"]
+            A = load_acts(cfg, key, "family")["last"]
             Lp = _primary_layer(A.shape[1], cfg.primary_rel_depth)
             X = A[:, Lp].astype(np.float64)
             Xg = X[[pos[("group_like", c)] for c in gl]]
@@ -525,7 +537,7 @@ def phase_compare(cfg: Config) -> None:
     for a, b in cfg.raw.get("comparisons", []):
         reps = {}
         for k in (a, b):
-            X = _load(cfg, k, "field_neutral")["last"]
+            X = load_acts(cfg, k, "field_neutral")["last"]
             reps[k] = X[mask, _primary_layer(X.shape[1], cfg.primary_rel_depth)]
         boot = paired_bootstrap(reps, lab, names, target, cfg.n_boot, cfg.seed)
         out[f"{a}_vs_{b}"] = {"rho": {k: field_rsa(v, lab, names, target) for k, v in reps.items()}, "boot": boot}
@@ -544,7 +556,7 @@ def phase_sae(cfg: Config) -> None:
     split = cfg.raw.get("analysis_split", "confirmatory")
     out = {}
     for m in [m for m in cfg.models if m.get("sae")]:
-        X = _load(cfg, m["key"], "field_neutral")["last"]
+        X = load_acts(cfg, m["key"], "field_neutral")["last"]
         Lp = _primary_layer(X.shape[1], cfg.primary_rel_depth)
         sae = load_sae(m["sae"]["repo"], Lp - 1)  # hidden_states[Lp] = output of block Lp-1
         res = {"sae_repo": m["sae"]["repo"], "sae_block": Lp - 1, "k": m["sae"]["k"]}
@@ -664,7 +676,7 @@ def phase_axes(cfg: Config) -> None:
     out = {}
     for m in cfg.models:
         for key in (m["key"], m["key"] + "__random"):
-            acts = _load(cfg, key, "field_neutral")
+            acts = load_acts(cfg, key, "field_neutral")
             Lp = _primary_layer(acts["last"].shape[1], cfg.primary_rel_depth)
             X = acts["last"][mask, Lp].astype(np.float64)
             X = X - X.mean(0)
@@ -708,7 +720,7 @@ def phase_causal(cfg: Config) -> None:
     fam = json.loads((cfg.artifacts / "acts" / "family_index.json").read_text())
     out = {}
     for m in cfg.models:
-        acts = _load(cfg, m["key"], "family")["last"]
+        acts = load_acts(cfg, m["key"], "family")["last"]
         Lp = _primary_layer(acts.shape[1], cfg.primary_rel_depth)
         model, tok = load_model(m["id"], device_map=m.get("device_map", "cuda"))
         layers = model.model.layers if hasattr(model.model, "layers") else model.model.language_model.layers
@@ -741,7 +753,7 @@ def phase_posthoc(cfg: Config) -> None:
     out = {}
     for m in cfg.models:
         for key in (m["key"], m["key"] + "__random"):
-            X = _load(cfg, key, "field_neutral")["last"]
+            X = load_acts(cfg, key, "field_neutral")["last"]
             Lp = _primary_layer(X.shape[1], cfg.primary_rel_depth)
             X = X[mask, Lp].astype(np.float64)
             Xc = center(X)
@@ -757,7 +769,7 @@ def phase_posthoc(cfg: Config) -> None:
 
     for m in cfg.models:
         for key in (m["key"], m["key"] + "__random"):
-            X = _load(cfg, key, "field_neutral")["last"]
+            X = load_acts(cfg, key, "field_neutral")["last"]
             Lp = _primary_layer(X.shape[1], cfg.primary_rel_depth)
             base = (concepts.primary & (concepts.split == split)).values
             ctrl = base & (concepts.kind == "control").values
@@ -783,7 +795,7 @@ def phase_posthoc(cfg: Config) -> None:
     rng = np.random.default_rng(cfg.seed)
     for m in cfg.models:
         for key in (m["key"], m["key"] + "__random"):
-            acts = _load(cfg, key, "family")["last"]
+            acts = load_acts(cfg, key, "family")["last"]
             cyc = {}
             for name in fams["chains"]:
                 idx = [i for i, (f, _, _) in enumerate(fam) if f == name]
