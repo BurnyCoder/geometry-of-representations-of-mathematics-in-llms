@@ -178,6 +178,28 @@ The new items were appended after the existing ones. Extraction runs at batch si
 - items extracted twice ("semigroup", "monoid", "group", appearing in both the group-like and partial-operation lattices) have bit-identical activations;
 - diffing every results file before and after the rerun showed no changed value, only added keys.
 
+## E8: Article-style, interactive visualizations
+
+**Goal.** Make the figures readable and explained in the style of Anthropic's Transformer Circuits articles and Goodfire's research posts, and make the explorer interactive. Two references were studied for their visual devices:
+- [Gurnee et al. 2025, "When Models Manipulate Manifolds"](https://transformer-circuits.pub/2025/linebreaks/index.html): colour along the manifold coordinate; the same object shown as a projection and as a similarity matrix; takeaway-first captions.
+- [Goodfire, "Finding the Tree of Life in Evo 2"](https://www.goodfire.com/papers/phylogeny-manifold): a hero figure, an animated view, small multiples.
+
+**A bug the redesign found.** The old report code loaded activations directly instead of through the config's template mapping, so every "variant" figure duplicated the confirmatory one. The loader is now public (`pipeline.load_acts`) and used everywhere. A consistency test checks every config: the figure data must reproduce the reported field ρ, the offset consistencies and the cycle scores exactly. The loader also now reads each array on first use, which made figure building several times faster on the slow data disk.
+
+**Design decisions and why:**
+- **Colour.** The palette validator showed that no four-colour set separates all pairs for colour-vision deficiency. So no plot uses more than three hues; the four axioms are shown as small multiples, one axiom highlighted per panel, instead of four colours on one plot.
+- **Unsupervised views only.** With 13 items in more than 1,000 dimensions, a projection fitted to labels draws a lattice even for random vectors. All pictures are PCA or MDS. The quantitative evidence is drawn as the cosine matrix of difference vectors in the full space.
+- **A visual artifact we guard against.** In that matrix, two difference vectors that share a structure have cosine ≈ ±½ even for random vectors, so those cells are hatched.
+- **Fixed matrix order.** Distance matrices use one fixed order (super-tree branch, then field). Re-clustering each matrix separately would create blocks out of noise.
+- **Alignment is display-only.** Panels and layers are aligned by rotation and reflection only, so the layer slider doesn't flip. Every statistic shown is read from the results files, never recomputed from a 2-D picture.
+- **Exact browser-side geometry.** For a family of n items, the (n − 1)-dimensional PCA coordinates preserve every distance and cosine of the centred vectors. The site's analogy playground therefore computes exact ranks in the browser; a test checks this against the Python statistics.
+
+**What went wrong along the way:**
+- Statistic badges inside panels covered data points; they moved under the panels.
+- A hand-typed paper count slipped into a figure note and was replaced by the value from `field_distance.json`.
+- Two README captions overclaimed: that the field map clears the null "from the first layers" (false for Gemma), and that the days cycle "persists to the final layer" (it breaks at the last layer). Both were corrected after checking them against the figures.
+- The browser pane does not repaint a hidden page after scrolling, so the site was checked with full-page screenshots from headless Edge plus scripted interaction tests: linked hover, the layer slider, model switching, search, chips and the analogy playground. At phone width it was checked by measuring element widths.
+
 ## Tooling learnings (continued)
 
 - **Line endings.** On Windows, `Path.write_text` translates `\n` to `\r\n`. Python heredoc scripts that search-and-replace code containing `"\n"` literals therefore corrupted files three times. The fix was to make code edits with the editor tool.
@@ -190,3 +212,4 @@ The new items were appended after the existing ones. Extraction runs at batch si
 - **HF auth.** Moving `HF_HOME` hides the CLI token, so `HF_TOKEN_PATH` must point at the original token file.
 - **Parallel downloads.** Pre-downloading robustness models in parallel starved the MVP download. Download sequentially.
 - **Model classes.** `AutoModelForCausalLM` builds a text-only class for Qwen3.5 but the full multimodal class for Gemma 4. The Gemma per-layer-embedding tables and towers are therefore offloaded to the CPU (`offload_ple`).
+- **Non-ASCII in heredocs.** Python scripts piped through a Bash heredoc on Windows are decoded with the console code page, so characters such as `°`, `×` and `ρ` are mangled. Edits containing them go through the editor tool.

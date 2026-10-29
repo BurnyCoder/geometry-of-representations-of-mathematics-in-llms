@@ -65,9 +65,30 @@ All models are base (pretrained) checkpoints, measured at relative depth 0.5. Fi
 | Chain geometry is used causally | yes | **inconclusive**: ring chain below the accuracy gate; space chain shows a small, non-significant effect | intervention (noise injection) |
 | Field map visible in SAE features | exploratory | **weak**: SAE-code ρ = 0.15; field-selective features exist | correlation |
 
-## Figures
+## Figures, in plain words
 
-![field map vs depth](figures/field_map_layers_qwen3.5-2b.png)
+The figures show what the model's internal vectors look like, squashed down to two dimensions. Blue always means a trained model, grey its untrained twin. The [interactive explorer](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/) lets you move through the model's layers and switch between models.
+
+![at a glance](figures/hero.png)
+
+**All results in one picture.**
+- **A:** every trained model has a map of mathematics; no twin has one.
+- **B:** days of the week form a circle.
+- **C:** angles do not form a circle, although we predicted they would.
+- **D:** adding an axiom moves a structure in a consistent direction.
+
+![circle forming](figures/circle_depth_qwen3.5-2b.gif)
+
+**The circle through the layers.** Days and months, layer by layer. The circle is there almost from the start.
+
 ![field maps](figures/field_maps_qwen3.5-2b.png)
-![families](figures/families_pca_qwen3.5-2b.png)
-![lattice](figures/lattice_group_like_qwen3.5-2b.png)
+
+**The map of mathematics.** Each dot is a field. The grey lines join fields that mathematicians often combine. In the trained model most of these lines stay short; in the untrained twin they cross the whole picture.
+
+![axioms](figures/lattice_axes_qwen3.5-2b.png)
+
+**Axioms as arrows.** Each panel highlights all pairs of structures that differ by one axiom. In the trained model those arrows point roughly the same way.
+
+![effect sizes](figures/forest.png)
+
+**How big the effects are.** Each line is a range of plausible values (95% confidence interval). A blue line does not cross zero, so the effect is reliably there.
