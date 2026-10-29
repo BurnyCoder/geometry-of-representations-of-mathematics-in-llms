@@ -93,3 +93,13 @@ def test_pc_plane_cycle_score_detects_planted_cycle_only():
     assert pc_plane_cycle_score(X, np.arange(n)) == 1.0
     rng = np.random.default_rng(3)
     assert np.mean([pc_plane_cycle_score(X, rng.permutation(n)) for _ in range(50)]) < 0.4
+
+
+def test_smds_needs_shuffle_null_and_then_picks_right_template():
+    """Raw SMDS fit can favour the wrong template; the label-shuffled null must rescue the decision."""
+    from mathgeom.analyses.smds_fit import smds_family
+
+    n = 12
+    th = 2 * np.pi * np.arange(n) / n
+    res = smds_family(_embed(5 * np.c_[np.cos(th), np.sin(th)], d=256, noise=0.1), n_shuffle=39)  # min p = 1/40 < .05
+    assert res["preferred"] == "discrete_circular" and res["discrete_circular"]["p"] < 0.05 and res["euclidean"]["p"] > 0.05

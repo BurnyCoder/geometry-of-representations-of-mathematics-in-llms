@@ -1,0 +1,20 @@
+# Exploratory template variants on the confirmatory model (prereg §2: field-revealing templates are
+# exploratory; plan H-B2 test 6: rerun family tests without a shared domain context).
+# Same model/twin activations directory; analyses read the variant conditions instead.
+name: mvp_variants
+models:
+  - key: qwen3.5-2b
+    id: Qwen/Qwen3.5-2B-Base
+    random_control: true
+concept_condition: field_revealing  # templates name the sub-field ("In group theory, the notion of X")
+family_condition: no_domain         # templates without any domain context ("Consider X")
+conditions: [field_revealing, no_domain]
+analysis_split: confirmatory
+n_perm: 10000
+n_boot: 2000
+seed: 0
+max_concepts_per_field: 30
+pilot_fraction: 0.2
+primary_rel_depth: 0.5
+figure_subdir: mvp_variants  # keep variant figures apart from the confirmatory ones (same model key)
+site: false  # do not overwrite the explorer entry of qwen3.5-2b

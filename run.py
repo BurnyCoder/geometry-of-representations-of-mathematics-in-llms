@@ -6,7 +6,7 @@ Each phase reads the previous phase's outputs, so any phase can be re-run on its
 
 import argparse
 
-from mathgeom import pipeline
+from mathgeom import manifest, pipeline
 from mathgeom.config import ROOT, load_config
 from mathgeom.logio import setup_logging
 
@@ -16,6 +16,9 @@ PHASES = {
     "arxiv": pipeline.phase_arxiv,  # arXiv cross-listing → data/field_distance.json
     "extract": pipeline.phase_extract,  # residual-stream activations → artifacts/acts/<model>/
     "map": pipeline.phase_map,  # H-A1 field map → results/<cfg>/map_fields.json
+    "baselines": pipeline.phase_baselines,  # fastText / Qwen3-Embedding field maps vs LLM; infini-gram covariate → baselines.json
+    "smds": pipeline.phase_smds,  # secondary H-B: SMDS line/circle fits vs label-shuffled refits → smds.json
+    "hierarchy": pipeline.phase_hierarchy,  # H-A2 cophenetic correlation, Gromov δ, Gaussian null → hierarchy.json
     "shapes": pipeline.phase_shapes,  # H-B chains/circles → results/<cfg>/shapes.json
     "lattice": pipeline.phase_lattice,  # H-B2 axiom lattices → results/<cfg>/lattice.json
     "structures": pipeline.phase_structures,  # H-B2 tests 4–5: axiom transfer, Lie/topological/algebraic groups → structures.json
@@ -49,6 +52,7 @@ def main() -> None:
     todo = [*PHASES] if args.phase == "all" else [args.phase]
     for p in todo:
         PHASES[p](cfg)
+        manifest.record(cfg, p, args.config)  # git SHA, config hash, seed, library versions
 
 
 if __name__ == "__main__":

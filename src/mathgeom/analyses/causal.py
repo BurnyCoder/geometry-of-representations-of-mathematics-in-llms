@@ -71,7 +71,7 @@ def chain_causal_test(model, tok, layer_module, items: list[str], domain: str, f
     for i, j in itertools.combinations(range(len(items)), 2):  # i more general than j (ground-truth order)
         for a, b in ((i, j), (j, i)):
             qs.append((a, b, i))
-    def run(hook_for=None):
+    def run(hook_for=None, condition="baseline"):
         correct = []
         for a, b, gen_idx in qs:
             prompt = TEMPLATE.format(D=domain, A=items[a], B=items[b])
@@ -79,6 +79,9 @@ def chain_causal_test(model, tok, layer_module, items: list[str], domain: str, f
             sa = _score(model, tok, prompt, f" {items[a]}", hook, layer_module)
             sb = _score(model, tok, prompt, f" {items[b]}", hook, layer_module)
             correct.append((sa > sb) == (a == gen_idx))
+            # every prompt and the model's two continuation log-likelihoods (project logging rule)
+            log_llm({"causal_condition": condition, "prompt": prompt, "continuation_a": f" {items[a]}", "logp_a": sa,
+                     "continuation_b": f" {items[b]}", "logp_b": sb, "correct": bool(correct[-1])})
         return float(np.mean(correct))
 
     base = run()
@@ -97,12 +100,12 @@ def chain_causal_test(model, tok, layer_module, items: list[str], domain: str, f
     dev = model.get_input_embeddings().weight.device
     for s in scales:
         sigma = s * spread / np.sqrt(k)
-        acc_chain = run(lambda a, b, p: _make_hook(_spans(tok, p, items[a], items[b]), chain_basis(a, b).to(dev), sigma, gen))
+        acc_chain = run(lambda a, b, p: _make_hook(_spans(tok, p, items[a], items[b]), chain_basis(a, b).to(dev), sigma, gen), f"chain_s{s}")
         acc_rand = []
-        for _ in range(n_random):
+        for r_i in range(n_random):
             Q, _ = np.linalg.qr(rng.normal(size=(d, k)))
             B = torch.tensor(Q.T, dtype=torch.float32).to(dev)
-            acc_rand.append(run(lambda a, b, p, B=B: _make_hook(_spans(tok, p, items[a], items[b]), B, sigma, gen)))
+            acc_rand.append(run(lambda a, b, p, B=B: _make_hook(_spans(tok, p, items[a], items[b]), B, sigma, gen), f"random{r_i}_s{s}"))
         out["scales"][str(s)] = {"acc_chain_subspace": acc_chain, "acc_random_subspace_mean": float(np.mean(acc_rand)), "acc_random_subspace": acc_rand}
         log_llm({"causal": "noise", "domain": domain, "scale": s, "acc_chain_subspace": acc_chain, "acc_random_mean": float(np.mean(acc_rand))})
     return out

@@ -98,6 +98,10 @@ def phase_extract(cfg: Config) -> None:
 
 # ---------------------------------------------------------------- analyses
 def _load(cfg: Config, key: str, cond: str) -> dict:
+    """Load cached activations; a config may swap the template condition used by every analysis
+    (`concept_condition` for "field_neutral", `family_condition` for "family") — used by the
+    exploratory template-variant run configs/mvp_variants.yaml."""
+    cond = {"field_neutral": cfg.raw.get("concept_condition", "field_neutral"), "family": cfg.raw.get("family_condition", "family")}.get(cond, cond)
     return dict(np.load(cfg.artifacts / "acts" / key / f"{cond}.npz"))
 
 
@@ -273,6 +277,118 @@ def phase_lattice(cfg: Config) -> None:
     _save(cfg, "lattice.json", results)
 
 
+def phase_baselines(cfg: Config) -> None:
+    """Plan baselines: field map from fastText and Qwen3-Embedding vs the LLM (paired bootstrap on the same
+    concepts), plus infini-gram counts as a frequency covariate (saved to data/infinigram_counts.json)."""
+    from scipy.stats import spearmanr
+
+    from mathgeom.analyses.baselines import fasttext_vectors, infinigram_counts, qwen3_embeddings
+    from mathgeom.analyses.map_fields import field_rsa, loo_centroid_correct, paired_accuracy_bootstrap, paired_bootstrap
+
+    concepts = pd.read_csv(cfg.data_dir / "concepts.csv")
+    fd = json.loads((cfg.data_dir / "field_distance.json").read_text())
+    split = cfg.raw.get("analysis_split", "confirmatory")
+    counts = infinigram_counts(concepts.concept.tolist(), cfg.data_dir / "infinigram_counts.json")
+    logc = np.log10(1 + concepts.concept.map(counts).values.astype(float))
+    # download once: https://dl.fbaipublicfiles.com/fasttext/vectors-english/wiki-news-300d-1M.vec.zip → artifacts/baselines/
+    ft, ft_ok = fasttext_vectors(cfg.artifacts / "baselines" / "wiki-news-300d-1M.vec.zip", concepts.concept.tolist())
+    emb_path = cfg.artifacts / "baselines_qwen3emb.npy"
+    if not emb_path.exists():
+        np.save(emb_path, qwen3_embeddings(concepts.concept.tolist()))
+    qe = np.load(emb_path)
+    ok = ~np.isnan(logc)  # API failures after retries leave a concept without a count
+    out = {"infinigram": {"index": "v4_dolma-v1_7_llama", "rho_zipf_vs_log_count": float(spearmanr(concepts.zipf.values[ok], logc[ok])[0]),
+                          "frac_zero": float(np.mean(concepts.concept.map(counts).values[ok] == 0)), "n_missing": int((~ok).sum())}}
+    for m in cfg.models:
+        X = _load(cfg, m["key"], "field_neutral")["last"]
+        Lp = _primary_layer(X.shape[1], cfg.primary_rel_depth)
+        base = ((concepts.kind == "math") & concepts.primary & (concepts.split == split)).values
+        res = {}
+        for sub, mask in {"all_primary": base, "fasttext_covered": base & ft_ok}.items():
+            lab = concepts.field.values[mask]
+            names = [n for n in fd["names"] if n in set(lab)]
+            sel = [fd["names"].index(n) for n in names]
+            target = np.array(fd["distance"])[np.ix_(sel, sel)]
+            reps = {"llm_trained": X[mask, Lp], "qwen3_embedding": qe[mask]}
+            if sub == "fasttext_covered":
+                reps["fasttext"] = ft[mask]
+            r = {"n": int(mask.sum()), "rsa": {k: field_rsa(v, lab, names, target) for k, v in reps.items()},
+                 "boot": paired_bootstrap(reps, lab, names, target, cfg.n_boot // 2, cfg.seed),
+                 "loo_acc": paired_accuracy_bootstrap({k: loo_centroid_correct(v, lab) for k, v in reps.items()}, lab, cfg.n_boot // 2, cfg.seed)}
+            res[sub] = r
+            log.info("[baselines %s/%s] n=%d rsa %s", m["key"], sub, r["n"], {k: round(v, 3) for k, v in r["rsa"].items()})
+        out[m["key"]] = res
+    log.info("infini-gram: rho(zipf, log count)=%.3f, zero-count fraction %.3f", out["infinigram"]["rho_zipf_vs_log_count"], out["infinigram"]["frac_zero"])
+    _save(cfg, "baselines.json", out)
+
+
+def phase_smds(cfg: Config) -> None:
+    """Secondary H-B (plan): SMDS line vs discrete-circle fits per family, each vs label-shuffled refits."""
+    from mathgeom.analyses.smds_fit import smds_family
+
+    fams = load_yaml("families.yaml")
+    fam = json.loads((cfg.artifacts / "acts" / "family_index.json").read_text())
+    out = {}
+    for m in cfg.models:
+        for key in (m["key"], m["key"] + "__random"):
+            A = _load(cfg, key, "family")["last"]
+            Lp = _primary_layer(A.shape[1], cfg.primary_rel_depth)
+            res = {"primary_layer": Lp}
+            for name in fams["chains"]:
+                idx = [i for i, (f, _, _) in enumerate(fam) if f == name]
+                res[name] = smds_family(A[idx, Lp], seed=cfg.seed)
+            log.info("[smds %s] %s", key, {n: (res[n]["preferred"], round(res[n]["euclidean"]["p"], 3), round(res[n]["discrete_circular"]["p"], 3)) for n in fams["chains"]})
+            out[key] = res
+    _save(cfg, "smds.json", out)
+
+
+def phase_hierarchy(cfg: Config) -> None:
+    """H-A2 as pre-registered: cophenetic correlation (UPGMA) vs super-tree, intrinsic tree-likeness vs a
+    spectrum-matched Gaussian null, and relative Gromov δ — trained vs random-init, field centroids."""
+    from mathgeom.analyses.hierarchy import cophenetic_rdm, relative_delta, spectrum_matched_gaussian, supertree_match
+    from mathgeom.analyses.map_fields import field_centroids
+    from mathgeom.geometry.preprocess import cosine_rdm
+
+    concepts = pd.read_csv(cfg.data_dir / "concepts.csv")
+    split = cfg.raw.get("analysis_split", "confirmatory")
+    mask = ((concepts.kind == "math") & concepts.primary & (concepts.split == split)).values
+    lab = concepts.field.values[mask]
+    names = sorted(set(lab))
+    branch = {f["id"]: f["branch"] for f in load_yaml("fields.yaml")["math"]}
+    tree = _tree_distance(names, branch)
+    rng = np.random.default_rng(cfg.seed)
+    out = {}
+    for m in cfg.models:
+        tr, rnd = _load(cfg, m["key"], "field_neutral")["last"], _load(cfg, m["key"] + "__random", "field_neutral")["last"]
+        Lp = _primary_layer(tr.shape[1], cfg.primary_rel_depth)
+        reps = {"trained": tr[mask, Lp], "random_init": rnd[mask, Lp], "layer0": tr[mask, 0]}
+        cents = {k: field_centroids(v, lab, names) for k, v in reps.items()}
+        r = {"primary_layer": Lp, "n_fields": len(names)}
+        r["coph_match"] = {k: supertree_match(cosine_rdm(C), tree) for k, C in cents.items()}
+        shuf = np.array([supertree_match(cosine_rdm(cents["trained"]), _tree_distance(names, dict(zip(names, rng.permutation([branch[n] for n in names]))))) for _ in range(2000)])
+        r["coph_match_p_shuffled_tree"] = float((1 + (shuf >= r["coph_match"]["trained"]).sum()) / (1 + len(shuf)))
+        r["coph_match_null95"] = float(np.percentile(shuf, 95))
+        boots = []
+        strata = [np.flatnonzero(lab == f) for f in names]
+        for _ in range(1000):  # paired concept bootstrap of trained − random-init super-tree match
+            idx = np.concatenate([rng.choice(s, len(s)) for s in strata])
+            boots.append(supertree_match(cosine_rdm(field_centroids(reps["trained"][idx], lab[idx], names)), tree)
+                         - supertree_match(cosine_rdm(field_centroids(reps["random_init"][idx], lab[idx], names)), tree))
+        r["coph_match_delta_vs_random_ci"] = [float(np.percentile(boots, 2.5)), float(np.percentile(boots, 97.5))]
+        r["coph_c"] = {k: cophenetic_rdm(cosine_rdm(C))[1] for k, C in cents.items()}
+        r["delta_rel"] = {k: relative_delta(C) for k, C in cents.items()}
+        g = [spectrum_matched_gaussian(cents["trained"], rng) for _ in range(300)]
+        gc = np.array([cophenetic_rdm(cosine_rdm(x))[1] for x in g])
+        gd = np.array([relative_delta(x) for x in g])
+        r["gaussian_null"] = {"coph_c_95": float(np.percentile(gc, 95)), "coph_c_p": float((1 + (gc >= r["coph_c"]["trained"]).sum()) / (1 + len(gc))),
+                              "delta_rel_5": float(np.percentile(gd, 5)), "delta_rel_p": float((1 + (gd <= r["delta_rel"]["trained"]).sum()) / (1 + len(gd)))}
+        log.info("[hierarchy %s] coph-match %s (p_shuf=%.4f, Δrnd CI %s) | coph c %s (gauss95 %.3f) | δ_rel %s (gauss5 %.3f)", m["key"],
+                 {k: round(v, 3) for k, v in r["coph_match"].items()}, r["coph_match_p_shuffled_tree"], [round(x, 3) for x in r["coph_match_delta_vs_random_ci"]],
+                 {k: round(v, 3) for k, v in r["coph_c"].items()}, r["gaussian_null"]["coph_c_95"], {k: round(v, 3) for k, v in r["delta_rel"].items()}, r["gaussian_null"]["delta_rel_5"])
+        out[m["key"]] = r
+    _save(cfg, "hierarchy.json", out)
+
+
 def phase_structures(cfg: Config) -> None:
     """H-B2 exploratory/secondary (pre-registered tests 4–5): axiom transfer to ring-like pairs and
     group objects (topological / Lie / algebraic groups) relative to their parents."""
@@ -435,6 +551,14 @@ def phase_axes(cfg: Config) -> None:
 
             pred = cross_val_predict(RidgeCV(alphas=np.logspace(-1, 4, 12)), X, res_(ab), cv=5)
             r["cv_ridge_rho_abstraction"] = float(spearmanr(pred, res_(ab))[0])
+            ig_path = cfg.data_dir / "infinigram_counts.json"
+            if ig_path.exists():  # robustness: also partial out pretraining-scale frequency (infini-gram, Dolma v1.7)
+                ig = json.loads(ig_path.read_text())
+                logc = np.log10(1 + df.concept.map(ig).fillna(0).values.astype(float))
+                Z2 = np.c_[Z, logc]
+                res2 = lambda v: v - Z2 @ np.linalg.lstsq(Z2, v, rcond=None)[0]  # noqa: E731
+                r["pcs_with_infinigram"] = [{"pc": k + 1, "rho_applied": float(spearmanr(res2(pcs[:, k]), res2(pa))[0]),
+                                             "rho_abstraction": float(spearmanr(res2(pcs[:, k]), res2(ab))[0])} for k in range(2)]
             out[key] = r
             log.info("[axes %s] PC1-5 rho(applied)=%s rho(abstraction)=%s cv-ridge rho=%.3f", key, [round(x["rho_applied"], 2) for x in r["pcs"]], [round(x["rho_abstraction"], 2) for x in r["pcs"]], r["cv_ridge_rho_abstraction"])
     _save(cfg, "axes.json", out)

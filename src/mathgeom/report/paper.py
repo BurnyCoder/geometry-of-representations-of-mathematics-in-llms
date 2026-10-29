@@ -65,6 +65,9 @@ def render_template(tpl: str, fig_prefix: str = "../reports/figures/") -> str:
             "calibration": lambda: render.table_calibration(r["calibration"]),
             "holm": lambda: render.table_holm(r["map_fields"], r["shapes"], r["lattice"]),
             "structures": lambda: render.table_structures(r["structures"]),
+            "hierarchy": lambda: render.table_hierarchy(r["hierarchy"]),
+            "baselines": lambda: render.table_baselines(r["baselines"]),
+            "smds": lambda: render.table_smds(r["smds"]),
             "posthoc": lambda: render.table_posthoc(r["posthoc"]),
             "cycles": lambda: render.table_cycles(r["posthoc"], {k: v["primary_layer"] for k, v in r["shapes"].items()}),
         }[name]

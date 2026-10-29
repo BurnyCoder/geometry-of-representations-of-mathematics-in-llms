@@ -141,6 +141,45 @@ def table_holm(mp: dict, sh: dict, la: dict) -> str:
     return "\n".join(out)
 
 
+def table_hierarchy(h: dict) -> str:
+    rows = ["| Model | super-tree match (cophenetic ρ): trained / twin / layer-0 | shuffled-tree p (null95) | Δ trained − twin [95% CI] | cophenetic c trained / twin (Gaussian 95th pct) | relative Gromov δ trained / twin (Gaussian 5th pct) |", "|---|---|---|---|---|---|"]
+    for key, r in h.items():
+        cm, cc, dl, g = r["coph_match"], r["coph_c"], r["delta_rel"], r["gaussian_null"]
+        rows.append(f"| {key} | {cm['trained']:.3f} / {cm['random_init']:.3f} / {cm['layer0']:.3f} | {_p(r['coph_match_p_shuffled_tree'])} ({r['coph_match_null95']:.3f}) | "
+                    f"{_ci(r['coph_match_delta_vs_random_ci'])} | {cc['trained']:.3f} / {cc['random_init']:.3f} ({g['coph_c_95']:.3f}) | {dl['trained']:.3f} / {dl['random_init']:.3f} ({g['delta_rel_5']:.3f}) |")
+    return "\n".join(rows)
+
+
+def table_baselines(b: dict) -> str:
+    rows = ["| Model | concept set | n | field ρ: LLM / Qwen3-Embedding / fastText | Δ LLM − Qwen3-Emb [CI] | Δ LLM − fastText [CI] | LOO acc: LLM / Qwen3-Emb / fastText |", "|---|---|---|---|---|---|---|"]
+    for key, res in b.items():
+        if key == "infinigram":
+            continue
+        for sub, r in res.items():
+            rsa, bt, la = r["rsa"], r["boot"], r["loo_acc"]
+            ft = f"{rsa['fasttext']:.3f}" if "fasttext" in rsa else "—"
+            dft = _ci(bt["delta_vs_fasttext"]["ci"]) if "delta_vs_fasttext" in bt else "—"
+            lft = f"{la['fasttext']['acc']:.3f}" if "fasttext" in la else "—"
+            rows.append(f"| {key} | {sub} | {r['n']} | {rsa['llm_trained']:.3f} / {rsa['qwen3_embedding']:.3f} / {ft} | {_ci(bt['delta_vs_qwen3_embedding']['ci'])} | {dft} | "
+                        f"{la['llm_trained']['acc']:.3f} / {la['qwen3_embedding']['acc']:.3f} / {lft} |")
+    ig = b.get("infinigram", {})
+    if ig:
+        rows.append(f"\ninfini-gram ({ig['index']}): Spearman ρ(wordfreq Zipf, log count) = {ig['rho_zipf_vs_log_count']:.3f}; concepts with zero count: {ig['frac_zero']:.1%}.")
+    return "\n".join(rows)
+
+
+def table_smds(s: dict) -> str:
+    rows = ["| Family | Model | SMDS line score (null95, p) | SMDS discrete-circle score (null95, p) | preferred (vs null) |", "|---|---|---|---|---|"]
+    fams = [k for k in next(iter(s.values())) if k != "primary_layer"]
+    for f in fams:
+        for key, r in s.items():
+            e, c = r[f]["euclidean"], r[f]["discrete_circular"]
+            from mathgeom.analyses.smds_fit import preferred
+
+            rows.append(f"| {f} | {key} | {e['score']:.3f} ({e['null95']:.3f}, {_p(e['p'])}) | {c['score']:.3f} ({c['null95']:.3f}, {_p(c['p'])}) | {preferred(r[f])} |")
+    return "\n".join(rows)
+
+
 def table_structures(s: dict) -> str:
     rows = ["| Model | commutativity transfer cos (null95, p) | identity transfer cos (p) | group-object parallelograms cos (null95, p) | parent ranks: topological / Lie / algebraic group |", "|---|---|---|---|---|"]
     for key, r in s.items():
@@ -164,6 +203,8 @@ def table_axes(a: dict) -> str:
         for pc, ev in zip(r["pcs"], r["explained_var"]):
             rows.append(f"| {key} | {pc['pc']} | {ev:.3f} | {pc['rho_applied']:+.3f} ({_p(pc['p_applied'])}) | {pc['rho_abstraction']:+.3f} ({_p(pc['p_abstraction'])}) |")
         rows.append(f"| {key} | 5-fold CV ridge readout of abstraction | | | ρ = {r['cv_ridge_rho_abstraction']:+.3f} |")
+        for pc in r.get("pcs_with_infinigram", []):
+            rows.append(f"| {key} | {pc['pc']} (+ infini-gram covariate) | | {pc['rho_applied']:+.3f} | {pc['rho_abstraction']:+.3f} |")
     return "\n".join(rows)
 
 
@@ -357,6 +398,9 @@ def fig_lattice(cfg: Config, fams: dict, keys: list[str], primary_layers: dict) 
 
 # ------------------------------------------------------------------ assemble
 def phase_report(cfg: Config) -> None:
+    global FIG
+    sub = cfg.raw.get("figure_subdir", "")  # variant configs reuse model keys: keep their figures apart
+    FIG = ROOT / "reports" / "figures" / sub if sub else ROOT / "reports" / "figures"
     FIG.mkdir(parents=True, exist_ok=True)
     fams = load_yaml("families.yaml")
     mp, sh, la = _j(cfg, "map_fields.json"), _j(cfg, "shapes.json"), _j(cfg, "lattice.json")
@@ -376,7 +420,10 @@ def phase_report(cfg: Config) -> None:
         "H-B number-coded families: structure beyond the number reference": table_beyond_reference(sh, fams),
         "H-B2 axiom lattices (offset consistency = mean cosine of same-axiom difference vectors)": table_lattice(la),
     }
-    for title, name, fn in (("H-B2 tests 4–5: axiom transfer to ring-like pairs; group objects (parent ranks = nearest-neighbour rank of [group, other parent])", "structures.json", table_structures),
+    for title, name, fn in (("H-A2 hierarchy as pre-registered: cophenetic correlation (UPGMA) vs super-tree; spectrum-matched Gaussian and Gromov δ (plan)", "hierarchy.json", table_hierarchy),
+                            ("Baselines: field map from fastText and Qwen3-Embedding vs the LLM (paired bootstrap); infini-gram covariate", "baselines.json", table_baselines),
+                            ("Secondary: SMDS line vs discrete-circle fits, each vs label-shuffled refits", "smds.json", table_smds),
+                            ("H-B2 tests 4–5: axiom transfer to ring-like pairs; group objects (parent ranks = nearest-neighbour rank of [group, other parent])", "structures.json", table_structures),
                             ("H-A4 judges: agreement of LLM abstraction raters", "judges.json", table_judges),
                             ("H-A4 axes: top PCs vs pure/applied and abstraction (residualized on frequency, token count)", "axes.json", table_axes),
                             ("H-B causal test (gated on baseline accuracy ≥ 0.70)", "causal.json", table_causal),
@@ -386,12 +433,13 @@ def phase_report(cfg: Config) -> None:
     md = f"# Results: `{cfg.name}` run\n\nGenerated by `python run.py report --config configs/{cfg.name}.yaml` from `results/{cfg.name}/*.json`. Do not edit by hand.\n\n"
     for title, tab in sections.items():
         md += f"## {title}\n\n{tab}\n\n"
-    md += "## Figures\n\n" + "\n\n".join(f"![{f}](figures/{f})" for f in figs) + "\n"
+    md += "## Figures\n\n" + "\n\n".join(f"![{f}](figures/{sub + '/' if sub else ''}{f})" for f in figs) + "\n"
     (ROOT / "reports" / f"{cfg.name}_results.md").write_text(md, encoding="utf-8")
     numbers = {"map_fields": mp, "shapes": sh, "lattice": la}
     (cfg.results_dir / "numbers.json").write_text(json.dumps(numbers, indent=1, default=float))
     # README results block is rendered across all configs by `run.py paper` (report/paper.py)
     from mathgeom.report.site import export_site
 
-    export_site(cfg, mp, sh, la)
+    if cfg.raw.get("site", True):  # variant configs would overwrite the explorer entry of the same model key
+        export_site(cfg, mp, sh, la)
     log.info("report written: %d figures, reports/%s_results.md, site data", len(figs), cfg.name)
