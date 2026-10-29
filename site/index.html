@@ -4,91 +4,240 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Geometry of Mathematics in LLMs</title>
+<meta name="description" content="An explorable article: do language models lay out mathematics geometrically — a map of fields, ordered chains, circles, and axioms as directions? Every number is generated from the study's results.">
+<link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
-<style>
-  :root { --bg:#fbfbfa; --fg:#1d1d1f; --muted:#666; --card:#fff; --line:#e3e3e0; --accent:#1f5fa8; }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#141416; --fg:#ececec; --muted:#9a9a9a; --card:#1d1d20; --line:#333; --accent:#6aa6ff; } }
-  :root[data-theme="dark"] { --bg:#141416; --fg:#ececec; --muted:#9a9a9a; --card:#1d1d20; --line:#333; --accent:#6aa6ff; }
-  *, *::before, *::after { box-sizing:border-box; }
-  html, body { overflow-x:hidden; }
-  body { background:var(--bg); color:var(--fg); font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif; margin:0; }
-  main { max-width:1180px; margin:0 auto; padding:24px 16px 64px; }
-  h1 { font-size:1.6rem; margin:0 0 4px; } h2 { font-size:1.15rem; margin:32px 0 6px; }
-  p.lead, .note { color:var(--muted); } .note { font-size:.86rem; }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px; margin-top:10px; }
-  .row { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:10px; }
-  .plot { width:100%; height:420px; }
-  select { font:inherit; padding:4px 8px; border-radius:6px; border:1px solid var(--line); background:var(--card); color:var(--fg); }
-  table { border-collapse:collapse; font-size:.85rem; width:100%; } td,th { border-bottom:1px solid var(--line); padding:4px 6px; text-align:left; }
-  a { color:var(--accent); }
-</style>
 </head>
 <body>
-<main>
-  <h1>Geometry of mathematics in LLMs</h1>
-  <p class="lead">Do LLMs organize mathematical concepts geometrically, the way they place days of the week on a circle (<a href="https://arxiv.org/abs/2405.14860">Engels et al. 2024</a>)? Each view shows the trained model next to its <b>random-init twin</b>: the same architecture and tokenizer with no learning. Geometry that also appears in the twin comes from word form, not knowledge. Code, preregistration and full statistics: <a href="https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms">GitHub</a>.</p>
-  <label>Model: <select id="model"></select></label>
-  <div class="card" id="headline"></div>
+<div class="wrap">
+<header class="hero prose">
+  <h1>Do language models organize mathematics geometrically?</h1>
+  <div class="byline">
+    <span>Libor “Burny” Burian</span><span>October 2026</span>
+    <a href="https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms/blob/master/paper/paper.pdf">Paper (PDF)</a>
+    <a href="https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms">Code &amp; preregistration</a>
+    <a href="https://huggingface.co/datasets/BurnyCoder/geometry-of-mathematics-in-llms">Data &amp; activations</a>
+  </div>
+  <p class="kicker">LLMs put the days of the week on a circle (<a href="https://arxiv.org/abs/2405.14860">Engels et al., 2024</a>). We asked whether abstract mathematics has a shape too: is there a <i>map</i> of mathematical fields, are chains of definitions laid out in order, and are axioms <i>directions</i>? Each of five open base models is compared with its <b>random-init twin</b>, the same network and tokenizer with untrained weights.</p>
+  <div class="tldr">
+    <h2>TL;DR</h2>
+    <ul>
+      <li><b>Fields form a map.</b> Distances between field centroids correlate with arXiv cross-listing: ρ = <span data-num="results.map_fields.qwen3.5-2b.math_primary.rsa.trained" data-fmt=".2f"></span> in the confirmatory model, against <span data-num="results.map_fields.qwen3.5-2b.math_primary.rsa.random_init" data-fmt=".2f"></span> for its twin, and in every model we tested.</li>
+      <li><b>Days and months are circles; class-inclusion chains are lines.</b> Angles are <i>not</i> circles, which falsified one of our preregistered predictions.</li>
+      <li><b>Axioms act as directions.</b> “Add commutativity” is a consistent arrow (offset consistency <span data-num="results.lattice.qwen3.5-2b.group_like.offsets.commutative.consistency" data-fmt=".2f"></span>), as is “add associativity”; identity and divisibility are weaker.</li>
+      <li><b>Not special to LLMs or to math.</b> A text-embedding model reaches a similar map (ρ = <span data-num="results.baselines.qwen3.5-2b.all_primary.rsa.qwen3_embedding" data-fmt=".2f"></span>), science topics cluster as strongly, and a trillion tokens of math pretraining did not sharpen it.</li>
+    </ul>
+  </div>
+</header>
+</div>
 
-  <h2>1 · Map of mathematical fields</h2>
-  <p class="note">2D metric MDS of field-centroid distances. Left: arXiv cross-listing distance (ground truth). Middle: trained model. Right: random-init twin. Blue = pure, orange = applied.</p>
-  <div class="row"><div id="fm_arxiv" class="plot card"></div><div id="fm_trained" class="plot card"></div><div id="fm_random" class="plot card"></div></div>
+<nav class="controls" aria-label="Figure controls">
+  <div class="wrap">
+    <label>Model <select id="model"></select></label>
+    <label>Layer <input id="layer" type="range" min="1" max="24" value="12" aria-describedby="layer-readout"></label>
+    <button id="play" aria-pressed="false" title="Animate through the layers">▶ Play</button>
+    <span id="layer-readout" class="layer-readout"></span>
+    <button id="reset-layer" title="Back to the preregistered layer">Pre-registered layer</button>
+    <button id="theme" title="Toggle light/dark">◐ Theme</button>
+    <div class="toc"><a href="#s-glance">At a glance</a><a href="#s-map">Map</a><a href="#s-cloud">Concepts</a><a href="#s-shapes">Shapes</a><a href="#s-axioms">Axioms</a><a href="#s-abstract">Abstraction</a><a href="#s-failed">What failed</a></div>
+  </div>
+</nav>
 
-  <h2>2 · Concept cloud</h2>
-  <p class="note">PCA-3D of individual concepts (primary, confirmatory split), coloured by field. Hover to see a concept.</p>
-  <div class="row"><div id="cc_trained" class="plot card"></div><div id="cc_random" class="plot card"></div></div>
+<main class="wrap">
+<div class="prose">
+<h2 class="section" id="s-method"><span class="num">1</span>How we look inside the model</h2>
+<p>For every concept we run eight short sentences that end with its name, for example “In mathematics, one important notion is the ⟨concept⟩”. We read the model’s internal vector (the <i>residual stream</i>) at the concept’s last token, and average over the eight templates. Templates never name a field, so a field cannot be read off the prompt.</p>
+<span class="sidenote"><b>Random-init twin.</b> The same architecture and tokenizer with weights redrawn at random. Any geometry it shows comes from word form alone (shared tokens, length). Every claim here is a <i>difference</i> from the twin.</span>
+<p>Then we ask simple geometric questions of those vectors. Are related fields close? Do chains of definitions line up in order? Are differences such as monoid − semigroup parallel to loop − quasigroup? All views below are <b>unsupervised</b> projections (PCA, MDS): nothing is fitted to the labels, because with a dozen points in thousands of dimensions a fitted projection can draw any shape.</p>
+</div>
 
-  <h2>3 · Shape families</h2>
-  <label>Family: <select id="family"></select></label>
-  <p class="note">PCA-3D at the pre-registered layer. Lines join items in ground-truth order. Circular families are closed.</p>
-  <div class="row"><div id="fa_trained" class="plot card"></div><div id="fa_random" class="plot card"></div></div>
+<figure class="fig" id="fig-method">
+  <div class="fig-head"><span class="fig-num">Figure 1</span><span class="fig-title">From prompts to geometry</span></div>
+  <svg viewBox="0 0 1100 190" width="100%" role="img" aria-label="Pipeline: templates, residual stream, average, field centroids, distance matrix compared with arXiv; the random-init twin follows the same path">
+    <style>.b{fill:var(--page);stroke:var(--axis);rx:10}.t{fill:var(--ink);font:13px system-ui}.s{fill:var(--ink2);font:11px system-ui}.a{stroke:var(--axis);stroke-width:1.5;marker-end:url(#ar)}.tw{fill:var(--twin);font:12px system-ui}</style>
+    <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--axis)"/></marker></defs>
+    <rect class="b" x="10" y="30" width="190" height="80"/><text class="t" x="24" y="58">8 templates per concept</text><text class="s" x="24" y="80">“… notion is the monoid”</text><text class="s" x="24" y="96">no field names in prompts</text>
+    <line class="a" x1="200" y1="70" x2="238" y2="70"/>
+    <rect class="b" x="240" y="30" width="190" height="80"/><text class="t" x="254" y="58">Residual stream</text><text class="s" x="254" y="80">last token of the concept,</text><text class="s" x="254" y="96">every layer</text>
+    <line class="a" x1="430" y1="70" x2="468" y2="70"/>
+    <rect class="b" x="470" y="30" width="190" height="80"/><text class="t" x="484" y="58">Average + centre</text><text class="s" x="484" y="80">mean over templates;</text><text class="s" x="484" y="96">no whitening</text>
+    <line class="a" x1="660" y1="70" x2="698" y2="70"/>
+    <rect class="b" x="700" y="30" width="180" height="80"/><text class="t" x="714" y="58">Geometry</text><text class="s" x="714" y="80">field centroids, chains,</text><text class="s" x="714" y="96">axiom differences</text>
+    <line class="a" x1="880" y1="70" x2="918" y2="70"/>
+    <rect class="b" x="920" y="30" width="170" height="80"/><text class="t" x="934" y="58">Compare</text><text class="s" x="934" y="80">vs arXiv, true order,</text><text class="s" x="934" y="96">permutation nulls</text>
+    <text class="tw" x="240" y="150">The random-init twin goes through exactly the same steps; the evidence is trained − twin.</text>
+  </svg>
+</figure>
 
-  <h2>4 · Group-like axiom lattice</h2>
-  <p class="note">Each arrow adds one axiom: <span style="color:#1f77b4">associative</span> · <span style="color:#2ca02c">identity</span> · <span style="color:#d62728">divisible</span> · <span style="color:#9467bd">commutative</span>. If an axiom is a consistent direction, its arrows are parallel.</p>
-  <div class="row"><div id="la_trained" class="plot card"></div><div id="la_random" class="plot card"></div></div>
+<div class="prose">
+<h2 class="section" id="s-glance"><span class="num">2</span>At a glance</h2>
+<p>The headline numbers for the preregistered confirmatory model, Qwen3.5-2B-Base, at its preregistered layer, followed by every test in every model.</p>
+</div>
+<div class="tiles" id="tiles"></div>
+
+<figure class="fig" id="fig-scorecard">
+  <div class="fig-head"><span class="fig-num">Figure 2</span><span class="fig-title">Scorecard: every test in every model</span>
+    <div class="fig-tools chips" id="score-filter"></div></div>
+  <div style="overflow-x:auto"><table class="scorecard" id="scorecard"></table></div>
+  <div class="legend-note" id="score-legend"></div>
+  <figcaption><span class="read">Each cell gives a verdict symbol and the trained model’s statistic. The axiom tests are Holm-corrected within each model; Δ tests use 95% bootstrap CIs.</span></figcaption>
+</figure>
+
+<figure class="fig" id="fig-forest">
+  <div class="fig-head"><span class="fig-num">Figure 3</span><span class="fig-title">Effect sizes with 95% confidence intervals</span>
+    <div class="fig-tools"><button data-table="forest-table">Table view</button></div></div>
+  <div id="forest"></div>
+  <div class="table-view" id="forest-table"></div>
+  <figcaption>
+    <span><b>The map beats the untrained twin in every model and beats fastText, but not a dedicated text embedder.</b> Math pretraining and the hierarchy test are nulls.</span>
+    <span class="read">Each line is a paired-bootstrap 95% CI; blue means it excludes zero. Hover for details.</span>
+    <span class="caveat">CIs are unadjusted for multiplicity; the Holm decisions are in the scorecard. Rows marked “added” come from the plan audits, not the preregistration.</span>
+  </figcaption>
+</figure>
+
+<div class="prose">
+<h2 class="section" id="s-map"><span class="num">3</span>A map of mathematics</h2>
+<p>We drew about two dozen concepts from Wikipedia glossaries for each of <span data-num="results.map_fields.qwen3.5-2b.math_primary.n_fields" data-fmt="d"></span> fields, skipping names that give their field away (“topological space”). We then averaged each field’s concepts into a <i>field centroid</i>. The ground truth for “related fields” is how often mathematicians cross-list papers between the corresponding arXiv categories, over <span data-num="fields.n_papers" data-fmt="M"></span> papers.</p>
+<span class="sidenote"><b>ρ (RSA).</b> Spearman correlation between all pairwise distances of the model’s field centroids and all pairwise arXiv distances. 1 = the same ranking of field pairs; 0 = unrelated.</span>
+<p>Use the <b>layer slider</b> above to scrub through depth, and the model menu to switch models. Hover a field to highlight it in all three maps and in the matrices below.</p>
+</div>
+
+<figure class="fig" id="fig-map">
+  <div class="fig-head"><span class="fig-num">Figure 4</span><span class="fig-title">Related fields stay close in the trained model; the twin scrambles them</span>
+    <div class="fig-tools"><button id="edges-toggle" aria-pressed="true">Neighbour edges</button><button data-table="map-table">Table view</button></div></div>
+  <div class="panels">
+    <div class="panel tall" id="map-arxiv"></div><div class="panel tall" id="map-trained"></div><div class="panel tall" id="map-twin"></div>
+  </div>
+  <div class="table-view" id="map-table"></div>
+  <figcaption>
+    <span class="read">Metric MDS of three 17 × 17 distance matrices. Grey edges join each field to its two nearest arXiv neighbours and are drawn in every panel: short edges mean the neighbourhood survives. Blue: pure fields; orange: applied.</span>
+    <span class="caveat">ρ is computed on the full distance matrices, not on these 2-D layouts. Each layout is rotated or reflected onto the arXiv one, and each layer onto the preregistered layer, for display only.</span>
+  </figcaption>
+</figure>
+
+<figure class="fig" id="fig-rdm">
+  <div class="fig-head"><span class="fig-num">Figure 5</span><span class="fig-title">The same comparison as distance matrices</span></div>
+  <div class="panels">
+    <div class="panel tall" id="rdm-arxiv"></div><div class="panel tall" id="rdm-trained"></div><div class="panel tall" id="rdm-twin"></div>
+  </div>
+  <figcaption>
+    <span class="read">Colour = rank of each distance within its matrix (Spearman compares ranks). Rows stay in one fixed order, grouped by the five super-tree branches: algebra, geometry, analysis, foundations, applied.</span>
+    <span class="caveat">A fixed order is essential: re-clustering each matrix separately would create blocks out of noise.</span>
+  </figcaption>
+</figure>
+
+<figure class="fig" id="fig-depth">
+  <div class="fig-head"><span class="fig-num">Figure 6</span><span class="fig-title">The map appears early and persists through depth</span>
+    <div class="fig-tools"><button id="all-models" aria-pressed="false">Compare all models</button></div></div>
+  <div class="panel" id="depth"></div>
+  <figcaption>
+    <span class="read">ρ with arXiv at every layer: trained (blue) vs twin (grey). The flat line is the 95th percentile of the max-over-layers permutation null; the marker is the current slider layer.</span>
+    <span class="caveat">Any “best layer” is post-hoc; the preregistered test uses one fixed layer.</span>
+  </figcaption>
+</figure>
+
+<div class="prose">
+<h2 class="section" id="s-cloud"><span class="num">4</span>The concept cloud</h2>
+<p>All <span data-num="results.map_fields.qwen3.5-2b.math_primary.n" data-fmt="d"></span> primary concepts in the first three principal components, at the preregistered layer. Search for a concept, or click one, to see its nearest neighbours in the trained model and in its twin.</p>
+</div>
+<figure class="fig" id="fig-concepts">
+  <div class="fig-head"><span class="fig-num">Figure 7</span><span class="fig-title">Every concept, and its neighbours</span>
+    <div class="fig-tools">
+      <input id="search" type="search" placeholder="Find a concept…" list="concept-list" aria-label="Find a concept">
+      <datalist id="concept-list"></datalist>
+      <label>Colour <select id="cloud-color"><option value="field">highlight a field</option><option value="abs">judge abstraction</option></select></label>
+      <select id="cloud-field" aria-label="Field to highlight"></select>
+      <button id="cloud-twin" aria-pressed="false">Show twin</button>
+    </div></div>
+  <div class="panels two"><div class="panel tall" id="cloud"></div><div id="concept-card" class="card"><span class="muted">Click a point or search for a concept.</span></div></div>
+  <figcaption><span class="read">One highlighted field (blue) against all others (grey); or colour by the judges’ abstraction rating (light = concrete, dark = abstract). Drag to rotate.</span>
+  <span class="caveat">Three components keep only part of the variance; the neighbour lists use the full vectors.</span></figcaption>
+</figure>
+
+<div class="prose">
+<h2 class="section" id="s-shapes"><span class="num">5</span>Shapes: circles, lines and a broken circle</h2>
+<p>Ordered families should trace a path through activation space. Days and months are our <b>positive control</b>: Engels et al. found them on circles. The <i>ring chain</i> (rng ⊃ ring ⊃ commutative ring ⊃ integral domain ⊃ … ⊃ field) and the <i>space chain</i> (T0 ⊃ T1 ⊃ Hausdorff ⊃ … ⊃ Hilbert space) are inclusions of definitions. We predicted that angles from 0° to 330° would close into a circle, with 330° next to 0°.</p>
+<span class="sidenote"><b>Cycle score.</b> The fraction of items whose angular neighbour in the PC plane is the true next item. 1 = perfect cycle. Post-hoc. <b>Robinson score:</b> the fraction of item triples consistent with the true order; chance is 1/3.</span>
+</div>
+<figure class="fig" id="fig-families">
+  <div class="fig-head"><span class="fig-num">Figure 8</span><span class="fig-title" id="fam-title">Family geometry across depth</span></div>
+  <div class="chips" id="fam-chips"></div>
+  <div class="panels">
+    <div class="panel tall" id="fam-trained"></div><div class="panel tall" id="fam-twin"></div><div class="panel tall" id="fam-curve"></div>
+  </div>
+  <figcaption>
+    <span id="fam-takeaway"></span>
+    <span class="read">Top-2 PCA plane at the slider layer; colour runs light → dark along the true order and the path joins consecutive items. The orange edge on angles is the 330° → 0° closure the preregistration predicted. Right: the post-hoc cycle score at every layer.</span>
+    <span class="caveat">With 7–13 items per family, every statistic is tested against an order-permutation null; supervised fits are avoided because they would find any order.</span>
+  </figcaption>
+</figure>
+
+<div class="prose">
+<h2 class="section" id="s-axioms"><span class="num">6</span>Axioms as directions</h2>
+<p>Thirteen group-like structures, from magma to abelian group, are each a set of four axioms: associativity, identity, divisibility (inverses) and commutativity. If “adding an axiom” is a direction in the model, then every pair of structures that differs only in that axiom should have the same difference vector. Examples are semigroup → monoid, quasigroup → loop and magma → unital magma. This is the parallelogram picture of word analogies (man : woman :: king : queen).</p>
+<span class="sidenote"><b>Offset consistency.</b> The mean cosine between same-axiom difference vectors. 0 = unrelated arrows; 1 = parallel. Compared with random pairs of structures, and with the twin.</span>
+</div>
+<figure class="fig" id="fig-lattice">
+  <div class="fig-head"><span class="fig-num">Figure 9</span><span class="fig-title">Highlight one axiom: in the trained model its arrows run parallel</span></div>
+  <div class="chips" id="axiom-chips"></div>
+  <div class="panels two"><div class="panel tall" id="lat-trained"></div><div class="panel tall" id="lat-twin"></div></div>
+  <figcaption>
+    <span id="lat-note"></span>
+    <span class="read">The unsupervised PCA plane of the 13 structures at the slider layer. Blue arrows are the pairs that differ only in the selected axiom; grey lines are all other single-axiom pairs. Hover a structure to see its axioms.</span>
+    <span class="caveat">A 2-D picture can hide or exaggerate parallelism. Figure 10 shows the full-dimensional evidence.</span>
+  </figcaption>
+</figure>
+
+<figure class="fig" id="fig-cosines">
+  <div class="fig-head"><span class="fig-num">Figure 10</span><span class="fig-title">The full-dimensional evidence: diagonal blocks of parallel arrows</span>
+    <div class="fig-tools"><button data-table="cos-table">Table view</button></div></div>
+  <div class="panels two"><div class="panel tall" id="cos-trained"></div><div class="panel tall" id="cos-twin"></div></div>
+  <div class="table-view" id="cos-table"></div>
+  <figcaption>
+    <span class="read">Cosine between every pair of single-axiom difference vectors at the preregistered layer, grouped by axiom. Red diagonal blocks mean a consistent direction. Hover any cell to see which two arrows it compares.</span>
+    <span class="caveat">Cells marked × compare two arrows that share a structure. Even for random vectors these sit near ±½, so they carry no evidence.</span>
+  </figcaption>
+</figure>
+
+<figure class="fig" id="fig-analogy">
+  <div class="fig-head"><span class="fig-num">Figure 11</span><span class="fig-title">Analogy playground: a is to b as c is to … ?</span></div>
+  <div class="chips">
+    <label>a <select id="an-a"></select></label><label>b <select id="an-b"></select></label><label>c <select id="an-c"></select></label>
+  </div>
+  <div class="panels two"><div id="an-trained"></div><div id="an-twin"></div></div>
+  <figcaption>
+    <span class="read">We compute b − a + c and rank the remaining structures by cosine similarity, excluding a, b and c. The bold row is the structure the axioms predict, when one exists. The computation runs in your browser on exact low-dimensional coordinates, which preserve every cosine of the full residual vectors at the preregistered layer.</span>
+    <span class="caveat">Shared words (“commutative …”) help analogies even in the twin; offset consistency is the stricter test.</span>
+  </figcaption>
+</figure>
+
+<div class="prose">
+<h2 class="section" id="s-abstract"><span class="num">7</span>Concrete to abstract</h2>
+<p>Three LLM judges from model families we do not probe rated every concept’s abstraction from 1 to 7. After removing word frequency and length, the first principal component of the concept cloud correlates with these ratings: ρ = <span data-num="results.axes.qwen3.5-2b.pcs.0.rho_abstraction" data-fmt=".2f"></span>. The second correlates with the pure/applied label. As an outside check, the judges’ ratings rise with how deep a concept’s definition sits in Mathlib’s import graph, though only <span data-num="results.mathlib.n_matched" data-fmt="d"></span> of <span data-num="results.mathlib.n_math_concepts" data-fmt="d"></span> concepts could be matched.</p>
+</div>
+<figure class="fig" id="fig-abstraction">
+  <div class="fig-head"><span class="fig-num">Figure 12</span><span class="fig-title">Judges’ abstraction vs Mathlib definitional depth</span></div>
+  <div class="panel" id="mathlib"></div>
+  <figcaption><span class="read">Each dot is a concept matched to a Mathlib declaration. x = longest chain of Mathlib imports below its defining module; y = mean judge rating. Hover for the declaration.</span>
+  <span class="caveat">Only a few percent of glossary terms match Mathlib names, and import depth differs systematically between areas of Mathlib.</span></figcaption>
+</figure>
+
+<div class="prose">
+<h2 class="section" id="s-failed"><span class="num">8</span>What did not work</h2>
+<ul>
+  <li><b>Angles are not a circle</b> in any model. Their geometry follows the bare numerals 0…330 (ρ = <span data-num="results.shapes.qwen3.5-2b.angles.beyond_reference.rho_fam_ref" data-fmt=".2f"></span> in Qwen3.5-2B). This falsifies our preregistered prediction.</li>
+  <li><b>No clean hierarchy.</b> Under the preregistered cophenetic test, the map does not beat the twin as a five-branch tree.</li>
+  <li><b>Math pretraining did not sharpen the map.</b> Qwen2.5-Math vs its base: Δρ 95% CI [<span data-num="results.compare.qwen2.5-math-1.5b_vs_qwen2.5-1.5b.boot.delta_vs_qwen2.5-1.5b.ci.0" data-fmt=".2f"></span>, <span data-num="results.compare.qwen2.5-math-1.5b_vs_qwen2.5-1.5b.boot.delta_vs_qwen2.5-1.5b.ci.1" data-fmt=".2f"></span>].</li>
+  <li><b>Not specific to LLMs or to math.</b> Qwen3-Embedding reaches a similar map, and science topics cluster as strongly.</li>
+  <li><b>Causal test inconclusive</b>, and identity and divisibility directions do not survive multiple-comparison correction in every model.</li>
+</ul>
+<p>Full details, every table and the preregistration are in the <a href="https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms/blob/master/paper/paper.pdf">paper</a> and the <a href="https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms">repository</a>.</p>
+</div>
+
+<footer class="prose">
+  <p>Every number on this page is read from <code>data/index.json</code>, which <code>python run.py report</code> generates from the study’s results files; none are typed into the page. Colours come from a palette checked for colour-vision deficiency. Style inspired by <a href="https://transformer-circuits.pub/2025/linebreaks/index.html">Transformer Circuits</a> and <a href="https://www.goodfire.com/papers/phylogeny-manifold">Goodfire</a> research posts.</p>
+</footer>
 </main>
-<script>
-const COLORS = ["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b","#e377c2","#7f7f7f","#bcbd22","#17becf","#393b79","#637939","#8c6d31","#843c39","#7b4173","#3182bd","#e6550d","#31a354"];
-const AX = {associative:"#1f77b4", identity:"#2ca02c", divisible:"#d62728", commutative:"#9467bd"};
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-const layout = t => ({title:{text:t,font:{size:13}}, margin:{l:10,r:10,t:36,b:10}, paper_bgcolor:"rgba(0,0,0,0)", plot_bgcolor:"rgba(0,0,0,0)", font:{color:css("--fg")}, showlegend:false,
-  xaxis:{visible:false}, yaxis:{visible:false}, scene:{xaxis:{visible:false},yaxis:{visible:false},zaxis:{visible:false}}});
-let DATA;
-fetch("data.json").then(r => r.json()).then(d => { DATA = d;
-  const ms = document.getElementById("model"); Object.keys(d.models).forEach(k => ms.add(new Option(k,k)));
-  ms.onchange = render; document.getElementById("family").onchange = renderFamily; render(); });
-function fmt(x){ return (x>=0?"+":"") + x.toFixed(3); }
-function render(){
-  const m = DATA.models[document.getElementById("model").value], r = m.results.map.math_primary;
-  document.getElementById("headline").innerHTML = `<table><tr><th>Statistic (layer ${m.primary_layer})</th><th>trained</th><th>random-init</th><th>layer-0</th></tr>
-   <tr><td>ρ(field map, arXiv distance)</td><td>${r.rsa.trained.toFixed(3)} (perm p=${r.rsa_perm_p.toFixed(4)})</td><td>${r.rsa.random_init.toFixed(3)}</td><td>${r.rsa.layer0.toFixed(3)}</td></tr>
-   <tr><td>Δ trained − random-init, 95% CI</td><td colspan=3>${fmt(r.rsa.trained-r.rsa.random_init)} [${r.rsa_boot.delta_vs_random_init.ci.map(x=>x.toFixed(3)).join(", ")}]</td></tr>
-   <tr><td>LOO field accuracy (chance ${r.loo_acc.chance.toFixed(3)})</td><td>${r.loo_acc.trained.acc.toFixed(3)}</td><td>${r.loo_acc.random_init.acc.toFixed(3)}</td><td>${r.loo_acc.layer0.acc.toFixed(3)}</td></tr></table>`;
-  const fm = m.field_maps, col = fm.pa.map(p => p==="pure" ? "#1f5fa8" : "#d35400");
-  for (const [id,key,t] of [["fm_arxiv","arxiv","arXiv cross-listing"],["fm_trained","trained","trained"],["fm_random","random_init","random-init twin"]])
-    Plotly.react(id, [{x:fm[key].map(p=>p[0]), y:fm[key].map(p=>p[1]), text:fm.names.map(n=>n.replaceAll("_"," ")), mode:"markers+text", textposition:"top center", textfont:{size:9}, marker:{color:col,size:9}, type:"scatter", hovertext:fm.branch}], layout(t), {responsive:true});
-  for (const [id,key,t] of [["cc_trained","concepts_trained","trained"],["cc_random","concepts_random_init","random-init twin"]]){
-    const c = m[key], fields = [...new Set(c.field)];
-    Plotly.react(id, fields.map((f,i) => { const ix = c.field.map((g,j)=>g===f?j:-1).filter(j=>j>=0);
-      return {type:"scatter3d", mode:"markers", name:f, x:ix.map(j=>c.xyz[j][0]), y:ix.map(j=>c.xyz[j][1]), z:ix.map(j=>c.xyz[j][2]), text:ix.map(j=>c.concept[j]+" ("+f+")"), hoverinfo:"text", marker:{size:3,color:COLORS[i%COLORS.length]}}; }), layout(t), {responsive:true}); }
-  const fs = document.getElementById("family"); if (!fs.options.length) Object.keys(m.families).filter(k=>k!=="group_like").forEach(k => fs.add(new Option(k,k)));
-  renderFamily(); renderLattice(m);
-}
-function renderFamily(){
-  const m = DATA.models[document.getElementById("model").value], f = m.families[document.getElementById("family").value];
-  for (const [id,key] of [["fa_trained","trained"],["fa_random","random_init"]]){
-    let P = f[key], idx = P.map((_,i)=>i); if (f.expected==="circle") idx = idx.concat([0]);
-    Plotly.react(id, [{type:"scatter3d", mode:"lines+markers+text", x:idx.map(i=>P[i][0]), y:idx.map(i=>P[i][1]), z:idx.map(i=>P[i][2]), text:idx.map(i=>f.items[i]), textfont:{size:9},
-      marker:{size:4,color:idx,colorscale:"Viridis"}, line:{color:"#999",width:2}}], layout(key==="trained"?"trained":"random-init twin"), {responsive:true}); }
-}
-function renderLattice(m){
-  const L = m.families.group_like;
-  for (const [id,key] of [["la_trained","trained"],["la_random","random_init"]]){
-    const P = L[key], tr = [{type:"scatter", mode:"markers+text", x:P.map(p=>p[0]), y:P.map(p=>p[1]), text:L.items, textposition:"top center", textfont:{size:9}, marker:{size:7,color:css("--fg")}}];
-    const ann = []; L.edges.forEach(e => e.pairs.forEach(([a,b]) => ann.push({x:P[b][0],y:P[b][1],ax:P[a][0],ay:P[a][1],xref:"x",yref:"y",axref:"x",ayref:"y",showarrow:true,arrowhead:2,arrowcolor:AX[e.axiom],arrowwidth:1.4,opacity:.8})));
-    const lay = layout(key==="trained"?"trained":"random-init twin"); lay.annotations = ann;
-    Plotly.react(id, tr, lay, {responsive:true}); }
-}
-</script>
+<script src="app.js"></script>
 </body>
 </html>
