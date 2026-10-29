@@ -278,6 +278,40 @@ In this model's random-init twin, all four consistencies are ≈ 0.
 - **Across the replication models (Appendix A):** all four offsets are positive in every model. They are near zero in the Qwen twins and weaker in Gemma's twin, which has small lexical offsets for associativity and divisibility. Divisibility reaches raw p < .05 in all five models, identity in three.
 - **Our reading:** strong evidence for associativity and commutativity directions, and suggestive evidence for divisibility and identity.
 
+**Lie groups and other group objects (exploratory).** A Lie group is a group that is also a smooth manifold; topological and algebraic groups are defined analogously. We tested three parallelograms:
+- topological group − group ≈ topological space − set;
+- Lie group − topological group ≈ smooth manifold − topological space;
+- algebraic group − group ≈ algebraic variety − set.
+
+| Model | commutativity transfer cos (null95, p) | identity transfer cos (p) | group-object parallelograms cos (null95, p) | parent ranks: topological / Lie / algebraic group |
+|---|---|---|---|---|
+| qwen3.5-2b | +0.198 (0.198, 0.0510) | +0.015 (0.3983) | +0.398 (0.235, 0.0045) | [5, 8] / [3, 7] / [3, 6] (of 113) |
+| qwen3.5-2b__random | -0.017 (0.167, 0.7126) | +0.001 (0.4743) | +0.006 (0.031, 0.3768) | [2, 44] / [1, 18] / [3, 71] (of 113) |
+
+| Model | commutativity transfer cos (null95, p) | identity transfer cos (p) | group-object parallelograms cos (null95, p) | parent ranks: topological / Lie / algebraic group |
+|---|---|---|---|---|
+| qwen3.5-0.8b | +0.188 (0.212, 0.0760) | +0.075 (0.1794) | +0.457 (0.241, 0.0025) | [5, 15] / [4, 6] / [4, 5] (of 113) |
+| qwen3.5-0.8b__random | +0.010 (0.144, 0.4038) | -0.014 (0.6552) | -0.028 (0.058, 0.7941) | [1, 72] / [1, 65] / [2, 88] (of 113) |
+| qwen2.5-1.5b | +0.183 (0.165, 0.0380) | +0.020 (0.3933) | +0.406 (0.221, 0.0035) | [4, 6] / [3, 6] / [4, 6] (of 113) |
+| qwen2.5-1.5b__random | +0.142 (0.135, 0.0435) | +0.038 (0.1424) | +0.156 (0.138, 0.0350) | [1, 2] / [1, 18] / [1, 2] (of 113) |
+| qwen2.5-math-1.5b | +0.202 (0.160, 0.0210) | +0.096 (0.1244) | +0.409 (0.208, 0.0015) | [4, 7] / [3, 6] / [3, 6] (of 113) |
+| qwen2.5-math-1.5b__random | +0.124 (0.137, 0.0600) | +0.005 (0.4358) | +0.150 (0.139, 0.0410) | [1, 2] / [1, 15] / [1, 2] (of 113) |
+
+| Model | commutativity transfer cos (null95, p) | identity transfer cos (p) | group-object parallelograms cos (null95, p) | parent ranks: topological / Lie / algebraic group |
+|---|---|---|---|---|
+| gemma-4-e2b | +0.129 (0.271, 0.2324) | -0.180 (0.9320) | +0.484 (0.303, 0.0085) | [41, 6] / [2, 10] / [7, 3] (of 113) |
+| gemma-4-e2b__random | +0.003 (0.063, 0.4568) | +0.037 (0.2344) | -0.003 (0.141, 0.5337) | [2, 31] / [2, 6] / [2, 7] (of 113) |
+
+**Group objects: supported.**
+- The parallelograms hold in all five trained models: mean cosine 0.40 in Qwen3.5-2B (p = 0.0045). The twins are near zero; the Qwen2.5 twins show a weak lexical signal.
+- Trained models place "Lie group" close to *both* parents: "group" and "smooth manifold" rank 3 and 7 among 113 items.
+- The twins place it next to "group" only, because of the shared token; "smooth manifold" ranks 18 in the Qwen3.5-2B twin.
+
+**Axiom transfer: inconclusive.**
+- The commutativity direction learned on group-like pairs transfers only weakly to ring → commutative ring and division ring → field (0.20, p = 0.051).
+- Some Qwen twins show similar values. "Commutative ring" literally contains the token "commutative", so we consider transfer not established.
+- Identity transfer, from the single pair rng → ring, is null.
+
 ## 4.5 Secondary analyses
 
 ### H-A4: concrete ↔ abstract and pure ↔ applied are the main axes
@@ -325,6 +359,7 @@ At block 11, we encoded the template-averaged residuals with the official Qwen-S
 - **Positive control.** It passed only under a post-hoc statistic.
 - **Family size.** Families are small (n = 7–13), so shape claims rest on permutation tests with limited resolution.
 - **Correlation, not mechanism.** All tests except §4.5 are correlational.
+- **Not run.** The exploratory field-revealing template condition and the Mathlib-depth validation of judge ratings were planned but not run (`docs/deviations.md`).
 
 # 7 Conclusion
 
