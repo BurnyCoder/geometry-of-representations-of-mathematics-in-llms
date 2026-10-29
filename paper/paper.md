@@ -113,24 +113,24 @@ The test is calibrated when the nuisance distance matrix *is* the confounder. It
 
 # 4 Results
 
-![**Results at a glance.** Blue: trained model; grey: its random-init twin (same architecture and tokenizer, no learning). The starred model is the preregistered confirmatory model, Qwen3.5-2B. (A) Field-centroid geometry correlates with arXiv cross-listing in all five models (dots: ρ; lines: 95% bootstrap CI); the twins sit at or below zero. (B) The confirmatory model's field map (metric MDS); grey edges join each field to its two nearest arXiv neighbours. (C) Days of the week close into a cycle in the top-2 principal-component plane (positive control). (D) Angles do not; the orange edge is the 330° → 0° closure the preregistration predicted. (E) Offset consistency per axiom: the confirmatory model, the other four models and the five twins, against the random-pair null (grey bar: mean to 95th percentile). Diamonds show the confirmatory model with the token-count direction removed. Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#s-glance>.](../reports/figures/hero.pdf){width=100%}
+![**Results at a glance.** Blue: trained model; grey: its random-init twin (same architecture and tokenizer, no learning). The starred model is the preregistered confirmatory model, Qwen3.5-2B. (A) Field-centroid geometry correlates with arXiv cross-listing in all five models (dots: ρ; lines: 95% bootstrap CI); the twins sit at or below zero. (B) Field maps (metric MDS) for arXiv cross-listing, the confirmatory model and its twin; grey edges join each field to its two nearest arXiv neighbours. (C) Days of the week close into a cycle in the top-2 principal-component plane (positive control). (D) Angles do not; the orange edge is the 330° → 0° closure the preregistration predicted. (E) Offset consistency per axiom: the confirmatory model, the other four models and the five twins, against the random-pair null (grey bar: mean to 95th percentile). Diamonds show the confirmatory model with the token-count direction removed. Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#s-glance>.](../reports/figures/hero.pdf){width=100%}
 
 **Every test in every model.** The table below summarizes the confirmatory and secondary tests for all five models.
 
-| Test | Qwen3.5-2B | Qwen3.5-0.8B | Qwen2.5-1.5B | Qwen2.5-Math-1.5B | Gemma-4-E2B |
-|---|---|---|---|---|---|
-| Field map tracks arXiv beyond the twin (H-A1; Δρ CI) | ● 0.39 | ● 0.37 | ● 0.41 | ● 0.39 | ● 0.44 |
-| Field map is a hierarchy beyond the twin (H-A2; cophenetic Δ CI) | ○ 0.24 | ○ 0.25 | ○ 0.24 | ○ 0.11 | ○ 0.23 |
-| Days form a cycle (positive control; post-hoc PC plane) | ● 1.00 | ● 1.00 | ● 1.00 | ● 1.00 | ● 1.00 |
-| Ring chain ordered (Robinson; > twin) | ● 0.52 | ● 0.50 | ● 0.54 | ● 0.56 | ● 0.50 |
-| Space chain ordered (Robinson; > twin) | ● 0.65 | ● 0.64 | ● 0.71 | ● 0.68 | ● 0.57 |
-| Ring / space order beyond frequency | ● / ● | ● / ● | ● / ● | ● / ● | ○ / ○ |
-| Angles form a circle (closure < 2 and circle ρ > line ρ) | ✗ 2.11 | ✗ 2.59 | ✗ 2.15 | ✗ 1.84 | ✗ 2.03 |
-| Axiom direction: associative (offset consistency; Holm) | ● 0.43 | ● 0.47 | ● 0.38 | ● 0.35 | ● 0.56 |
-| Axiom direction: identity (offset consistency; Holm) | ◐ 0.24 | ○ 0.22 | ◐ 0.27 | ● 0.27 | ○ 0.19 |
-| Axiom direction: divisible (offset consistency; Holm) | ◐ 0.29 | ◐ 0.26 | ◐ 0.25 | ● 0.30 | ● 0.35 |
-| Axiom direction: commutative (offset consistency; Holm) | ● 0.53 | ● 0.57 | ● 0.41 | ● 0.45 | ● 0.74 |
-| Lie / topological / algebraic groups as parallelograms | ● 0.40 | ● 0.46 | ● 0.41 | ● 0.41 | ● 0.48 |
+| Test | Status | Qwen3.5-2B | Qwen3.5-0.8B | Qwen2.5-1.5B | Qwen2.5-Math-1.5B | Gemma-4-E2B |
+|---|---|---|---|---|---|---|
+| Field map tracks arXiv beyond the twin (H-A1; Δρ CI) | pre-registered, confirmatory | ● 0.39 | ● 0.37 | ● 0.41 | ● 0.39 | ● 0.44 |
+| Field map is a hierarchy beyond the twin (H-A2; cophenetic Δ CI) | pre-registered | ○ 0.24 | ○ 0.25 | ○ 0.24 | ○ 0.11 | ○ 0.23 |
+| Days form a cycle (positive control; PC plane) | positive control; post-hoc statistic | ● 1.00 | ● 1.00 | ● 1.00 | ● 1.00 | ● 1.00 |
+| Ring chain ordered (Robinson; > twin) | pre-registered, confirmatory | ● 0.52 | ● 0.50 | ● 0.54 | ● 0.56 | ● 0.50 |
+| Space chain ordered (Robinson; > twin) | pre-registered, confirmatory | ● 0.65 | ● 0.64 | ● 0.71 | ● 0.68 | ● 0.57 |
+| Ring / space order beyond frequency | added by plan audit | ● / ● | ● / ● | ● / ● | ● / ● | ○ / ○ |
+| Angles form a circle (closure < 2 and circle ρ > line ρ) | pre-registered, confirmatory | ✗ 2.11 | ✗ 2.59 | ✗ 2.15 | ✗ 1.84 | ✗ 2.03 |
+| Axiom direction: associative (offset consistency; Holm) | pre-registered, confirmatory | ● 0.43 | ● 0.47 | ● 0.38 | ● 0.35 | ● 0.56 |
+| Axiom direction: identity (offset consistency; Holm) | pre-registered, confirmatory | ◐ 0.24 | ○ 0.22 | ◐ 0.27 | ● 0.27 | ○ 0.19 |
+| Axiom direction: divisible (offset consistency; Holm) | pre-registered, confirmatory | ◐ 0.29 | ◐ 0.26 | ◐ 0.25 | ● 0.30 | ● 0.35 |
+| Axiom direction: commutative (offset consistency; Holm) | pre-registered, confirmatory | ● 0.53 | ● 0.57 | ● 0.41 | ● 0.45 | ● 0.74 |
+| Lie / topological / algebraic groups as parallelograms | pre-registered, exploratory | ● 0.40 | ● 0.46 | ● 0.41 | ● 0.41 | ● 0.48 |
 
 ● significant (Holm-adjusted for the axiom tests; 95% CI excludes 0 for Δ tests) · ◐ raw p < .05 only · ○ not significant · ✗ pre-registered prediction falsified. Numbers: the statistic for the trained model.
 
@@ -305,6 +305,8 @@ This statistic is post-hoc. We conclude that the pipeline works, and that the fu
 
 **Angles: preregistered prediction falsified.** Angles are not circular: closure ratio 2.11 and no cycle in the PC plane. Their geometry closely matches that of the bare digits 0–330 (ρ = 0.84). At this scale, "330 degrees" sits next to "300 degrees", not next to "0 degrees".
 
+**The preregistered rule is not specific.** Every random-init twin *meets* the circle rule, for example the Qwen3.5-2B twin: closure 0.80, circle ρ 0.22 vs line ρ -0.01. A structureless point cloud has a closure ratio near 1 and near-zero template correlations, so it passes by chance. The informative result is therefore not the failed rule itself but the trained models' clear line-like order: line ρ 0.56 in Qwen3.5-2B, against circle ρ 0.29. That order tracks the bare numbers. We found this when we added the twin panel to the angles figure; it was not part of the preregistered analysis.
+
 | Family | Model | ρ(family RDM, reference RDM) | template β beyond reference (p) |
 |---|---|---|---|
 | ngons vs number_words_3_12 | qwen3.5-2b | 0.59 | +0.223 (0.3089) |
@@ -447,6 +449,8 @@ In this model's random-init twin, all four consistencies are ≈ 0.
 - *Not a length artifact.* Removing the token-count direction (fitted on all family items) leaves the group-like offsets intact: commutativity 0.46 (p = 0.0010), associativity 0.44 (p = 0.0035). Across the five models (Appendix A), associativity, commutativity and divisibility stay significant in all five after this projection, and identity in four. Mean-pooling the concept's tokens gives a similar pattern, with divisibility no longer significant (table above). This is a one-direction analogue of the LDA distractor removal of [Li et al. (2024)](https://arxiv.org/abs/2410.19750).
 - *Partial-operation lattice: no evidence.* The "total operation" offset (semigroupoid → semigroup, small category → monoid, groupoid → group) is 0.29, below its null's 95th percentile (0.54). With 6 items and 2–3 pairs per axis, the test is weak.
 - *Identity transfer to lattice-like pairs* (semilattice → bounded semilattice, lattice → bounded lattice) is null too: cos = 0.07, p = 0.14.
+
+![**A negative result: no consistent "make the operation total" direction.** Offset consistency for the partial-operation lattice (semigroupoid, small category, groupoid vs semigroup, monoid, group): the confirmatory model (filled), the other four models (open) and the five twins (grey), against the confirmatory model's random-pair null (grey bar: mean to 95th percentile). With 6 items and 2–3 pairs per axis the test has little power.](../reports/figures/partial_operation.pdf){width=70%}
 
 **Template variants (exploratory; Qwen3.5-2B).** We reran every analysis with two other template sets.
 

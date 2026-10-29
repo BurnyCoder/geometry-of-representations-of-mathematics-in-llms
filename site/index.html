@@ -37,6 +37,7 @@
     <label>Layer <input id="layer" type="range" min="1" max="24" value="12" aria-describedby="layer-readout"></label>
     <button id="play" aria-pressed="false" title="Animate through the layers">▶ Play</button>
     <span id="layer-readout" class="layer-readout"></span>
+    <svg id="spark" width="150" height="28" role="img" aria-label="Field-map correlation with arXiv at every layer; the dot marks the current layer"></svg>
     <button id="reset-layer" title="Back to the preregistered layer">Pre-registered layer</button>
     <button id="theme" title="Toggle light/dark">◐ Theme</button>
     <div class="toc"><a href="#s-glance">At a glance</a><a href="#s-map">Map</a><a href="#s-cloud">Concepts</a><a href="#s-shapes">Shapes</a><a href="#s-axioms">Axioms</a><a href="#s-abstract">Abstraction</a><a href="#s-failed">What failed</a></div>
@@ -80,7 +81,8 @@
     <div class="fig-tools chips" id="score-filter"></div></div>
   <div style="overflow-x:auto"><table class="scorecard" id="scorecard"></table></div>
   <div class="legend-note" id="score-legend"></div>
-  <figcaption><span class="read">Each cell gives a verdict symbol and the trained model’s statistic. The axiom tests are Holm-corrected within each model; Δ tests use 95% bootstrap CIs.</span></figcaption>
+  <figcaption><span class="read">Each cell gives a verdict symbol and the trained model’s statistic. The axiom tests are Holm-corrected within each model; Δ tests use 95% bootstrap CIs. Hover a cell for its test and status.</span>
+  <span class="caveat">Each row uses a different statistic, so compare cells along a row, not across rows. The replication models were not part of the preregistered Holm family; their axiom rows apply the same correction for comparability.</span></figcaption>
 </figure>
 
 <figure class="fig" id="fig-forest" data-paper="#4-results" data-section="4">
@@ -183,6 +185,7 @@
   <div class="panels two"><div class="panel tall" id="lat-trained"></div><div class="panel tall" id="lat-twin"></div></div>
   <figcaption>
     <span id="lat-note"></span>
+    <span id="lat-bits" class="muted">Click a structure to see which axioms it has.</span>
     <span class="read">The unsupervised PCA plane of the 13 structures at the slider layer. Blue arrows are the pairs that differ only in the selected axiom; grey lines are all other single-axiom pairs. Hover a structure to see its axioms.</span>
     <span class="caveat">A 2-D picture can hide or exaggerate parallelism. Figure 10 shows the full-dimensional evidence.</span>
   </figcaption>

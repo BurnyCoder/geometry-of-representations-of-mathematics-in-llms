@@ -131,7 +131,7 @@ def draw_angles(cfg, key: str, sh: dict, Lp: int):
     """Pre-registered prediction (a circle where 330° neighbours 0°) next to what the model shows."""
     import matplotlib.pyplot as plt
 
-    fig, axes = plt.subplots(1, 3, figsize=(10.5, 3.7))
+    fig, axes = plt.subplots(1, 4, figsize=(14, 3.9))
     items = figdata.family_items(cfg, "angles")
     lab = [short("angles", c) for c in items]
     t = np.deg2rad(np.arange(len(items)) * 30)
@@ -146,6 +146,10 @@ def draw_angles(cfg, key: str, sh: dict, Lp: int):
     draw_plane(axes[2], figdata.pca(figdata.family_acts(cfg, key, "digits_0_330")[:, Lp]), digits, closed=False)
     axes[2].set_title("Reference: bare numbers 0 … 330", fontsize=9)
     S.note(axes[2], f"angles vs numbers: ρ(RDM, RDM) = {a['beyond_reference']['rho_fam_ref']:.2f}")
+    t = sh[f"{key}__random"]["angles"]  # control: the same projection of the random-init twin
+    draw_plane(axes[3], figdata.pca(figdata.family_acts(cfg, f"{key}__random", "angles")[:, Lp]), lab, closed=False, highlight=((len(items) - 1, 0),))
+    axes[3].set_title("Control: random-init twin", fontsize=9)
+    S.note(axes[3], f"closure = {t['closure']:.2f}; circle ρ = {t['circle_rho']:.2f} vs line ρ = {t['line_rho']:.2f}")
     fig.tight_layout(w_pad=1.0)
     return fig
 

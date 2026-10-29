@@ -2,6 +2,7 @@
    colour-vision deficiency; ≤ 3 categorical hues per plot; trained = blue, random-init twin = grey. */
 :root {
   color-scheme: light;
+  --ord: #86b6ef,#6da7ec,#5598e7,#3987e5,#2a78d6,#256abf,#1c5cab,#184f95,#104281,#0d366b;  /* = style.py SEQ[3:] */
   --surface: #fcfcfb; --page: #f9f9f7; --ink: #0b0b0b; --ink2: #52514e; --muted: #898781;
   --grid: #e1e0d9; --axis: #c3c2b7; --ring: rgba(11, 11, 11, 0.10);
   --blue: #2a78d6; --orange: #eb6834; --aqua: #1baf7a; --twin: #a3a29b; --red: #e34948; --mid: #f0efec;
@@ -14,6 +15,7 @@
     --grid: #2c2c2a; --axis: #383835; --ring: rgba(255, 255, 255, 0.10);
     --blue: #3987e5; --orange: #d95926; --aqua: #199e70; --twin: #6f6e69; --red: #e66767; --mid: #383835;
     --seq-lo: #184f95; --seq-hi: #cde2fb; --accent-wash: rgba(57, 135, 229, 0.12);
+    --ord: #184f95,#256abf,#3987e5,#6da7ec,#9ec5f4,#cde2fb;
   }
 }
 :root[data-theme="dark"] {
@@ -22,6 +24,7 @@
   --grid: #2c2c2a; --axis: #383835; --ring: rgba(255, 255, 255, 0.10);
   --blue: #3987e5; --orange: #d95926; --aqua: #199e70; --twin: #6f6e69; --red: #e66767; --mid: #383835;
   --seq-lo: #184f95; --seq-hi: #cde2fb; --accent-wash: rgba(57, 135, 229, 0.12);
+    --ord: #184f95,#256abf,#3987e5,#6da7ec,#9ec5f4,#cde2fb;
 }
 
 * { box-sizing: border-box; }

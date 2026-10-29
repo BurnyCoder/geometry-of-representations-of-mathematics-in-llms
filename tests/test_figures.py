@@ -67,3 +67,50 @@ def test_cross_model_figures_and_scorecard_render(tmp_path):
     style.save(overview.draw_depth(r), tmp_path, "depth")
     sc = scorecard_rows(r)
     assert len(sc["models"]) == 5 and all(len(row["cells"]) == 5 for row in sc["rows"])
+
+
+def test_remaining_draw_functions_render(tmp_path):
+    """Pure draw functions not covered above: lattice facets, a family plane, the abstraction figure."""
+    import matplotlib.pyplot as plt
+
+    from mathgeom.report.figures import axes, families, lattice
+
+    rng = np.random.default_rng(4)
+    bits = np.array([[a, i, d, c] for a in (0, 1) for i in (0, 1) for d in (0, 1) for c in (0, 1)])[:13]
+    names = [f"s{i}" for i in range(13)]
+    ax_names = ["associative", "identity", "divisible", "commutative"]
+    notes = {k: {a: "n" for a in ax_names} for k in ("trained", "random_init")}
+    Ps = {k: rng.normal(size=(13, 2)) for k in ("trained", "random_init")}
+    style.save(lattice.draw_facets(Ps, names, bits, ax_names, notes), tmp_path, "facets")
+    fig, ax = plt.subplots()
+    families.draw_plane(ax, rng.normal(size=(7, 2)), [f"d{i}" for i in range(7)], closed=True, highlight=((6, 0),))
+    style.save(fig, tmp_path, "plane")
+    d = {"pcs": rng.normal(size=(40, 2)), "abstraction": rng.uniform(1, 7, 40), "concept": np.array([f"c{i}" for i in range(40)]), "pa": np.array(["pure", "applied"] * 20)}
+    res = {"pcs": [{"rho_abstraction": 0.4, "rho_applied": 0.1}, {"rho_abstraction": 0.0, "rho_applied": -0.3}]}
+    style.save(axes.draw(d, res, res, None, None, "M"), tmp_path, "abstraction")
+    assert {"facets.png", "plane.png", "abstraction.png"} <= {p.name for p in tmp_path.iterdir()}
+
+
+def test_cross_model_extra_figures_render(tmp_path):
+    from mathgeom.config import ROOT
+    from mathgeom.report import figdata as fd
+    from mathgeom.report.figures import overview
+    from mathgeom.report.paper import _results
+
+    if not all((ROOT / "results" / c / "map_fields.json").exists() for c in ("mvp", "robustness", "gemma")):
+        pytest.skip("results not generated")
+    r, conf = _results("all"), "qwen3.5-2b"
+    rng = np.random.default_rng(5)
+    n = len(r["map_fields"][conf]["math_primary"]["fields"])
+    D = np.abs(rng.normal(size=(n, n)))
+    D = (D + D.T) / 2
+    np.fill_diagonal(D, 0)
+    fmap = {"lay": {k: rng.normal(size=(n, 2)) for k in ("arxiv", "trained", "random_init")}, "names": [f"f{i}" for i in range(n)], "pa": ["pure"] * n,
+            "edges": fd.neighbour_edges(D)}
+    planes = {"days": (rng.normal(size=(7, 2)), [f"d{i}" for i in range(7)]), "angles": (rng.normal(size=(12, 2)), [f"a{i}" for i in range(12)])}
+    style.save(overview.draw_hero(r, planes, fmap, conf), tmp_path, "hero")
+    style.save(overview.draw_group_objects(r), tmp_path, "groups")
+    style.save(overview.draw_partial_operation(r, conf), tmp_path, "partial")
+    rows = [rw for _, rr in overview.forest_rows(r) for rw in rr]
+    assert all({"label", "est", "ci", "status", "n", "holm"} <= set(rw) for rw in rows)
+    assert sum(rw["holm"] is not None for rw in rows) == 5  # only the H-A1 rows are in the pre-registered Holm family

@@ -219,6 +219,24 @@ The new items were appended after the existing ones. Extraction runs at batch si
 - *A broken link.* The paper linked to a site anchor that did not exist. A test now checks every link from the README, summary and paper into the site.
 - *Not done, by design.* The plan's global trained ↔ twin toggle was dropped: every site figure already shows the trained model and its twin side by side, so a toggle would only hide one of them.
 
+**A second audit pass, against the plan text rather than memory, found more:**
+- *Dark-mode contrast.* The site used the light-theme ordinal ramp on the dark surface, where its darkest step has 1.46:1 contrast (floor 2:1). Dark mode now uses step 600 → 100, which passes the validator.
+- *Forest plot.* The plan says verdicts must come from the Holm computation; the plot showed only "CI excludes 0". The H-A1 rows now carry the Holm decision, other rows are marked as outside the Holm family, and the site hover shows n.
+- *Controls and negative results.*
+  - The angles figure lacked a twin panel.
+  - The hero showed only the trained field map, where the plan asked for arXiv vs trained vs twin.
+  - The partial-operation lattice, a negative result the plan said must get a figure, had none.
+  - All three are added.
+- *Site.*
+  - added a preregistered/post-hoc status column (and hover) on the scorecard;
+  - added a depth-curve inset in the control bar that follows the slider;
+  - hovering the concept cloud now highlights the field in the map and matrices;
+  - clicking a lattice node shows its axioms;
+  - the concept card now lists 10 neighbours (it had 8) and the concept's flag status;
+  - the families table view now includes the per-layer cycle scores.
+- *A finding the new twin panel exposed.* All five random-init twins *meet* the preregistered angles rule (closure < 2 and circle ρ > line ρ), while all five trained models fail it. A structureless point cloud has closure ≈ 1 and near-zero template correlations, so it passes by chance. The rule is not specific, and the informative result is the trained models' line-like order. Reported in the paper and README; this is the second preregistered shape criterion (after the days/months full-space criterion) that turned out to be insensitive or non-specific.
+- *Summary.* It carried only five of the figures; it now has all of them with plain-language captions. Writing them surfaced two loose phrasings, both fixed: "the map appears and stays" (Gemma dips twice) and an example concept that is not labelled in the figure.
+
 ## Tooling learnings (continued)
 
 - **Line endings.** On Windows, `Path.write_text` translates `\n` to `\r\n`. Python heredoc scripts that search-and-replace code containing `"\n"` literals therefore corrupted files three times. The fix was to make code edits with the editor tool.

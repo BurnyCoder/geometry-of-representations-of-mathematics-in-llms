@@ -17,16 +17,50 @@ from mathgeom.report import style as S
 KEYS = list(S.MODEL)
 
 
+def offset_dots(ax, off, axes_names: list[str], conf: str, extra=None):
+    """Dot plot of offset consistency per axis: the confirmatory model (filled), the other models (open),
+    all twins (grey) and the confirmatory model's random-pair null (grey bar: mean → 95th percentile).
+    `off(key, axis)` returns that lattice's offsets entry; `extra(axis)` an optional diamond value."""
+    y = np.arange(len(axes_names))[::-1]
+    for yi, a in zip(y, axes_names):
+        o = off(conf, a)
+        ax.plot([o["null_mean"], o["null95"]], [yi, yi], color=S.GRID, lw=5, solid_capstyle="round", zorder=1)
+        ax.scatter([off(k + "__random", a)["consistency"] for k in KEYS], [yi - 0.15] * len(KEYS), color=S.TWIN, s=14, zorder=2)
+        ax.scatter([off(k, a)["consistency"] for k in KEYS if k != conf], [yi + 0.15] * (len(KEYS) - 1), facecolors=S.SURFACE, edgecolors=S.BLUE, s=18, zorder=3)
+        ax.scatter(o["consistency"], yi, color=S.BLUE, s=48, zorder=4, edgecolors=S.SURFACE)
+        if extra and extra(a) is not None:
+            ax.scatter(extra(a), yi, marker="D", facecolors="none", edgecolors=S.INK2, s=26, zorder=5, linewidths=1.0)
+    ax.axvline(0, color=S.AXIS, lw=0.7)
+    ax.set_yticks(y, [f"+ {a}" for a in axes_names], fontsize=7.5)
+    ax.set_xlabel("offset consistency (mean cosine of same-axis difference vectors)", fontsize=7.5)
+    ax.scatter([], [], color=S.BLUE, label=f"{S.MODEL[conf]} ★"), ax.scatter([], [], facecolors=S.SURFACE, edgecolors=S.BLUE, label="other 4 models")
+    if extra:
+        ax.scatter([], [], marker="D", facecolors="none", edgecolors=S.INK2, label="★ without token-count direction")
+    ax.scatter([], [], color=S.TWIN, label="5 twins"), ax.plot([], [], color=S.GRID, lw=5, label="★ random-pair null: mean → 95th pct")
+    ax.legend(loc="upper center", bbox_to_anchor=(0.45, -0.17), ncol=2, fontsize=6.3)
+
+
+def map_panel(ax, P: np.ndarray, fmap: dict, title: str, note: str) -> None:
+    """One field-map layout with the ground-truth neighbour edges (shared by the hero panels)."""
+    for i, j in fmap["edges"]:
+        ax.plot(*P[[i, j]].T, color=S.AXIS, lw=0.8, zorder=1)
+    ax.scatter(P[:, 0], P[:, 1], c=[S.BLUE if p == "pure" else S.ORANGE for p in fmap["pa"]], s=28, zorder=3, edgecolors=S.SURFACE, linewidths=1.0)
+    S.label_points(ax, P, [S.FIELD.get(n, n) for n in fmap["names"]], size=5.2)
+    S.bare(ax)
+    S.note(ax, note)
+    ax.set_title(title, fontsize=9)
+
+
 def draw_hero(r: dict, planes: dict, fmap: dict, conf: str):
-    """(A) field-map ρ for all models vs twins; (B) the confirmatory model's field map with ground-truth
-    neighbour edges; (C, D) days cycle vs angles line; (E) axiom offsets, all models + twins."""
+    """Row 1: (A) field-map ρ for all models vs twins; (B) arXiv / trained / twin field maps with the
+    ground-truth neighbour edges. Row 2: (C, D) days cycle vs angles line; (E) axiom offsets."""
     import matplotlib.pyplot as plt
     from matplotlib.lines import Line2D
 
     mp, la, sh, ph = r["map_fields"], r["lattice"], r["shapes"], r["posthoc"]
-    fig = plt.figure(figsize=(18.5, 4.4))
-    gs = fig.add_gridspec(1, 5, width_ratios=[1.1, 1.15, 0.8, 0.8, 1.3], wspace=0.3)
-    ax = fig.add_subplot(gs[0])
+    fig = plt.figure(figsize=(16, 9.2))
+    gs = fig.add_gridspec(2, 4, width_ratios=[1.2, 1, 1, 1], hspace=0.42, wspace=0.28)
+    ax = fig.add_subplot(gs[0, 0])
     y = np.arange(len(KEYS))[::-1]
     for yi, k in zip(y, KEYS):
         m = mp[k]["math_primary"]
@@ -40,22 +74,18 @@ def draw_hero(r: dict, planes: dict, fmap: dict, conf: str):
     ax.scatter([], [], color=S.BLUE, label="trained (95% CI)"), ax.scatter([], [], color=S.TWIN, label="random-init twin")
     ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.17), ncol=2, fontsize=6.5)
     ax.set_title("A · Fields form a map in every model", fontsize=9)
-    ax = fig.add_subplot(gs[1])
-    P = fmap["P"]
-    for i, j in fmap["edges"]:
-        ax.plot(*P[[i, j]].T, color=S.AXIS, lw=0.8, zorder=1)
-    ax.scatter(P[:, 0], P[:, 1], c=[S.BLUE if p == "pure" else S.ORANGE for p in fmap["pa"]], s=30, zorder=3, edgecolors=S.SURFACE, linewidths=1.0)
-    S.label_points(ax, P, [S.FIELD.get(n, n) for n in fmap["names"]], size=5.6)
-    S.bare(ax)
-    S.note(ax, f"{S.MODEL[conf]} ★ · grey edges: each field's 2 nearest arXiv neighbours")
-    ax.legend(handles=[Line2D([], [], marker="o", ls="", color=S.BLUE, label="pure"), Line2D([], [], marker="o", ls="", color=S.ORANGE, label="applied")],
-              loc="upper center", bbox_to_anchor=(0.5, -0.12), ncol=2, fontsize=6.5)
-    ax.set_title("B · Related fields sit together", fontsize=9)
+    m = mp[conf]["math_primary"]["rsa"]
+    for col, (k, title, note) in enumerate((("arxiv", "B · arXiv cross-listing (ground truth)", "grey edges: each field's 2 nearest arXiv neighbours"),
+                                             ("trained", f"{S.MODEL[conf]} ★: related fields sit together", f"ρ with arXiv = {m['trained']:.2f}; most edges stay short"),
+                                             ("random_init", "Its random-init twin: no map", f"ρ with arXiv = {m['random_init']:.2f}; edges cross the map")), start=1):
+        map_panel(fig.add_subplot(gs[0, col]), fmap["lay"][k], fmap, title, note)
+    fig.legend(handles=[Line2D([], [], marker="o", ls="", color=S.BLUE, label="pure field"), Line2D([], [], marker="o", ls="", color=S.ORANGE, label="applied field")],
+               loc="upper center", bbox_to_anchor=(0.62, 0.5), ncol=2, fontsize=6.5)
     Lp = mp[conf]["primary_layer"]
     from mathgeom.report.figures.families import draw_plane
 
-    for col, (f, title, closed) in enumerate((("days", "C · Days: a circle", True), ("angles", "D · Angles: not a circle", False)), start=2):
-        ax = fig.add_subplot(gs[col])
+    for col, (f, title, closed) in enumerate((("days", "C · Days: a circle", True), ("angles", "D · Angles: not a circle", False))):
+        ax = fig.add_subplot(gs[1, col])
         P, items = planes[f]
         draw_plane(ax, P, items, closed=closed, size=6, highlight=((len(P) - 1, 0),) if f == "angles" else ())
         if f == "days":
@@ -63,28 +93,24 @@ def draw_hero(r: dict, planes: dict, fmap: dict, conf: str):
         else:
             S.note(ax, f"d(0°, 330°) = {sh[conf]['angles']['closure']:.2f} × neighbour distance")
         ax.set_title(title, fontsize=9)
-    ax = fig.add_subplot(gs[4])
-    axioms = list(la[conf]["group_like"]["offsets"])
-    y = np.arange(len(axioms))[::-1]
-    for yi, a in zip(y, axioms):
-        o = la[conf]["group_like"]["offsets"][a]
-        ax.plot([o["null_mean"], o["null95"]], [yi, yi], color=S.GRID, lw=5, solid_capstyle="round", zorder=1)
-        others = [la[k]["group_like"]["offsets"][a]["consistency"] for k in KEYS if k != conf]
-        twins = [la[k + "__random"]["group_like"]["offsets"][a]["consistency"] for k in KEYS]
-        ax.scatter(twins, [yi - 0.15] * len(twins), color=S.TWIN, s=14, zorder=2)
-        ax.scatter(others, [yi + 0.15] * len(others), facecolors=S.SURFACE, edgecolors=S.BLUE, s=18, zorder=3)
-        ax.scatter(o["consistency"], yi, color=S.BLUE, s=48, zorder=4, edgecolors=S.SURFACE)
-        lp = la[conf].get("audit2", {}).get("group_like_offsets", {}).get("length_projected", {}).get(a)
-        if lp:  # same model with the token-count direction projected out (word-length control)
-            ax.scatter(lp["consistency"], yi, marker="D", facecolors="none", edgecolors=S.INK2, s=26, zorder=5, linewidths=1.0)
-    ax.axvline(0, color=S.AXIS, lw=0.7)
-    ax.set_yticks(y, [f"+ {a}" for a in axioms], fontsize=7.5)
-    ax.set_xlabel("offset consistency (mean cosine of same-axiom differences)", fontsize=7.5)
-    ax.scatter([], [], color=S.BLUE, label=f"{S.MODEL[conf]} ★"), ax.scatter([], [], facecolors=S.SURFACE, edgecolors=S.BLUE, label="other 4 models")
-    ax.scatter([], [], marker="D", facecolors="none", edgecolors=S.INK2, label="★ without token-count direction")
-    ax.scatter([], [], color=S.TWIN, label="5 twins"), ax.plot([], [], color=S.GRID, lw=5, label="null: mean → 95th pct")
-    ax.legend(loc="upper center", bbox_to_anchor=(0.45, -0.17), ncol=2, fontsize=6.3)
+    ax = fig.add_subplot(gs[1, 2:])
+    lp = la[conf].get("audit2", {}).get("group_like_offsets", {}).get("length_projected", {})
+    offset_dots(ax, lambda k, a: la[k]["group_like"]["offsets"][a], list(la[conf]["group_like"]["offsets"]), conf,
+                extra=lambda a: lp[a]["consistency"] if a in lp else None)  # diamonds: word-length (token-count) control
     ax.set_title("E · Axioms act as directions", fontsize=9)
+    return fig
+
+
+def draw_partial_operation(r: dict, conf: str):
+    """Negative result: the partial-operation lattice (semigroupoid / small category / groupoid vs
+    semigroup / monoid / group) shows no consistent 'make the operation total' direction."""
+    import matplotlib.pyplot as plt
+
+    la = r["lattice"]
+    fig, ax = plt.subplots(figsize=(7.2, 3.4))
+    axes_names = list(la[conf]["audit2"]["partial_operation"]["offsets"])
+    offset_dots(ax, lambda k, a: la[k]["audit2"]["partial_operation"]["offsets"][a], axes_names, conf)
+    ax.set_title("Partial vs total operations: no consistent direction (exploratory)", fontsize=9)
     return fig
 
 
@@ -113,19 +139,27 @@ def draw_depth(r: dict):
     return fig
 
 
-def forest_rows(r: dict) -> list[tuple[str, list[tuple[str, float, list, str]]]]:
-    """(facet title, [(label, estimate, ci, status)]) — status: 'pre-registered' or 'added'."""
+def forest_rows(r: dict) -> list[tuple[str, list[dict]]]:
+    """(facet title, rows); each row: label, estimate, 95% CI, status ('pre-registered' / 'added'), n, and
+    holm (the Holm decision where the test is in the pre-registered Holm family, else None)."""
+    from mathgeom.report.render import holm_decisions
+
     mp, hi, b, cmp, ml = r["map_fields"], r["hierarchy"], r["baselines"], r["compare"], r["mathlib"]
+    row = lambda label, est, ci, status, n, holm=None: {"label": label, "est": est, "ci": ci, "status": status, "n": n, "holm": holm}  # noqa: E731
+    holm = lambda k: next(d["reject"] for d in holm_decisions(mp, r["shapes"], r["lattice"], k) if d["name"].startswith("H-A1"))  # noqa: E731
     d = lambda m: m["rsa"]["trained"] - m["rsa"]["random_init"]  # noqa: E731
-    facets = [("Field map: trained − twin (Δρ, H-A1)", [(S.MODEL[k], d(mp[k]["math_primary"]), mp[k]["math_primary"]["rsa_boot"]["delta_vs_random_init"]["ci"], "pre-registered") for k in KEYS])]
+    facets = [("Field map: trained − twin (Δρ, H-A1)", [row(S.MODEL[k], d(mp[k]["math_primary"]), mp[k]["math_primary"]["rsa_boot"]["delta_vs_random_init"]["ci"], "pre-registered",
+                                                        f"{mp[k]['math_primary']['n']} concepts", holm(k)) for k in KEYS])]
     q = b["qwen3.5-2b"]
     facets.append(("Field map: LLM − text baselines (Δρ, Qwen3.5-2B)", [
-        ("− Qwen3-Embedding", q["all_primary"]["rsa"]["llm_trained"] - q["all_primary"]["rsa"]["qwen3_embedding"], q["all_primary"]["boot"]["delta_vs_qwen3_embedding"]["ci"], "added"),
-        ("− fastText", q["fasttext_covered"]["rsa"]["llm_trained"] - q["fasttext_covered"]["rsa"]["fasttext"], q["fasttext_covered"]["boot"]["delta_vs_fasttext"]["ci"], "added")]))
+        row("− Qwen3-Embedding", q["all_primary"]["rsa"]["llm_trained"] - q["all_primary"]["rsa"]["qwen3_embedding"], q["all_primary"]["boot"]["delta_vs_qwen3_embedding"]["ci"], "added", f"{q['all_primary']['n']} concepts"),
+        row("− fastText", q["fasttext_covered"]["rsa"]["llm_trained"] - q["fasttext_covered"]["rsa"]["fasttext"], q["fasttext_covered"]["boot"]["delta_vs_fasttext"]["ci"], "added", f"{q['fasttext_covered']['n']} concepts")]))
     c = cmp["qwen2.5-math-1.5b_vs_qwen2.5-1.5b"]
-    facets.append(("Math pretraining: Qwen2.5-Math − Qwen2.5 (Δρ, H-A3)", [("1T math tokens", c["rho"]["qwen2.5-math-1.5b"] - c["rho"]["qwen2.5-1.5b"], c["boot"]["delta_vs_qwen2.5-1.5b"]["ci"], "pre-registered")]))
-    facets.append(("Hierarchy: trained − twin (Δ cophenetic match, H-A2)", [(S.MODEL[k], hi[k]["coph_match"]["trained"] - hi[k]["coph_match"]["random_init"], hi[k]["coph_match_delta_vs_random_ci"], "pre-registered") for k in KEYS]))
-    facets.append(("Judges vs Mathlib depth (ρ, H-A4 validation)", [(f"n = {ml['n_matched']} concepts", ml["rho_mean_rating_depth"], ml["ci95"], "added")]))
+    facets.append(("Math pretraining: Qwen2.5-Math − Qwen2.5 (Δρ, H-A3)", [row("1T math tokens", c["rho"]["qwen2.5-math-1.5b"] - c["rho"]["qwen2.5-1.5b"], c["boot"]["delta_vs_qwen2.5-1.5b"]["ci"],
+                                                                              "pre-registered", f"{mp['qwen2.5-1.5b']['math_primary']['n']} concepts")]))
+    facets.append(("Hierarchy: trained − twin (Δ cophenetic match, H-A2)", [row(S.MODEL[k], hi[k]["coph_match"]["trained"] - hi[k]["coph_match"]["random_init"], hi[k]["coph_match_delta_vs_random_ci"],
+                                                                               "pre-registered", f"{hi[k]['n_fields']} fields") for k in KEYS]))
+    facets.append(("Judges vs Mathlib depth (ρ, H-A4 validation)", [row(f"n = {ml['n_matched']} concepts", ml["rho_mean_rating_depth"], ml["ci95"], "added", f"{ml['n_matched']} concepts")]))
     return facets
 
 
@@ -137,14 +171,16 @@ def draw_forest(r: dict):
     fig, axes = plt.subplots(len(facets), 1, figsize=(8.6, 0.32 * sum(heights) + 1.2), gridspec_kw={"height_ratios": heights, "hspace": 0.9})
     for ax, (title, rows) in zip(axes, facets):
         y = np.arange(len(rows))[::-1]
-        for yi, (lab, est, ci, status) in zip(y, rows):
-            sig = S.excludes_zero(ci)
-            ax.plot(ci, [yi, yi], color=S.BLUE if sig else S.TWIN, lw=2.2, solid_capstyle="round")
-            ax.scatter(est, yi, color=S.BLUE if sig else S.TWIN, s=34, zorder=3, edgecolors=S.SURFACE)
-            ax.text(1.01, yi, ("CI excludes 0" if sig else "CI includes 0") + ("" if status == "pre-registered" else " · added"), transform=ax.get_yaxis_transform(),
-                    fontsize=6.5, color=S.INK2, va="center")
+        for yi, rw in zip(y, rows):
+            sig = S.excludes_zero(rw["ci"])
+            ax.plot(rw["ci"], [yi, yi], color=S.BLUE if sig else S.TWIN, lw=2.2, solid_capstyle="round")
+            ax.scatter(rw["est"], yi, color=S.BLUE if sig else S.TWIN, s=34, zorder=3, edgecolors=S.SURFACE)
+            verdict = "CI excludes 0" if sig else "CI includes 0"
+            if rw["holm"] is not None:  # in the pre-registered Holm family: the decision comes from Holm, not from the CI
+                verdict += " · Holm: " + ("significant" if rw["holm"] else "not significant")
+            ax.text(1.01, yi, verdict + ("" if rw["status"] == "pre-registered" else " · added"), transform=ax.get_yaxis_transform(), fontsize=6.5, color=S.INK2, va="center")
         ax.axvline(0, color=S.INK2, lw=0.7)
-        ax.set_yticks(y, [lab for lab, *_ in rows], fontsize=7.3)
+        ax.set_yticks(y, [rw["label"] for rw in rows], fontsize=7.3)
         ax.set_ylim(-0.7, len(rows) - 0.3)
         ax.set_title(title, fontsize=8.5)
         ax.grid(True, axis="x")
@@ -199,7 +235,7 @@ def build(r: dict, cfg_conf, outdir) -> list[str]:
     planes = {f: (figdata.pca(figdata.family_acts(cfg_conf, conf, f)[:, Lp]), [short(f, c)[:3] if f == "days" else (short(f, c) if i in (0, 3, 6, 11) else "") for i, c in enumerate(figdata.family_items(cfg_conf, f))])
               for f in ("days", "angles")}
     setup = figdata.field_setup(cfg_conf, r["map_fields"][conf])
-    fmap = {"P": figdata.field_layouts(figdata.field_rdms(cfg_conf, conf, setup, Lp))["trained"], "names": setup["names"], "pa": setup["pa"],
+    fmap = {"lay": figdata.field_layouts(figdata.field_rdms(cfg_conf, conf, setup, Lp)), "names": setup["names"], "pa": setup["pa"],
             "edges": figdata.neighbour_edges(setup["arxiv"])}
     return [S.save(draw_hero(r, planes, fmap, conf), outdir, "hero"), S.save(draw_depth(r), outdir, "depth_curves"), S.save(draw_forest(r), outdir, "forest"),
-            S.save(draw_group_objects(r), outdir, "group_objects")]
+            S.save(draw_group_objects(r), outdir, "group_objects"), S.save(draw_partial_operation(r, conf), outdir, "partial_operation")]
