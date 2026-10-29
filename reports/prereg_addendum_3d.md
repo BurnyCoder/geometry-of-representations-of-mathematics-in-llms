@@ -51,7 +51,7 @@ Made before any real-data run, and committed separately.
 
 **What the unit test found.** A unit test showed that the cycle score alone gives a perfect 1.0 to an *open arc*. Example: the plane of a linear axis and one periodic coordinate, where points trace a U. The angular-successor order is then perfect, and only the "closing" step last → first spans the opening.
 
-**Why it matters.** PCA routinely bends a line into such an arc (the horseshoe effect; [Diaconis, Goel & Holmes 2008](https://arxiv.org/abs/0807.2569)). So the statistic above would call a number line a cycle.
+**Why it matters.** PCA routinely bends a line into such an arc (the horseshoe effect; [Diaconis, Goel & Holmes 2008, Ann. Appl. Stat. 2(3)](https://arxiv.org/abs/0811.1477)). So the statistic above would call a number line a cycle.
 
 **The change.** A plane counts only if the loop also closes there:
 - The *closed-cycle score* of a plane is its cycle score if the in-plane closure ratio is below 2, and 0 otherwise.
