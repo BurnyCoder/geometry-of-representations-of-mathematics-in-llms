@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Geometry of Mathematics in LLMs</title>
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+<style>
+  :root { --bg:#fbfbfa; --fg:#1d1d1f; --muted:#666; --card:#fff; --line:#e3e3e0; --accent:#1f5fa8; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#141416; --fg:#ececec; --muted:#9a9a9a; --card:#1d1d20; --line:#333; --accent:#6aa6ff; } }
+  :root[data-theme="dark"] { --bg:#141416; --fg:#ececec; --muted:#9a9a9a; --card:#1d1d20; --line:#333; --accent:#6aa6ff; }
+  body { background:var(--bg); color:var(--fg); font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif; margin:0; }
+  main { max-width:1180px; margin:0 auto; padding:24px 16px 64px; }
+  h1 { font-size:1.6rem; margin:0 0 4px; } h2 { font-size:1.15rem; margin:32px 0 6px; }
+  p.lead, .note { color:var(--muted); } .note { font-size:.86rem; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px; margin-top:10px; }
+  .row { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:10px; }
+  .plot { width:100%; height:420px; }
+  select { font:inherit; padding:4px 8px; border-radius:6px; border:1px solid var(--line); background:var(--card); color:var(--fg); }
+  table { border-collapse:collapse; font-size:.85rem; width:100%; } td,th { border-bottom:1px solid var(--line); padding:4px 6px; text-align:left; }
+  a { color:var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Geometry of mathematics in LLMs</h1>
+  <p class="lead">Do LLMs organize mathematical concepts geometrically, the way they place days of the week on a circle (<a href="https://arxiv.org/abs/2405.14860">Engels et al. 2024</a>)? Each view shows the trained model next to its <b>random-init twin</b>: the same architecture and tokenizer with no learning. Geometry that also appears in the twin comes from word form, not knowledge. Code, preregistration and full statistics: <a href="https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms">GitHub</a>.</p>
+  <label>Model: <select id="model"></select></label>
+  <div class="card" id="headline"></div>
+
+  <h2>1 · Map of mathematical fields</h2>
+  <p class="note">2D metric MDS of field-centroid distances. Left: arXiv cross-listing distance (ground truth). Middle: trained model. Right: random-init twin. Blue = pure, orange = applied.</p>
+  <div class="row"><div id="fm_arxiv" class="plot card"></div><div id="fm_trained" class="plot card"></div><div id="fm_random" class="plot card"></div></div>
+
+  <h2>2 · Concept cloud</h2>
+  <p class="note">PCA-3D of individual concepts (primary, confirmatory split), coloured by field. Hover to see a concept.</p>
+  <div class="row"><div id="cc_trained" class="plot card"></div><div id="cc_random" class="plot card"></div></div>
+
+  <h2>3 · Shape families</h2>
+  <label>Family: <select id="family"></select></label>
+  <p class="note">PCA-3D at the pre-registered layer. Lines join items in ground-truth order. Circular families are closed.</p>
+  <div class="row"><div id="fa_trained" class="plot card"></div><div id="fa_random" class="plot card"></div></div>
+
+  <h2>4 · Group-like axiom lattice</h2>
+  <p class="note">Each arrow adds one axiom (associative / identity / divisible / commutative). If an axiom is a consistent direction, its arrows are parallel.</p>
+  <div class="row"><div id="la_trained" class="plot card"></div><div id="la_random" class="plot card"></div></div>
+</main>
+<script>
+const COLORS = ["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b","#e377c2","#7f7f7f","#bcbd22","#17becf","#393b79","#637939","#8c6d31","#843c39","#7b4173","#3182bd","#e6550d","#31a354"];
+const AX = {associative:"#1f77b4", identity:"#2ca02c", divisible:"#d62728", commutative:"#9467bd"};
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const layout = t => ({title:{text:t,font:{size:13}}, margin:{l:10,r:10,t:36,b:10}, paper_bgcolor:"rgba(0,0,0,0)", plot_bgcolor:"rgba(0,0,0,0)", font:{color:css("--fg")}, showlegend:false,
+  xaxis:{visible:false}, yaxis:{visible:false}, scene:{xaxis:{visible:false},yaxis:{visible:false},zaxis:{visible:false}}});
+let DATA;
+fetch("data.json").then(r => r.json()).then(d => { DATA = d;
+  const ms = document.getElementById("model"); Object.keys(d.models).forEach(k => ms.add(new Option(k,k)));
+  ms.onchange = render; document.getElementById("family").onchange = renderFamily; render(); });
+function fmt(x){ return (x>=0?"+":"") + x.toFixed(3); }
+function render(){
+  const m = DATA.models[document.getElementById("model").value], r = m.results.map.math_primary;
+  document.getElementById("headline").innerHTML = `<table><tr><th>Statistic (layer ${m.primary_layer})</th><th>trained</th><th>random-init</th><th>layer-0</th></tr>
+   <tr><td>ρ(field map, arXiv distance)</td><td>${r.rsa.trained.toFixed(3)} (perm p=${r.rsa_perm_p.toFixed(4)})</td><td>${r.rsa.random_init.toFixed(3)}</td><td>${r.rsa.layer0.toFixed(3)}</td></tr>
+   <tr><td>Δ trained − random-init, 95% CI</td><td colspan=3>${fmt(r.rsa.trained-r.rsa.random_init)} [${r.rsa_boot.delta_vs_random_init.ci.map(x=>x.toFixed(3)).join(", ")}]</td></tr>
+   <tr><td>LOO field accuracy (chance ${r.loo_acc.chance.toFixed(3)})</td><td>${r.loo_acc.trained.acc.toFixed(3)}</td><td>${r.loo_acc.random_init.acc.toFixed(3)}</td><td>${r.loo_acc.layer0.acc.toFixed(3)}</td></tr></table>`;
+  const fm = m.field_maps, col = fm.pa.map(p => p==="pure" ? "#1f5fa8" : "#d35400");
+  for (const [id,key,t] of [["fm_arxiv","arxiv","arXiv cross-listing"],["fm_trained","trained","trained"],["fm_random","random_init","random-init twin"]])
+    Plotly.react(id, [{x:fm[key].map(p=>p[0]), y:fm[key].map(p=>p[1]), text:fm.names.map(n=>n.replaceAll("_"," ")), mode:"markers+text", textposition:"top center", textfont:{size:9}, marker:{color:col,size:9}, type:"scatter", hovertext:fm.branch}], layout(t), {responsive:true});
+  for (const [id,key,t] of [["cc_trained","concepts_trained","trained"],["cc_random","concepts_random_init","random-init twin"]]){
+    const c = m[key], fields = [...new Set(c.field)];
+    Plotly.react(id, fields.map((f,i) => { const ix = c.field.map((g,j)=>g===f?j:-1).filter(j=>j>=0);
+      return {type:"scatter3d", mode:"markers", name:f, x:ix.map(j=>c.xyz[j][0]), y:ix.map(j=>c.xyz[j][1]), z:ix.map(j=>c.xyz[j][2]), text:ix.map(j=>c.concept[j]+" ("+f+")"), hoverinfo:"text", marker:{size:3,color:COLORS[i%COLORS.length]}}; }), layout(t), {responsive:true}); }
+  const fs = document.getElementById("family"); if (!fs.options.length) Object.keys(m.families).filter(k=>k!=="group_like").forEach(k => fs.add(new Option(k,k)));
+  renderFamily(); renderLattice(m);
+}
+function renderFamily(){
+  const m = DATA.models[document.getElementById("model").value], f = m.families[document.getElementById("family").value];
+  for (const [id,key] of [["fa_trained","trained"],["fa_random","random_init"]]){
+    let P = f[key], idx = P.map((_,i)=>i); if (f.expected==="circle") idx = idx.concat([0]);
+    Plotly.react(id, [{type:"scatter3d", mode:"lines+markers+text", x:idx.map(i=>P[i][0]), y:idx.map(i=>P[i][1]), z:idx.map(i=>P[i][2]), text:idx.map(i=>f.items[i]), textfont:{size:9},
+      marker:{size:4,color:idx,colorscale:"Viridis"}, line:{color:"#999",width:2}}], layout(key==="trained"?"trained":"random-init twin"), {responsive:true}); }
+}
+function renderLattice(m){
+  const L = m.families.group_like;
+  for (const [id,key] of [["la_trained","trained"],["la_random","random_init"]]){
+    const P = L[key], tr = [{type:"scatter", mode:"markers+text", x:P.map(p=>p[0]), y:P.map(p=>p[1]), text:L.items, textposition:"top center", textfont:{size:9}, marker:{size:7,color:css("--fg")}}];
+    const ann = []; L.edges.forEach(e => e.pairs.forEach(([a,b]) => ann.push({x:P[b][0],y:P[b][1],ax:P[a][0],ay:P[a][1],xref:"x",yref:"y",axref:"x",ayref:"y",showarrow:true,arrowhead:2,arrowcolor:AX[e.axiom],arrowwidth:1.4,opacity:.8})));
+    const lay = layout((key==="trained"?"trained":"random-init twin") + " · blue assoc · green identity · red divisible · purple commutative"); lay.annotations = ann;
+    Plotly.react(id, tr, lay, {responsive:true}); }
+}
+</script>
+</body>
+</html>

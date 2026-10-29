@@ -57,11 +57,11 @@ def table_clustering(mp: dict) -> str:
 
 
 def table_shapes(sh: dict, fams: dict) -> str:
-    rows = ["| Family | Expected | Model | line ρ | circle ρ | closure (d first-last / adjacent) | Robinson (p) | PCA order \\|ρ\\| (p) | LOO order ρ (p) |", "|---|---|---|---|---|---|---|---|---|"]
+    rows = ["| Family | Expected | Model | line ρ | circle ρ | closure (d first-last / adjacent) | closure_far† (null 5%) | Robinson (p) | PCA order \\|ρ\\| (p) | LOO order ρ (p) |", "|---|---|---|---|---|---|---|---|---|---|"]
     for name, f in fams["chains"].items():
         for key, res in sh.items():
             r = res[name]
-            rows.append(f"| {name} | {f['expected']} | {key} | {r['line_rho']:.2f} | {r['circle_rho']:.2f} | {r['closure']:.2f} | {r['robinson']:.2f} ({_p(r['robinson_p'])}) | {r['pca_order']:.2f} ({_p(r['pca_order_p'])}) | {r['loo_order']:.2f} ({_p(r['loo_order_p'])}) |")
+            rows.append(f"| {name} | {f['expected']} | {key} | {r['line_rho']:.2f} | {r['circle_rho']:.2f} | {r['closure']:.2f} | {r['closure_far']:.2f} ({r['closure_far_null95']:.2f}) | {r['robinson']:.2f} ({_p(r['robinson_p'])}) | {r['pca_order']:.2f} ({_p(r['pca_order_p'])}) | {r['loo_order']:.2f} ({_p(r['loo_order_p'])}) |")
     return "\n".join(rows)
 
 
@@ -94,6 +94,40 @@ def table_lattice(la: dict) -> str:
             rows.append(f"| {name} | {key} | {r['axiom_rdm_beta']:+.3f} ({_p(r['axiom_rdm_p'])}) | {r['lexical_beta']:+.3f} | {offs} | {an['top1']:.2f} ({an['chance_top1']:.2f}) | {an['mean_rank']:.1f} ({an['chance_mean_rank']:.1f}) |")
         ac = res["analogy_control"]
         rows.append(f"| gender control | {key} | — | — | gender: {ac['consistency']:.2f}/{ac['null95']:.2f} | king:queen rank {ac['king_queen_rank']} | — |")
+    return "\n".join(rows)
+
+
+def table_posthoc(ph: dict) -> str:
+    ks = list(next(iter(ph.values()))["abtt_sweep"])
+    rows = ["| Model | " + " | ".join(f"k={k}" for k in ks) + " | top-5 PC explained variance | field η² on PC1–10 |", "|---" * (len(ks) + 3) + "|"]
+    for key, r in ph.items():
+        rows.append(f"| {key} | " + " | ".join(f"{r['abtt_sweep'][k]:.3f}" for k in ks) + f" | {', '.join(f'{v:.3f}' for v in r['explained_var_top5'])} | {', '.join(f'{v:.2f}' for v in r['eta2_field_pc1_20'][:10])} |")
+    return "\n".join(rows)
+
+
+def table_cycles(ph: dict, layer_of: dict) -> str:
+    fams = list(next(iter(ph.values()))["pc_plane_cycle"])
+    rows = ["| Family | " + " | ".join(ph) + " |", "|---" * (len(ph) + 1) + "|"]
+    for f in fams:
+        cells = []
+        for key, r in ph.items():
+            e = r["pc_plane_cycle"][f][layer_of[key] - 1]
+            cells.append(f"{e['score']:.2f} (p={_p(e['p'])})")
+        rows.append(f"| {f} | " + " | ".join(cells) + " |")
+    return "\n".join(rows)
+
+
+def table_calibration(cal: dict) -> str:
+    desc = {
+        "concept_linear_null": "concept level, nuisance correctly specified (null)",
+        "concept_itemnoise_null": "concept level, item-level noise / nonlinear link (null)",
+        "field_pure_null": "field level, representation unrelated to fields (null)",
+        "field_confounded_null": "field level, nuisance = noisy proxy of a confounder (null)",
+        "field_alternative": "field level, true field geometry present (power)",
+    }
+    rows = ["| Scenario | Rejection rate at α=0.05 (± SE) | n simulations |", "|---|---|---|"]
+    for k, v in cal.items():
+        rows.append(f"| {desc.get(k, k)} | {v['reject_rate_0.05']:.3f} ± {v['se']:.3f} | {v['n_sims']} |")
     return "\n".join(rows)
 
 
@@ -259,10 +293,14 @@ def phase_report(cfg: Config) -> None:
     keys = list(mp)
     prim = {k: mp[k]["primary_layer"] for k in keys}
     figs = fig_layer_curves(mp) + fig_field_maps(cfg, mp) + fig_families(cfg, fams, keys, prim) + fig_lattice(cfg, fams, keys, prim)
+    cal = _j(cfg, "calibration.json")
     sections = {
+        "Method validation: calibration of partial RDM regression (Freedman–Lane), simulation study": table_calibration(cal) if cal else "*not run*",
         "H-A1 field map (field-centroid RSA vs arXiv cross-listing distance; LOO nearest-centroid field accuracy)": table_field_map(mp),
+        "POST-HOC: field-map ρ after removing the top-k principal components (all-but-the-top sweep)": table_posthoc(_j(cfg, "posthoc.json")) if _j(cfg, "posthoc.json") else "*not run*",
+        "POST-HOC: cyclic order in the top-2-PC plane at the pre-registered layer (1 = perfect cycle; positive-control debug)": table_cycles(_j(cfg, "posthoc.json"), {k: v["primary_layer"] for k, v in _j(cfg, "shapes.json").items()}) if _j(cfg, "posthoc.json") else "*not run*",
         "H-A1c clustering specificity: math fields vs non-math control fields": table_clustering(mp),
-        "H-B shape families (primary layer; permutation p-values)": table_shapes(sh, fams),
+        "H-B shape families (primary layer; permutation p-values; † = post-hoc statistic, see docs/deviations.md)": table_shapes(sh, fams),
         "H-B negative control: random 11-item lists of math concepts (should reject ≈5%)": table_negative_control(sh),
         "H-B number-coded families: structure beyond the number reference": table_beyond_reference(sh, fams),
         "H-B2 axiom lattices (offset consistency = mean cosine of same-axiom difference vectors)": table_lattice(la),
@@ -281,4 +319,7 @@ def phase_report(cfg: Config) -> None:
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     readme = re.sub(r"<!-- RESULTS:START -->.*<!-- RESULTS:END -->", lambda _: block, readme, flags=re.S)
     (ROOT / "README.md").write_text(readme, encoding="utf-8")
+    from mathgeom.report.site import export_site
+
+    export_site(cfg, mp, sh, la)
     log.info("report written: %d figures, reports/%s_results.md, README results block", len(figs), cfg.name)
