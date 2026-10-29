@@ -198,7 +198,7 @@ In this model's random-init twin, all four consistencies are ≈ 0.
 {{table:holm:mvp}}
 
 - **After correction:** associativity and commutativity remain significant; identity and divisibility do not.
-- **Across the replication models (Appendix B):** all four offsets are positive in every model. They are near zero in the Qwen twins and weaker in Gemma's twin, which has small lexical offsets for associativity and divisibility. Divisibility reaches raw p < .05 in all five models, identity in three.
+- **Across the replication models (Appendix A):** all four offsets are positive in every model. They are near zero in the Qwen twins and weaker in Gemma's twin, which has small lexical offsets for associativity and divisibility. Divisibility reaches raw p < .05 in all five models, identity in three.
 - **Our reading:** strong evidence for associativity and commutativity directions, and suggestive evidence for divisibility and identity.
 
 ## 4.5 Secondary analyses
@@ -251,13 +251,13 @@ At block {{num:mvp.sae.qwen3.5-2b.sae_block}}, we encoded the template-averaged 
 
 # 7 Conclusion
 
-Mathematical fields form a map in LLM residual streams that tracks how mathematicians cross-list their papers. Axioms of algebraic structures act as consistent directions, most clearly associativity and commutativity, and class-inclusion chains are ordered. None of this is present in untrained twins. Angles are not circles, and heavy math pretraining does not sharpen the field map.
+Mathematical fields form a map in LLM residual streams that tracks how mathematicians cross-list their papers. Axioms of algebraic structures act as consistent directions, most clearly associativity and commutativity, and class-inclusion chains are ordered. All of this is absent, or much weaker, in untrained twins. Angles are not circles, and heavy math pretraining does not sharpen the field map.
 
 # References
 
-See the inline links. Code, data, preregistration and every number: <https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms>. Interactive explorer: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/>.
+See the inline links. Code, data, preregistration and every number: <https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms>. Interactive explorer: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/>. Data and activations: <https://huggingface.co/datasets/BurnyCoder/geometry-of-mathematics-in-llms>.
 
-# Appendix B: Replication of shapes and lattices
+# Appendix A: Replication of shapes and lattices
 
 **Qwen3.5-0.8B, Qwen2.5-1.5B and Qwen2.5-Math-1.5B**, each with its twin:
 
@@ -279,7 +279,7 @@ Matched 4-field clustering in Gemma-4-E2B:
 - math subsets: mean {{num:gemma.posthoc.gemma-4-e2b.matched_clustering.math_subsets_mean:.3f}};
 - control fields: {{num:gemma.posthoc.gemma-4-e2b.matched_clustering.control_acc:.3f}}.
 
-# Appendix A: Deviations from the preregistration
+# Appendix B: Deviations from the preregistration
 
 See `docs/deviations.md`. Every post-hoc statistic in this paper is labelled post-hoc.
 
