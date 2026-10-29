@@ -448,7 +448,8 @@ def phase_compare(cfg: Config) -> None:
         boot = paired_bootstrap(reps, lab, names, target, cfg.n_boot, cfg.seed)
         out[f"{a}_vs_{b}"] = {"rho": {k: field_rsa(v, lab, names, target) for k, v in reps.items()}, "boot": boot}
         log.info("[compare] %s vs %s: rho %s; delta CI %s", a, b, out[f"{a}_vs_{b}"]["rho"], boot[f"delta_vs_{b}"]["ci"])
-    _save(cfg, "compare.json", out)
+    if out:  # configs without `comparisons` (e.g. mvp) have nothing to compare
+        _save(cfg, "compare.json", out)
 
 
 def phase_sae(cfg: Config) -> None:
