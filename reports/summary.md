@@ -100,7 +100,7 @@ The figures show what the model's internal vectors look like, squashed down to t
 
 ![circle forming](figures/circle_depth_qwen3.5-2b.gif)
 
-**The circle through the layers.** Days and months, layer by layer. The circle is there almost from the start.
+**The circle through the layers.** Days and months, layer by layer, in the model (top row) and in its untrained twin (bottom row). The circle is there almost from the start; the twin never forms one.
 
 ![angles](figures/angles_qwen3.5-2b.png)
 
