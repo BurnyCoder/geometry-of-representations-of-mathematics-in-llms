@@ -56,21 +56,26 @@ def export_model(cfg: Config, key: str, mp_key: dict) -> dict:
         out["fields"][side] = {"layout": [_r(figdata.align(figdata.mds(D), ref)) for D in rdms], "rank": [_r(figdata.rank_unit(D), 3) for D in rdms]}
         pts = figdata.pca(X[:, Lp], 3)
         out.setdefault("concepts", {})[side] = {"xyz": _r(pts, 3), "nn": figdata.concept_neighbours(X[:, Lp], 10).tolist()}
-    # families: PC planes at every layer, aligned to the pre-registered layer
+    # families: PC planes at every layer, aligned to the pre-registered layer; the twin's are also rotated
+    # onto the trained plane so the trained ↔ twin morph is a minimal motion
     chains = load_yaml("families.yaml")["chains"]
     out["families"] = {}
     for f in SHOW_FAMILIES:
-        out["families"][f] = {"items": figdata.family_items(cfg, f), "expected": chains[f]["expected"],
-                              **{side: _r(figdata.planes_by_layer(figdata.family_acts(cfg, k, f), Lp)) for side, k in (("trained", key), ("random_init", f"{key}__random"))}}
+        tr = figdata.planes_by_layer(figdata.family_acts(cfg, key, f), Lp)
+        tw = figdata.planes_by_layer(figdata.family_acts(cfg, f"{key}__random", f), Lp, onto=tr[Lp - 1])
+        out["families"][f] = {"items": figdata.family_items(cfg, f), "expected": chains[f]["expected"], "trained": _r(tr), "random_init": _r(tw)}
     # group-like lattice: per-layer planes, exact coordinates and the offset cosine matrix at the primary layer
     lat = load_yaml("families.yaml")["lattices"]["group_like"]
     items, axioms = list(lat["items"]), lat["axioms"]
     bits = np.array([lat["items"][c] for c in items])
     lt = {"items": items, "axioms": axioms, "bits": bits.tolist()}
+    onto = None
     for side, k in (("trained", key), ("random_init", f"{key}__random")):
         X = figdata.family_acts(cfg, k, "group_like", items)
         om = figdata.offset_matrix(X[:, Lp], bits, axioms)
-        lt[side] = {"planes": _r(figdata.planes_by_layer(X, Lp)), "exact": _r(figdata.exact_coords(X[:, Lp]), 5), "cos": _r(om["cos"])}
+        planes = figdata.planes_by_layer(X, Lp, onto=onto)  # twin rotated onto the trained plane (morph)
+        onto = planes[Lp - 1]
+        lt[side] = {"planes": _r(planes), "exact": _r(figdata.exact_coords(X[:, Lp]), 5), "cos": _r(om["cos"])}
         lt["pairs"], lt["group"], lt["shared"] = [list(p) for p in om["pairs"]], om["group"].tolist(), om["shared"].astype(int).tolist()
     out["lattice"] = lt
     return out

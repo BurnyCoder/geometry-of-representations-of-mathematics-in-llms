@@ -98,27 +98,33 @@ def draw_filmstrip(cfg, key: str, ph: dict, L: int, Lp: int):
 
 
 def save_gif(cfg, key: str, ph: dict, L: int, Lp: int, outdir) -> str:
-    """Animated PC planes of days and months through every layer (README; post-hoc cycle score per frame)."""
+    """Animated PC planes of days and months through every layer, trained (top) and its random-init twin
+    (bottom, the control), for the README; post-hoc cycle score per frame."""
     import matplotlib.pyplot as plt
     from matplotlib.animation import FuncAnimation, PillowWriter
 
-    data = {f: (figdata.planes_by_layer(figdata.family_acts(cfg, key, f), Lp), [short(f, c) for c in figdata.family_items(cfg, f)]) for f in ("days", "months")}
-    fig, axes = plt.subplots(1, 2, figsize=(6.4, 3.4), dpi=100)
-    lim = max(np.abs(P).max() for P, _ in data.values()) * 1.25
+    rows = (key, f"{key}__random")
+    data = {(k, f): (figdata.planes_by_layer(figdata.family_acts(cfg, k, f), Lp), [short(f, c) for c in figdata.family_items(cfg, f)])
+            for k in rows for f in ("days", "months")}
+    fig, axes = plt.subplots(2, 2, figsize=(6.4, 6.2), dpi=100)
+    lim = {k: max(np.abs(data[(k, f)][0]).max() for f in ("days", "months")) * 1.25 for k in rows}  # one scale per row
 
     def frame(l):
-        for ax, (f, (planes, items)) in zip(axes, data.items()):
+        for (k, f), ax in zip(data, axes.flat):
+            planes, items = data[(k, f)]
             ax.clear()
             P = planes[l]
             seq = np.r_[np.arange(len(P)), 0]
             ax.plot(P[seq, 0], P[seq, 1], color=S.AXIS, lw=1.0)
             ax.scatter(P[:, 0], P[:, 1], c=S.ordinal(len(P)), s=30, zorder=3, edgecolors=S.SURFACE, linewidths=1.0)
-            for (x, y), t in zip(P, items):
-                ax.text(x, y + lim * 0.06, t, fontsize=6.5, ha="center", color=S.INK2)
-            ax.set_xlim(-lim, lim), ax.set_ylim(-lim, lim)
             S.bare(ax)
-            ax.set_title(f"{S.FAMILY[f].split(chr(10))[0]} · cycle score {_cycle(ph, key, f, l + 1)['score']:.2f}", fontsize=8.5)
-        fig.suptitle(f"{S.pretty(key)} · layer {l + 1} of {L} (depth {(l + 1) / L:.2f})", fontsize=8.5, color=S.INK2)
+            ax.set_aspect("equal", adjustable="box")  # keep the fixed per-row limits in every frame (no rescaling between frames)
+            ax.set_xlim(-lim[k], lim[k]), ax.set_ylim(-lim[k], lim[k])
+            S.label_points(ax, P, items, size=6.5)  # after the limits: adjustText works in display coordinates
+            ax.set_title(f"{S.FAMILY[f].split(chr(10))[0]} · cycle score {_cycle(ph, k, f, l + 1)['score']:.2f}", fontsize=8.5)
+            if f == "days":  # row label: which network this row shows
+                ax.set_ylabel(S.pretty(key) if k == key else "random-init twin", fontsize=9, color=S.INK if k == key else S.INK2)
+        fig.suptitle(f"layer {l + 1} of {L} (depth {(l + 1) / L:.2f}) · cycle score 1 = perfect circle (post-hoc)", fontsize=8.5, color=S.INK2)
 
     anim = FuncAnimation(fig, frame, frames=L, interval=450)
     path = outdir / f"circle_depth_{key}.gif"

@@ -36,6 +36,7 @@
     <label>Model <select id="model"></select></label>
     <label>Layer <input id="layer" type="range" min="1" max="24" value="12" aria-describedby="layer-readout"></label>
     <button id="play" aria-pressed="false" title="Animate through the layers">▶ Play</button>
+    <button id="morph" aria-pressed="false" title="Morph the main panels (field map and matrix, families, lattice, concept cloud) between the trained model and its random-init twin; follow any point to see where it goes">Trained ↔ twin</button>
     <span id="layer-readout" class="layer-readout"></span>
     <svg id="spark" width="150" height="28" role="img" aria-label="Field-map correlation with arXiv at every layer; the dot marks the current layer"></svg>
     <button id="reset-layer" title="Back to the preregistered layer">Pre-registered layer</button>
@@ -68,6 +69,11 @@
     <rect class="b" x="920" y="30" width="170" height="80"/><text class="t" x="934" y="58">Compare</text><text class="s" x="934" y="80">vs arXiv, true order,</text><text class="s" x="934" y="96">permutation nulls</text>
     <text class="tw" x="240" y="150">The random-init twin goes through exactly the same steps; the evidence is trained − twin.</text>
   </svg>
+  <figcaption>
+    <span><b>Every figure below starts from one vector per concept, and every claim is a difference from the untrained twin.</b></span>
+    <span class="read">Read left to right: prompts in, one averaged residual-stream vector per concept and layer out, then geometry and its comparison with ground truth. The grey sentence is the control path.</span>
+    <span class="caveat">This is a single read-out (last token, averaged over templates). Template wording changes absolute values, though split-half reliability is high; see the paper’s limitations.</span>
+  </figcaption>
 </figure>
 
 <div class="prose">
@@ -88,6 +94,7 @@
 <figure class="fig" id="fig-forest" data-paper="#4-results" data-section="4">
   <div class="fig-head"><span class="fig-num">Figure 3</span><span class="fig-title">Effect sizes with 95% confidence intervals</span>
     <div class="fig-tools"><button data-table="forest-table">Table view</button></div></div>
+  <div class="chips" id="forest-filter" aria-label="Filter by hypothesis"></div>
   <div id="forest"></div>
   <div class="table-view" id="forest-table"></div>
   <figcaption>
@@ -133,7 +140,7 @@
     <div class="fig-tools"><button id="all-models" aria-pressed="false">Compare all models</button></div></div>
   <div class="panel" id="depth"></div>
   <figcaption>
-    <span class="read">ρ with arXiv at every layer: trained (blue) vs twin (grey). The flat line is the 95th percentile of the max-over-layers permutation null; the marker is the current slider layer.</span>
+    <span class="read">ρ with arXiv at every layer: trained (blue) vs twin (grey). The dotted line is the 95th percentile of the max-over-layers permutation null; the marker is the current slider layer.</span>
     <span class="caveat">Any “best layer” is post-hoc; the preregistered test uses one fixed layer.</span>
   </figcaption>
 </figure>
@@ -242,7 +249,18 @@
   <li><b>Math pretraining did not sharpen the map.</b> Qwen2.5-Math vs its base: Δρ 95% CI [<span data-num="results.compare.qwen2.5-math-1.5b_vs_qwen2.5-1.5b.boot.delta_vs_qwen2.5-1.5b.ci.0" data-fmt=".2f"></span>, <span data-num="results.compare.qwen2.5-math-1.5b_vs_qwen2.5-1.5b.boot.delta_vs_qwen2.5-1.5b.ci.1" data-fmt=".2f"></span>].</li>
   <li><b>Not specific to LLMs or to math.</b> Qwen3-Embedding reaches a similar map, and science topics cluster as strongly.</li>
   <li><b>Causal test inconclusive</b>, and identity and divisibility directions do not survive multiple-comparison correction in every model.</li>
+  <li><b>No “make the operation total” direction</b> in the partial-operation lattice (Figure 14).</li>
 </ul>
+</div>
+<figure class="fig" id="fig-partial" data-paper="#44-h-b2-axioms-as-directions" data-section="4.4" data-tableid="partial-table">
+  <div class="fig-head"><span class="fig-num">Figure 14</span><span class="fig-title">Partial vs total operations: no consistent direction</span></div>
+  <div class="panel short" id="partial"></div>
+  <figcaption>
+    <span class="read">Offset consistency of the partial-operation lattice (semigroupoid, small category, groupoid vs semigroup, monoid, group), one row per axis. Filled blue: the selected model; open blue: the other models; grey: all twins; grey bar: the selected model’s random-pair null, from its mean to its 95th percentile.</span>
+    <span class="caveat">Exploratory, with only 2–3 pairs per axis, so the null is wide and the test has little power: no evidence is not evidence of absence.</span>
+  </figcaption>
+</figure>
+<div class="prose">
 <p>Full details, every table and the preregistration are in the <a href="https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms/blob/master/paper/paper.pdf">paper</a> and the <a href="https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms">repository</a>.</p>
 </div>
 

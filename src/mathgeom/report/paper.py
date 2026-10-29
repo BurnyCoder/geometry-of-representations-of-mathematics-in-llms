@@ -119,11 +119,18 @@ def build_summary() -> None:
     (ROOT / "reports" / "summary.md").write_text(render_template(tpl, fig_prefix="figures/"), encoding="utf-8")
 
 
+README_BLOCKS = {"TOP": "readme_top_template.md", "RESULTS": "readme_results_template.md"}  # marker → template in reports/
+
+
 def build_readme_block() -> None:
-    """Replace README's <!-- RESULTS:START/END --> block with the rendered cross-model template."""
-    block = render_template((ROOT / "reports" / "readme_results_template.md").read_text(encoding="utf-8"), fig_prefix="reports/figures/")
+    """Replace each README <!-- NAME:START/END --> block (scorecard + GIF at the top, results further down)
+    with its rendered cross-model template."""
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
-    readme = re.sub(r"<!-- RESULTS:START -->.*<!-- RESULTS:END -->", lambda _: f"<!-- RESULTS:START -->\n{block}\n<!-- RESULTS:END -->", readme, flags=re.S)
+    for name, tpl in README_BLOCKS.items():
+        block = render_template((ROOT / "reports" / tpl).read_text(encoding="utf-8"), fig_prefix="reports/figures/")
+        readme, n = re.subn(rf"<!-- {name}:START -->.*<!-- {name}:END -->", lambda _: f"<!-- {name}:START -->\n{block}\n<!-- {name}:END -->", readme, flags=re.S)
+        if n != 1:
+            raise ValueError(f"README.md needs exactly one <!-- {name}:START/END --> block, found {n}")
     (ROOT / "README.md").write_text(readme, encoding="utf-8")
 
 
