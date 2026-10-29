@@ -73,9 +73,10 @@ The figures show what the model's internal vectors look like, squashed down to t
 
 **All results in one picture.**
 - **A:** every trained model has a map of mathematics; no twin has one.
-- **B:** days of the week form a circle.
-- **C:** angles do not form a circle, although we predicted they would.
-- **D:** adding an axiom moves a structure in a consistent direction.
+- **B:** in that map, fields that mathematicians often combine sit close together.
+- **C:** days of the week form a circle.
+- **D:** angles do not form a circle, although we predicted they would.
+- **E:** adding an axiom moves a structure in a consistent direction.
 
 ![circle forming](figures/circle_depth_qwen3.5-2b.gif)
 

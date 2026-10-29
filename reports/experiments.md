@@ -200,6 +200,25 @@ The new items were appended after the existing ones. Extraction runs at batch si
 - Two README captions overclaimed: that the field map clears the null "from the first layers" (false for Gemma), and that the days cycle "persists to the final layer" (it breaks at the last layer). Both were corrected after checking them against the figures.
 - The browser pane does not repaint a hidden page after scrolling, so the site was checked with full-page screenshots from headless Edge plus scripted interaction tests: linked hover, the layer slider, model switching, search, chips and the analogy playground. At phone width it was checked by measuring element widths.
 
+**A plan audit of the visualizations found these gaps and errors, all fixed:**
+- *Palette.* The plan required running the colour-vision validator on every palette used; it had only been run on candidate four-colour sets. Running it found a bug: the ordinal ramp used a discrete colormap, so with 12 items two pairs of neighbours shared a colour. The ramp now interpolates. A 7-step ramp passes; a 12-step ramp cannot keep every adjacent lightness gap above the threshold, so order is always also shown by labels and the path.
+- *Missing pieces.*
+  - the hero's field-map panel and its word-length control;
+  - the group-object figure;
+  - the twin's values on the abstraction figure;
+  - table views for most interactive charts;
+  - two-way linked hover (matrices → map → concept cloud);
+  - the ideal-shape overlay and per-layer statistics in the family tooltips;
+  - smooth transitions between layers;
+  - links from each site figure to its paper section;
+  - interactive links in most README and paper captions;
+  - a documentation page (`docs/figures.md`).
+- *Overclaims caught on the replication models' figures* (viewed as contact sheets):
+  - "twins place 'Lie group' next to 'group' only" is false for Gemma's twin, which ranks "smooth manifold" 6th.
+  - "a circle needs closure < 2" is misleading for Qwen2.5-Math, which meets that half (1.84) but fails "circle ρ > line ρ". The angles figure now shows both halves of the preregistered rule.
+- *A broken link.* The paper linked to a site anchor that did not exist. A test now checks every link from the README, summary and paper into the site.
+- *Not done, by design.* The plan's global trained ↔ twin toggle was dropped: every site figure already shows the trained model and its twin side by side, so a toggle would only hide one of them.
+
 ## Tooling learnings (continued)
 
 - **Line endings.** On Windows, `Path.write_text` translates `\n` to `\r\n`. Python heredoc scripts that search-and-replace code containing `"\n"` literals therefore corrupted files three times. The fix was to make code edits with the editor tool.

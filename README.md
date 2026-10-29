@@ -20,9 +20,10 @@ As far as our literature search found, nobody had asked this of **abstract mathe
 
 **At a glance.** Blue is a trained model; grey is its random-init twin (same architecture and tokenizer, no learning).
 - **A:** in all five models, field centroids track how often mathematicians cross-list papers between fields; the twins do not.
-- **B:** days of the week close into a circle (the positive control).
-- **C:** angles do not, falsifying our preregistered prediction: 330° sits far from 0°.
-- **D:** "adding an axiom" moves a structure in a consistent direction, unlike in the twins.
+- **B:** the confirmatory model's map. Grey edges join each field to its two nearest arXiv neighbours; most stay short.
+- **C:** days of the week close into a circle (the positive control).
+- **D:** angles do not, falsifying our preregistered prediction: 330° sits far from 0°.
+- **E:** "adding an axiom" moves a structure in a consistent direction, unlike in the twins. Diamonds show the value with the word-length (token-count) direction removed.
 
 ★ marks the preregistered confirmatory model.
 
@@ -36,7 +37,7 @@ As far as our literature search found, nobody had asked this of **abstract mathe
 - **Math fields form a map.** Field centroids from 17 fields correlate with how often mathematicians cross-list papers between those fields on arXiv. This holds in all five models (Qwen3.5-2B/0.8B, Qwen2.5-1.5B, Qwen2.5-Math-1.5B, Gemma-4-E2B), and every random-init twin is near zero or below. The map is stronger than in fastText word vectors, and about as strong as in a dedicated text-embedding model (Qwen3-Embedding).
 - **Class-inclusion chains are ordered**, e.g. rng ⊃ ring ⊃ integral domain ⊃ … ⊃ field, and T0 ⊃ T1 ⊃ Hausdorff ⊃ … ⊃ Hilbert. This replicates in all five models.
 - **Axioms act as directions.** In the lattice magma → semigroup → monoid → group → abelian group, "add associativity" and "add commutativity" are consistent vectors: same-axiom differences are parallel. They survive multiple-comparison correction and replicate in all five models. The twins show much weaker offsets or none; Gemma's twin has weak lexical offsets for two axioms. "Add identity" and "add divisibility" point the same way but more weakly.
-- **Lie groups sit between "group" and "smooth manifold".** The analogies topological group − group ≈ topological space − set, and Lie group − topological group ≈ smooth manifold − topological space, hold in all five models (exploratory). The twins place "Lie group" next to "group" only, because of the shared word.
+- **Lie groups sit between "group" and "smooth manifold".** The analogies topological group − group ≈ topological space − set, and Lie group − topological group ≈ smooth manifold − topological space, hold in all five models (exploratory). The twins put "group" nearest to "Lie group" because of the shared word, and except for Gemma's twin they place "smooth manifold" far away.
 - **Concrete ↔ abstract is the top principal axis** of math-concept space in Qwen3.5-2B; pure ↔ applied is the second. Abstraction is rated by three LLM judges from other model families.
 
 **Negative and null results:**
@@ -131,6 +132,7 @@ Each figure states what it shows, what to notice, and its main caveat. Pictures 
 
 - **What you see:** the same three distance matrices, colour = rank of each distance within its matrix (Spearman compares ranks). Rows are in one fixed order, grouped by the five super-tree branches.
 - **What to notice:** the trained matrix partly reproduces the arXiv matrix's light algebra block and dark applied rows; the twin's matrix has no such structure.
+- **Caveat:** a fixed row order is essential; re-clustering each matrix separately would create blocks out of noise. [Interactive, with linked hover](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-rdm).
 
 ![field map vs depth](reports/figures/depth_curves.png)
 
@@ -139,6 +141,7 @@ Each figure states what it shows, what to notice, and its main caveat. Pictures 
   - The four Qwen models clear the null at every layer.
   - Gemma clears it at most depths but dips below it in two stretches.
   - Every twin stays at or below zero.
+- **Caveat:** only the preregistered layer is a confirmatory test; any "best layer" is post-hoc. [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-depth).
 
 #### Shapes: circles for days and months, lines for chains, no circle for angles
 
@@ -146,19 +149,25 @@ Each figure states what it shows, what to notice, and its main caveat. Pictures 
 
 - **What you see:** the top-2 principal-component plane of each family; colour runs light → dark along the true order, and the grey path joins consecutive items.
 - **What to notice:** days and months close into cycles in the trained model (cycle score 1.00 and 1.00) and not in the twin. For angles, the orange edge is the closure the preregistration predicted (330° next to 0°); in the model it spans the whole plot.
-- **Caveat:** days and months are the positive control, and the PC-plane cycle score is post-hoc.
+- **Caveat:** days and months are the positive control, and the PC-plane cycle score is post-hoc. [Interactive, every family and layer](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
 
 ![circle forms across depth](reports/figures/circle_depth_qwen3.5-2b.gif)
 
-The same days and months planes through every layer, each frame aligned to the preregistered layer. Both cycles are present from the first layers and hold at almost every depth, breaking mainly at the final layer; the twin never forms one. Static version with fixed depths: [`circle_depth_qwen3.5-2b.png`](reports/figures/circle_depth_qwen3.5-2b.png).
+- **What you see:** the same days and months planes through every layer, each frame rotated onto the preregistered layer's plane.
+- **What to notice:** both cycles are present from the first layers and hold at almost every depth, breaking mainly at the final layer; the twin never forms one.
+- **Caveat:** the cycle score is post-hoc and unadjusted per layer. Static version at fixed depths: [`circle_depth_qwen3.5-2b.png`](reports/figures/circle_depth_qwen3.5-2b.png).
 
 ![angles: predicted vs found](reports/figures/angles_qwen3.5-2b.png)
 
-The preregistered prediction (left), what the model does (middle) and the bare numbers 0–330 (right). The angles' geometry matches the numbers' (ρ = 0.84): the model encodes "330 degrees" by its numeral, not by its angle.
+- **What you see:** the preregistered prediction (left), what the model does (middle), and the bare numbers 0–330 (right).
+- **What to notice:** the angles' geometry matches the numbers' (ρ = 0.84). The model encodes "330 degrees" by its numeral, not by its angle, which falsifies our prediction.
+- **Caveat:** this is one prompt format at this model scale; larger models may differ. [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
 
 ![ordered chains](reports/figures/chains_qwen3.5-2b.png)
 
-Class-inclusion chains run as ordered paths in the trained model. The ring and space chains also stay ordered after word frequency and token count are removed (p values below each panel). In the twin they collapse to a tangle.
+- **What you see:** the class-inclusion chains in the PC plane, trained (top) and twin (bottom), with the Robinson score below each panel.
+- **What to notice:** the ring and space chains run as ordered paths and stay ordered after word frequency and token count are removed. In the twin they collapse to a tangle.
+- **Caveat:** two twins also order the ring chain beyond frequency, so word form ("… domain") carries part of that order. [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
 
 #### Axioms as directions
 
@@ -166,18 +175,27 @@ Class-inclusion chains run as ordered paths in the trained model. The ring and s
 
 - **What you see:** left, the ideal geometry, where each axiom is one fixed step. Each other panel is the same unsupervised PCA plane, highlighting the pairs that differ only in one axiom.
 - **What to notice:** in the trained model the highlighted arrows point roughly the same way; in the twin they point everywhere.
+- **Caveat:** a 2-D picture can hide or exaggerate parallelism; the next figure shows the full-dimensional evidence. [Interactive, with an analogy playground](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-lattice).
 
 ![offset cosine matrices](reports/figures/lattice_cosines_qwen3.5-2b.png)
 
 - **What you see:** the cosine between every pair of single-axiom difference vectors, grouped by axiom.
-- **What to notice:** bright red diagonal blocks mean "adding this axiom" is a consistent direction. They are clear for associativity and commutativity, and weaker for identity and divisibility.
-- **Caveat:** hatched cells are cross-axiom pairs that share a structure; their cosine is about ±0.5 even for random vectors, so they carry no evidence. The dot plot on the right shows that the offsets survive removing the token-count direction.
+- **What to notice:** bright red diagonal blocks mean "adding this axiom" is a consistent direction. They are clear for associativity and commutativity, and weaker for identity and divisibility. The dot plot on the right shows that the offsets survive removing the token-count direction.
+- **Caveat:** hatched cells are cross-axiom pairs that share a structure; their cosine is about ±0.5 even for random vectors, so they carry no evidence. [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-cosines).
+
+![group objects](reports/figures/group_objects.png)
+
+- **What you see:** left, how parallel the three parallelograms are (for example, Lie group − topological group vs smooth manifold − topological space) in every model and twin. Right, where "group" and "smooth manifold" rank among the neighbours of "Lie group".
+- **What to notice:** every trained model clears the null (Qwen3.5-2B: 0.40). Trained models place "Lie group" near both parents. The twins put "group" nearest, and except for Gemma's twin place "smooth manifold" far away.
+- **Caveat:** exploratory, and the twins' closeness to "group" is purely lexical (shared token). [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-groups).
 
 #### Concrete ↔ abstract
 
 ![abstraction axis](reports/figures/abstraction_qwen3.5-2b.png)
 
-The first principal component of the 398 primary concepts runs from concrete to abstract, after frequency and token count are removed: ρ = 0.49 with the judges' ratings. The second runs from pure to applied. On the right, the judges' ratings rise with how deep each concept sits in Mathlib's import graph (only 39 concepts could be matched).
+- **What you see:** the 398 primary concepts on their first two principal components (after frequency and token count are removed), coloured by judge abstraction (left) and pure/applied (middle). Right: judge ratings vs the Mathlib import depth of each concept's definition.
+- **What to notice:** PC1 runs from concrete to abstract (ρ = 0.49, twin 0.06), and PC2 from pure to applied. The judges' ratings rise with Mathlib depth.
+- **Caveat:** ratings come from LLM judges, and only 39 concepts could be matched to Mathlib. [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-abstraction).
 
 <!-- RESULTS:END -->
 
@@ -275,7 +293,7 @@ uv run python -m http.server 8791 --directory site
 | `src/mathgeom/analyses/` | Field map, shapes, lattices, causal test, SAE, calibration simulations |
 | `src/mathgeom/report/` | Tables (`render.py`), the visual system (`style.py`: palette checked for colour-vision deficiency), shared figure data (`figdata.py`: unsupervised projections, exact low-dimensional lattice coordinates), static figures (`figures/`), the explorer export (`site.py`), and the paper/summary/README builder (`paper.py`; placeholders resolved from results) |
 | `configs/` | `fields.yaml` (field ↔ glossary ↔ arXiv ↔ branch), `families.yaml` (ground truth with sources), run configs |
-| `docs/` | `prereg.md`, `deviations.md` (every post-hoc change), `data_card.md` |
+| `docs/` | `prereg.md`, `deviations.md` (every post-hoc change), `data_card.md`, `figures.md` (figure catalogue, visual system, integrity rules, site data) |
 | `reports/` | Per-config results (generated), `summary.md` (generated), `experiments.md` (learnings: what was tried and why) |
 | `paper/` | `template.md`, the generated `paper.md` and `paper.pdf` |
 | `site/` | Explorable article (`index.html`, `app.js`, `style.css`) reading `site/data/*.json`; deployed to GitHub Pages |
