@@ -88,6 +88,30 @@ def bare(ax) -> None:
     ax.set_aspect("equal", adjustable="datalim")
 
 
+VIEW3D = (22, -55)  # one fixed camera (elevation, azimuth) for every static 3-D panel, never chosen per model
+
+
+def bare3d(ax, P: np.ndarray, var=None, axes=(0, 1, 2)) -> None:
+    """3-D projection panels (mpl_toolkits.mplot3d): true proportions (box aspect = data ranges, so a small
+    PC3 looks small), transparent panes, no ticks, each axis labelled with its PC's share of variance, and
+    the fixed camera VIEW3D (https://matplotlib.org/stable/api/toolkits/mplot3d.html)."""
+    for a in (ax.xaxis, ax.yaxis, ax.zaxis):
+        a.set_pane_color((1, 1, 1, 0))
+        a.line.set_color(GRID)
+    ax.set_xticks([]), ax.set_yticks([]), ax.set_zticks([])
+    ax.grid(False)
+    ax.set_box_aspect(np.ptp(P, axis=0) + 1e-9, zoom=0.92)
+    if var is not None:
+        for setter, k in zip((ax.set_xlabel, ax.set_ylabel, ax.set_zlabel), axes):
+            setter(f"PC{k + 1} · {100 * var[k]:.0f}%", fontsize=6.3, color=MUTED, labelpad=-12)
+    ax.view_init(*VIEW3D)
+
+
+def note3d(ax, text: str) -> None:
+    """Statistic line under a 3-D panel (its x label names the PC, so the note goes below the axes box)."""
+    ax.text2D(0.5, -0.02, text, transform=ax.transAxes, ha="center", va="top", fontsize=7, color=INK2)
+
+
 def label_points(ax, xy: np.ndarray, labels: list[str], size: float = 7.0, color: str = INK2, **kw) -> None:
     """Direct labels, de-overlapped with adjustText (MIT; https://github.com/Phlya/adjustText)."""
     from adjustText import adjust_text

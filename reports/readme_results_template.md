@@ -74,8 +74,11 @@ Each figure states what it shows, what to notice, and its main caveat. Pictures 
 ![cyclic families]({{fig:cyclic_qwen3.5-2b}})
 
 - **What you see:** the top-2 principal-component plane of each family; colour runs light → dark along the true order, and the grey path joins consecutive items.
-- **What to notice:** days and months close into cycles in the trained model (cycle score {{num:mvp.posthoc.qwen3.5-2b.pc_plane_cycle.days.11.score:.2f}} and {{num:mvp.posthoc.qwen3.5-2b.pc_plane_cycle.months.11.score:.2f}}) and not in the twin. For angles, the orange edge is the closure the preregistration predicted (330° next to 0°); in the model it spans the whole plot.
-- **Caveat:** days and months are the positive control, and the PC-plane cycle score is post-hoc. [Interactive, every family and layer](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
+- **What to notice:** days and months go round in their true order in the trained model (cycle score {{num:mvp.posthoc.qwen3.5-2b.pc_plane_cycle.days.11.score:.2f}} and {{num:mvp.posthoc.qwen3.5-2b.pc_plane_cycle.months.11.score:.2f}}), and not in the twin. For angles, the orange edge is the closure the preregistration predicted (330° next to 0°); in the model it spans the whole plot.
+- **Caveat:**
+  - Days and months are the positive control, and the PC-plane cycle score is post-hoc.
+  - The cycle score also gives 1 to an open arc. In this plane the days' loop closes, but the months' Dec → Jan step is {{num:mvp.posthoc.qwen3.5-2b.pc_planes_cycle.months.11.planes.0.3:.1f}}× a neighbour step, so here they form an open arc. The closed-cycle test below checks this in every plane.
+  - [Interactive, every family and layer](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
 
 The same planes through every layer, for the trained model and its twin, are animated [at the top of this README](#the-positive-control-layer-by-layer).
 
@@ -86,6 +89,27 @@ The same planes through every layer, for the trained model and its twin, are ani
 - **Caveat:**
   - Every random-init twin *meets* the preregistered circle rule (Qwen3.5-2B twin: closure {{num:mvp.shapes.qwen3.5-2b__random.angles.closure:.2f}}), because a structureless cloud passes it by chance. The informative result is the trained models' line-like order, not the failed rule.
   - This is one prompt format at this model scale. [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
+
+#### Beyond the top-2 plane: the same families in 3-D
+
+<p align="center"><img src="{{fig:turntable_qwen3.5-2b.gif}}" alt="Days, months and angles in their top-3 principal components, rotating; trained model top, random-init twin bottom" width="720"></p>
+
+- **What you see:** days, months and angles in their top-3 principal components at the preregistered layer, rotating once. Trained model on top, random-init twin below. Each axis is that model's own PC and is labelled with its share of variance; proportions are true.
+- **What to notice:** with a third axis the angles still run as an open path, 330° far from 0°. The days' loop is visible from every side.
+- **Caveat:** a rotating picture is not a test. Numbers lie on helices with periodic parts beyond PC1–2 ([Kantamneni & Tegmark 2025](https://arxiv.org/abs/2502.00873)), so we tested every plane of the top-5 PCs for a loop that closes. The test is post-hoc, and was pre-specified in an [addendum](reports/prereg_addendum_3d.md) before it ran. Static version for every model: [`families3d_qwen3.5-2b.png`](reports/figures/families3d_qwen3.5-2b.png). [Interactive 3-D, with a choice of axes](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
+
+**The pre-specified decision rule for "angles have a circular component beyond PC1–2"** requires all four conditions at the preregistered layer. Score: the best closed-cycle score over the 10 planes of PC1–5. p: a permutation p of that maximum.
+
+{{table:planes_decision:all}}
+
+For days and months, every model:
+
+{{table:planes:all}}
+
+- **Days:** close in the top-2 plane in three of five models.
+- **Months:** close in a lower plane (PC2–PC3, PC4–PC5) in three of five.
+- **Twin:** one twin (Qwen2.5-1.5B) also shows a closed months loop. Word form alone can occasionally produce one, so these p-values (unadjusted, one per cell) are descriptive.
+- **Power:** with the closure rule the test is conservative ([amendment 2 of the addendum](reports/prereg_addendum_3d.md)), so it can miss weak cycles.
 
 ![ordered chains]({{fig:chains_qwen3.5-2b}})
 
@@ -100,6 +124,12 @@ The same planes through every layer, for the trained model and its twin, are ani
 - **What you see:** left, the ideal geometry, where each axiom is one fixed step. Each other panel is the same unsupervised PCA plane, highlighting the pairs that differ only in one axiom.
 - **What to notice:** in the trained model the highlighted arrows point roughly the same way; in the twin they point everywhere.
 - **Caveat:** a 2-D picture can hide or exaggerate parallelism; the next figure shows the full-dimensional evidence. [Interactive, with an analogy playground](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-lattice).
+
+![axiom lattice in 3-D]({{fig:lattice3d_qwen3.5-2b}})
+
+- **What you see:** the same facets in the structures' top-3 principal components, with true proportions and one fixed camera for every model. Blue 3-D arrows are the pairs that differ only in that axiom.
+- **What to notice:** the third axis keeps the trained model's arrows roughly parallel, while the twin's still point every way.
+- **Caveat:** a 3-D view can still hide or exaggerate parallelism; the cosine matrix below is the evidence. On the site you can rotate it, choose any 3 of the top-5 PCs, and see the analogy query b − a + c placed exactly. [Interactive 3-D](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-lattice).
 
 ![offset cosine matrices]({{fig:lattice_cosines_qwen3.5-2b}})
 

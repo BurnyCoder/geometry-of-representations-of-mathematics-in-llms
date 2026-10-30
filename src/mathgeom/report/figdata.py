@@ -39,6 +39,13 @@ def pca(X: np.ndarray, k: int = 2) -> np.ndarray:
     return X @ Vt[:k].T
 
 
+def pca_var(X: np.ndarray, k: int = 5) -> np.ndarray:
+    """Fraction of total variance on each of the top-k PCs (= sklearn PCA.explained_variance_ratio_);
+    every PCA view states it, so a picture is never read as more than the variance it shows."""
+    S = np.linalg.svd(X.astype(np.float64) - X.astype(np.float64).mean(0), compute_uv=False)
+    return (S[:k] ** 2) / (S**2).sum()
+
+
 def exact_coords(X: np.ndarray) -> np.ndarray:
     """(n−1)-D coordinates of the centred rows: every pairwise distance and every inner product of the
     centred vectors is preserved exactly (they span ≤ n−1 dimensions), so the browser can recompute
@@ -49,10 +56,39 @@ def exact_coords(X: np.ndarray) -> np.ndarray:
     return U[:, :k] * S[:k]
 
 
-def mds(D: np.ndarray, seed: int = 0) -> np.ndarray:
+def mds(D: np.ndarray, seed: int = 0, k: int = 2) -> np.ndarray:
     from sklearn.manifold import MDS
 
-    return MDS(n_components=2, metric="precomputed", random_state=seed, init="classical_mds", n_init=1).fit_transform(D)
+    return MDS(n_components=k, metric="precomputed", random_state=seed, init="classical_mds", n_init=1).fit_transform(D)
+
+
+def stress1(layout: np.ndarray, D: np.ndarray) -> float:
+    """Kruskal's stress-1 of a 2-D/3-D layout against the full-space distances D, with the optimal scale
+    factor (so display scaling does not matter): √(Σ(b·d − δ)² / Σδ²). 0 = distances kept exactly; the
+    standard goodness-of-fit of metric MDS (Kruskal 1964, Psychometrika 29:1–27), which every MDS view states."""
+    from scipy.spatial.distance import pdist
+
+    d, delta = pdist(layout), D[np.triu_indices(len(D), 1)]
+    b = (d @ delta) / (d @ d)
+    return float(np.sqrt(((b * d - delta) ** 2).sum() / (delta**2).sum()))
+
+
+def ideal_fit(P: np.ndarray, closed: bool) -> np.ndarray:
+    """The ideal template in true order (equally spaced circle, or evenly spaced line) embedded in the
+    view's k dimensions and rotated/reflected onto the observed unit-RMS view P (orthogonal Procrustes).
+    A reading aid drawn identically for the twin; no statistic uses it."""
+    n, k = P.shape
+    t = 2 * np.pi * np.arange(n) / n
+    T = np.c_[np.cos(t), np.sin(t)] if closed else np.c_[np.arange(n) - (n - 1) / 2, np.zeros(n)]
+    return align(np.c_[T, np.zeros((n, k - 2))], P)
+
+
+def view_map(E: np.ndarray, view: np.ndarray) -> np.ndarray:
+    """Linear map M (k×k) with E[:, :k] @ M == view, where E are exact PC-basis coordinates and `view` the
+    displayed top-k layout of the same layer (a scaled rotation of them). Lets the site place any linear
+    combination of items, e.g. the analogy query b − a + c, in the view exactly."""
+    k = view.shape[1]
+    return np.linalg.lstsq(E[:, :k], view, rcond=None)[0]
 
 
 def rank_unit(D: np.ndarray) -> np.ndarray:
@@ -126,12 +162,27 @@ def family_items(cfg: Config, family: str) -> list[str]:
     return [c for f, c, _ in family_index(cfg) if f == family]
 
 
-def planes_by_layer(X: np.ndarray, ref_layer: int, onto: np.ndarray | None = None) -> np.ndarray:
-    """PC-1/2 plane of the family at every layer, each aligned to the reference layer's plane → [L, n, 2].
-    `onto` (e.g. the trained model's plane) first rotates the reference itself onto that layout, so the
-    site's trained ↔ twin morph moves points as little as possible (display only, distances unchanged)."""
-    ref = pca(X[:, ref_layer]) if onto is None else align(pca(X[:, ref_layer]), onto)
-    return np.stack([align(pca(X[:, l]), ref) for l in range(1, X.shape[1])])
+def planes_by_layer(X: np.ndarray, ref_layer: int, onto: np.ndarray | None = None, k: int = 2) -> np.ndarray:
+    """Top-k PC view of the family at every layer (k = 2: the PC1–2 plane; 3–5: the 3-D views), each
+    aligned to the reference layer's view → [L, n, k]. `onto` (e.g. the trained model's view) first
+    rotates the reference itself onto that layout, so the site's trained ↔ twin morph moves points as
+    little as possible (display only, distances unchanged)."""
+    ref = pca(X[:, ref_layer], k) if onto is None else align(pca(X[:, ref_layer], k), onto)
+    return np.stack([align(pca(X[:, l], k), ref) for l in range(1, X.shape[1])])
+
+
+def pcs_by_layer(X: np.ndarray, ref_layer: int, onto: np.ndarray | None = None, k: int = 5) -> np.ndarray:
+    """Top-k PC scores at every layer for the 3-D views → [L, n, k]. Every axis stays that layer's own
+    principal component, so the variance printed on it (pca_var) is exact; only each axis's sign is flipped
+    to agree with the reference layer's scores (or with `onto`, e.g. the trained model's, for the twin), so
+    views do not mirror when scrubbing. Unit-RMS scaling is display only."""
+    ref = pca(X[:, ref_layer], k) if onto is None else onto
+    out = []
+    for l in range(1, X.shape[1]):
+        P = pca(X[:, l], k)
+        s = np.sign((P * ref).sum(0))
+        out.append(unit_rms(P * np.where(s == 0, 1, s)))
+    return np.stack(out)
 
 
 def offset_matrix(X: np.ndarray, bits: np.ndarray, axioms: list[str]) -> dict:

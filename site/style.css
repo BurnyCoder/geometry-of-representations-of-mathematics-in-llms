@@ -63,6 +63,7 @@ select, button, input[type="search"] {
 button { cursor: pointer; }
 button:hover { background: var(--accent-wash); }
 button[aria-pressed="true"] { border-color: var(--blue); color: var(--blue); background: var(--accent-wash); }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
 input[type="range"] { width: min(260px, 40vw); accent-color: var(--blue); }
 .layer-readout { font-variant-numeric: tabular-nums; color: var(--ink); min-width: 9.5em; }
 .toc { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 0.85rem; margin-left: auto; }
@@ -76,6 +77,12 @@ figure.fig { margin: 28px 0 36px; background: var(--surface); border: 1px solid 
 .fig-title { font-weight: 650; font-size: 1.05rem; flex: 1 1 380px; }
 .fig-tools { display: flex; flex-wrap: wrap; gap: 6px; font-size: 0.82rem; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; font-size: 0.82rem; }
+.view-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 4px 0 6px; font-size: 0.82rem; }
+.view-row label { display: inline-flex; align-items: center; gap: 4px; color: var(--ink2); }
+.under { display: grid; grid-template-columns: minmax(220px, 340px) 1fr; gap: 12px; align-items: center; margin-top: 6px; }
+.scree { min-height: 150px; }
+.pin-note { font-size: 0.84rem; margin-top: 6px; }
+@media (max-width: 640px) { .under { grid-template-columns: 1fr; } }
 .panels { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
 .panels.two { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
 .panel { min-height: 300px; }

@@ -11,9 +11,9 @@ As far as our literature search found, nobody had asked this of **abstract mathe
 
 **Links:**
 - 📄 Paper: [`paper/paper.pdf`](paper/paper.pdf)
-- 🧭 Interactive explorer: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/>
+- 🧭 Interactive explorer, with rotatable 3-D views (top principal components, 3-D MDS), a layer slider and a trained ↔ twin morph: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/>
 - 📝 Plain-language summary: [`reports/summary.md`](reports/summary.md)
-- 🔒 Preregistration: [`docs/prereg.md`](docs/prereg.md), frozen as git tag `prereg-v1` before any activation was extracted
+- 🔒 Preregistration: [`docs/prereg.md`](docs/prereg.md), frozen as git tag `prereg-v1` before any activation was extracted. A later post-hoc test was pre-specified the same way: [`reports/prereg_addendum_3d.md`](reports/prereg_addendum_3d.md)
 - 🤗 Data and activations: [dataset](https://huggingface.co/datasets/BurnyCoder/geometry-of-mathematics-in-llms) · [collection](https://huggingface.co/collections/BurnyCoder/geometry-of-mathematics-in-llms-6ae31ee0d9b29a69547607cc)
 
 ![At a glance](reports/figures/hero.png)
@@ -41,6 +41,8 @@ As far as our literature search found, nobody had asked this of **abstract mathe
 | Space chain ordered (Robinson; > twin) | pre-registered, confirmatory | ● 0.65 | ● 0.64 | ● 0.71 | ● 0.68 | ● 0.57 |
 | Ring / space order beyond frequency | added by plan audit | ● / ● | ● / ● | ● / ● | ● / ● | ○ / ○ |
 | Angles form a circle (closure < 2 and circle ρ > line ρ) | pre-registered, confirmatory | ✗ 2.11 | ✗ 2.59 | ✗ 2.15 | ✗ 1.84 | ✗ 2.03 |
+| Angles: closed cycle in any top-5 PC plane (addendum rule) | post-hoc, pre-specified addendum | ○ 0.33 | ○ 0.33 | ○ 0.17 | ○ 0.25 | ○ 0.42 |
+| Days / months: a loop that closes in some top-5 PC plane (p < .05, unadjusted) | post-hoc, descriptive | ● 1.00 / ● 0.50 | ○ 0.57 / ○ 0.33 | ● 1.00 / ○ 0.33 | ● 1.00 / ● 0.58 | ○ 0.43 / ● 0.50 |
 | Axiom direction: associative (offset consistency; Holm) | pre-registered, confirmatory | ● 0.43 | ● 0.47 | ● 0.38 | ● 0.35 | ● 0.56 |
 | Axiom direction: identity (offset consistency; Holm) | pre-registered, confirmatory | ◐ 0.24 | ○ 0.22 | ◐ 0.27 | ● 0.27 | ○ 0.19 |
 | Axiom direction: divisible (offset consistency; Holm) | pre-registered, confirmatory | ◐ 0.29 | ◐ 0.26 | ◐ 0.25 | ● 0.30 | ● 0.35 |
@@ -56,8 +58,8 @@ As far as our literature search found, nobody had asked this of **abstract mathe
 <p align="center"><img src="reports/figures/circle_depth_qwen3.5-2b.gif" alt="Days and months through every layer of Qwen3.5-2B (top) and its random-init twin (bottom)" width="640"></p>
 
 - **What you see:** days and months in the top-2 principal-component plane of Qwen3.5-2B (top row) and of its random-init twin (bottom row), one frame per layer. Each frame is rotated onto the preregistered layer's plane, so the picture does not flip between frames.
-- **What to notice:** in the trained model both cycles are closed at almost every depth (days: cycle score 1.00 at the preregistered layer) and break mainly at the final layer (days 0.57, months 0.25). The twin's points stay tangled at every layer (days 0.14 at the preregistered layer).
-- **Caveat:** the PC-plane cycle score is post-hoc and unadjusted per layer, and days and months are the positive control, not a finding about mathematics. Static version at fixed depths: [`circle_depth_qwen3.5-2b.png`](reports/figures/circle_depth_qwen3.5-2b.png). [Interactive, every model, family and layer](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
+- **What to notice:** in the trained model both families keep their cyclic order at almost every depth (days: cycle score 1.00 at the preregistered layer) and break mainly at the final layer (days 0.57, months 0.25). The twin's points stay tangled at every layer (days 0.14 at the preregistered layer).
+- **Caveat:** the PC-plane cycle score is post-hoc and unadjusted per layer, and it also rewards an open arc (see the closed-cycle test in the results). Days and months are the positive control, not a finding about mathematics. Static version at fixed depths: [`circle_depth_qwen3.5-2b.png`](reports/figures/circle_depth_qwen3.5-2b.png). [Interactive, every model, family and layer](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
 
 <!-- TOP:END -->
 
@@ -71,12 +73,15 @@ As far as our literature search found, nobody had asked this of **abstract mathe
 - **Concrete ↔ abstract is the top principal axis** of math-concept space in Qwen3.5-2B; pure ↔ applied is the second. Abstraction is rated by three LLM judges from other model families.
 
 **Negative and null results:**
-- **Angles are not a circle.** "330 degrees" sits next to "300 degrees", not next to "0 degrees", in all five models. Their geometry tracks the bare numerals. This falsifies one of our preregistered predictions.
+- **Angles are not a circle.** "330 degrees" sits next to "300 degrees", not next to "0 degrees", in all five models. Their geometry tracks the bare numerals. This falsifies one of our preregistered predictions. Numbers lie on helices with periodic parts beyond the first two principal components ([Kantamneni & Tegmark 2025](https://arxiv.org/abs/2502.00873)), so we also looked in all 10 planes of the top 5 components. That test was post-hoc, but specified in writing before it ran ([addendum](reports/prereg_addendum_3d.md)). No model has a closed cycle there either.
 - **The map is not a clean hierarchy (H-A2).** Under the preregistered measure (cophenetic correlation with a five-branch super-tree), the trained models beat shuffled trees but not their random-init twins. They are also no more tree-like than a Gaussian cloud with the same spectrum.
 - **A trillion tokens of math pretraining did not sharpen the map.** Qwen2.5-Math vs its base shows no detectable difference (H-A3).
 - **The map is not special to mathematics.** Biology, chemistry, geology and astronomy topics cluster at least as strongly once the number of fields is matched.
 - **The causal test was inconclusive.** Noise in the chain subspace barely hurt task accuracy beyond random-subspace noise.
-- **The positive control (days and months as circles) failed our preregistered full-space criterion.** It replicates only with a post-hoc 2-D principal-component test, the way Engels et al. visualize it. Both outcomes are reported.
+- **The positive control (days and months as circles) failed our preregistered full-space criterion, and replicates only partly with post-hoc tests.**
+  - In the top-2 principal-component plane, the way Engels et al. visualize it, days and months go round in perfect order. But that score also rewards an open arc.
+  - Counting only loops that close in their plane (the same addendum), days close in the top-2 plane in three of five models. Months close in a lower plane (PC2–PC3 or PC4–PC5) in three of five (p < .05 each, unadjusted).
+  - One untrained twin also passes for months, so this test is not fully specific. All outcomes are reported.
 
 **Methods finding.** Before touching LLM data, we simulated partial regression on distance matrices. When the nuisance matrix is only a proxy of a confounder, it rejects true nulls far too often. That is why every primary test here is a paired contrast against a random-init twin, with concept-bootstrap CIs.
 
@@ -159,8 +164,11 @@ Each figure states what it shows, what to notice, and its main caveat. Pictures 
 ![cyclic families](reports/figures/cyclic_qwen3.5-2b.png)
 
 - **What you see:** the top-2 principal-component plane of each family; colour runs light → dark along the true order, and the grey path joins consecutive items.
-- **What to notice:** days and months close into cycles in the trained model (cycle score 1.00 and 1.00) and not in the twin. For angles, the orange edge is the closure the preregistration predicted (330° next to 0°); in the model it spans the whole plot.
-- **Caveat:** days and months are the positive control, and the PC-plane cycle score is post-hoc. [Interactive, every family and layer](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
+- **What to notice:** days and months go round in their true order in the trained model (cycle score 1.00 and 1.00), and not in the twin. For angles, the orange edge is the closure the preregistration predicted (330° next to 0°); in the model it spans the whole plot.
+- **Caveat:**
+  - Days and months are the positive control, and the PC-plane cycle score is post-hoc.
+  - The cycle score also gives 1 to an open arc. In this plane the days' loop closes, but the months' Dec → Jan step is 3.0× a neighbour step, so here they form an open arc. The closed-cycle test below checks this in every plane.
+  - [Interactive, every family and layer](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
 
 The same planes through every layer, for the trained model and its twin, are animated [at the top of this README](#the-positive-control-layer-by-layer).
 
@@ -171,6 +179,40 @@ The same planes through every layer, for the trained model and its twin, are ani
 - **Caveat:**
   - Every random-init twin *meets* the preregistered circle rule (Qwen3.5-2B twin: closure 0.80), because a structureless cloud passes it by chance. The informative result is the trained models' line-like order, not the failed rule.
   - This is one prompt format at this model scale. [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
+
+#### Beyond the top-2 plane: the same families in 3-D
+
+<p align="center"><img src="reports/figures/turntable_qwen3.5-2b.gif" alt="Days, months and angles in their top-3 principal components, rotating; trained model top, random-init twin bottom" width="720"></p>
+
+- **What you see:** days, months and angles in their top-3 principal components at the preregistered layer, rotating once. Trained model on top, random-init twin below. Each axis is that model's own PC and is labelled with its share of variance; proportions are true.
+- **What to notice:** with a third axis the angles still run as an open path, 330° far from 0°. The days' loop is visible from every side.
+- **Caveat:** a rotating picture is not a test. Numbers lie on helices with periodic parts beyond PC1–2 ([Kantamneni & Tegmark 2025](https://arxiv.org/abs/2502.00873)), so we tested every plane of the top-5 PCs for a loop that closes. The test is post-hoc, and was pre-specified in an [addendum](reports/prereg_addendum_3d.md) before it ran. Static version for every model: [`families3d_qwen3.5-2b.png`](reports/figures/families3d_qwen3.5-2b.png). [Interactive 3-D, with a choice of axes](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
+
+**The pre-specified decision rule for "angles have a circular component beyond PC1–2"** requires all four conditions at the preregistered layer. Score: the best closed-cycle score over the 10 planes of PC1–5. p: a permutation p of that maximum.
+
+| Model | Angles: best closed plane | p (max over planes) | 1. Holm across models | 2. not PC1–PC2 | 3. > twin | 4. numerals do not cycle | Accepted |
+|---|---|---|---|---|---|---|---|
+| Qwen3.5-2B | 0.33 · PC3–PC5 | 0.3447 | no | yes | no | yes | **no** |
+| Qwen3.5-0.8B | 0.33 · PC3–PC5 | 0.3327 | no | yes | no | yes | **no** |
+| Qwen2.5-1.5B | 0.17 · PC2–PC3 | 0.9890 | no | yes | no | yes | **no** |
+| Qwen2.5-Math-1.5B | 0.25 · PC2–PC3 | 0.8472 | no | yes | no | yes | **no** |
+| Gemma-4-E2B | 0.42 · PC2–PC4 | 0.0839 | no | yes | yes | yes | **no** |
+
+**No model meets the rule**, so "angles are not a circle" stands, now for every plane of the top 5 principal components too.
+
+For days and months, every model:
+
+| Family | qwen3.5-2b | qwen3.5-0.8b | qwen2.5-1.5b | qwen2.5-math-1.5b | gemma-4-e2b |
+|---|---|---|---|---|---|
+| days | 1.00 · PC1–PC2 · p=0.0310 (twin 0.29) | 0.57 · PC2–PC4 · p=0.6224 (twin 0.57) | 1.00 · PC1–PC2 · p=0.0310 (twin 0.57) | 1.00 · PC1–PC2 · p=0.0270 (twin 0.57) | 0.43 · PC1–PC4 · p=0.8472 (twin 0.29) |
+| months | 0.50 · PC2–PC3 · p=0.0220 (twin 0.25) | 0.33 · PC2–PC3 · p=0.3826 (twin 0.25) | 0.33 · PC2–PC3 · p=0.3976 (twin 0.58) | 0.58 · PC2–PC3 · p=0.0040 (twin 0.25) | 0.50 · PC4–PC5 · p=0.0200 (twin 0.42) |
+| angles | 0.33 · PC3–PC5 · p=0.3447 (twin 0.33) | 0.33 · PC3–PC5 · p=0.3327 (twin 0.33) | 0.17 · PC2–PC3 · p=0.9890 (twin 0.17) | 0.25 · PC2–PC3 · p=0.8472 (twin 0.42) | 0.42 · PC2–PC4 · p=0.0839 (twin 0.17) |
+| digits_0_330 | 0.33 · PC2–PC3 · p=0.3287 (twin 0.33) | 0.17 · PC2–PC3 · p=0.9950 (twin 0.25) | 0.25 · PC2–PC3 · p=0.7912 (twin 0.25) | 0.17 · PC2–PC4 · p=0.9910 (twin 0.25) | 0.33 · PC2–PC5 · p=0.3287 (twin 0.25) |
+
+- **Days:** close in the top-2 plane in three of five models.
+- **Months:** close in a lower plane (PC2–PC3, PC4–PC5) in three of five.
+- **Twin:** one twin (Qwen2.5-1.5B) also shows a closed months loop. Word form alone can occasionally produce one, so these p-values (unadjusted, one per cell) are descriptive.
+- **Power:** with the closure rule the test is conservative ([amendment 2 of the addendum](reports/prereg_addendum_3d.md)), so it can miss weak cycles.
 
 ![ordered chains](reports/figures/chains_qwen3.5-2b.png)
 
@@ -185,6 +227,12 @@ The same planes through every layer, for the trained model and its twin, are ani
 - **What you see:** left, the ideal geometry, where each axiom is one fixed step. Each other panel is the same unsupervised PCA plane, highlighting the pairs that differ only in one axiom.
 - **What to notice:** in the trained model the highlighted arrows point roughly the same way; in the twin they point everywhere.
 - **Caveat:** a 2-D picture can hide or exaggerate parallelism; the next figure shows the full-dimensional evidence. [Interactive, with an analogy playground](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-lattice).
+
+![axiom lattice in 3-D](reports/figures/lattice3d_qwen3.5-2b.png)
+
+- **What you see:** the same facets in the structures' top-3 principal components, with true proportions and one fixed camera for every model. Blue 3-D arrows are the pairs that differ only in that axiom.
+- **What to notice:** the third axis keeps the trained model's arrows roughly parallel, while the twin's still point every way.
+- **Caveat:** a 3-D view can still hide or exaggerate parallelism; the cosine matrix below is the evidence. On the site you can rotate it, choose any 3 of the top-5 PCs, and see the analogy query b − a + c placed exactly. [Interactive 3-D](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-lattice).
 
 ![offset cosine matrices](reports/figures/lattice_cosines_qwen3.5-2b.png)
 
@@ -311,7 +359,7 @@ uv run python -m http.server 8791 --directory site
 | `docs/` | `prereg.md`, `deviations.md` (every post-hoc change), `data_card.md`, `figures.md` (figure catalogue, visual system, integrity rules, site data) |
 | `reports/` | Per-config results (generated), `summary.md` (generated), `experiments.md` (learnings: what was tried and why) |
 | `paper/` | `template.md`, the generated `paper.md` and `paper.pdf` |
-| `site/` | Explorable article (`index.html`, `app.js`, `style.css`) reading `site/data/*.json`; deployed to GitHub Pages |
+| `site/` | Explorable article (`index.html`, `app.js`, `style.css`) reading `site/data/*.json`, with interactive 3-D views; deployed to GitHub Pages |
 | `tests/` | Synthetic shape recovery, type-I calibration, leakage, extraction equivalence |
 
 ## Technologies

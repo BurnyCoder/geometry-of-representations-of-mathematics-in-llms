@@ -244,6 +244,62 @@ The new items were appended after the existing ones. Extraction runs at batch si
 - *The global trained ↔ twin morph.* A control-bar button switches the main panels (field map and matrix, families, lattice, concept cloud) to the twin; 2-D points glide with a Plotly transition. To make the motion minimal, the twin's family and lattice planes are rotated onto the trained plane (rotation and reflection only; a test checks that no distance changes).
 - *Missing pieces.* The site had no partial-operation chart (now Figure 14, with the selected model, the other models, all twins and the null), the forest plot had no filter by hypothesis (now chips), and the method figure had no caption. The paper's partial-operation caption now links to the site.
 
+## E9: 3-D views, and a closed-cycle test beyond the top-2 plane
+
+**Goal.**
+- The user asked for 3-D visualizations where possible (the top 3 principal components), as interactive as possible, and for the scientific results to change if the 3-D views changed them.
+- Motivation from the literature:
+  - numbers lie on helices whose periodic parts sit beyond PC1–2 ([Kantamneni & Tegmark 2025](https://arxiv.org/abs/2502.00873));
+  - Engels et al. found circles in PC planes other than the top two ([arXiv:2405.14860](https://arxiv.org/abs/2405.14860));
+  - Gurnee et al. and Goodfire present manifolds as rotatable or animated 3-D views.
+
+**What was built.**
+- *Site:* 3-D by default, with a 2D switch per figure.
+  - Field maps use 3-D MDS; families, the lattice and the concept cloud use each layer's top PCs.
+  - Interactions:
+    - linked cameras across panels, a turntable Spin button, and an axes picker (any 3 of PC1–5);
+    - a variance bar chart whose bars put a PC on an axis, and click-to-pin with info lines;
+    - the analogy query b − a + c drawn exactly in the lattice;
+    - wall-clock tweening for layer, model and trained ↔ twin changes.
+- *Static:*
+  - fixed-camera 3-D figures for families, chains and the lattice in every model;
+  - a turntable GIF for the README.
+
+**Integrity decisions.**
+- *True proportions everywhere* (`aspectmode: "data"`, `set_box_aspect`). The old concept cloud used a cube aspect, which inflated PC3.
+- *Each 3-D view says how much it shows.* PCA views give the variance per axis; MDS views give stress-1.
+- *Axes are each layer's own PCs.*
+  - The first version rotated every layer's 5-D view onto the preregistered layer (Procrustes), as the 2-D views do.
+  - Testing in the browser showed this makes the printed "PC3 · 14%" wrong everywhere except the trained model at the preregistered layer, because a rotated axis mixes PCs.
+  - Axes are now only *sign*-aligned (`figdata.pcs_by_layer`); a test checks that every axis is that layer's PCk.
+- *MDS fit measure.*
+  - A Spearman "fidelity" of layout distances was tried first. It said the 3-D arXiv layout was *less* faithful than 2-D (0.57 vs 0.63), although 3-D cuts the MDS stress from 0.35 to 0.25. Convergence was checked (3,000 iterations, 8 random starts).
+  - The cause: the arXiv distances are skewed, so rank correlation weighs tiny differences among large distances.
+  - Replaced by Kruskal's stress-1 with optimal scaling, the measure metric MDS optimizes.
+
+**Scientific follow-up: post-hoc 4.**
+- *What we did.*
+  - Only one reported result depends on a projection: the post-hoc PC1–2 cycle score.
+  - We pre-specified a test of all 10 planes of PC1–5 in [`reports/prereg_addendum_3d.md`](prereg_addendum_3d.md) and committed it before running.
+- *Before any real data was run, unit tests forced two amendments:*
+  1. *An open arc scores 1.* The angular cycle score gives a perfect 1 to an open arc: the plane of a line and one periodic coordinate is a U. PCA bends lines into such horseshoes ([Diaconis, Goel & Holmes 2008](https://arxiv.org/abs/0811.1477)). So a plane now counts only if the loop also closes in it (in-plane closure ratio < 2).
+  2. *The test is conservative.* The closure rule makes it so (1,000 null simulations: 1.8% false positives at α = 0.05 for 12 items, 4.0% for 7). The unit test now checks validity, not exact size.
+- *The planted-cycle test failed at first because of a bad fixture.* The ramp was not orthogonal to sin θ, so part of the circle leaked into PC1. Rebuilding the fixture with orthogonal components fixed it; the code was right.
+- *Results* (the tables are in the README and paper, generated from `results/*/posthoc.json`):
+  - **Angles:** no model meets the pre-specified rule. The best is Gemma, at p ≈ 0.08 before Holm correction. "Angles are not a circle" stands, now for every plane of the top-5 PCs.
+  - **Days:** the loop closes in the top-2 plane in 3 of 5 models. In Qwen3.5-0.8B and Gemma the top-2 view is an open arc, although the full-space closure ratio is below 2.
+  - **Months:** in Qwen3.5-2B's top-2 plane the Dec → Jan step is 3× a neighbour step, an open arc. A closed loop sits in PC2–PC3 or PC4–PC5 in 3 of 5 models.
+  - **Twin:** one twin also shows a closed months loop (p = 0.004). Word form alone can occasionally produce one, so the test is not fully specific.
+  - **Existing results:** every existing post-hoc number is unchanged. This was checked by diffing all three results files before and after the rerun; the new test uses its own random stream.
+- *What changed in the write-up.*
+  - Updated: the README highlights, the paper (abstract, §4.3, limitations), the summary, and the site's "what failed" list and sidenote.
+  - The positive control is now described as replicating partly, not "with a post-hoc 2-D test", and the scorecard has two new post-hoc rows.
+
+**Issues found while building, all fixed.**
+- *Hidden browser pane.* `requestAnimationFrame` never fires in a hidden pane, so tweens hung; they now use timers on wall-clock time.
+- *Stale tween frame.* A stale frame overwrote the 2D switch; purging a panel now cancels pending tweens.
+- *URL parameter.* The `?view=2d` parameter was read after the buttons were wired.
+
 ## Tooling learnings (continued)
 
 - **Line endings.** On Windows, `Path.write_text` translates `\n` to `\r\n`. Python heredoc scripts that search-and-replace code containing `"\n"` literals therefore corrupted files three times. The fix was to make code edits with the editor tool.

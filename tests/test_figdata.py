@@ -73,3 +73,79 @@ def test_morph_alignment_is_display_only():
     # and the moved reference plane is closer to `onto` than the unmoved one
     target = figdata.unit_rms(onto)
     assert np.linalg.norm(moved[1] - target) <= np.linalg.norm(plain[1] - target) + 1e-9
+
+
+# ------------------------------------------------------------------ 3-D views (display only)
+def test_pca_variance_matches_sklearn():
+    """Variance shown on every PCA view == sklearn's explained_variance_ratio_ (ground truth)."""
+    from sklearn.decomposition import PCA
+
+    X = np.random.default_rng(1).normal(size=(13, 60)) @ np.diag(np.linspace(3, 0.1, 60))
+    np.testing.assert_allclose(figdata.pca_var(X, 5), PCA(n_components=5).fit(X).explained_variance_ratio_, atol=1e-9)
+
+
+@pytest.mark.parametrize("k", [3, 5])
+def test_kd_planes_keep_each_layers_geometry(k):
+    """k-D layer views (aligned to the reference layer, optionally onto the trained view) are rotations of
+    that layer's own top-k PCA scores: pairwise distances agree up to the unit-RMS scale."""
+    from scipy.spatial.distance import pdist
+
+    rng = np.random.default_rng(2)
+    X, onto = rng.normal(size=(11, 4, 30)), rng.normal(size=(11, k))
+    P = figdata.planes_by_layer(X, 2, onto=onto, k=k)
+    assert P.shape == (3, 11, k)
+    for l in range(1, 4):
+        np.testing.assert_allclose(pdist(P[l - 1]), pdist(figdata.unit_rms(figdata.pca(X[:, l], k))), atol=1e-9)
+
+
+def test_3d_pca_views_keep_true_axes():
+    """3-D PCA views: each axis is that layer's own PCk (up to sign and a common display scale), so the
+    variance printed per axis is exact; signs agree with the reference layer / the trained view."""
+    rng = np.random.default_rng(7)
+    X = rng.normal(size=(12, 4, 40)) @ np.diag(np.linspace(3, 0.2, 40))
+    V = figdata.pcs_by_layer(X, 2, k=5)
+    for l in range(1, 4):
+        P = figdata.pca(X[:, l], 5)
+        ratio = V[l - 1] / P  # column-wise ±c with one common c > 0
+        c = np.abs(ratio).mean()
+        np.testing.assert_allclose(np.abs(ratio), c, rtol=1e-9)
+        # per-axis variance of the view is proportional to that layer's explained variance
+        np.testing.assert_allclose(V[l - 1].var(0) / V[l - 1].var(0).sum(), figdata.pca_var(X[:, l], 5) / figdata.pca_var(X[:, l], 5).sum(), rtol=1e-9)
+    ref = figdata.pca(X[:, 2], 5)
+    assert ((V[0] * ref).sum(0) >= 0).all()  # signs aligned to the reference layer
+    W = figdata.pcs_by_layer(X[::-1], 2, onto=V[1][::-1], k=5)  # a "twin" aligned onto another view
+    assert ((W[1] * V[1][::-1]).sum(0) >= 0).all()
+
+
+def test_mds_3d_and_stress():
+    from scipy.spatial.distance import pdist, squareform
+
+    pts = np.random.default_rng(3).normal(size=(17, 3))
+    D = squareform(pdist(pts))
+    assert figdata.mds(D, k=3).shape == (17, 3)
+    assert figdata.stress1(5 * pts, D) == pytest.approx(0.0, abs=1e-12)  # same distances up to scale: no stress
+    assert figdata.stress1(figdata.mds(D, k=3), D) < figdata.stress1(figdata.mds(D, k=2), D)
+
+
+def test_ideal_fit_recovers_a_rotated_circle():
+    """The ideal template (circle in a plane of the k-D view) fitted by rotation onto a noiseless rotated
+    circle reproduces it, and is unit-RMS like every view."""
+    from scipy.stats import ortho_group
+
+    t = 2 * np.pi * np.arange(7) / 7
+    P = figdata.unit_rms(np.c_[np.cos(t), np.sin(t), np.zeros((7, 3))] @ ortho_group.rvs(5, random_state=4))
+    fit = figdata.ideal_fit(P, closed=True)
+    np.testing.assert_allclose(fit, P, atol=1e-9)
+    line = figdata.ideal_fit(P, closed=False)
+    assert line.shape == P.shape and np.sqrt((line**2).sum(1).mean()) == pytest.approx(1.0)
+
+
+def test_view_map_projects_exact_coordinates_onto_the_view():
+    """The 5x5 map from exact (PC-basis) coordinates to the displayed view reproduces the view at the
+    reference layer exactly, so b - a + c can be drawn in the 3-D lattice without approximation."""
+    rng = np.random.default_rng(5)
+    X, onto = rng.normal(size=(13, 3, 50)), rng.normal(size=(13, 5))
+    view = figdata.pcs_by_layer(X, 1, onto=onto, k=5)[0]
+    E = figdata.exact_coords(X[:, 1])
+    M = figdata.view_map(E, view)
+    np.testing.assert_allclose(E[:, :5] @ M, view, atol=1e-9)

@@ -70,6 +70,37 @@ def draw_facets(Ps: dict, names: list[str], bits: np.ndarray, axioms: list[str],
     return fig
 
 
+def draw_facets3d(Vs: dict, names: list[str], bits: np.ndarray, axioms: list[str], notes: dict):
+    """The 3-D version of draw_facets: each model's top-3 PCs (true proportions, fixed camera), one facet
+    per axiom with that axiom's single-axiom pairs as blue 3-D arrows (quiver) and the rest grey; rows =
+    trained, twin. A 3-D view can still hide or exaggerate parallelism; the cosine matrix is the evidence."""
+    import matplotlib.pyplot as plt
+
+    fig = plt.figure(figsize=(2.9 * len(axioms), 6.6))
+    for row, k in enumerate(("trained", "random_init")):
+        P, var = Vs[k]
+        for col, name in enumerate(axioms):
+            ax = fig.add_subplot(2, len(axioms), row * len(axioms) + col + 1, projection="3d")
+            for a_i in range(len(axioms)):
+                for p, q in axiom_pairs(bits, a_i):
+                    if a_i == col:
+                        ax.quiver(*P[p], *(P[q] - P[p]), color=S.BLUE, lw=1.4, arrow_length_ratio=0.18)
+                    else:
+                        ax.plot(*P[[p, q]].T, color=S.GRID, lw=0.7)
+            ax.scatter(P[:, 0], P[:, 1], P[:, 2], s=12, color=S.INK2, depthshade=False)
+            if col == 0:
+                for (x, y, z), t in zip(P, names):
+                    ax.text(x, y, z, " " + t.replace("commutative ", "comm. "), fontsize=4.8, color=S.INK2)
+            S.bare3d(ax, P, var)
+            S.note3d(ax, notes[k][name])
+            if row == 0:
+                ax.set_title(AX_LABEL[name], fontsize=8.5)
+            if col == 0:
+                ax.text2D(-0.06, 0.5, "trained" if k == "trained" else "random-init twin", rotation=90, transform=ax.transAxes, ha="center", va="center", fontsize=8.5, color=S.INK2)
+    fig.subplots_adjust(left=0.03, right=0.99, top=0.93, bottom=0.07, wspace=0.05, hspace=0.25)
+    return fig
+
+
 def draw_cosines(oms: dict, axioms: list[str], la_key: dict, la_twin: dict, titles: dict):
     """Cosine matrices of single-axiom difference vectors (trained, twin) + per-axiom dot plot."""
     import matplotlib.pyplot as plt
@@ -131,6 +162,10 @@ def build(cfg, la: dict, outdir) -> list[str]:
         notes = {k: {a: f"consistency {la[kk]['group_like']['offsets'][a]['consistency']:.2f} ({S.fmt_p(la[kk]['group_like']['offsets'][a]['p'])})" for a in axioms}
                  for k, kk in (("trained", key), ("random_init", f"{key}__random"))}
         out.append(S.save(draw_facets(Ps, names, bits, axioms, notes), outdir, f"lattice_axes_{key}"))
+        Vt = figdata.pcs_by_layer(np.stack([X["trained"], X["trained"]], 1), 1, k=3)[0]  # own PCs; the twin's signs aligned to it
+        Vs = {"trained": (Vt, figdata.pca_var(X["trained"], 5)),
+              "random_init": (figdata.pcs_by_layer(np.stack([X["random_init"]] * 2, 1), 1, onto=Vt, k=3)[0], figdata.pca_var(X["random_init"], 5))}
+        out.append(S.save(draw_facets3d(Vs, names, bits, axioms, notes), outdir, f"lattice3d_{key}"))
         oms = {k: figdata.offset_matrix(v, bits, axioms) for k, v in X.items()}
         titles = {"trained": f"{S.pretty(key)} · layer {Lp}", "random_init": "random-init twin"}
         out.append(S.save(draw_cosines(oms, axioms, la[key], la[f"{key}__random"], titles), outdir, f"lattice_cosines_{key}"))

@@ -11,7 +11,7 @@ abstract: |
 
   **(B2) Axiom lattices.** For group-like structures (magma … abelian group), adding an axiom behaves like a consistent direction. Same-axiom difference vectors are more parallel than random pairs, and much less so in the random-init twins. This holds clearly for associativity and commutativity, which survive Holm correction in the confirmatory model and are significant in all five models. The evidence is weaker for divisibility (raw p < .05 in all five models, but not after Holm correction) and for identity (raw p < .05 in three of five models).
 
-  The days/months positive control met our preregistered full-space criterion only partially. A post-hoc test in the top-2 principal-component plane recovers perfect cycles. Simulations show why we use paired random-init contrasts as primary tests: partial regression on distance matrices inflates type-I error when nuisances are proxies of confounders.
+  The days/months positive control met our preregistered full-space criterion only partially. A post-hoc test in the top-2 principal-component plane recovers perfect cyclic order, but that score also rewards open arcs. Counting only loops that close in their plane (post-hoc, pre-specified in an addendum), days close in the top-2 plane in three of five models and months in a lower principal-component plane in three of five. The same test finds no closed cycle for angles in any plane of the top five components. Simulations show why we use paired random-init contrasts as primary tests: partial regression on distance matrices inflates type-I error when nuisances are proxies of confounders.
 ---
 
 # 1 Introduction
@@ -110,6 +110,7 @@ The test is calibrated when the nuisance distance matrix *is* the confounder. It
 
 - **Field map.** We use field-level RSA, i.e. the Spearman ρ between the centroid RDM and the arXiv distance, with a Mantel permutation over field labels (10,000 permutations) and a max-over-layers null for layer curves.
 - **Families.** Every statistic is unsupervised or leave-one-out, and is tested against an order-permutation null. With n ≤ 13 items in more than 1,000 dimensions, a supervised fit can impose any order. As a negative control, 100 random 11-item lists of math concepts must be rejected at about 5%.
+- **Figures, including 3-D views.** Every picture is an unsupervised projection: PCA, or metric MDS for field maps. 3-D views show each layer's own top principal components with true proportions, and state the share of variance on each axis (PCA) or the stress-1 of the layout (MDS). Alignment between panels and layers is display-only: rotation, or only sign flips for 3-D PCA axes. No statistic is computed from a picture. The single test that looks beyond PC1–2, the closed-cycle test over the top-5 planes, is post-hoc and was pre-specified in an addendum before it ran (§4.3).
 
 # 4 Results
 
@@ -126,6 +127,8 @@ The test is calibrated when the nuisance distance matrix *is* the confounder. It
 | Space chain ordered (Robinson; > twin) | pre-registered, confirmatory | ● 0.65 | ● 0.64 | ● 0.71 | ● 0.68 | ● 0.57 |
 | Ring / space order beyond frequency | added by plan audit | ● / ● | ● / ● | ● / ● | ● / ● | ○ / ○ |
 | Angles form a circle (closure < 2 and circle ρ > line ρ) | pre-registered, confirmatory | ✗ 2.11 | ✗ 2.59 | ✗ 2.15 | ✗ 1.84 | ✗ 2.03 |
+| Angles: closed cycle in any top-5 PC plane (addendum rule) | post-hoc, pre-specified addendum | ○ 0.33 | ○ 0.33 | ○ 0.17 | ○ 0.25 | ○ 0.42 |
+| Days / months: a loop that closes in some top-5 PC plane (p < .05, unadjusted) | post-hoc, descriptive | ● 1.00 / ● 0.50 | ○ 0.57 / ○ 0.33 | ● 1.00 / ○ 0.33 | ● 1.00 / ● 0.58 | ○ 0.43 / ● 0.50 |
 | Axiom direction: associative (offset consistency; Holm) | pre-registered, confirmatory | ● 0.43 | ● 0.47 | ● 0.38 | ● 0.35 | ● 0.56 |
 | Axiom direction: identity (offset consistency; Holm) | pre-registered, confirmatory | ◐ 0.24 | ○ 0.22 | ◐ 0.27 | ● 0.27 | ○ 0.19 |
 | Axiom direction: divisible (offset consistency; Holm) | pre-registered, confirmatory | ◐ 0.29 | ◐ 0.26 | ◐ 0.25 | ● 0.30 | ● 0.35 |
@@ -260,11 +263,11 @@ infini-gram (v4_dolma-v1_7_llama): Spearman ρ(wordfreq Zipf, log count) = 0.316
 | angles | circle | qwen3.5-2b | 0.56 | 0.29 | 2.11 | 1.01 (0.39) | 0.65 (0.0005) | 0.90 (0.0005) | 0.76 (0.0033) |
 | angles | circle | qwen3.5-2b__random | -0.01 | 0.22 | 0.80 | 1.01 (0.77) | 0.26 (0.8581) | 0.08 (0.8076) | -0.49 (0.3754) |
 
-![**Days and months close into cycles; angles do not.** Top-2 principal-component plane of each family at the preregistered layer (unsupervised; no labels are used to fit it). Colour runs light to dark along the true order; the grey path joins consecutive items. For angles, the orange edge is the 330° → 0° closure the preregistration predicted. Below each panel: the post-hoc PC-plane cycle score (1 = perfect cycle) with its order-permutation p. Bottom row: the random-init twin. Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families>.](../reports/figures/cyclic_qwen3.5-2b.pdf){width=82%}
+![**Days and months go round in their true order; angles do not.** Top-2 principal-component plane of each family at the preregistered layer (unsupervised; no labels are used to fit it). Colour runs light to dark along the true order; the grey path joins consecutive items. For angles, the orange edge is the 330° → 0° closure the preregistration predicted. Below each panel: the post-hoc PC-plane cycle score (1 = perfect cyclic order) with its order-permutation p. The score also gives 1 to an open arc: here the months' Dec → Jan step is 3.0× a neighbour step, so in this plane they are an open arc. Bottom row: the random-init twin. Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families>.](../reports/figures/cyclic_qwen3.5-2b.pdf){width=82%}
 
 ![**The cycles are present at almost every depth.** Days (top) and months (bottom) at fixed relative depths, each plane rotated onto the preregistered layer's plane for display, plus the cycle score at every layer for the trained model and the twin (right). Post-hoc and unadjusted. Animated version: `reports/figures/circle_depth_qwen3.5-2b.gif`; interactive: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families>.](../reports/figures/circle_depth_qwen3.5-2b.pdf){width=100%}
 
-**Positive control.** With our preregistered full-space statistics, days and months show significant circle-template correlation and closure ratios near 1. They nevertheless fail "circle ρ > line ρ" at layer 12. Following the prereg, we debugged before interpreting further. In the top-2 principal-component plane, where Engels et al. visualized their circles, days and months form *perfect* cycles in the trained model and none in the twin:
+**Positive control.** With our preregistered full-space statistics, days and months show significant circle-template correlation and closure ratios near 1. They nevertheless fail "circle ρ > line ρ" at layer 12. Following the prereg, we debugged before interpreting further. In the top-2 principal-component plane, where Engels et al. visualized their circles, days and months are in *perfect* cyclic order in the trained model and in none in the twin:
 
 | Family | qwen3.5-2b | qwen3.5-2b__random |
 |---|---|---|
@@ -276,6 +279,21 @@ infini-gram (v4_dolma-v1_7_llama): Spearman ρ(wordfreq Zipf, log count) = 0.316
 | ngons | 0.50 (p=0.0100) | 0.30 (p=0.2116) |
 | dimensions | 0.55 (p=0.0040) | 0.18 (p=0.5549) |
 | angles | 0.33 (p=0.0559) | 0.17 (p=0.5469) |
+
+**Beyond the top-2 plane (post-hoc, pre-specified addendum).** The cycle score above counts a point's angular successor, so an open arc scores 1 too, and PCA bends lines into such arcs ([Diaconis, Goel & Holmes 2008](https://arxiv.org/abs/0811.1477)). After adding 3-D views we tested every plane (PCi, PCj), i < j ≤ 5, for a loop that also *closes* in the plane. A plane counts only if its in-plane closure ratio is below 2, the preregistered threshold. The p-value is a permutation p of the maximum over the 10 planes.
+- **Pre-specification.** The rule was written down before the run ([`reports/prereg_addendum_3d.md`](https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms/blob/master/reports/prereg_addendum_3d.md)), with two amendments made from unit tests before any real data was run.
+- **Days:** close in the top-2 plane in three of five models.
+- **Months:** close in a lower plane in three of five (PC2–PC3 or PC4–PC5; p < .05 each, unadjusted).
+- **Twin:** one twin also shows a closed months loop, so the test is not fully specific.
+
+| Family | qwen3.5-2b | qwen3.5-0.8b | qwen2.5-1.5b | qwen2.5-math-1.5b | gemma-4-e2b |
+|---|---|---|---|---|---|
+| days | 1.00 · PC1–PC2 · p=0.0310 (twin 0.29) | 0.57 · PC2–PC4 · p=0.6224 (twin 0.57) | 1.00 · PC1–PC2 · p=0.0310 (twin 0.57) | 1.00 · PC1–PC2 · p=0.0270 (twin 0.57) | 0.43 · PC1–PC4 · p=0.8472 (twin 0.29) |
+| months | 0.50 · PC2–PC3 · p=0.0220 (twin 0.25) | 0.33 · PC2–PC3 · p=0.3826 (twin 0.25) | 0.33 · PC2–PC3 · p=0.3976 (twin 0.58) | 0.58 · PC2–PC3 · p=0.0040 (twin 0.25) | 0.50 · PC4–PC5 · p=0.0200 (twin 0.42) |
+| angles | 0.33 · PC3–PC5 · p=0.3447 (twin 0.33) | 0.33 · PC3–PC5 · p=0.3327 (twin 0.33) | 0.17 · PC2–PC3 · p=0.9890 (twin 0.17) | 0.25 · PC2–PC3 · p=0.8472 (twin 0.42) | 0.42 · PC2–PC4 · p=0.0839 (twin 0.17) |
+| digits_0_330 | 0.33 · PC2–PC3 · p=0.3287 (twin 0.33) | 0.17 · PC2–PC3 · p=0.9950 (twin 0.25) | 0.25 · PC2–PC3 · p=0.7912 (twin 0.25) | 0.17 · PC2–PC4 · p=0.9910 (twin 0.25) | 0.33 · PC2–PC5 · p=0.3287 (twin 0.25) |
+
+![**Days, months and angles in their top-3 principal components.** Each axis is that model's own PC, labelled with its share of variance, with true proportions and one fixed camera for every panel. Top row: Qwen3.5-2B; bottom row: its random-init twin. Below each panel: the share of variance in PC1–3, and the best plane among PC1–5 where the loop closes, with its p. Interactive 3-D version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families>.](../reports/figures/families3d_qwen3.5-2b.pdf){width=82%}
 
 This statistic is post-hoc. We conclude that the pipeline works, and that the full-space template criterion was insensitive because variance outside the circle plane dominates.
 
@@ -303,7 +321,7 @@ This statistic is post-hoc. We conclude that the pipeline works, and that the fu
 | number_systems | qwen3.5-2b | -0.57 | +0.80 | +0.21 (0.86, 0.3920) |
 | number_systems | qwen3.5-2b__random | -0.57 | +0.80 | -0.21 (0.89, 0.5681) |
 
-**Angles: preregistered prediction falsified.** Angles are not circular: closure ratio 2.11 and no cycle in the PC plane. Their geometry closely matches that of the bare digits 0–330 (ρ = 0.84). At this scale, "330 degrees" sits next to "300 degrees", not next to "0 degrees".
+**Angles: preregistered prediction falsified.** Angles are not circular: closure ratio 2.11, no cycle in the top-2 PC plane, and, under the pre-specified addendum rule, no closed cycle in any plane of the top five components in any model (below). Their geometry closely matches that of the bare digits 0–330 (ρ = 0.84). At this scale, "330 degrees" sits next to "300 degrees", not next to "0 degrees".
 
 **The preregistered rule is not specific.** Every random-init twin *meets* the circle rule, for example the Qwen3.5-2B twin: closure 0.80, circle ρ 0.22 vs line ρ -0.01. A structureless point cloud has a closure ratio near 1 and near-zero template correlations, so it passes by chance. The informative result is therefore not the failed rule itself but the trained models' clear line-like order: line ρ 0.56 in Qwen3.5-2B, against circle ρ 0.29. That order tracks the bare numbers. We found this when we added the twin panel to the angles figure; it was not part of the preregistered analysis.
 
@@ -315,6 +333,18 @@ This statistic is post-hoc. We conclude that the pipeline works, and that the fu
 | dimensions vs number_words_0_10 | qwen3.5-2b__random | -0.58 | -0.153 (0.9104) |
 | angles vs digits_0_330 | qwen3.5-2b | 0.84 | +0.054 (0.1858) |
 | angles vs digits_0_330 | qwen3.5-2b__random | 0.22 | +0.227 (0.0104) |
+
+The addendum's decision rule for "angles have a circular component beyond PC1–2" requires all four conditions:
+
+| Model | Angles: best closed plane | p (max over planes) | 1. Holm across models | 2. not PC1–PC2 | 3. > twin | 4. numerals do not cycle | Accepted |
+|---|---|---|---|---|---|---|---|
+| Qwen3.5-2B | 0.33 · PC3–PC5 | 0.3447 | no | yes | no | yes | **no** |
+| Qwen3.5-0.8B | 0.33 · PC3–PC5 | 0.3327 | no | yes | no | yes | **no** |
+| Qwen2.5-1.5B | 0.17 · PC2–PC3 | 0.9890 | no | yes | no | yes | **no** |
+| Qwen2.5-Math-1.5B | 0.25 · PC2–PC3 | 0.8472 | no | yes | no | yes | **no** |
+| Gemma-4-E2B | 0.42 · PC2–PC4 | 0.0839 | no | yes | yes | yes | **no** |
+
+**No model meets the rule**, so "angles are not a circle" stands, now for every plane of the top 5 principal components too.
 
 ![**Predicted vs found for angles.** Left: the preregistered prediction, a circle on which 330° neighbours 0° (orange edge). Middle: Qwen3.5-2B's PC plane, where that edge spans the whole layout. Right: the bare numbers 0–330, whose geometry the angles follow. Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families>.](../reports/figures/angles_qwen3.5-2b.pdf){width=90%}
 
@@ -359,6 +389,8 @@ This agrees with the unsupervised statistics, including the conclusion that angl
 | gender control | qwen3.5-2b__random | — | — | gender: 0.00/0.07 | king:queen rank 15 | — |
 
 ![**Adding an axiom moves structures in a consistent direction in the trained model only.** Left: the ideal geometry, in which each axiom is one fixed step. Other panels: the same unsupervised PCA plane of the 13 group-like structures, one panel per axiom, with the pairs that differ only in that axiom drawn as blue arrows. Parallel arrows mean a consistent direction. Below each panel: offset consistency and its random-pair p. Bottom row: the twin. Interactive version, with an analogy playground: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-lattice>.](../reports/figures/lattice_axes_qwen3.5-2b.pdf){width=100%}
+
+![**The same facets in 3-D.** The 13 structures in their top-3 principal components, with true proportions and one fixed camera. In each facet, blue arrows are the pairs that differ only in that axiom. Top row: Qwen3.5-2B; bottom row: its twin. A 3-D view can still hide or exaggerate parallelism; the cosine matrices (next figure) are the evidence. Interactive 3-D version, with the analogy query b − a + c placed exactly: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-lattice>.](../reports/figures/lattice3d_qwen3.5-2b.pdf){width=100%}
 
 ![**The direction evidence, unprojected.** Cosine between every pair of single-axiom difference vectors in the full residual space, grouped by axiom. Red diagonal blocks mean a consistent direction. Hatched cells are cross-axiom pairs that share a structure; isotropic noise alone puts these near ±0.5, so they carry no evidence. The self-cosines on the diagonal are masked. Right: offset consistency per axiom for the trained model, the trained model with the token-count direction removed, and the twin, against the random-pair null. Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-cosines>.](../reports/figures/lattice_cosines_qwen3.5-2b.pdf){width=100%}
 
@@ -543,7 +575,7 @@ At block 11, we encoded the template-averaged residuals with the official Qwen-S
 - **Ground truth.** Ochiai cross-listing is one operationalization of field relatedness.
 - **Read point.** A single read-out: last token, averaged over templates. Template wording affects absolute values, though split-half reliability is high.
 - **Model size.** Models are ≤ 2.3B active parameters, because of the 8 GB GPU.
-- **Positive control.** It passed only under a post-hoc statistic.
+- **Positive control.** It passed only under post-hoc statistics. In the plane where its loop closes, it holds for days in three of five models and for months in three of five.
 - **Family size.** Families are small (n = 7–13), so shape claims rest on permutation tests with limited resolution.
 - **Correlation, not mechanism.** All tests except §4.5 are correlational.
 - **Abstraction ground truth.** Abstraction ratings come from LLM judges. Their validation against Mathlib import depth rests on only 39 of 655 concepts that could be matched to Mathlib, and import depth also differs systematically between areas of Mathlib.

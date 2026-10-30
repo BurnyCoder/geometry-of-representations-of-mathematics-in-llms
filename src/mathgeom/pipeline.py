@@ -809,6 +809,24 @@ def phase_posthoc(cfg: Config) -> None:
                 cyc[name] = per_layer
             out.setdefault(key, {})["pc_plane_cycle"] = cyc
             log.info("[posthoc %s] PC-plane cycle score at primary layer: %s", key, {n: round(v[_primary_layer(acts.shape[1], cfg.primary_rel_depth) - 1]["score"], 2) for n, v in cyc.items()})
+    # POST-HOC 4 (reports/prereg_addendum_3d.md, written before running): closed cycles in any plane of the
+    # top-5 PCs, every layer, with a max-over-planes permutation null; a separate random stream keeps every
+    # score above unchanged. Bare numerals (digits_0_330) are the lexical control for angles.
+    from mathgeom.geometry.manifold import best_plane_cycle
+
+    rng4 = np.random.default_rng(cfg.seed + 7)
+    for m in cfg.models:
+        for key in (m["key"], m["key"] + "__random"):
+            acts = load_acts(cfg, key, "family")["last"]
+            Lp = _primary_layer(acts.shape[1], cfg.primary_rel_depth)
+            res = {}
+            for name in ("days", "months", "angles", "digits_0_330"):
+                idx = [i for i, (f, _, _) in enumerate(fam) if f == name]
+                res[name] = [{"layer": l, **best_plane_cycle(acts[idx, l].astype(np.float64), np.arange(len(idx)), k=5, n_perm=1000, rng=rng4)}
+                             for l in range(1, acts.shape[1])]
+            out[key]["pc_planes_cycle"] = res
+            log.info("[posthoc %s] closed cycle in best top-5 PC plane at layer %d: %s", key, Lp,
+                     {n: (round(v[Lp - 1]["score"], 2), "PC%d-PC%d" % tuple(np.array(v[Lp - 1]["plane"]) + 1), round(v[Lp - 1]["p"], 3)) for n, v in res.items()})
     _save(cfg, "posthoc.json", out)
 
 
