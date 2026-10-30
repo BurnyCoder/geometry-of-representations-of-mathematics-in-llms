@@ -20,6 +20,7 @@ from mathgeom.report import figdata
 from mathgeom.report import style as S
 
 AX_LABEL = {"associative": "+ associativity", "identity": "+ identity", "divisible": "+ divisibility (inverses)", "commutative": "+ commutativity"}
+HEAD = "-|>,head_length=0.8,head_width=0.45"  # filled arrowhead, about twice the default length so direction reads at a glance
 
 
 def draw_schematic(ax, names: list[str], bits: np.ndarray, axioms: list[str]):
@@ -28,7 +29,7 @@ def draw_schematic(ax, names: list[str], bits: np.ndarray, axioms: list[str]):
     P = np.c_[2 * a + d, 2 * i + c].astype(float)
     for ax_i in range(len(axioms)):
         for p, q in axiom_pairs(bits, ax_i):
-            ax.annotate("", P[q], P[p], arrowprops=dict(arrowstyle="-|>", color=S.AXIS, lw=0.9, shrinkA=6, shrinkB=6))
+            ax.annotate("", P[q], P[p], arrowprops=dict(arrowstyle=HEAD, color=S.AXIS, lw=0.9, shrinkA=6, shrinkB=6, mutation_scale=12))
     ax.scatter(P[:, 0], P[:, 1], s=40, color=S.INK2, zorder=3, edgecolors=S.SURFACE, linewidths=1.0)
     for (x, y), n, cb in zip(P, names, c):  # commutative rows label above, the others below
         two_lines = n.replace("commutative ", "comm.\n").replace(" ", "\n") if " " in n else n  # grid cells are one unit apart
@@ -55,8 +56,8 @@ def draw_facets(Ps: dict, names: list[str], bits: np.ndarray, axioms: list[str],
             for a_i in range(len(axioms)):
                 for p, q in axiom_pairs(bits, a_i):
                     hot = a_i == col - 1
-                    ax.annotate("", P[q], P[p], arrowprops=dict(arrowstyle="-|>" if hot else "-", color=S.BLUE if hot else S.GRID,
-                                                              lw=1.5 if hot else 0.7, shrinkA=4, shrinkB=4, mutation_scale=9), zorder=2 if hot else 1)
+                    ax.annotate("", P[q], P[p], arrowprops=dict(arrowstyle=HEAD if hot else "-", color=S.BLUE if hot else S.GRID,
+                                                              lw=1.6 if hot else 0.7, shrinkA=4, shrinkB=4, mutation_scale=12), zorder=2 if hot else 1)
             ax.scatter(P[:, 0], P[:, 1], s=16, color=S.INK2, zorder=3, edgecolors=S.SURFACE, linewidths=0.8)
             if col == 1:
                 S.label_points(ax, P, names, size=5.6)
@@ -72,7 +73,7 @@ def draw_facets(Ps: dict, names: list[str], bits: np.ndarray, axioms: list[str],
 
 def draw_facets3d(Vs: dict, names: list[str], bits: np.ndarray, axioms: list[str], notes: dict):
     """The 3-D version of draw_facets: each model's top-3 PCs (true proportions, fixed camera), one facet
-    per axiom with that axiom's single-axiom pairs as blue 3-D arrows (quiver) and the rest grey; rows =
+    per axiom with that axiom's single-axiom pairs as blue 3-D arrows (style.arrow3d) and the rest grey; rows =
     trained, twin. A 3-D view can still hide or exaggerate parallelism; the cosine matrix is the evidence."""
     import matplotlib.pyplot as plt
 
@@ -83,8 +84,8 @@ def draw_facets3d(Vs: dict, names: list[str], bits: np.ndarray, axioms: list[str
             ax = fig.add_subplot(2, len(axioms), row * len(axioms) + col + 1, projection="3d")
             for a_i in range(len(axioms)):
                 for p, q in axiom_pairs(bits, a_i):
-                    if a_i == col:
-                        ax.quiver(*P[p], *(P[q] - P[p]), color=S.BLUE, lw=1.4, arrow_length_ratio=0.18)
+                    if a_i == col:  # filled, camera-facing head of fixed size (style.arrow3d), so short arrows keep a visible direction
+                        S.arrow3d(ax, P[p], P[q], S.BLUE, size=0.09 * np.ptp(P, axis=0).max(), lw=1.4)
                     else:
                         ax.plot(*P[[p, q]].T, color=S.GRID, lw=0.7)
             ax.scatter(P[:, 0], P[:, 1], P[:, 2], s=12, color=S.INK2, depthshade=False)

@@ -149,3 +149,38 @@ def test_turntable_gif_renders(tmp_path):
     from PIL import Image
 
     assert Image.open(tmp_path / name).n_frames == 2
+
+
+def test_arrow3d_draws_a_filled_head_that_fits_the_arrow():
+    """3-D arrows (lattice3d) get a filled, camera-facing head of fixed size, clamped to 60% of a short arrow."""
+    import matplotlib.pyplot as plt
+    from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+
+    fig = plt.figure()
+    ax = fig.add_subplot(projection="3d")
+    tail, tip = np.zeros(3), np.array([0.05, 0.0, 0.0])
+    head = style.arrow3d(ax, tail, tip, style.BLUE, size=0.4)
+    assert any(isinstance(c, Poly3DCollection) for c in ax.collections)
+    base = head[1:].mean(0)  # midpoint of the head's base
+    assert np.linalg.norm(tip - base) <= 0.6 * np.linalg.norm(tip - tail) + 1e-12
+    np.testing.assert_allclose(head[0], tip)
+    plt.close(fig)
+
+
+def test_label_placement_is_reproducible():
+    """Direct labels must land in the same place on every run (adjustText's default stops on wall-clock
+    time, which made reruns differ); two identical calls give identical text positions."""
+    import matplotlib.pyplot as plt
+
+    rng = np.random.default_rng(9)
+    P, labels = rng.normal(size=(12, 2)) * 0.1, [f"a long label {i}" for i in range(12)]  # crowded on purpose
+
+    def place():
+        fig, ax = plt.subplots(figsize=(2.5, 2.5))
+        ax.scatter(*P.T)
+        style.label_points(ax, P, labels)
+        pos = np.array([t.get_position() for t in ax.texts])
+        plt.close(fig)
+        return pos
+
+    np.testing.assert_array_equal(place(), place())

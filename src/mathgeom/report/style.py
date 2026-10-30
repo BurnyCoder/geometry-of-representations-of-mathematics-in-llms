@@ -107,6 +107,31 @@ def bare3d(ax, P: np.ndarray, var=None, axes=(0, 1, 2)) -> None:
     ax.view_init(*VIEW3D)
 
 
+def arrow3d(ax, tail, tip, color: str, size: float, lw: float = 1.4, width: float = 0.55) -> np.ndarray:
+    """A 3-D arrow whose direction reads at a glance: a line plus a *filled* triangular head of fixed size
+    (data units; clamped to 60% of the arrow so it never overshoots the tail) lying in the plane that faces
+    the fixed camera VIEW3D. ax.quiver heads scale with the arrow and are two thin lines, so short arrows
+    lost their direction. Returns the head's three corners (tip first)."""
+    from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+
+    tail, tip = np.asarray(tail, dtype=float), np.asarray(tip, dtype=float)
+    ax.plot(*np.c_[tail, tip], color=color, lw=lw)
+    n = np.linalg.norm(tip - tail)
+    if n == 0:
+        return np.repeat(tip[None], 3, 0)
+    u = (tip - tail) / n
+    e, a = np.radians(VIEW3D)
+    side = np.cross(u, [np.cos(e) * np.cos(a), np.cos(e) * np.sin(a), np.sin(e)])  # ⟂ to the arrow and the view
+    if np.linalg.norm(side) < 1e-9:  # arrow points at the camera: any perpendicular will do
+        side = np.cross(u, [0.0, 0.0, 1.0]) if abs(u[2]) < 0.9 else np.cross(u, [1.0, 0.0, 0.0])
+    side /= np.linalg.norm(side)
+    L = min(size, 0.6 * n)
+    base = tip - L * u
+    head = np.array([tip, base + side * L * width, base - side * L * width])
+    ax.add_collection3d(Poly3DCollection([head], facecolors=color, edgecolors=color, linewidths=0.5))
+    return head
+
+
 def note3d(ax, text: str) -> None:
     """Statistic line under a 3-D panel (its x label names the PC, so the note goes below the axes box)."""
     ax.text2D(0.5, -0.02, text, transform=ax.transAxes, ha="center", va="top", fontsize=7, color=INK2)
@@ -117,7 +142,9 @@ def label_points(ax, xy: np.ndarray, labels: list[str], size: float = 7.0, color
     from adjustText import adjust_text
 
     texts = [ax.text(x, y, t, fontsize=size, color=color, **kw) for (x, y), t in zip(xy, labels)]
-    adjust_text(texts, x=xy[:, 0], y=xy[:, 1], ax=ax, arrowprops=dict(arrowstyle="-", color=GRID, lw=0.5), expand=(1.15, 1.35))
+    # a fixed iteration limit, not adjustText's default 1-second time limit: a time limit makes label positions
+    # depend on machine load, so reruns produced different figures (about 1,000 iterations ≈ 1 s on crowded panels)
+    adjust_text(texts, x=xy[:, 0], y=xy[:, 1], ax=ax, arrowprops=dict(arrowstyle="-", color=GRID, lw=0.5), expand=(1.15, 1.35), iter_lim=1000)
 
 
 def badge(ax, text: str, loc: str = "lower right", color: str = INK2) -> None:
