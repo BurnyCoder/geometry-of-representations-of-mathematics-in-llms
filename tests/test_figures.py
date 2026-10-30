@@ -134,3 +134,18 @@ def test_cross_model_extra_figures_render(tmp_path):
     rows = [rw for _, rr in overview.forest_rows(r) for rw in rr]
     assert all({"label", "est", "ci", "status", "n", "holm"} <= set(rw) for rw in rows)
     assert sum(rw["holm"] is not None for rw in rows) == 5  # only the H-A1 rows are in the pre-registered Holm family
+
+
+def test_turntable_gif_renders(tmp_path):
+    """README turntable (2 frames here): needs the cached activations, skipped without them."""
+    from mathgeom.config import load_config
+    from mathgeom.report.figures import families
+
+    cfg = load_config("configs/mvp.yaml")
+    if not (cfg.artifacts / "acts" / "family_index.json").exists():
+        pytest.skip("activations not present")
+    style.use_style()
+    name = families.save_turntable(cfg, "qwen3.5-2b", 12, tmp_path, frames=2)
+    from PIL import Image
+
+    assert Image.open(tmp_path / name).n_frames == 2

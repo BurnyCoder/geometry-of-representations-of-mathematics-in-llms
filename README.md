@@ -185,7 +185,7 @@ The same planes through every layer, for the trained model and its twin, are ani
 <p align="center"><img src="reports/figures/turntable_qwen3.5-2b.gif" alt="Days, months and angles in their top-3 principal components, rotating; trained model top, random-init twin bottom" width="720"></p>
 
 - **What you see:** days, months and angles in their top-3 principal components at the preregistered layer, rotating once. Trained model on top, random-init twin below. Each axis is that model's own PC and is labelled with its share of variance; proportions are true.
-- **What to notice:** with a third axis the angles still run as an open path, 330° far from 0°. The days' loop is visible from every side.
+- **What to notice:** with a third axis the angles still run as an open path, 330° far from 0°. Their PC1–3 hold 85% of their variance (PC3 alone 18%), against 33% in the twin. The days' loop is visible from every side (PC1–3: 69%).
 - **Caveat:** a rotating picture is not a test. Numbers lie on helices with periodic parts beyond PC1–2 ([Kantamneni & Tegmark 2025](https://arxiv.org/abs/2502.00873)), so we tested every plane of the top-5 PCs for a loop that closes. The test is post-hoc, and was pre-specified in an [addendum](reports/prereg_addendum_3d.md) before it ran. Static version for every model: [`families3d_qwen3.5-2b.png`](reports/figures/families3d_qwen3.5-2b.png). [Interactive 3-D, with a choice of axes](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
 
 **The pre-specified decision rule for "angles have a circular component beyond PC1–2"** requires all four conditions at the preregistered layer. Score: the best closed-cycle score over the 10 planes of PC1–5. p: a permutation p of that maximum.
@@ -231,7 +231,7 @@ For days and months, every model:
 ![axiom lattice in 3-D](reports/figures/lattice3d_qwen3.5-2b.png)
 
 - **What you see:** the same facets in the structures' top-3 principal components, with true proportions and one fixed camera for every model. Blue 3-D arrows are the pairs that differ only in that axiom.
-- **What to notice:** the third axis keeps the trained model's arrows roughly parallel, while the twin's still point every way.
+- **What to notice:** the third axis keeps the trained model's arrows roughly parallel, while the twin's still point every way. PC1–3 hold 70% of the 13 structures' variance (twin 52%).
 - **Caveat:** a 3-D view can still hide or exaggerate parallelism; the cosine matrix below is the evidence. On the site you can rotate it, choose any 3 of the top-5 PCs, and see the analogy query b − a + c placed exactly. [Interactive 3-D](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-lattice).
 
 ![offset cosine matrices](reports/figures/lattice_cosines_qwen3.5-2b.png)

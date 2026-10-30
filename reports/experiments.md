@@ -295,6 +295,14 @@ The new items were appended after the existing ones. Extraction runs at batch si
   - Updated: the README highlights, the paper (abstract, §4.3, limitations), the summary, and the site's "what failed" list and sidenote.
   - The positive control is now described as replicating partly, not "with a post-hoc 2-D test", and the scorecard has two new post-hoc rows.
 
+**A plan audit of E9 closed these gaps:**
+- the no-WebGL fallback now shows a note, tested with WebGL actually disabled;
+- pinning works in the lattice and in 2-D, highlights the table row, and the info line adds the family's statistic at that layer;
+- every 3-D caption lists the interactions;
+- the README and paper captions print the exact variance shares through placeholders (`results/<config>/views.json`; a test checks them against the site data, after it caught the lattice share computed on 15 instead of 13 structures);
+- the Plotly limitation is cited;
+- new tests: a turntable smoke test, and a test that the earlier post-hoc numbers equal the files from before the addendum.
+
 **Issues found while building, all fixed.**
 - *Hidden browser pane.* `requestAnimationFrame` never fires in a hidden pane, so tweens hung; they now use timers on wall-clock time.
 - *Stale tween frame.* A stale frame overwrote the 2D switch; purging a panel now cancels pending tweens.

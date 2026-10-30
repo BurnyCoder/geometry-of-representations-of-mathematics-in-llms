@@ -149,3 +149,16 @@ def test_view_map_projects_exact_coordinates_onto_the_view():
     E = figdata.exact_coords(X[:, 1])
     M = figdata.view_map(E, view)
     np.testing.assert_allclose(E[:, :5] @ M, view, atol=1e-9)
+
+
+@pytest.mark.skipif(not _ready("mvp"), reason="results or activations not present")
+def test_view_variance_matches_the_figures():
+    """results/<cfg>/views.json (read by captions) reports the same variance shares the site and figures show."""
+    cfg = load_config("configs/mvp.yaml")
+    key = "qwen3.5-2b"
+    v = figdata.view_variance(cfg, [key])[key]
+    d = json.loads((ROOT / "site" / "data" / f"{key}.json").read_text())
+    Lp = d["primary_layer"]
+    np.testing.assert_allclose(v["angles"]["var5"][Lp - 1], d["families"]["angles"]["var"]["trained"][Lp - 1], atol=1e-4)
+    np.testing.assert_allclose(v["group_like"]["var5"][Lp - 1], d["lattice"]["trained"]["var"][Lp - 1], atol=1e-4)
+    assert v["angles"]["cum3"][Lp - 1] == pytest.approx(sum(v["angles"]["var5"][Lp - 1][:3]), abs=1e-3)
