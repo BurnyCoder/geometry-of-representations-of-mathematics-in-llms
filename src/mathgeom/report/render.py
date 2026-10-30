@@ -455,6 +455,10 @@ def phase_report(cfg: Config) -> None:
     (ROOT / "reports" / f"{cfg.name}_results.md").write_text(md, encoding="utf-8")
     numbers = {"map_fields": mp, "shapes": sh, "lattice": la}
     (cfg.results_dir / "numbers.json").write_text(json.dumps(numbers, indent=1, default=float))
+    # how much of each family's variance the 3-D views show (descriptive; read by captions through placeholders)
+    from mathgeom.report import figdata
+
+    (cfg.results_dir / "views.json").write_text(json.dumps(figdata.view_variance(cfg, [k for k in sh if not k.endswith("__random")]), indent=1))
     # README results block is rendered across all configs by `run.py paper` (report/paper.py)
     from mathgeom.report.site import export_site
 

@@ -185,6 +185,24 @@ def pcs_by_layer(X: np.ndarray, ref_layer: int, onto: np.ndarray | None = None, 
     return np.stack(out)
 
 
+VIEW_FAMILIES = ["days", "months", "angles", "digits_0_330", "ring_chain", "space_chain", "number_systems", "ngons", "dimensions", "group_like"]
+
+
+def view_variance(cfg: Config, keys: list[str]) -> dict:
+    """{model or twin key: {family: {"var5": [[share of variance on PC1..5] per layer], "cum3": [PC1–3 share per
+    layer]}}}: how much of each family's variance its 3-D view shows (results/<cfg>/views.json, descriptive)."""
+    lattice_items = list(load_yaml("families.yaml")["lattices"]["group_like"]["items"])  # the 13 structures the figures show
+    out = {}
+    for key in keys:
+        for k in (key, f"{key}__random"):
+            out[k] = {}
+            for f in VIEW_FAMILIES:
+                X = family_acts(cfg, k, f, lattice_items if f == "group_like" else None)
+                v = [pca_var(X[:, l], 5) for l in range(1, X.shape[1])]
+                out[k][f] = {"var5": [np.round(x, 4).tolist() for x in v], "cum3": [round(float(x[:3].sum()), 4) for x in v]}
+    return out
+
+
 def offset_matrix(X: np.ndarray, bits: np.ndarray, axioms: list[str]) -> dict:
     """Cosine matrix of every single-axiom difference vector, grouped by axiom.
 
