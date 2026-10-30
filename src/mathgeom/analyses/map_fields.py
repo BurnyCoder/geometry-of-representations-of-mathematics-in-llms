@@ -5,7 +5,8 @@ Global context — two estimands, both compared against controls by PAIRED conce
 1. Graded map (primary): field-level RSA. Field centroids of mean-centered concept
    representations → k×k cosine RDM → Spearman ρ with the arXiv cross-listing distance
    (data/arxiv_fields.py). Inference unit = field: Mantel permutation of field labels
-   (calibrated under the pure null in our simulations: 4% at α=.05) and a max-over-layers
+   (calibrated under the pure null: 4.7% at α=.05 in the 150 simulations of
+   tests/test_rdm_regression.py::test_field_level_mantel_is_calibrated_under_pure_null) and a max-over-layers
    null for the layer curve.
 2. Clustering: leave-one-out nearest-centroid field accuracy at the concept level.
 

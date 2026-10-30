@@ -9,8 +9,9 @@ the two template halves (split-half reliability) are saved as float16 arrays
 [n_concepts × (n_layers+1) × d_model].
 
 Local context: batch size 1 avoids padding/position-id subtleties across architectures
-(hybrid linear-attention Qwen3.5, per-layer-embedding Gemma 4); the whole MVP is ~5k short
-prompts, a few minutes on one GPU. Each prompt and the model's greedy next token are logged.
+(hybrid linear-attention Qwen3.5, per-layer-embedding Gemma 4); one condition is ≈8k short prompts
+(≈1k items × 8 templates) per model, tens of minutes for a model and its twin on an 8 GB GPU
+(timestamps in logs/*_extract.log). Each prompt and the model's greedy next token are logged.
 """
 
 from __future__ import annotations

@@ -457,20 +457,20 @@ function pick(i) {
   S.picked = i;
   const C = S.I.concepts, M = S.M[S.key].concepts, nn = (side) => M[side].nn[i].map((j) => `<li>${C.concept[j]} <span class="muted">· ${label(C.field[j])}</span></li>`).join("");
   const ml = C.mathlib[i];
-  $("concept-card").innerHTML = `<h4>${C.concept[i]}</h4><div class="muted">${label(C.field[i])} · flags: none (primary set: name does not leak the field, no eponym, not an everyday word) · judge abstraction ${fmt(C.abstraction[i])} / 7${ml ? ` · Mathlib <code>${ml.decl}</code>, import depth ${ml.depth}` : " · no Mathlib match"}</div>
+  $("concept-card").innerHTML = `<h4>${C.concept[i]}</h4><div class="muted">${label(C.field[i])} · flags: none set (primary set: the field-leak, eponym and everyday-word flags are all off; the eponym flag misses a few names, e.g. “tate curve”) · judge abstraction ${fmt(C.abstraction[i])} / 7${ml ? ` · Mathlib <code>${ml.decl}</code>, import depth ${ml.depth}` : " · no Mathlib match"}</div>
     <div class="nn"><div><b>Nearest in ${model().name}</b><ol>${nn("trained")}</ol></div><div><b>Nearest in the twin</b><ol>${nn("random_init")}</ol></div></div>`;
   rerender(["fig-concepts"]);
 }
 
 // ---------------------------------------------------------------- families
 const FAM_TAKE = {
-  days: "Positive control: the days keep their cyclic order at almost every depth; the twin never does. Whether the loop also closes is the line under the variance chart.",
-  months: "Positive control: the months keep their cyclic order at most depths, but in the top-2 plane their loop can stay open; it closes in a lower plane in some models.",
-  angles: "Falsified prediction: angles follow the number line, so 330° lands far from 0° (orange edge).",
-  ring_chain: "Ordered: the chain of ring definitions runs as a path; the twin is a tangle.",
-  space_chain: "Ordered: the separation-axiom chain runs as a path; the twin is a tangle.",
-  number_systems: "Exploratory (7 items): ordered but frequency-confounded.",
-  ngons: "Follows the number words three … twelve.", dimensions: "Follows the number words zero … ten.",
+  days: "Positive control: in the trained models the days keep their cyclic order at most depths; the twins mostly do not (one reaches it at a single layer by chance). Whether the loop also closes is the line under the variance chart.",
+  months: "Positive control: the months keep their cyclic order at most depths in some models, not all; in the top-2 plane their loop can stay open, and it closes in a lower plane in some models.",
+  angles: "Falsified prediction: angles follow the number line (line ρ > circle ρ in every model), so 330° is farther from 0° than neighbouring angles are (orange edge).",
+  ring_chain: "Pre-registered: ordered if the Robinson score and the leave-one-out order beat their nulls (Holm) and the twin; the scorecard shows which models pass. In the confirmatory model the chain runs as a path and the twin is a tangle.",
+  space_chain: "Pre-registered: ordered if the Robinson score and the leave-one-out order beat their nulls (Holm) and the twin; the scorecard shows which models pass. In the confirmatory model the chain runs as a path and the twin is a tangle.",
+  number_systems: "Exploratory (7 items): ordered, but in most models not beyond word frequency and token count (the frequency control under the panel).",
+  ngons: "Compared with the number words three … twelve; in the Qwen2.5 models the twins track them as well as the trained models do.", dimensions: "Follows the number words zero … ten, more closely than the twins do.",
 };
 function idealFit(xy, closed) {
   // Display aid: the ideal template (equally spaced circle, or evenly spaced line) in true order, rotated,
@@ -596,9 +596,9 @@ function axiomChips() {  // one axiom choice, shared by the how-the-test-works s
 }
 function latTraces(side, keys = false, el = null) {  // keys: legend entries for the highlighted and the other single-axiom pairs
   const p = P(), Lt = S.M[S.key].lattice, xy = Lt[side].planes[S.layer - 1], a = Lt.axioms.indexOf(S.axiom);
-  const gx = [], gy = [], ann = [];
+  const gx = [], gy = [], ann = [], hot = side === "random_init" ? p.twin : p.blue;  // the twin is always grey (style.py)
   Lt.pairs.forEach(([i, j], k) => {
-    if (Lt.group[k] === a) ann.push({ x: xy[j][0], y: xy[j][1], ax: xy[i][0], ay: xy[i][1], xref: "x", yref: "y", axref: "x", ayref: "y", showarrow: true, arrowhead: 2, arrowsize: 1.9, arrowwidth: 2.2, arrowcolor: p.blue, standoff: 6, startstandoff: 6 });  // big filled heads: direction at a glance
+    if (Lt.group[k] === a) ann.push({ x: xy[j][0], y: xy[j][1], ax: xy[i][0], ay: xy[i][1], xref: "x", yref: "y", axref: "x", ayref: "y", showarrow: true, arrowhead: 2, arrowsize: 1.9, arrowwidth: 2.2, arrowcolor: hot, standoff: 6, startstandoff: 6 });  // big filled heads: direction at a glance
     else { gx.push(xy[i][0], xy[j][0], null); gy.push(xy[i][1], xy[j][1], null); }
   });
   const has = (b) => Lt.axioms.filter((_, q) => b[q]).join(", ") || "none";
@@ -606,7 +606,7 @@ function latTraces(side, keys = false, el = null) {  // keys: legend entries for
     { type: "scatter", mode: "markers+text", showlegend: false, x: xy.map((d) => d[0]), y: xy.map((d) => d[1]), text: Lt.items.map((s) => s.replace("commutative ", "comm. ")), textposition: placeLabels(xy, Lt.items.map((s) => s.replace("commutative ", "comm. ")), el || {}, 0.3, 0.1), cliponaxis: false,
       textfont: { size: 10, color: p.ink2 }, marker: { size: Lt.items.map((_, i) => (i === S.pin.lat ? 14 : 9)), color: Lt.items.map((_, i) => (i === S.pin.lat ? p.orange : p.ink2)), line: { color: p.surface, width: 1.5 } },
       hovertemplate: Lt.items.map((s, i) => `<b>${s}</b><br>axioms: ${has(Lt.bits[i])}<extra></extra>`) },
-    { type: "scatter", mode: "lines", x: [null], y: [null], line: { color: p.blue, width: 2.2 }, name: `pairs differing only in ${S.axiom} (arrows)`, showlegend: keys, hoverinfo: "skip" }], ann };
+    { type: "scatter", mode: "lines", x: [null], y: [null], line: { color: hot, width: 2.2 }, name: `pairs differing only in ${S.axiom} (arrows)`, showlegend: keys, hoverinfo: "skip" }], ann };
 }
 const ANALOGY0 = ["semigroup", "monoid", "quasigroup"];
 function analogyChoice(Lt) {  // a, b, c from the analogy playground (its defaults before it has rendered)
@@ -641,7 +641,7 @@ function latArrows(V, { keys = false, color = P().blue, lineUp = false, pin = nu
 }
 function latTraces3d(side, keys) {  // 3 of the top-5 PCs: arrows (lines + cone heads) for the selected axiom, the analogy point
   const p = P(), Lt = S.M[S.key].lattice, L = S.layer - 1, ax = S.axes.lat, V = pick3(Lt[side].pc5[L], ax), [X, Y, Z] = cols(V);
-  const data = latArrows(V, { keys, pin: S.pin.lat, hint: "<br>click for its axioms" });
+  const data = latArrows(V, { keys, color: side === "random_init" ? p.twin : p.blue, pin: S.pin.lat, hint: "<br>click for its axioms" });
   if (S.layer === model().primary_layer) {
     // the analogy query b − a + c from the analogy playground, placed exactly: exact (PC-basis) coordinates → this view via to_view
     const [ia, ib, ic] = analogyChoice(Lt), E = Lt[side].exact, M = Lt[side].to_view;

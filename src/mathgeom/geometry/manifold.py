@@ -2,7 +2,7 @@
 
 Global context: Engels et al. 2024 (arXiv:2405.14860) found circles for days/months;
 Karkada et al. 2026 (arXiv:2602.15029) predict ordered latent variables give 1D curved
-manifolds. With n ≤ 12 points in d ≥ 1536 dims any supervised linear map can impose
+manifolds. With n ≤ 13 points in d ≥ 1024 dims (Qwen3.5-0.8B; 1536–2048 elsewhere) any supervised linear map can impose
 any order, so every statistic here is either unsupervised (PCA, RDM-vs-template
 correlation, Robinson/closure scores) or leave-one-out, and is compared against a
 label-permutation null computed with exactly the same procedure.
@@ -93,8 +93,10 @@ def perm_p(observed: float, null: np.ndarray) -> float:
 
 def pc_plane_cycle_score(X: np.ndarray, order: np.ndarray, plane: tuple[int, int] = (0, 1)) -> float:
     """POST-HOC: fraction of items whose angular successor in a PC plane (default the top-2-PC plane)
-    is the true next item (cyclically; best of the two directions). 1 = perfect cycle in the plane, as
-    in the 2-D projections of Engels et al. 2024 (arXiv:2405.14860); ≈ 1/(n-1)·2 for random arrangements."""
+    is the true next item (cyclically; best of the two directions). 1 = every item's angular neighbour is its
+    true successor, as in the 2-D projections of Engels et al. 2024 (arXiv:2405.14860); an open arc also
+    scores 1. The chance level is not a simple formula (the best of two directions is taken): use the
+    order-permutation null that accompanies every score."""
     Xc = X - X.mean(0)
     _, _, Vt = np.linalg.svd(Xc, full_matrices=False)
     P = Xc @ Vt[list(plane)].T

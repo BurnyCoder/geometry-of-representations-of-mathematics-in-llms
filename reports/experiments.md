@@ -1,6 +1,6 @@
 # Experiment log and learnings
 
-This file records **what we tried, why, what went wrong, how we found out, and what we chose instead**. It is hand-written prose and deliberately contains **no result numbers**. Every number lives in auto-generated files, regenerated with `python run.py report --config configs/<cfg>.yaml`:
+This file records **what we tried, why, what went wrong, how we found out, and what we chose instead**. It is hand-written prose. It quotes a few numbers where they explain a decision (e.g. simulation rejection rates, a leaked statistic), each from the file named next to it; every reported result lives in auto-generated files, regenerated with `python run.py report --config configs/<cfg>.yaml`:
 - [`<cfg>_results.md`](.) tables;
 - [`../results/`](../results) JSON.
 
@@ -249,8 +249,8 @@ The new items were appended after the existing ones. Extraction runs at batch si
 **Goal.**
 - The user asked for 3-D visualizations where possible (the top 3 principal components), as interactive as possible, and for the scientific results to change if the 3-D views changed them.
 - Motivation from the literature:
-  - numbers lie on helices whose periodic parts sit beyond PC1–2 ([Kantamneni & Tegmark 2025](https://arxiv.org/abs/2502.00873));
-  - Engels et al. found circles in PC planes other than the top two ([arXiv:2405.14860](https://arxiv.org/abs/2405.14860));
+  - numbers lie on a generalized helix: the top PC is nearly linear in the number, and the periodic parts (periods 2, 5, 10, 100) are found with Fourier features ([Kantamneni & Tegmark 2025](https://arxiv.org/abs/2502.00873));
+  - Engels et al. show raw-activation circles in the top two PCs, but their SAE-cluster circles in PCs 2–3, and fit their circular probe on the top five PCs ([arXiv:2405.14860](https://arxiv.org/abs/2405.14860), Figs. 1, 4, 15);
   - Gurnee et al. and Goodfire present manifolds as rotatable or animated 3-D views.
 
 **What was built.**
@@ -292,7 +292,7 @@ The new items were appended after the existing ones. Extraction runs at batch si
   - **Twin:** one twin also shows a closed months loop (p = 0.004). Word form alone can occasionally produce one, so the test is not fully specific.
   - **Existing results:** every existing post-hoc number is unchanged. This was checked by diffing all three results files before and after the rerun; the new test uses its own random stream.
 - *What changed in the write-up.*
-  - Updated: the README highlights, the paper (abstract, §4.3, limitations), the summary, and the site's "what failed" list and sidenote.
+  - Updated: the README highlights, the paper (abstract, §4.3 at the time, now §4.4, limitations), the summary, and the site's "what failed" list and sidenote.
   - The positive control is now described as replicating partly, not "with a post-hoc 2-D test", and the scorecard has two new post-hoc rows.
 
 **A plan audit of E9 closed these gaps:**
@@ -347,6 +347,40 @@ The new items were appended after the existing ones. Extraction runs at batch si
 **Issues found while doing it.**
 - *Renumbered sections.* Renumbering the paper's Results sections changed the anchors the site uses to link figures to paper sections (`data-paper`); the new anchors were handed to the site session. In the paper, one `§` reference pointed at an old number (the closed-cycle test, §4.3 → §4.4). Two vague ones ("see §6 and the causal results", "all tests except §4.5") now name the test they mean.
 - *New site anchor.* The new link `#fig-axiom-how` resolves only once the site has the explainer figure. `tests/test_site.py` checks every such link.
+
+## E11: Independent fact-check of every claim
+
+**Goal.** The user asked for an independent check of every claim in the README, docs, reports, paper, Hugging Face card, figures, site and code comments, ignoring earlier audits, with sources wherever possible.
+
+**How.**
+- Three read-only checkers worked in parallel: README, summary and docs; paper and reports; site, figures and code. Each re-read the claims against `results/*/*.json`, the configs, the data files and the code.
+- Every reported discrepancy was re-verified against the JSON or the code before it was changed.
+- External facts were checked against primary sources: every cited arXiv id (arXiv API), every DOI (Crossref), the model cards and licence files on Hugging Face, the Gemma config (per-layer-embedding size), and the cited papers' own text (Engels et al. figures, Qwen2.5-Math corpus size, Kantamneni & Tegmark periods).
+
+**What was already right.** All generated numbers. The README blocks, summary, paper and per-config reports re-rendered byte-identically from the JSON, and the 21,347 numbers in the site data matched the results files.
+
+**What was wrong, and why it slipped through.**
+- *A rule that was not the preregistered one.* The preregistration calls a chain ordered only if Robinson p < .05 **and** leave-one-out order p < .05, and the trained Robinson score beats the twin's. The report code tested Robinson p only. Every later summary inherited that, so "chains replicate in all five models" was repeated everywhere.
+  - The fix tests the conjunction with its intersection-union p, max(Robinson p, LOO p), inside the Holm family ([Berger 1982](https://doi.org/10.1080/00401706.1982.10487790)). The user chose this strict version over adding a separate LOO check.
+  - Under it, the ring chain fails in two models. In Gemma, the space chain and the divisibility offset lose Holm significance, because the step-down adjustment depends on every p in the family.
+  - **Lesson:** decision rules should live in one function with a test that quotes the preregistration (`tests/test_report_rules.py`).
+- *Hand-typed counts.* Placeholders resolved every statistic, but counts such as "three of five", "two stretches" and "all five models" were typed by hand. Several were wrong from the start (Gemma's depth curve dips in three stretches, not two) or went stale after a rule change.
+  - The fix is `{{fact:…}}` placeholders (`render.fact`), which compute these counts and name the exceptions.
+  - The README highlights moved into the generated block so that they use the placeholders too.
+- *Wrong examples in plain-language text.* The summary illustrated the field map with "algebraic geometry sits near commutative algebra and number theory". That is the arXiv pattern; in every model, algebraic geometry's nearest field is set theory & logic. An illustrative example needs the same check as a statistic.
+- *Prose about prompts that did not match the prompts.* The site quoted a template that does not exist, and the paper said templates never name a sub-field, which is true of the field-map templates only.
+- *Facts copied without opening the source.*
+  - The Qwen-Scope SAE licence was described as "Qwen licence, research use", but the repository's LICENSE file is Apache-2.0.
+  - A Wikipedia quote said "smooth manifold" where the article says "differentiable manifold".
+  - Two citations had no authors or titles (Golechha et al.; Kvinge et al. at ICML 2025).
+- *Ground truth that depends on a convention.* The space chain T0 ⊃ T1 ⊃ Hausdorff ⊃ regular ⊃ … is a chain only if "regular" and "normal" include T1, as in Munkres. The cited Wikipedia page uses the other convention. This is documented as a limitation; renaming the items would need re-extraction and would change a preregistered family.
+- *A flagger miss.* Five primary concepts are eponyms ("tate curve", "fourier", …) that the eponym flag missed, because glossary cleaning lowercases a term's first word when it is also a common word. The frozen primary set is unchanged; the miss is listed in `docs/deviations.md`.
+- *A PDF text-layer bug.* Cambria Math's fi/fl ligatures have no Unicode mapping, so "first" became "irst" in search and copy. The fix turns off common ligatures (`mainfontoptions=Ligatures=NoCommon`). A first diagnosis also blamed lost minus signs and ρ, but that was the Windows console code page; `pdftotext -enc UTF-8` into a file showed them intact.
+- *Measured, not remembered.*
+  - Extraction times were re-read from `logs/*_extract.log`; Qwen2.5 takes about 20 minutes, not 15.
+  - The disk estimate was re-measured: about 50 GB, mostly model weights.
+
+**Result.** The list of every change is in `docs/deviations.md` (rows dated 2026-10-30, audit). No results file changed; only report code, prose, captions, citations and the card.
 
 ## Tooling learnings (continued)
 

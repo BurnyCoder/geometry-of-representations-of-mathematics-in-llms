@@ -5,6 +5,8 @@ resolved here from results/<cfg>/*.json, and every table is rendered by report/r
   {{num:<cfg>.<file>.<dotted.path>[:fmt]}}  e.g. {{num:mvp.map_fields.qwen3.5-2b.math_primary.rsa.trained:.3f}}
   {{table:<name>:<cfg>}}                    e.g. {{table:field_map:mvp}}
   {{fig:<file>}}                            figure in reports/figures/
+  {{fact:<name>[.<arg>]}}                   a count in prose, e.g. {{fact:chain_ordered.ring_chain}} → "3 of 5 models (…)"
+                                            (render.fact, over the five-model merge of the CROSS configs)
 Unresolvable placeholders raise, so a stale paper cannot be built silently.
 """
 
@@ -98,6 +100,7 @@ def render_template(tpl: str, fig_prefix: str = "../reports/figures/", fig_ext: 
         return f"{fig_prefix}{name}"
 
     out = re.sub(r"\{\{num:([^}]+)\}\}", num, tpl)
+    out = re.sub(r"\{\{fact:([^}]+)\}\}", lambda m: render.fact(cache.setdefault("all", _results("all")), m.group(1)), out)
     out = re.sub(r"\{\{table:(\w+):(\w+)\}\}", table, out)
     out = re.sub(r"\{\{fig:([^}]+)\}\}", fig, out)
     if "{{" in out:
@@ -143,7 +146,8 @@ def build_paper() -> None:
     pdf = ROOT / "paper" / "paper.pdf"
     cmd = ["pandoc", str(md), "-f", "markdown+lists_without_preceding_blankline", "-o", str(pdf), "--pdf-engine=xelatex",
            "--resource-path", str(ROOT / "paper"), "-V", "colorlinks=true", "--include-in-header", str(ROOT / "paper" / "header.tex"),
-           "-V", "geometry:margin=2cm", "-V", "mainfont=Cambria Math", "-V", "monofont=Consolas", "-V", "fontsize=10pt"]  # Cambria Math covers ρ Δ ⊃ ℕ ↔ …
+           "-V", "geometry:margin=2cm", "-V", "mainfont=Cambria Math", "-V", "monofont=Consolas", "-V", "fontsize=10pt",  # Cambria Math covers ρ Δ ⊃ ℕ ↔ …
+           "-V", "mainfontoptions=Ligatures=NoCommon"]  # Cambria Math's fi/fl ligatures have no Unicode mapping, so they vanished from the PDF text layer (search, copy)
     r = subprocess.run(cmd, capture_output=True, text=True, cwd=ROOT / "paper")
     if r.returncode != 0:
         log.warning("pandoc failed (paper.md still written): %s", r.stderr[-2000:])

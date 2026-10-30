@@ -29,7 +29,10 @@ def draw_schematic(ax, names: list[str], bits: np.ndarray, axioms: list[str]):
     P = np.c_[2 * a + d, 2 * i + c].astype(float)
     for ax_i in range(len(axioms)):
         for p, q in axiom_pairs(bits, ax_i):
-            ax.annotate("", P[q], P[p], arrowprops=dict(arrowstyle=HEAD, color=S.AXIS, lw=0.9, shrinkA=6, shrinkB=6, mutation_scale=12))
+            # associativity and identity are 2-unit steps on this grid: bend them so they don't run through the node in
+            # between (e.g. magma → semigroup would cross quasigroup and read as two pairs that are not in the lattice)
+            bend = "arc3,rad=0.2" if np.abs(P[q] - P[p]).max() > 1 else "arc3"
+            ax.annotate("", P[q], P[p], arrowprops=dict(arrowstyle=HEAD, color=S.AXIS, lw=0.9, shrinkA=6, shrinkB=6, mutation_scale=12, connectionstyle=bend))
     ax.scatter(P[:, 0], P[:, 1], s=40, color=S.INK2, zorder=3, edgecolors=S.SURFACE, linewidths=1.0)
     for (x, y), n, cb in zip(P, names, c):  # commutative rows label above, the others below
         two_lines = n.replace("commutative ", "comm.\n").replace(" ", "\n") if " " in n else n  # grid cells are one unit apart
@@ -47,7 +50,7 @@ def draw_facets(Ps: dict, names: list[str], bits: np.ndarray, axioms: list[str],
     fig, axes = plt.subplots(2, len(axioms) + 1, figsize=(2.65 * (len(axioms) + 1), 5.7))
     draw_schematic(axes[0, 0], names, bits, axioms)
     axes[1, 0].axis("off")
-    axes[1, 0].text(0.0, 0.5, "Each facet shows the same\nunsupervised PCA plane.\nBlue arrows: the pairs that\ndiffer only in that axiom.\nParallel blue arrows =\na consistent direction.",
+    axes[1, 0].text(0.0, 0.5, "Each facet shows the same\nunsupervised PCA plane.\nArrows (blue; twin: grey):\nthe pairs that differ\nonly in that axiom.\nParallel arrows =\na consistent direction.",
                     fontsize=7, color=S.INK2, va="center", transform=axes[1, 0].transAxes)
     for row, k in enumerate(("trained", "random_init")):
         P = Ps[k]
@@ -56,7 +59,7 @@ def draw_facets(Ps: dict, names: list[str], bits: np.ndarray, axioms: list[str],
             for a_i in range(len(axioms)):
                 for p, q in axiom_pairs(bits, a_i):
                     hot = a_i == col - 1
-                    ax.annotate("", P[q], P[p], arrowprops=dict(arrowstyle=HEAD if hot else "-", color=S.BLUE if hot else S.GRID,
+                    ax.annotate("", P[q], P[p], arrowprops=dict(arrowstyle=HEAD if hot else "-", color=(S.BLUE if k == "trained" else S.TWIN) if hot else S.GRID,
                                                               lw=1.6 if hot else 0.7, shrinkA=4, shrinkB=4, mutation_scale=12), zorder=2 if hot else 1)
             ax.scatter(P[:, 0], P[:, 1], s=16, color=S.INK2, zorder=3, edgecolors=S.SURFACE, linewidths=0.8)
             if col == 1:
@@ -85,7 +88,7 @@ def draw_facets3d(Vs: dict, names: list[str], bits: np.ndarray, axioms: list[str
             for a_i in range(len(axioms)):
                 for p, q in axiom_pairs(bits, a_i):
                     if a_i == col:  # filled, camera-facing head of fixed size (style.arrow3d), so short arrows keep a visible direction
-                        S.arrow3d(ax, P[p], P[q], S.BLUE, size=0.09 * np.ptp(P, axis=0).max(), lw=1.4)
+                        S.arrow3d(ax, P[p], P[q], S.BLUE if k == "trained" else S.TWIN, size=0.09 * np.ptp(P, axis=0).max(), lw=1.4)
                     else:
                         ax.plot(*P[[p, q]].T, color=S.GRID, lw=0.7)
             ax.scatter(P[:, 0], P[:, 1], P[:, 2], s=12, color=S.INK2, depthshade=False)

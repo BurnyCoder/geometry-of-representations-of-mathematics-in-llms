@@ -1,10 +1,11 @@
 """Cross-model figures: the hero ("at a glance"), field map vs depth for all five models, and the
 effect-size forest plot. Built by `run.py paper` from the merged results of all configs.
 
-Global context: the hero uses the pre-registered confirmatory model (Qwen3.5-2B) for its pictures but
-shows all five models wherever a number is summarized, so no single model is cherry-picked. Every value
-is read from results/<cfg>/*.json; confidence intervals are the paired-bootstrap 95% intervals reported
-there (unadjusted for multiplicity; the Holm decisions are in the scorecard table).
+Global context: the hero uses the pre-registered confirmatory model (Qwen3.5-2B) for its pictures and
+for the notes under them, and shows all five models in its summary panels (B, C), so no single model is
+cherry-picked there. Every value is read from results/<cfg>/*.json; confidence intervals are the bootstrap
+95% intervals reported there, paired wherever two representations are compared (unadjusted for
+multiplicity; the Holm decisions are in the scorecard table).
 """
 
 from __future__ import annotations
@@ -84,7 +85,7 @@ def draw_hero(r: dict, fam3d: dict, lat3d: dict, fmap: dict, conf: str):
     lp = la[conf].get("audit2", {}).get("group_like_offsets", {}).get("length_projected", {})
     offset_dots(ax, lambda k, a: la[k]["group_like"]["offsets"][a], list(la[conf]["group_like"]["offsets"]), conf,
                 extra=lambda a: lp[a]["consistency"] if a in lp else None)  # diamonds: word-length (token-count) control
-    ax.set_title("B · All four axioms, all five models: parallel arrows, unlike the twins", fontsize=9)
+    ax.set_title("B · All four axioms, all five models: more parallel than the twins\n(clearest for associativity and commutativity)", fontsize=9)
     # row 2 . the field map
     ax = fig.add_subplot(gs[1, 0])
     y = np.arange(len(KEYS))[::-1]
@@ -112,7 +113,7 @@ def draw_hero(r: dict, fam3d: dict, lat3d: dict, fmap: dict, conf: str):
              "angles": f"d(0°, 330°) = {sh[conf]['angles']['closure']:.2f} × neighbour step (twin {sh[conf + '__random']['angles']['closure']:.2f})",
              "ring_chain": f"Robinson {sh[conf]['ring_chain']['robinson']:.2f} (twin {sh[conf + '__random']['ring_chain']['robinson']:.2f})",
              "space_chain": f"Robinson {sh[conf]['space_chain']['robinson']:.2f} (twin {sh[conf + '__random']['space_chain']['robinson']:.2f})"}
-    titles = {"days": "E · Days: a circle", "angles": "Angles: not a circle", "ring_chain": "Ring chain: an ordered path", "space_chain": "Space chain: an ordered path"}
+    titles = {"days": "E · Days: a circle (positive control)", "angles": "Angles: not a circle", "ring_chain": "Ring chain: an ordered path", "space_chain": "Space chain: an ordered path"}
     for col, f in enumerate(("days", "angles", "ring_chain", "space_chain")):
         ax = fig.add_subplot(gs[2, col], projection="3d")
         P, var, labels = fam3d[f]
@@ -220,15 +221,17 @@ def draw_group_objects(r: dict):
     for yi, k in zip(y, KEYS):
         p, t = st[k]["group_objects"]["parallelograms"], st[k + "__random"]["group_objects"]["parallelograms"]
         ax.scatter(p["null95"], yi, marker="|", s=260, color=S.MUTED, linewidths=2, zorder=2)  # only the 95th percentile is stored
+        ax.scatter(t["null95"], yi - 0.22, marker="|", s=110, color=S.TWIN, linewidths=1.5, zorder=2)  # the twin's own null
         ax.scatter(t["cos"], yi, color=S.TWIN, s=34, zorder=3)
         ax.scatter(p["cos"], yi, color=S.BLUE, s=44, zorder=4, edgecolors=S.SURFACE)
-        ax.text(0.68, yi, S.fmt_p(p["p"]), fontsize=6.8, color=S.INK2, va="center")
+        ax.text(0.6, yi, f"{S.fmt_p(p['p'])}\ntwin {S.fmt_p(t['p'])}", fontsize=6, color=S.INK2, va="center", linespacing=1.0)
     ax.set_yticks(y, [S.MODEL[k] for k in KEYS], fontsize=7.5)
     ax.set_xlim(-0.1, 0.8)
     ax.axvline(0, color=S.AXIS, lw=0.7)
     ax.set_xlabel("mean cosine of the 3 parallelograms\n(e.g. Lie group − topological group vs smooth manifold − topological space)", fontsize=7)
     ax.scatter([], [], color=S.BLUE, label="trained"), ax.scatter([], [], color=S.TWIN, label="random-init twin"), ax.scatter([], [], marker="|", s=120, color=S.MUTED, linewidths=2, label="random-quadruple null, 95th pct")
-    ax.legend(loc="upper center", bbox_to_anchor=(0.45, -0.32), ncol=3, fontsize=6.3)
+    ax.scatter([], [], marker="|", s=70, color=S.TWIN, linewidths=1.5, label="twin's own null, 95th pct")
+    ax.legend(loc="upper center", bbox_to_anchor=(0.45, -0.32), ncol=2, fontsize=6.3)
     ax.set_title("Group objects combine their parents", fontsize=9)
     ax = axes[1]
     for yi, k in zip(y, KEYS):

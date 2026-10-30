@@ -16,7 +16,7 @@ uv run python run.py paper --config configs/mvp.yaml
 
 ## Visual system (`src/mathgeom/report/style.py`)
 
-- **Palette.** The reference palette of the data-viz guidance used here, checked with its validator for colour-vision deficiency (OKLab ΔE under protan/deutan/tritan simulation) and contrast against the chart surface.
+- **Palette.** The reference palette of the data-viz skill used by the coding agent (Claude Code's `dataviz` skill, `references/palette.md`), checked with that skill's validator for colour-vision deficiency (OKLab ΔE under protan/deutan/tritan simulation) and contrast against the chart surface.
   - Pure/applied (blue `#2a78d6`, orange `#eb6834`; dark mode `#3987e5`, `#d95926`) passes every check in both modes.
   - No four-colour set passes the all-pairs check needed for scatter plots. So no plot uses more than three categorical hues; the four axioms are shown as small multiples, with one axiom highlighted per panel.
 - **Order.** A single-hue blue ramp, light → dark, interpolated between steps so that every item gets a distinct colour.
@@ -86,7 +86,7 @@ Rows are in the order the README, summary and paper present the results: axioms 
 | `chains_<model>` | Ordered chains with Robinson scores and the frequency control | `families.py` | activations, `shapes`, `chain_frequency` |
 | `abstraction_<model>` | Concept cloud on residualized PC1/PC2 by judge abstraction and pure/applied; judges vs Mathlib | `figures/axes.py` | activations, `axes`, `mathlib_depth.csv` |
 
-The Markdown scorecard (`{{table:scorecard:all}}`) and its site version come from `render.scorecard_rows`. It uses the same Holm decisions as the Holm table.
+The Markdown scorecard (`{{table:scorecard:all}}`) and its site version come from `render.scorecard_rows`. It uses the same Holm decisions as the Holm table, for the axiom rows and for the chain rows (whose p is max(Robinson p, LOO order p), the preregistered conjunction; `render.chain_p`). Counts in hand-written prose ("3 of 5 models") come from `render.fact` through `{{fact:…}}` placeholders.
 
 ## The explorable article (`site/`)
 

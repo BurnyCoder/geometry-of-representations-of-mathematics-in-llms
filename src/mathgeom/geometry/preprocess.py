@@ -4,7 +4,8 @@ Global context: residual streams are anisotropic — a few "rogue"/massive dimen
 dominate cosine similarity (Timkey & van Schijndel 2021, arXiv:2109.04404; Sun et al.
 2024, arXiv:2402.17762). We therefore mean-center per (model, layer) over the concept
 set, and offer all-but-the-top (Mu & Viswanath 2018, arXiv:1702.01417) as a variant.
-We deliberately do NOT whiten: Golechha et al. (ICLR 2025) showed whitening makes
+We deliberately do NOT whiten: Golechha et al., "Intricacies of Feature Geometry in Large Language
+Models" (ICLR 2025 blog track, https://iclr.cc/virtual/2025/poster/31349), showed whitening makes
 random concepts look orthogonal/polytope-structured.
 """
 

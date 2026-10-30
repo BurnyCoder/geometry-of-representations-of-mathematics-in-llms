@@ -1,8 +1,9 @@
 """Report phase: regenerate every table and figure from results/<cfg>/*.json (+ cached activations).
 
-Global context: the project rule is "no hand-typed numbers" — README's results block,
-reports/<cfg>_results.md, and site/data.json are all written here from the analysis JSON,
-so `run.py report` is the single command that refreshes every number and figure.
+Global context: the project rule is "no hand-typed numbers". `run.py report` writes
+reports/<cfg>_results.md, the per-model figures and site/data/{index,<model>}.json from the
+analysis JSON; `run.py paper` then renders the README blocks, reports/summary.md and the paper
+from templates whose placeholders call the table and fact functions defined here.
 """
 
 from __future__ import annotations
@@ -29,7 +30,8 @@ def _ci(c) -> str:
 
 
 def _p(p: float) -> str:
-    return "<0.0001" if p < 1e-4 else f"{p:.4f}"
+    # 4 decimals; the smallest permutation p here is 1/10001 (Mantel), which prints as 0.0001 as in the paper
+    return "<0.0001" if p < 5e-5 else f"{p:.4f}"
 
 
 # ------------------------------------------------------------------ tables
@@ -168,16 +170,27 @@ def table_planes_decision(ph: dict, layer_of: dict) -> str:
     return "\n".join(rows + ["", verdict])
 
 
+def chain_p(s: dict) -> float:
+    """p of the pre-registered chain test (docs/prereg.md H-B: Robinson p < .05 AND LOO order p < .05):
+    a conjunction of two tests is rejected at level α when both are, so its p is the larger of the two
+    (intersection-union test; Berger 1982, Technometrics 24:295, https://doi.org/10.1080/00401706.1982.10487790)."""
+    return max(s["robinson_p"], s["loo_order_p"])
+
+
 def holm_rows(mp: dict, sh: dict, la: dict, key: str) -> list[tuple[str, float]]:
-    """The 8 pre-registered confirmatory tests of the MVP (docs/prereg.md §4) and their p-values."""
-    rows = [("H-A1 Δρ trained − random-init ≤ 0 (bootstrap)", mp[key]["math_primary"]["rsa_boot"]["delta_vs_random_init"]["p_le_0"]),
-            ("H-B ring chain Robinson", sh[key]["ring_chain"]["robinson_p"]), ("H-B space chain Robinson", sh[key]["space_chain"]["robinson_p"])]
+    """The p-valued pre-registered confirmatory tests of the MVP (docs/prereg.md §4) and their p-values:
+    7 tests; the 8th, the angles prediction, is a decision rule without a p (listed by table_holm).
+    The H-A1 bootstrap p is (1 + #resamples with Δ ≤ 0)/(1 + n_boot), the same +1 convention as the
+    permutation p-values, so 0 of 2,000 resamples gives 1/2001 rather than an impossible 0."""
+    n_boot = load_yaml("mvp.yaml")["n_boot"]  # every run config uses the same n_boot
+    rows = [("H-A1 Δρ trained − random-init ≤ 0 (bootstrap)", (1 + mp[key]["math_primary"]["rsa_boot"]["delta_vs_random_init"]["p_le_0"] * n_boot) / (1 + n_boot)),
+            ("H-B ring chain (Robinson and LOO order)", chain_p(sh[key]["ring_chain"])), ("H-B space chain (Robinson and LOO order)", chain_p(sh[key]["space_chain"]))]
     rows += [(f"H-B2 {a} offset consistency", o["p"]) for a, o in la[key]["group_like"]["offsets"].items()]
     return rows
 
 
 def holm_decisions(mp: dict, sh: dict, la: dict, key: str) -> list[dict]:
-    """Holm (statsmodels multipletests) over one model's 8 p-valued confirmatory tests."""
+    """Holm (statsmodels multipletests) over one model's 7 p-valued confirmatory tests."""
     from statsmodels.stats.multitest import multipletests
 
     rows = holm_rows(mp, sh, la, key)
@@ -197,8 +210,10 @@ def table_holm(mp: dict, sh: dict, la: dict) -> str:
     return "\n".join(out)
 
 
-SCORE_LEGEND = ("● significant (Holm-adjusted for the axiom tests; 95% CI excludes 0 for Δ tests) · ◐ raw p < .05 only · ○ not significant · "
-                "✗ pre-registered prediction falsified. Numbers: the statistic for the trained model.")
+SCORE_LEGEND = ("● significant (Holm-adjusted for the axiom and chain tests; 95% CI excludes 0 for Δ tests) · ◐ raw p < .05 only · ○ not significant · "
+                "✗ pre-registered prediction falsified (every random-init twin meets the angles rule, so it is not specific). "
+                "Chains: p = max(Robinson p, LOO order p), the pre-registered conjunction, and trained Robinson > twin. "
+                "Numbers: the statistic for the trained model.")
 
 
 def table_scorecard(r: dict) -> str:
@@ -227,9 +242,10 @@ def scorecard_rows(r: dict) -> dict:
         e = ph[key]["pc_plane_cycle"]["days"][mp[key]["primary_layer"] - 1]
         return f"{'●' if e['p'] < 0.05 else '○'} {e['score']:.2f}"
 
-    def chain(key, f):
-        s = sh[key][f]
-        return f"{'●' if s['robinson_p'] < 0.05 and s['robinson'] > sh[key + '__random'][f]['robinson'] else '○'} {s['robinson']:.2f}"
+    def chain(key, f):  # pre-registered: Robinson p < .05 AND LOO order p < .05 (Holm on their max) AND trained > twin
+        s, d = sh[key][f], next(x for x in holm_decisions(mp, sh, la, key) if x["name"].startswith(f"H-B {f.replace('_', ' ')}"))
+        above = s["robinson"] > sh[key + "__random"][f]["robinson"]
+        return f"{'●' if d['reject'] and above else '◐' if d['p'] < 0.05 and above else '○'} {s['robinson']:.2f}"
 
     def angles(key):
         a = sh[key]["angles"]
@@ -243,8 +259,8 @@ def scorecard_rows(r: dict) -> dict:
         ("Field map tracks arXiv beyond the twin (H-A1; Δρ CI)", conf_, lambda k: f"{'●' if ex(mp[k]['math_primary']['rsa_boot']['delta_vs_random_init']['ci']) else '○'} {mp[k]['math_primary']['rsa']['trained']:.2f}"),
         ("Field map is a hierarchy beyond the twin (H-A2; cophenetic Δ CI)", pre, lambda k: f"{'●' if ex(hi[k]['coph_match_delta_vs_random_ci']) else '○'} {hi[k]['coph_match']['trained']:.2f}"),
         ("Days form a cycle (positive control; PC plane)", "positive control; post-hoc statistic", cyc),
-        ("Ring chain ordered (Robinson; > twin)", conf_, lambda k: chain(k, "ring_chain")),
-        ("Space chain ordered (Robinson; > twin)", conf_, lambda k: chain(k, "space_chain")),
+        ("Ring chain ordered (Robinson and LOO order; Holm; > twin)", conf_, lambda k: chain(k, "ring_chain")),
+        ("Space chain ordered (Robinson and LOO order; Holm; > twin)", conf_, lambda k: chain(k, "space_chain")),
         ("Ring / space order beyond frequency", added, lambda k: " / ".join("●" if cf[k][f]["p"] < 0.05 else "○" for f in ("ring_chain", "space_chain"))),
         ("Angles form a circle (closure < 2 and circle ρ > line ρ)", conf_, angles),
         *([("Angles: closed cycle in any top-5 PC plane (addendum rule)", "post-hoc, pre-specified addendum", lambda k: f"{'●' if planes[k]['accepted'] else '○'} {planes[k]['score']:.2f}"),
@@ -253,6 +269,76 @@ def scorecard_rows(r: dict) -> dict:
           if planes else []),
     ]
     return {"models": [MODEL[k] for k in keys], "rows": [{"test": name, "status": status, "cells": [fn(k) for k in keys]} for name, status, fn in rows], "legend": SCORE_LEGEND}
+
+
+# ------------------------------------------------------------------ facts: counts in hand-written prose
+def _n_of(keys: list[str], ok, noun: str = "models") -> str:
+    """'all 5 models' / 'none of the 5 models' / '3 of 5 models (all but A and B)' / '2 of 5 models (A, B)'."""
+    from mathgeom.report.style import MODEL
+
+    yes, no = [MODEL[k] for k in keys if ok(k)], [MODEL[k] for k in keys if not ok(k)]
+    join = lambda xs: ("those of " if noun == "twins" else "") + (xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1])  # noqa: E731
+    if not no:
+        return f"all {len(keys)} {noun}"
+    if not yes:
+        return f"none of the {len(keys)} {noun}"
+    return f"{len(yes)} of {len(keys)} {noun} (" + (f"all but {join(no)}" if len(no) < len(yes) else join(yes)) + ")"
+
+
+def _runs(idx: list[int]) -> list[tuple[int, int]]:
+    """Contiguous runs of sorted integers: [1,2,3,7,8] → [(1,3),(7,8)]."""
+    runs: list[list[int]] = []
+    for i in idx:
+        if runs and i == runs[-1][1] + 1:
+            runs[-1][1] = i
+        else:
+            runs.append([i, i])
+    return [tuple(r) for r in runs]
+
+
+def fact(r: dict, spec: str) -> str:
+    """Resolve a {{fact:<name>[.<arg>]}} placeholder from the merged results r (paper._results("all")), so that
+    counts such as "3 of 5 models" in hand-written prose are computed, not typed. Criteria mirror scorecard_rows."""
+    from mathgeom.report.style import MODEL
+
+    name, _, arg = spec.partition(".")
+    mp, sh, la, st, hi, ph, cf = (r[k] for k in ("map_fields", "shapes", "lattice", "structures", "hierarchy", "posthoc", "chain_frequency"))
+    keys = [k for k in MODEL if k in mp]
+    L = lambda k: mp[k.replace("__random", "")]["primary_layer"] - 1  # noqa: E731  (list index of the pre-registered layer)
+    holm = lambda k, prefix: next(d for d in holm_decisions(mp, sh, la, k) if d["name"].startswith(prefix))  # noqa: E731
+    closed = lambda k, f: ph[k]["pc_planes_cycle"][f][L(k)]  # noqa: E731
+    fn = {
+        # chains: the pre-registered conjunction (Holm on max(Robinson p, LOO p)) and trained > twin
+        "chain_ordered": lambda: _n_of(keys, lambda k: holm(k, f"H-B {arg.replace('_', ' ')}")["reject"] and sh[k][arg]["robinson"] > sh[k + "__random"][arg]["robinson"]),
+        "chain_beyond_frequency": lambda: _n_of(keys, lambda k: cf[k][arg]["p"] < 0.05),
+        "twin_chain_beyond_frequency": lambda: _n_of(keys, lambda k: cf[k + "__random"][arg]["p"] < 0.05, "twins"),
+        # axioms: Holm decision, raw p, and the token-count-projected variant
+        "axiom_holm": lambda: _n_of(keys, lambda k: holm(k, f"H-B2 {arg} ")["reject"]),
+        "axiom_raw": lambda: _n_of(keys, lambda k: la[k]["group_like"]["offsets"][arg]["p"] < 0.05),
+        "axiom_length_projected": lambda: _n_of(keys, lambda k: la[k]["audit2"]["group_like_offsets"]["length_projected"][arg]["p"] < 0.05),
+        "twins_any_offset": lambda: _n_of(keys, lambda k: any(o["p"] < 0.05 for o in la[k + "__random"]["group_like"]["offsets"].values()), "twins"),
+        "parallelograms": lambda: _n_of(keys, lambda k: st[k]["group_objects"]["parallelograms"]["p"] < 0.05),
+        "field_map_beats_twin": lambda: _n_of(keys, lambda k: mp[k]["math_primary"]["rsa_boot"]["delta_vs_random_init"]["ci"][0] > 0),
+        "angles_closure_range": lambda: (lambda c: f"{min(c):.2f}–{max(c):.2f}")([sh[k]["angles"]["closure"] for k in keys]),
+        # field map across depth: layers (1-based) at or below the max-over-layers null
+        "below_null_runs": lambda: (lambda c: (lambda runs: f"{len(runs)} stretch{'es' if len(runs) != 1 else ''} (layers " + ", ".join(f"{a + 1}–{b + 1}" if b > a else f"{a + 1}" for a, b in runs)
+                                    + f" of {len(c['trained'])})")(_runs([i for i, v in enumerate(c["trained"]) if v <= c["max_null95"]])))(mp[arg]["math_primary"]["layer_curve"]),
+        "clears_null_every_layer": lambda: _n_of(keys, lambda k: min(mp[k]["math_primary"]["layer_curve"]["trained"]) > mp[k]["math_primary"]["layer_curve"]["max_null95"]),
+        "twin_curve_max": lambda: f"{max(max(mp[k]['math_primary']['layer_curve']['random_init']) for k in keys):+.3f}",
+        # specificity (post-hoc matched clustering): control fields beat most random 4-field math subsets
+        "control_beats_most_math_subsets": lambda: _n_of(keys, lambda k: ph[k]["matched_clustering"]["frac_math_subsets_ge_control"] < 0.5),
+        # hierarchy (H-A2) against shuffled trees and the spectrum-matched Gaussian, per tree measure
+        "beats_shuffled_trees": lambda: _n_of(keys, lambda k: hi[k]["coph_match_p_shuffled_tree"] < 0.05),
+        "gaussian_more_treelike": lambda: _n_of(keys, lambda k: hi[k]["gaussian_null"][f"{arg}_p"] < 0.05),
+        # cycles: the PC1–2 cycle score, and the closed-cycle test over the top-5 PC planes (post-hoc 4)
+        "top2_cycle_perfect": lambda: _n_of(keys, lambda k: ph[k]["pc_plane_cycle"][arg][L(k)]["score"] >= 0.999),
+        "closes_top2": lambda: _n_of(keys, lambda k: closed(k, arg)["p"] < 0.05 and closed(k, arg)["plane"] == [0, 1]),
+        "closes_lower_plane": lambda: _n_of(keys, lambda k: closed(k, arg)["p"] < 0.05 and closed(k, arg)["plane"] != [0, 1]),
+        "twin_closes": lambda: _n_of(keys, lambda k: closed(k + "__random", arg)["p"] < 0.05, "twins"),
+        "line_beats_circle": lambda: _n_of(keys, lambda k: sh[k][arg]["line_rho"] > sh[k][arg]["circle_rho"]),
+        "twins_meet_angles_rule": lambda: _n_of(keys, lambda k: (lambda a: a["closure"] < 2 and a["circle_rho"] > a["line_rho"])(sh[k + "__random"]["angles"]), "twins"),
+    }[name]
+    return fn()
 
 
 def table_hierarchy(h: dict) -> str:
@@ -424,7 +510,7 @@ def phase_report(cfg: Config) -> None:
         "POST-HOC: field-map ρ after removing the top-k principal components (all-but-the-top sweep)": table_posthoc(_j(cfg, "posthoc.json")) if _j(cfg, "posthoc.json") else "*not run*",
         "POST-HOC: cyclic order in the top-2-PC plane at the pre-registered layer (1 = perfect cycle; positive-control debug)": table_cycles(_j(cfg, "posthoc.json"), {k: v["primary_layer"] for k, v in _j(cfg, "shapes.json").items()}) if _j(cfg, "posthoc.json") else "*not run*",
         "POST-HOC 4 (reports/prereg_addendum_3d.md): closed cycle in the best plane of PC1–5 at the pre-registered layer (score · plane · max-over-planes p; twin in brackets)": table_planes_cycle(_j(cfg, "posthoc.json"), {k: v["primary_layer"] for k, v in _j(cfg, "shapes.json").items()}) if _j(cfg, "posthoc.json") else "*not run*",
-        "Multiplicity: Holm correction over the 8 pre-registered confirmatory tests (bootstrap p for H-A1 is the fraction of resamples with Δ ≤ 0; 0 means < 1/2000)": table_holm(mp, sh, la),
+        "Multiplicity: Holm correction over the 7 p-valued pre-registered confirmatory tests; the 8th, angles, is a decision rule without a p (H-A1 bootstrap p = (1 + #resamples with Δ ≤ 0)/(1 + 2000); chain p = max(Robinson p, LOO order p))": table_holm(mp, sh, la),
         "H-A1c clustering specificity: math fields vs non-math control fields": table_clustering(mp),
         "H-B shape families (primary layer; permutation p-values; † = post-hoc statistic, see docs/deviations.md)": table_shapes(sh, fams),
         "H-B negative control: random 11-item lists of math concepts (should reject ≈5%)": table_negative_control(sh),
