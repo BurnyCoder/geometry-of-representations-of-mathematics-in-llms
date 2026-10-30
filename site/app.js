@@ -5,7 +5,8 @@
 
 const S = { I: null, M: {}, key: null, layer: 12, timer: null, edges: true, allModels: false, fam: "days", ideal: false,
             axiom: null, cloudTwin: false, colorMode: "field", field: null, picked: null, hover: null, twin: false, hyp: "all",
-            view: { map: "3d", fam: "3d", lat: "3d" }, axes: { fam: [0, 1, 2], lat: [0, 1, 2], cloud: [0, 1, 2] }, cam: {}, spin: {}, link: true, camSync: false, pin: { map: null, fam: null, lat: null } };
+            view: { map: "3d", fam: "3d", lat: "3d" }, axes: { fam: [0, 1, 2], lat: [0, 1, 2], cloud: [0, 1, 2], how: [0, 1, 2] }, cam: {}, spin: {}, link: true, camSync: false, pin: { map: null, fam: null, lat: null },
+            how: 1, howTimer: null };  // how: the step (1–4) of the axiom-test explainer
 const CFG = { responsive: true, displaylogo: false, modeBarButtonsToRemove: ["lasso2d", "select2d", "toImage"] };
 const $ = (id) => document.getElementById(id);
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
@@ -34,6 +35,7 @@ function fmt(v, f) {
   const m = /^\.(\d)f$/.exec(f || ".2f");
   return minus(Number(v).toFixed(m ? +m[1] : 2));
 }
+const pval = (p) => (p < 0.001 ? "< 0.001" : fmt(p, ".3f"));  // permutation p is never 0, so do not print "0.000"
 const R = (path) => get(S.I.results, path);
 const conf = () => S.I.models[0].key;               // the pre-registered confirmatory model
 const model = () => S.I.models.find((m) => m.key === S.key);
@@ -143,7 +145,7 @@ const held = (ax, v) => Math.round(100 * ax.reduce((s, k) => s + v[k], 0));
 function linkCameras(fig, ids) {  // rotate / zoom one panel and its siblings follow (and Spin stops)
   ids.forEach((id) => {
     const el = $(id);
-    if (el._camLinked) return;
+    if (el._camLinked || !el.on) return;  // not plotted yet (e.g. a panel hidden in this step): linked on its first render
     el._camLinked = true;
     const follow = (ev) => {
       const cam = ev["scene.camera"];
@@ -212,7 +214,7 @@ function axesPicker(fig) {  // one select with the 10 choices of 3 axes from PC1
   sel.innerHTML = COMBOS.map((c, i) => `<option value="${i}">${c.map((k) => `PC${k + 1}`).join(" · ")}</option>`).join("");
   sel.onchange = () => { S.axes[fig] = COMBOS[+sel.value]; rerender([FIG_OF[fig]]); };
 }
-const FIG_OF = { fam: "fig-families", lat: "fig-lattice", cloud: "fig-concepts", map: "fig-map" };
+const FIG_OF = { fam: "fig-families", lat: "fig-lattice", cloud: "fig-concepts", map: "fig-map", how: "fig-axiom-how" };
 function scree(fig, vt, vw) {  // PC1–5 variance, trained vs twin; displayed PCs emphasized; click a bar to put that PC on an axis
   const p = P(), el = $(`scree-${fig}`), ax = S.axes[fig], x = [1, 2, 3, 4, 5].map((k) => `PC${k}`);
   if (!el) return;
@@ -247,14 +249,14 @@ const io = new IntersectionObserver((ents) => ents.forEach((e) => {
   if (e.isIntersecting && !seen.has(e.target.id) && RENDER[e.target.id]) { seen.add(e.target.id); RENDER[e.target.id](); }
 }), { rootMargin: "300px" });
 
-// ---------------------------------------------------------------- figure 2–3: tiles, scorecard, forest
+// ---------------------------------------------------------------- at a glance: tiles, scorecard, forest
 function renderTiles() {
   const k = conf(), Lp = S.I.models[0].primary_layer, t = (v, kk, tt) => `<div class="tile"><div class="v">${v}</div><div class="k">${kk}</div><div class="t">${tt}</div></div>`;
-  $("tiles").innerHTML = [
+  $("tiles").innerHTML = [  // the axiom result leads, as in the TL;DR
+    t(fmt(R(`lattice.${k}.group_like.offsets.commutative.consistency`)), "“add commutativity” consistency", `twin ${fmt(R(`lattice.${k}__random.group_like.offsets.commutative.consistency`))} · null 95th pct ${fmt(R(`lattice.${k}.group_like.offsets.commutative.null95`))}`),
     t(fmt(R(`map_fields.${k}.math_primary.rsa.trained`)), "field map vs arXiv (ρ)", `twin ${fmt(R(`map_fields.${k}.math_primary.rsa.random_init`))}`),
     t(fmt(R(`posthoc.${k}.pc_plane_cycle.days.${Lp - 1}`)), "days: cycle score", `twin ${fmt(R(`posthoc.${k}__random.pc_plane_cycle.days.${Lp - 1}`))} · positive control`),
     t(fmt(R(`shapes.${k}.angles.line_rho`)), "angles follow the number line (line ρ)", `circle ρ ${fmt(R(`shapes.${k}.angles.circle_rho`))} · twin line ρ ${fmt(R(`shapes.${k}__random.angles.line_rho`))} · circle falsified`),
-    t(fmt(R(`lattice.${k}.group_like.offsets.commutative.consistency`)), "“add commutativity” consistency", `twin ${fmt(R(`lattice.${k}__random.group_like.offsets.commutative.consistency`))}`),
   ].join("");
 }
 function renderScorecard(filter = "all") {
@@ -263,7 +265,7 @@ function renderScorecard(filter = "all") {
   $("scorecard").innerHTML = `<thead><tr><th>Test</th><th>Status</th>${sc.models.map((m) => `<th class="num">${m}</th>`).join("")}</tr></thead>` +
     `<tbody>${rows.map((r) => `<tr><td>${r.test}</td><td class="muted">${r.status}</td>${r.cells.map((c, j) => `<td class="cell num" title="${sc.models[j]} · ${r.test} · ${r.status}">${minus(c)}</td>`).join("")}</tr>`).join("")}</tbody>`;
   $("score-legend").textContent = sc.legend;
-  $("score-filter").innerHTML = ["all", "map", "shapes", "axioms"].map((g) => `<button data-g="${g}" aria-pressed="${g === filter}">${g[0].toUpperCase() + g.slice(1)}</button>`).join("");
+  $("score-filter").innerHTML = ["all", "axioms", "map", "shapes"].map((g) => `<button data-g="${g}" aria-pressed="${g === filter}">${g[0].toUpperCase() + g.slice(1)}</button>`).join("");
   $("score-filter").querySelectorAll("button").forEach((b) => b.onclick = () => renderScorecard(b.dataset.g));
 }
 const holmText = (r) => (r.holm === null ? "not in the Holm family" : `Holm: ${r.holm ? "significant" : "not significant"}`);
@@ -292,7 +294,7 @@ function renderForest() {
   table($("forest-table"), ["Comparison", "Row", "Estimate", "95% CI (unadjusted)", "n", "Status", "Holm decision"], all);
 }
 
-// ---------------------------------------------------------------- figure 4–6: field map, matrices, depth
+// ---------------------------------------------------------------- field map, matrices, depth
 function fieldTitle(side, morphed = false) {
   const lc = R(`map_fields.${S.key}.math_primary.layer_curve`);
   const rho = side === "trained" ? lc.trained[S.layer - 1] : lc.random_init[S.layer - 1];
@@ -423,7 +425,7 @@ function renderDepth() {
     lc.trained.map((v, i) => [i + 1, fmt((i + 1) / lc.trained.length), fmt(v), fmt(lc.random_init[i]), fmt(lc.max_null95)]));
 }
 
-// ---------------------------------------------------------------- figure 7: concept cloud + card
+// ---------------------------------------------------------------- concept cloud + card
 function renderCloud() {
   const p = P(), C = S.I.concepts, side = S.cloudTwin ? "random_init" : "trained", Mc = S.M[S.key].concepts, ax = S.axes.cloud;
   const xyz = pick3(Mc[side].pc5, ax), v = Mc[side].var;
@@ -460,7 +462,7 @@ function pick(i) {
   rerender(["fig-concepts"]);
 }
 
-// ---------------------------------------------------------------- figure 8: families
+// ---------------------------------------------------------------- families
 const FAM_TAKE = {
   days: "Positive control: the days keep their cyclic order at almost every depth; the twin never does. Whether the loop also closes is the line under the variance chart.",
   months: "Positive control: the months keep their cyclic order at most depths, but in the top-2 plane their loop can stay open; it closes in a lower plane in some models.",
@@ -585,7 +587,13 @@ function renderFamilies() {
   $("fam-chips").querySelectorAll("button").forEach((b) => b.onclick = () => { S.fam = b.dataset.f; renderFamilies(); });
 }
 
-// ---------------------------------------------------------------- figures 9–11: axiom lattice
+// ---------------------------------------------------------------- axiom lattice: lattice, cosines, analogy
+function axiomChips() {  // one axiom choice, shared by the how-the-test-works stepper and the lattice figure
+  ["how-chips", "axiom-chips"].forEach((id) => {
+    $(id).innerHTML = S.M[S.key].lattice.axioms.map((a) => `<button data-a="${a}" aria-pressed="${a === S.axiom}">+ ${a}</button>`).join("");
+    $(id).querySelectorAll("button").forEach((b) => b.onclick = () => { S.axiom = b.dataset.a; rerender(["fig-axiom-how", "fig-lattice"]); });
+  });
+}
 function latTraces(side, keys = false, el = null) {  // keys: legend entries for the highlighted and the other single-axiom pairs
   const p = P(), Lt = S.M[S.key].lattice, xy = Lt[side].planes[S.layer - 1], a = Lt.axioms.indexOf(S.axiom);
   const gx = [], gy = [], ann = [];
@@ -604,29 +612,38 @@ const ANALOGY0 = ["semigroup", "monoid", "quasigroup"];
 function analogyChoice(Lt) {  // a, b, c from the analogy playground (its defaults before it has rendered)
   return ["an-a", "an-b", "an-c"].map((id, k) => ($(id).value !== "" ? +$(id).value : Lt.items.indexOf(ANALOGY0[k])));
 }
-function latTraces3d(side, keys) {  // 3 of the top-5 PCs: arrows (lines + cone heads) for the selected axiom, the analogy point
-  const p = P(), Lt = S.M[S.key].lattice, L = S.layer - 1, ax = S.axes.lat, [X, Y, Z] = cols(pick3(Lt[side].pc5[L], ax)), a = Lt.axioms.indexOf(S.axiom);
+// arrowheads: "raw" makes each cone exactly as long as its vector (https://plotly.com/javascript/reference/cone/); flat colour
+const coneTrace = (c, color) => ({ type: "cone", ...c, anchor: "tip", sizemode: "raw", sizeref: 1, colorscale: [[0, color], [1, color]], showscale: false, hoverinfo: "skip", showlegend: false,
+  lighting: { ambient: 1, diffuse: 0, specular: 0, roughness: 1, fresnel: 0 } });
+function latArrows(V, { keys = false, color = P().blue, lineUp = false, pin = null, hint = "" } = {}) {
+  // 13 × 3 coordinates → the selected axiom's pairs as arrows (lines + cone heads), every other single-axiom pair as a grey
+  // line, the structures labelled. lineUp: move each arrow (same direction and length) so all tails meet at the mean tail,
+  // with the rest faded. Trace count and lengths never depend on the options, so plot3d glides between them.
+  const p = P(), Lt = S.M[S.key].lattice, [X, Y, Z] = cols(V), a = Lt.axioms.indexOf(S.axiom);
   const g = { x: [], y: [], z: [] }, bl = { x: [], y: [], z: [] }, cone = { x: [], y: [], z: [], u: [], v: [], w: [] };
   const ext = Math.max(...[X, Y, Z].map((c) => Math.max(...c) - Math.min(...c))), head = 0.13 * ext;  // arrowhead length: 13% of the view, ≤ 60% of its arrow
+  const sel = Lt.pairs.filter((_, k) => Lt.group[k] === a), tail0 = [0, 1, 2].map((c) => sel.reduce((s, [i]) => s + V[i][c], 0) / sel.length);
   Lt.pairs.forEach(([i, j], k) => {
-    const T = Lt.group[k] === a ? bl : g;
-    T.x.push(X[i], X[j], null); T.y.push(Y[i], Y[j], null); T.z.push(Z[i], Z[j], null);
-    if (Lt.group[k] !== a) return;
-    const d = [X[j] - X[i], Y[j] - Y[i], Z[j] - Z[i]], nr = Math.hypot(...d) || 1, hl = Math.min(head, 0.6 * nr);
-    cone.x.push(X[j]); cone.y.push(Y[j]); cone.z.push(Z[j]); cone.u.push((d[0] / nr) * hl); cone.v.push((d[1] / nr) * hl); cone.w.push((d[2] / nr) * hl);
+    if (Lt.group[k] !== a) { g.x.push(X[i], X[j], null); g.y.push(Y[i], Y[j], null); g.z.push(Z[i], Z[j], null); return; }
+    const d = [X[j] - X[i], Y[j] - Y[i], Z[j] - Z[i]], o = lineUp ? tail0 : [X[i], Y[i], Z[i]], tip = o.map((v, c) => v + d[c]);
+    const nr = Math.hypot(...d) || 1, hl = Math.min(head, 0.6 * nr);
+    bl.x.push(o[0], tip[0], null); bl.y.push(o[1], tip[1], null); bl.z.push(o[2], tip[2], null);
+    cone.x.push(tip[0]); cone.y.push(tip[1]); cone.z.push(tip[2]); cone.u.push((d[0] / nr) * hl); cone.v.push((d[1] / nr) * hl); cone.w.push((d[2] / nr) * hl);
   });
-  const has = (b) => Lt.axioms.filter((_, q) => b[q]).join(", ") || "none";
-  const data = [
+  const has = (b) => Lt.axioms.filter((_, q) => b[q]).join(", ") || "none", ink = lineUp ? p.axis : p.ink2;
+  return [
     { type: "scatter3d", mode: "lines", ...g, line: { color: p.grid, width: 2 }, hoverinfo: "skip", name: "other single-axiom pairs", showlegend: keys },
-    { type: "scatter3d", mode: "lines", ...bl, line: { color: p.blue, width: 5 }, hoverinfo: "skip", name: `pairs differing only in ${S.axiom}`, showlegend: keys },
-    // arrowheads: "raw" makes each cone exactly as long as its vector (https://plotly.com/javascript/reference/cone/); flat blue
-    { type: "cone", ...cone, anchor: "tip", sizemode: "raw", sizeref: 1, colorscale: [[0, p.blue], [1, p.blue]], showscale: false, hoverinfo: "skip", showlegend: false,
-      lighting: { ambient: 1, diffuse: 0, specular: 0, roughness: 1, fresnel: 0 } },
+    { type: "scatter3d", mode: "lines", ...bl, line: { color, width: 5 }, hoverinfo: "skip", name: `pairs differing only in ${S.axiom}`, showlegend: keys },
+    coneTrace(cone, color),
     { type: "scatter3d", mode: "markers+text", name: "structures", showlegend: false, x: X, y: Y, z: Z, text: Lt.items.map((s) => s.replace("commutative ", "comm. ")), textposition: "top center",
-      textfont: { size: 10, color: p.ink2 }, marker: { size: Lt.items.map((_, i) => (i === S.pin.lat ? 12 : 7)), color: Lt.items.map((_, i) => (i === S.pin.lat ? p.orange : p.ink2)) }, customdata: Lt.items.map((_, i) => i),
-      hovertemplate: Lt.items.map((s, i) => `<b>${s}</b><br>axioms: ${has(Lt.bits[i])}<br>click for its axioms<extra></extra>`) }];
+      textfont: { size: 10, color: ink }, marker: { size: Lt.items.map((_, i) => (i === pin ? 12 : 7)), color: Lt.items.map((_, i) => (i === pin ? p.orange : ink)) }, customdata: Lt.items.map((_, i) => i),
+      hovertemplate: Lt.items.map((s, i) => `<b>${s}</b><br>axioms: ${has(Lt.bits[i])}${hint}<extra></extra>`) }];
+}
+function latTraces3d(side, keys) {  // 3 of the top-5 PCs: arrows (lines + cone heads) for the selected axiom, the analogy point
+  const p = P(), Lt = S.M[S.key].lattice, L = S.layer - 1, ax = S.axes.lat, V = pick3(Lt[side].pc5[L], ax), [X, Y, Z] = cols(V);
+  const data = latArrows(V, { keys, pin: S.pin.lat, hint: "<br>click for its axioms" });
   if (S.layer === model().primary_layer) {
-    // the analogy query b − a + c from Figure 11, placed exactly: exact (PC-basis) coordinates → this view via to_view
+    // the analogy query b − a + c from the analogy playground, placed exactly: exact (PC-basis) coordinates → this view via to_view
     const [ia, ib, ic] = analogyChoice(Lt), E = Lt[side].exact, M = Lt[side].to_view;
     const q = E[ib].map((v, k) => v - E[ia][k] + E[ic][k]).slice(0, 5), q5 = [0, 1, 2, 3, 4].map((c) => q.reduce((s, v, r) => s + v * M[r][c], 0)), Q = ax.map((k) => q5[k]);
     data.push({ type: "scatter3d", mode: "lines", name: "analogy: a → b and c → b − a + c", showlegend: keys, hoverinfo: "skip",
@@ -671,12 +688,11 @@ function renderLattice() {
     });
   });
   $("lat-note").innerHTML = `<b>+ ${S.axiom}:</b> offset consistency ${fmt(o.consistency)} (random-pair null 95th percentile ${fmt(o.null95)}, p ${fmt(o.p, ".3f")}); twin ${fmt(ot.consistency)}. Values at the preregistered layer.` +
-    (is3d("lat") ? (S.layer === model().primary_layer ? " The orange diamond is the Figure 11 analogy query, projected exactly." : " The analogy query (orange diamond) is drawn at the preregistered layer only.") : "");
+    (is3d("lat") ? (S.layer === model().primary_layer ? ` The orange diamond is the ${figref("fig-analogy")} analogy query, projected exactly.` : " The analogy query (orange diamond) is drawn at the preregistered layer only.") : "");
   const pl = S.pin.lat;
   $("lat-bits").innerHTML = pl === null ? "Click a structure to pin it and see its axioms." : `<b>${Lt.items[pl]}</b>: ` + Lt.axioms.map((a, q) => `${a} ${Lt.bits[pl][q] ? "✓" : "✗"}`).join(" · ");
   pinRow("lat-table", pl);
-  $("axiom-chips").innerHTML = Lt.axioms.map((a) => `<button data-a="${a}" aria-pressed="${a === S.axiom}">+ ${a}</button>`).join("");
-  $("axiom-chips").querySelectorAll("button").forEach((b) => b.onclick = () => { S.axiom = b.dataset.a; renderLattice(); });
+  axiomChips();
 }
 function renderCosines() {
   const p = P(), Lt = S.M[S.key].lattice, n = Lt.pairs.length, nm = (k) => `${Lt.items[Lt.pairs[k][0]]} → ${Lt.items[Lt.pairs[k][1]]}`;
@@ -725,7 +741,116 @@ function renderAnalogy() {
   });
 }
 
-// ---------------------------------------------------------------- figure 12: Mathlib
+// ---------------------------------------------------------------- how the axiom test works: a 4-step explainer
+// Step 1 is a schematic of the definitions; steps 2–3 the top-PC view at the preregistered layer (a projection); step 4 is
+// full-space, computed here from lattice.<side>.exact, which keeps every inner product of the centred residual vectors.
+// step 1: one display direction per axiom. The 4th is not an integer mix of the others, so no two structures coincide (a 4-cube
+// in 3-D); it was picked by a search that maximizes the smallest label separation in the default camera view
+const AXIOM_DIRS = [[1, 0, 0], [0, 1, 0], [0, 0, 1], [0.75, -0.75, 0]];
+function schematic(bits, ref) {  // Σ (axioms present) × their directions, centred and scaled onto `ref` (same mean and RMS radius), so step 1 → 2 glides
+  const stats = (A) => { const m = [0, 1, 2].map((c) => A.reduce((s, r) => s + r[c], 0) / A.length); return [m, Math.sqrt(A.reduce((s, r) => s + r.reduce((t, v, c) => t + (v - m[c]) ** 2, 0), 0) / A.length)]; };
+  const P0 = bits.map((b) => [0, 1, 2].map((c) => b.reduce((s, on, a) => s + on * AXIOM_DIRS[a][c], 0)));
+  const [m0, r0] = stats(P0), [m1, r1] = stats(ref);
+  return P0.map((r) => r.map((v, c) => m1[c] + ((v - m0[c]) * r1) / r0));
+}
+function compass(E, pairs) {
+  // Leave-one-out angle (degrees) between each same-axiom difference vector and the mean of the *other* unit difference
+  // vectors, plus the mean pairwise cosine of the unit vectors, which is offset consistency (geometry/offsets.py). Differences
+  // do not depend on centring and E keeps every inner product, so both are the full-space values (tests/test_site.py).
+  const dot = (u, v) => u.reduce((s, x, k) => s + x * v[k], 0), unit = (v) => { const n = Math.sqrt(dot(v, v)) || 1; return v.map((x) => x / n); };
+  const U = pairs.map(([i, j]) => unit(E[j].map((v, k) => v - E[i][k])));
+  const others = (k) => unit(U.reduce((s, w, q) => (q === k ? s : s.map((x, r) => x + w[r])), U[k].map(() => 0)));
+  const cs = U.flatMap((u, k) => U.slice(k + 1).map((w) => dot(u, w)));
+  return { deg: U.map((u, k) => (180 / Math.PI) * Math.acos(Math.max(-1, Math.min(1, dot(u, others(k)))))), cons: cs.reduce((s, c) => s + c, 0) / cs.length };
+}
+function compassTraces(side) {  // step 4: one compass per axiom (2 × 2); dashed vertical = mean of the other arrows; each arrow tilted by its angle
+  const p = P(), Lt = S.M[S.key].lattice, E = Lt[side].exact, color = side === "trained" ? p.blue : p.twin, key = side === "trained" ? S.key : `${S.key}__random`;
+  const T = (extra = {}) => ({ x: [], y: [], z: [], ...extra }), ring = T(), up = T(), arrows = [T(), T()], tips = T({ text: [] }), lab = T({ text: [], hover: [] }), cone = T({ u: [], v: [], w: [] });
+  const push = (t, ...pts) => pts.forEach((q) => { t.x.push(q && q[0]); t.y.push(q && q[1]); t.z.push(q && q[2]); });  // null = gap between lines
+  Lt.axioms.forEach((name, a) => {
+    const r = (2.8 * (a % 2)) / Math.SQRT2, o = [r, r, -3.2 * Math.floor(a / 2)];  // columns along (1, 1, 0), the default camera's screen-right
+    const pairs = Lt.pairs.filter((_, k) => Lt.group[k] === a), { deg, cons } = compass(E, pairs), off = R(`lattice.${key}.group_like.offsets.${name}`), on = name === S.axiom;
+    for (let t = 0; t <= 48; t++) push(ring, [o[0] + Math.cos((Math.PI * t) / 24), o[1] + Math.sin((Math.PI * t) / 24), o[2]]);
+    push(ring, null);
+    push(up, o, [o[0], o[1], o[2] + 1.2], null);
+    deg.forEach((d, k) => {  // only the tilt θ is data; the azimuth spreads the arrows evenly around the vertical
+      const th = (d * Math.PI) / 180, ph = (2 * Math.PI * k) / deg.length, u = [Math.sin(th) * Math.cos(ph), Math.sin(th) * Math.sin(ph), Math.cos(th)], tip = o.map((v, c) => v + u[c]);
+      push(arrows[on ? 1 : 0], o, tip, null);
+      push(cone, tip); cone.u.push(0.22 * u[0]); cone.v.push(0.22 * u[1]); cone.w.push(0.22 * u[2]);
+      push(tips, tip); tips.text.push(`${Lt.items[pairs[k][0]]} → ${Lt.items[pairs[k][1]]}: ${fmt(d, ".0f")}° from the others’ mean`);
+    });
+    push(lab, [o[0], o[1], o[2] - 0.5]);  // under the ring, in three short lines, so neighbouring labels do not collide on a phone
+    lab.text.push(`${on ? "<b>" : ""}+ ${name}: ${fmt(off.consistency)}${on ? "</b>" : ""}<br>null 95% ${fmt(off.null95)}<br>p ${pval(off.p)}`);
+    lab.hover.push(`+ ${name}: offset consistency ${fmt(off.consistency)} (recomputed in this page: ${fmt(cons)})<br>random-pair null 95th percentile ${fmt(off.null95)}, p ${pval(off.p)} before Holm<extra></extra>`);
+  });
+  return [
+    { type: "scatter3d", mode: "lines", ...ring, line: { color: p.axis, width: 2 }, hoverinfo: "skip", name: "90°: unrelated" },
+    { type: "scatter3d", mode: "lines", ...up, line: { color: p.ink2, width: 3, dash: "dash" }, hoverinfo: "skip", name: "mean of the other arrows" },
+    { type: "scatter3d", mode: "lines", ...arrows[0], line: { color, width: 4 }, hoverinfo: "skip" },
+    { type: "scatter3d", mode: "lines", ...arrows[1], line: { color, width: 8 }, hoverinfo: "skip" },
+    coneTrace(cone, color),
+    { type: "scatter3d", mode: "markers", ...tips, marker: { size: 4, color }, hovertemplate: "%{text}<extra></extra>" },
+    { type: "scatter3d", mode: "text", x: lab.x, y: lab.y, z: lab.z, text: lab.text, textposition: "bottom center", textfont: { size: 11, color: p.ink }, hovertemplate: lab.hover },
+  ];
+}
+const flat = (ts) => ts.filter((t) => t.type !== "cone").map(({ z, ...t }) => ({ ...t, type: "scatter", y: z }));  // no WebGL: the x–z side view, no arrowheads
+const HOW_TITLES = ["Structures are sets of axioms", "Adding an axiom is an arrow", "Line the arrows up", "Measure in the full space"];
+function howText(Lt, sel) {
+  const a = S.axiom, n = sel.length, ex = sel.slice(0, 2).map(([i, j]) => `${Lt.items[i]} → ${Lt.items[j]}`).join(" and ");
+  const o = R(`lattice.${S.key}.group_like.offsets.${a}`), ot = R(`lattice.${S.key}__random.group_like.offsets.${a}`);
+  return `<b>${S.how} · ${HOW_TITLES[S.how - 1]}.</b> ` + [
+    `Each structure is the set of axioms it satisfies: a magma has none, a group has associativity, identity and divisibility, an abelian group all four. Left: the 13 structures drawn from their definitions alone, one fixed direction per axiom; right: the same as a table. The ${n} blue arrows join the pairs that differ only in ${a}, such as ${ex}. In this picture they are parallel by construction; the test asks whether they are in the model.`,
+    `The model’s own vectors for the 13 names at the preregistered layer ${model().primary_layer}, in three of their top-5 principal components: ${model().name} on the left (blue), its random-init twin on the right (grey). Each arrow runs from a structure to the one that adds ${a}.`,
+    `The same ${n} arrows, each moved so that the tails meet at one point; direction and length are unchanged. A tight bundle suggests one shared direction, a wide fan none. This is still a projection, so it can mislead either way.`,
+    `Each compass is one axiom, measured over every dimension of the residual stream (computed in your browser). The dashed vertical is the mean direction of the other arrows of that axiom, and each arrow is tilted from it by its true angle: 0° points straight up, 90° lies on the ring (unrelated). The test statistic, offset consistency, is the mean cosine between all pairs of same-axiom arrows: for + ${a}, ${fmt(o.consistency)} in ${model().name} against a random-pair null with 95th percentile ${fmt(o.null95)} (p ${pval(o.p)}), and ${fmt(ot.consistency)} in the twin.`,
+  ][S.how - 1];
+}
+function howCard(Lt, sel) {  // step 1, right: the definitions as a table, with the selected axiom's column and its pairs
+  const a = Lt.axioms.indexOf(S.axiom), c = (q) => (q === a ? ' class="sel"' : "");
+  $("how-card").innerHTML = `<h4>Which axioms each structure has</h4><table><thead><tr><th>Structure</th>${Lt.axioms.map((x, q) => `<th${c(q)}>${x}</th>`).join("")}</tr></thead><tbody>${
+    Lt.items.map((it, i) => `<tr><td>${it}</td>${Lt.bits[i].map((b, q) => `<td${c(q)}>${b ? "✓" : ""}</td>`).join("")}</tr>`).join("")}</tbody></table>` +
+    `<p><b>Pairs that differ only in ${S.axiom}</b> (the blue arrows): ${sel.map(([i, j]) => `${Lt.items[i]} → ${Lt.items[j]}`).join(", ")}.</p>`;
+}
+function setHowStep(s) {
+  if ((s === 4) !== (S.how === 4)) delete S.cam.how;  // the compass is a different scene: start it from the default camera
+  S.how = s;
+  rerender(["fig-axiom-how"]);
+}
+function renderHow() {
+  const p = P(), Lt = S.M[S.key].lattice, L = model().primary_layer - 1, ax = S.axes.how, st = S.how;
+  if (!S.axiom) S.axiom = Lt.axioms[0];
+  axesPicker("how");
+  $("axes-how").disabled = st === 1 || st === 4;
+  document.querySelectorAll("#how-steps [data-step]").forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.step === st)));
+  $("how-twin").hidden = st === 1;
+  $("how-card").hidden = st !== 1;
+  const sel = Lt.pairs.filter((_, k) => Lt.group[k] === Lt.axioms.indexOf(S.axiom)), V = (side) => pick3(Lt[side].pc5[L], ax);
+  const bare = () => {  // schematic, compass: the axes mean nothing, so no titles or grid (not visible: false, which gl3d
+    const s = scene3d("how", ["", "", ""]);  // does not undo when a later step shows the PC axes again)
+    ["xaxis", "yaxis", "zaxis"].forEach((k) => { s[k] = { ...s[k], showgrid: false }; });
+    return s;
+  };
+  const draw = (id, traces, title, scene, keys) => (HAS_GL
+    ? plot3d(id, traces, layout(title, { margin: { l: 0, r: 0, t: 40, b: 0 }, scene, ...(keys ? legend(4) : {}) }))
+    : plot(id, flat(traces), layout(title, keys ? legend() : {})));
+  const who = (side) => (side === "trained" ? model().name : "random-init twin");
+  if (st === 1) {
+    draw("how-trained", latArrows(schematic(Lt.bits, V("trained")), { keys: true }), `13 structures placed by their axioms (schematic) · + ${S.axiom}`, bare(), true);
+    howCard(Lt, sel);
+  } else {
+    [["how-trained", "trained"], ["how-twin", "random_init"]].forEach(([id, side]) => {
+      const v = Lt[side].var[L];
+      if (st === 4) draw(id, compassTraces(side), `${who(side)} · full space · layer ${L + 1}: each arrow’s angle to the mean of the others`, bare(), false);
+      else draw(id, latArrows(V(side), { keys: id === "how-trained", color: side === "trained" ? p.blue : p.twin, lineUp: st === 3 }),
+        `${who(side)} · layer ${L + 1} · + ${S.axiom}${st === 3 ? " · tails at one point" : ""} · ${ax.map((k) => `PC${k + 1}`).join("/")} hold ${held(ax, v)}%`, scene3d("how", pcTitles(ax, v)), id === "how-trained");
+    });
+  }
+  if (HAS_GL) linkCameras("how", ["how-trained", "how-twin"]);
+  $("how-text").innerHTML = howText(Lt, sel);
+  axiomChips();
+}
+
+// ---------------------------------------------------------------- Mathlib
 function renderMathlib() {
   const p = P(), pts = S.I.mathlib_points, ml = R("mathlib");
   plot("mathlib", [{ type: "scatter", mode: "markers", x: pts.map((d) => d.depth), y: pts.map((d) => d.rating), marker: { size: 10, color: p.blue, line: { color: p.surface, width: 1.5 } },
@@ -736,7 +861,7 @@ function renderMathlib() {
   table($("ml-table"), ["Concept", "Field", "Mathlib declaration", "Import depth", "Judge rating"], pts.map((d) => [d.concept, d.field, `<code>${d.decl}</code>`, d.depth, fmt(d.rating)]));
 }
 
-// ---------------------------------------------------------------- figure 12: group objects
+// ---------------------------------------------------------------- group objects
 function renderGroups() {
   const p = P(), st = S.I.results.structures, ms = S.I.models, y = ms.map((m) => m.name);
   const g = (k) => st[k].group_objects;
@@ -759,7 +884,7 @@ function renderGroups() {
   }));
 }
 
-// ---------------------------------------------------------------- figure 14: partial-operation lattice (negative result)
+// ---------------------------------------------------------------- partial-operation lattice (negative result)
 function renderPartial() {
   const p = P(), la = S.I.results.lattice, off = (k) => la[k].audit2.partial_operation.offsets, axes = Object.keys(off(S.key));
   const others = S.I.models.filter((m) => m.key !== S.key), me = off(S.key), clears = axes.filter((a) => me[a].consistency > me[a].null95);
@@ -779,7 +904,13 @@ function renderPartial() {
     ...axes.flatMap((a) => [fmt(off(m.key)[a].consistency), fmt(off(m.key)[a].null95), fmt(off(m.key)[a].p, ".3f")]), axes.map((a) => fmt(off(m.key + "__random")[a].consistency)).join(" / ")]));
 }
 
-// ---------------------------------------------------------------- figure decorations: paper links, table views
+// ---------------------------------------------------------------- figure decorations: numbers, paper links, table views
+const FIGNUM = {};
+function numberFigures() {  // figures are numbered in page order, so moving a section never leaves a stale number behind
+  document.querySelectorAll("figure.fig").forEach((f, i) => { FIGNUM[f.id] = i + 1; f.querySelector(".fig-num").textContent = `Figure ${i + 1}`; });
+  document.querySelectorAll("a.figref").forEach((a) => { a.textContent = `Figure ${FIGNUM[a.hash.slice(1)]}`; });
+}
+const figref = (id) => `<a class="figref" href="#${id}">Figure ${FIGNUM[id]}</a>`;  // the same link, for text the script writes
 const PAPER = "https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms/blob/master/paper/paper.md";
 function decorate() {
   document.querySelectorAll("figure.fig[data-paper]").forEach((f) => {
@@ -869,6 +1000,14 @@ function wire() {
   $("edges-toggle").onclick = (e) => { S.edges = !S.edges; e.target.setAttribute("aria-pressed", String(S.edges)); rerender(["fig-map"]); };
   $("all-models").onclick = (e) => { S.allModels = !S.allModels; e.target.setAttribute("aria-pressed", String(S.allModels)); rerender(["fig-depth"]); };
   $("ideal").onclick = (e) => { S.ideal = !S.ideal; e.target.setAttribute("aria-pressed", String(S.ideal)); rerender(["fig-families"]); };
+  const stopHow = () => { clearInterval(S.howTimer); S.howTimer = null; $("how-play").setAttribute("aria-pressed", "false"); $("how-play").textContent = "▶ Play"; };
+  document.querySelectorAll("#how-steps [data-step]").forEach((b) => b.onclick = () => { stopHow(); setHowStep(+b.dataset.step); });
+  $("how-play").onclick = () => {  // advance now, then every few seconds; stop on the last step
+    if (S.howTimer) return stopHow();
+    $("how-play").setAttribute("aria-pressed", "true"); $("how-play").textContent = "❚❚ Pause";
+    setHowStep(S.how === 4 ? 1 : S.how + 1);
+    S.howTimer = setInterval(() => (S.how >= 4 ? stopHow() : setHowStep(S.how + 1)), 4500);
+  };
   document.querySelectorAll("[data-table]").forEach((b) => b.onclick = () => $(b.dataset.table).classList.toggle("open"));
   const C = S.I.concepts, fields = [...new Set(C.field)];
   $("cloud-field").innerHTML = fields.map((f) => `<option value="${f}">${label(f)}</option>`).join("");
@@ -889,14 +1028,15 @@ async function boot() {
   const q = new URLSearchParams(location.search);
   if (q.get("view") === "2d" || !HAS_GL) Object.keys(S.view).forEach((f) => { S.view[f] = "2d"; });  // ?view=2d deep-links the 2-D views
   fillNums();
+  numberFigures();
   decorate();
   wire();
   renderTiles();
   renderScorecard();
-  register("fig-forest", renderForest); register("fig-map", renderMap); register("fig-rdm", renderRdm); register("fig-depth", renderDepth);
-  register("fig-concepts", renderCloud); register("fig-families", renderFamilies); register("fig-lattice", renderLattice);
-  register("fig-cosines", renderCosines); register("fig-analogy", renderAnalogy); register("fig-groups", renderGroups); register("fig-abstraction", renderMathlib);
-  register("fig-partial", renderPartial);
+  register("fig-forest", renderForest);  // in page order (the fallback below renders unseen figures in this order)
+  register("fig-axiom-how", renderHow); register("fig-lattice", renderLattice); register("fig-cosines", renderCosines); register("fig-analogy", renderAnalogy); register("fig-groups", renderGroups);
+  register("fig-map", renderMap); register("fig-rdm", renderRdm); register("fig-depth", renderDepth);
+  register("fig-concepts", renderCloud); register("fig-families", renderFamilies); register("fig-abstraction", renderMathlib); register("fig-partial", renderPartial);
   const key = S.I.models.some((m) => m.key === q.get("model")) ? q.get("model") : conf();
   S.layer = +q.get("layer") || S.I.models.find((m) => m.key === key).primary_layer;
   if (["light", "dark"].includes(q.get("theme"))) document.documentElement.dataset.theme = q.get("theme");

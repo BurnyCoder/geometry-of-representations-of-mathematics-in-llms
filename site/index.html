@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Geometry of Mathematics in LLMs</title>
-<meta name="description" content="An explorable article: do language models lay out mathematics geometrically — a map of fields, ordered chains, circles, and axioms as directions? Every number is generated from the study's results.">
+<meta name="description" content="An explorable article: do language models lay out mathematics geometrically — axioms as directions, a map of fields, ordered chains and circles? Every number is generated from the study's results.">
 <link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
 </head>
@@ -18,13 +18,13 @@
     <a href="https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms">Code &amp; preregistration</a>
     <a href="https://huggingface.co/datasets/BurnyCoder/geometry-of-mathematics-in-llms">Data &amp; activations</a>
   </div>
-  <p class="kicker">LLMs put the days of the week on a circle (<a href="https://arxiv.org/abs/2405.14860">Engels et al., 2024</a>). We asked whether abstract mathematics has a shape too: is there a <i>map</i> of mathematical fields, are chains of definitions laid out in order, and are axioms <i>directions</i>? Each of five open base models is compared with its <b>random-init twin</b>, the same network and tokenizer with untrained weights.</p>
+  <p class="kicker">LLMs put the days of the week on a circle (<a href="https://arxiv.org/abs/2405.14860">Engels et al., 2024</a>). We asked whether abstract mathematics has a shape too: are axioms <i>directions</i>, is there a <i>map</i> of mathematical fields, and are chains of definitions laid out in order? Each of five open base models is compared with its <b>random-init twin</b>, the same network and tokenizer with untrained weights.</p>
   <div class="tldr">
     <h2>TL;DR</h2>
     <ul>
+      <li><b>Axioms act as directions.</b> “Add commutativity” is a consistent arrow (offset consistency <span data-num="results.lattice.qwen3.5-2b.group_like.offsets.commutative.consistency" data-fmt=".2f"></span>, twin <span data-num="results.lattice.qwen3.5-2b__random.group_like.offsets.commutative.consistency" data-fmt=".2f"></span>), as is “add associativity”; identity and divisibility are weaker.</li>
       <li><b>Fields form a map.</b> Distances between field centroids correlate with arXiv cross-listing: ρ = <span data-num="results.map_fields.qwen3.5-2b.math_primary.rsa.trained" data-fmt=".2f"></span> in the confirmatory model, against <span data-num="results.map_fields.qwen3.5-2b.math_primary.rsa.random_init" data-fmt=".2f"></span> for its twin, and in every model we tested.</li>
       <li><b>Days and months are circles; class-inclusion chains are lines.</b> Angles are <i>not</i> circles, which falsified one of our preregistered predictions.</li>
-      <li><b>Axioms act as directions.</b> “Add commutativity” is a consistent arrow (offset consistency <span data-num="results.lattice.qwen3.5-2b.group_like.offsets.commutative.consistency" data-fmt=".2f"></span>), as is “add associativity”; identity and divisibility are weaker.</li>
       <li><b>Not special to LLMs or to math.</b> A text-embedding model reaches a similar map (ρ = <span data-num="results.baselines.qwen3.5-2b.all_primary.rsa.qwen3_embedding" data-fmt=".2f"></span>), science topics cluster as strongly, and a trillion tokens of math pretraining did not sharpen it.</li>
     </ul>
   </div>
@@ -43,7 +43,7 @@
     <button id="reset-layer" title="Back to the preregistered layer">Pre-registered layer</button>
     <button id="theme" title="Toggle light/dark">◐ Theme</button>
     <span id="gl-note" class="gl-note" hidden>3-D views need WebGL, which this browser does not provide, so the figures show their 2-D versions.</span>
-    <div class="toc"><a href="#s-glance">At a glance</a><a href="#s-map">Map</a><a href="#s-cloud">Concepts</a><a href="#s-shapes">Shapes</a><a href="#s-axioms">Axioms</a><a href="#s-abstract">Abstraction</a><a href="#s-failed">What failed</a></div>
+    <div class="toc"><a href="#s-glance">At a glance</a><a href="#s-axioms">Axioms</a><a href="#s-map">Map</a><a href="#s-cloud">Concepts</a><a href="#s-shapes">Shapes</a><a href="#s-abstract">Abstraction</a><a href="#s-failed">What failed</a></div>
   </div>
 </nav>
 
@@ -52,12 +52,12 @@
 <h2 class="section" id="s-method"><span class="num">1</span>How we look inside the model</h2>
 <p>For every concept we run eight short sentences that end with its name, for example “In mathematics, one important notion is the ⟨concept⟩”. We read the model’s internal vector (the <i>residual stream</i>) at the concept’s last token, and average over the eight templates. Templates never name a field, so a field cannot be read off the prompt.</p>
 <span class="sidenote"><b>Random-init twin.</b> The same architecture and tokenizer with weights redrawn at random. Any geometry it shows comes from word form alone (shared tokens, length). Every claim here is a <i>difference</i> from the twin.</span>
-<p>Then we ask simple geometric questions of those vectors. Are related fields close? Do chains of definitions line up in order? Are differences such as monoid − semigroup parallel to loop − quasigroup? All views below are <b>unsupervised</b> projections (PCA, MDS): nothing is fitted to the labels, because with a dozen points in thousands of dimensions a fitted projection can draw any shape.</p>
+<p>Then we ask simple geometric questions of those vectors. Are differences such as monoid − semigroup parallel to loop − quasigroup? Are related fields close? Do chains of definitions line up in order? All views below are <b>unsupervised</b> projections (PCA, MDS): nothing is fitted to the labels, because with a dozen points in thousands of dimensions a fitted projection can draw any shape.</p>
 </div>
 
 <figure class="fig" id="fig-method" data-paper="#3-methods" data-section="3">
-  <div class="fig-head"><span class="fig-num">Figure 1</span><span class="fig-title">From prompts to geometry</span></div>
-  <svg viewBox="0 0 1100 190" width="100%" role="img" aria-label="Pipeline: templates, residual stream, average, field centroids, distance matrix compared with arXiv; the random-init twin follows the same path">
+  <div class="fig-head"><span class="fig-num"></span><span class="fig-title">From prompts to geometry</span></div>
+  <svg viewBox="0 0 1100 190" width="100%" role="img" aria-label="Pipeline: templates, residual stream, average, axiom differences and field centroids, compared with nulls and arXiv; the random-init twin follows the same path">
     <style>.b{fill:var(--page);stroke:var(--axis);rx:10}.t{fill:var(--ink);font:13px system-ui}.s{fill:var(--ink2);font:11px system-ui}.a{stroke:var(--axis);stroke-width:1.5;marker-end:url(#ar)}.tw{fill:var(--twin);font:12px system-ui}</style>
     <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--axis)"/></marker></defs>
     <rect class="b" x="10" y="30" width="190" height="80"/><text class="t" x="24" y="58">8 templates per concept</text><text class="s" x="24" y="80">“… notion is the monoid”</text><text class="s" x="24" y="96">no field names in prompts</text>
@@ -66,7 +66,7 @@
     <line class="a" x1="430" y1="70" x2="468" y2="70"/>
     <rect class="b" x="470" y="30" width="190" height="80"/><text class="t" x="484" y="58">Average + centre</text><text class="s" x="484" y="80">mean over templates;</text><text class="s" x="484" y="96">no whitening</text>
     <line class="a" x1="660" y1="70" x2="698" y2="70"/>
-    <rect class="b" x="700" y="30" width="180" height="80"/><text class="t" x="714" y="58">Geometry</text><text class="s" x="714" y="80">field centroids, chains,</text><text class="s" x="714" y="96">axiom differences</text>
+    <rect class="b" x="700" y="30" width="180" height="80"/><text class="t" x="714" y="58">Geometry</text><text class="s" x="714" y="80">axiom differences,</text><text class="s" x="714" y="96">field centroids, chains</text>
     <line class="a" x1="880" y1="70" x2="918" y2="70"/>
     <rect class="b" x="920" y="30" width="170" height="80"/><text class="t" x="934" y="58">Compare</text><text class="s" x="934" y="80">vs arXiv, true order,</text><text class="s" x="934" y="96">permutation nulls</text>
     <text class="tw" x="240" y="150">The random-init twin goes through exactly the same steps; the evidence is trained − twin.</text>
@@ -85,7 +85,7 @@
 <div class="tiles" id="tiles"></div>
 
 <figure class="fig" id="fig-scorecard" data-paper="#4-results" data-section="4">
-  <div class="fig-head"><span class="fig-num">Figure 2</span><span class="fig-title">Scorecard: every test in every model</span>
+  <div class="fig-head"><span class="fig-num"></span><span class="fig-title">Scorecard: every test in every model</span>
     <div class="fig-tools chips" id="score-filter"></div></div>
   <div style="overflow-x:auto"><table class="scorecard" id="scorecard"></table></div>
   <div class="legend-note" id="score-legend"></div>
@@ -94,7 +94,7 @@
 </figure>
 
 <figure class="fig" id="fig-forest" data-paper="#4-results" data-section="4">
-  <div class="fig-head"><span class="fig-num">Figure 3</span><span class="fig-title">Effect sizes with 95% confidence intervals</span>
+  <div class="fig-head"><span class="fig-num"></span><span class="fig-title">Effect sizes with 95% confidence intervals</span>
     <div class="fig-tools"><button data-table="forest-table">Table view</button></div></div>
   <div class="chips" id="forest-filter" aria-label="Filter by hypothesis"></div>
   <div id="forest"></div>
@@ -107,14 +107,81 @@
 </figure>
 
 <div class="prose">
-<h2 class="section" id="s-map"><span class="num">3</span>A map of mathematics</h2>
+<h2 class="section" id="s-axioms"><span class="num">3</span>Axioms as directions</h2>
+<p>Thirteen group-like structures, from magma to abelian group, are each a set of four axioms: associativity, identity, divisibility (inverses) and commutativity. If “adding an axiom” is a direction in the model, then every pair of structures that differs only in that axiom should have the same difference vector. Examples are semigroup → monoid, quasigroup → loop and magma → unital magma. This is the parallelogram picture of word analogies (man : woman :: king : queen; <a href="https://aclanthology.org/N13-1090/">Mikolov et al., 2013</a>). <a class="figref" href="#fig-axiom-how"></a> walks through the test in four steps; the figures after it show the evidence.</p>
+<span class="sidenote"><b>Offset consistency.</b> The mean cosine between same-axiom difference vectors. 0 = unrelated arrows; 1 = parallel. Compared with random pairs of structures, and with the twin.</span>
+</div>
+<figure class="fig" id="fig-axiom-how" data-paper="#41-h-b2-axioms-as-directions" data-section="4.1">
+  <div class="fig-head"><span class="fig-num"></span><span class="fig-title">How the test works: is “adding an axiom” one direction?</span></div>
+  <div class="chips" id="how-chips"></div>
+  <div class="view-row" id="how-steps" role="group" aria-label="Steps of the test">
+    <button data-step="1" aria-pressed="true">1 · Structures are sets of axioms</button><button data-step="2" aria-pressed="false">2 · Adding an axiom is an arrow</button><button data-step="3" aria-pressed="false">3 · Line the arrows up</button><button data-step="4" aria-pressed="false">4 · Measure in the full space</button>
+    <button id="how-play" aria-pressed="false" title="Step through 1 → 4">▶ Play</button>
+    <label>Axes <select id="axes-how" aria-label="Principal components shown in steps 2 and 3"></select></label>
+  </div>
+  <p class="how-text" id="how-text" aria-live="polite"></p>
+  <div class="panels two"><div class="panel tall" id="how-trained"></div><div class="panel tall" id="how-twin" hidden></div><div class="card how-card" id="how-card"></div></div>
+  <figcaption>
+    <span class="read">Pick an axiom (the buttons are shared with the next figure) and step through 1 → 4, or press <b>▶ Play</b>. Blue is the model, grey its random-init twin; drag to rotate, scroll to zoom, double-click to reset, and both panels turn together. Hover an arrow in step 4 for its angle.</span>
+    <span class="caveat">Step 1 is a schematic drawn from the definitions; its four directions are chosen for display. Steps 2 and 3 are a projection onto three of the top-5 principal components (each axis and the title give their share of variance), so arrows can look parallel there and not be in full space, or the reverse. Step 4 is computed in your browser from coordinates that keep every inner product of the centred residual vectors, so its angles are the full-space ones. Only the tilt from the vertical is data; the arrows are spread around it so they do not overlap. The leave-one-out angle is a reading aid; the test statistic is offset consistency against a random-pair null, at the preregistered layer, with p before Holm correction (the Holm decisions are in the scorecard).</span>
+  </figcaption>
+</figure>
+
+<figure class="fig" id="fig-lattice" data-paper="#41-h-b2-axioms-as-directions" data-section="4.1" data-tableid="lat-table">
+  <div class="fig-head"><span class="fig-num"></span><span class="fig-title">Highlight one axiom: in the trained model its arrows run parallel</span></div>
+  <div class="chips" id="axiom-chips"></div>
+  <div class="view-row"><button data-view="lat" aria-pressed="true" title="Switch between the 3-D and the 2-D view">3D view</button><button data-spin="lat" aria-pressed="false" title="Turn both views slowly; drag to stop">⟳ Spin</button><label>Axes <select id="axes-lat" aria-label="Principal components shown"></select></label></div>
+  <div class="panels two"><div class="panel tall" id="lat-trained"></div><div class="panel tall" id="lat-twin"></div></div>
+  <div class="under"><div class="scree" id="scree-lat"></div></div>
+  <figcaption>
+    <span id="lat-note"></span>
+    <span id="lat-bits" class="muted">Click a structure to see which axioms it has.</span>
+    <span class="read">Three of the 13 structures’ top-5 principal components at the slider layer (2-D: the PCA plane), with true proportions and each axis’s share of variance; <b>Axes</b> or the variance chart picks the PCs. Drag to rotate, scroll to zoom, double-click to reset; both views turn together, and <b>⟳ Spin</b> turns them. Blue arrows (cone heads) are the pairs that differ only in the selected axiom; grey lines are all other single-axiom pairs. At the preregistered layer the orange diamond is the analogy chosen in <a class="figref" href="#fig-analogy"></a>, b − a + c, projected exactly, with dashed lines for a → b and c → b − a + c. Click a structure to pin it in both views and list its axioms.</span>
+    <span class="caveat">A 3-D or 2-D picture can hide or exaggerate parallelism; <a class="figref" href="#fig-cosines"></a> shows the full-dimensional evidence. Nearness to the diamond in the picture is not nearness in full space: the ranks in <a class="figref" href="#fig-analogy"></a> are.</span>
+  </figcaption>
+</figure>
+
+<figure class="fig" id="fig-cosines" data-paper="#41-h-b2-axioms-as-directions" data-section="4.1">
+  <div class="fig-head"><span class="fig-num"></span><span class="fig-title">The full-dimensional evidence: diagonal blocks of parallel arrows</span>
+    <div class="fig-tools"><button data-table="cos-table">Table view</button></div></div>
+  <div class="panels two"><div class="panel tall" id="cos-trained"></div><div class="panel tall" id="cos-twin"></div></div>
+  <div class="table-view" id="cos-table"></div>
+  <figcaption>
+    <span class="read">Cosine between every pair of single-axiom difference vectors at the preregistered layer, grouped by axiom. Red diagonal blocks mean a consistent direction. Hover any cell to see which two arrows it compares.</span>
+    <span class="caveat">Cells marked × compare two arrows that share a structure. Even for random vectors these sit near ±½, so they carry no evidence.</span>
+  </figcaption>
+</figure>
+
+<figure class="fig" id="fig-analogy" data-paper="#41-h-b2-axioms-as-directions" data-section="4.1">
+  <div class="fig-head"><span class="fig-num"></span><span class="fig-title">Analogy playground: a is to b as c is to … ?</span></div>
+  <div class="chips">
+    <label>a <select id="an-a"></select></label><label>b <select id="an-b"></select></label><label>c <select id="an-c"></select></label>
+  </div>
+  <div class="panels two"><div id="an-trained"></div><div id="an-twin"></div></div>
+  <figcaption>
+    <span class="read">We compute b − a + c and rank the remaining structures by cosine similarity, excluding a, b and c. The bold row is the structure the axioms predict, when one exists. The computation runs in your browser on exact low-dimensional coordinates, which preserve every cosine of the full residual vectors at the preregistered layer.</span>
+    <span class="caveat">Shared words (“commutative …”) help analogies even in the twin; offset consistency is the stricter test.</span>
+  </figcaption>
+</figure>
+
+<figure class="fig" id="fig-groups" data-paper="#41-h-b2-axioms-as-directions" data-section="4.1" data-tableid="groups-table">
+  <div class="fig-head"><span class="fig-num"></span><span class="fig-title">Lie groups sit between “group” and “smooth manifold”</span><div class="fig-tools"></div></div>
+  <div class="panels two"><div class="panel short" id="groups-par"></div><div class="panel short" id="groups-rank"></div></div>
+  <figcaption>
+    <span class="read">Left: mean cosine of three parallelograms, such as Lie group − topological group vs smooth manifold − topological space, for every model and its twin, against a random-quadruple null. Right: where “group” (circle) and “smooth manifold” (diamond) rank among the nearest neighbours of “Lie group”.</span>
+    <span class="caveat">Exploratory. The twins put “group” nearest to “Lie group” because the two names share a token.</span>
+  </figcaption>
+</figure>
+
+<div class="prose">
+<h2 class="section" id="s-map"><span class="num">4</span>A map of mathematics</h2>
 <p>We drew about two dozen concepts from Wikipedia glossaries for each of <span data-num="results.map_fields.qwen3.5-2b.math_primary.n_fields" data-fmt="d"></span> fields, skipping names that give their field away (“topological space”). We then averaged each field’s concepts into a <i>field centroid</i>. The ground truth for “related fields” is how often mathematicians cross-list papers between the corresponding arXiv categories, over <span data-num="fields.n_papers" data-fmt="M"></span> papers.</p>
 <span class="sidenote"><b>ρ (RSA).</b> Spearman correlation between all pairwise distances of the model’s field centroids and all pairwise arXiv distances. 1 = the same ranking of field pairs; 0 = unrelated.</span>
 <p>Use the <b>layer slider</b> above to scrub through depth, and the model menu to switch models. Hover a field to highlight it in all three maps and in the matrices below.</p>
 </div>
 
-<figure class="fig" id="fig-map" data-paper="#41-h-a1-a-map-of-mathematical-fields" data-section="4.1">
-  <div class="fig-head"><span class="fig-num">Figure 4</span><span class="fig-title">Related fields stay close in the trained model; the twin scrambles them</span>
+<figure class="fig" id="fig-map" data-paper="#42-h-a1-a-map-of-mathematical-fields" data-section="4.2">
+  <div class="fig-head"><span class="fig-num"></span><span class="fig-title">Related fields stay close in the trained model; the twin scrambles them</span>
     <div class="fig-tools"><button id="edges-toggle" aria-pressed="true">Neighbour edges</button><button data-table="map-table">Table view</button></div></div>
   <div class="view-row"><button data-view="map" aria-pressed="true" title="Switch between the 3-D and the 2-D view">3D view</button><button data-spin="map" aria-pressed="false" title="Turn all three maps slowly; drag any map to stop">⟳ Spin</button></div>
   <div class="panels">
@@ -128,8 +195,8 @@
   </figcaption>
 </figure>
 
-<figure class="fig" id="fig-rdm" data-paper="#41-h-a1-a-map-of-mathematical-fields" data-section="4.1" data-tableid="rdm-table">
-  <div class="fig-head"><span class="fig-num">Figure 5</span><span class="fig-title">The same comparison as distance matrices</span></div>
+<figure class="fig" id="fig-rdm" data-paper="#42-h-a1-a-map-of-mathematical-fields" data-section="4.2" data-tableid="rdm-table">
+  <div class="fig-head"><span class="fig-num"></span><span class="fig-title">The same comparison as distance matrices</span></div>
   <div class="panels">
     <div class="panel tall" id="rdm-arxiv"></div><div class="panel tall" id="rdm-trained"></div><div class="panel tall" id="rdm-twin"></div>
   </div>
@@ -139,8 +206,8 @@
   </figcaption>
 </figure>
 
-<figure class="fig" id="fig-depth" data-paper="#41-h-a1-a-map-of-mathematical-fields" data-section="4.1" data-tableid="depth-table">
-  <div class="fig-head"><span class="fig-num">Figure 6</span><span class="fig-title">The map appears early and persists through depth</span>
+<figure class="fig" id="fig-depth" data-paper="#42-h-a1-a-map-of-mathematical-fields" data-section="4.2" data-tableid="depth-table">
+  <div class="fig-head"><span class="fig-num"></span><span class="fig-title">The map appears early and persists through depth</span>
     <div class="fig-tools"><button id="all-models" aria-pressed="false">Compare all models</button></div></div>
   <div class="panel" id="depth"></div>
   <figcaption>
@@ -150,11 +217,11 @@
 </figure>
 
 <div class="prose">
-<h2 class="section" id="s-cloud"><span class="num">4</span>The concept cloud</h2>
+<h2 class="section" id="s-cloud"><span class="num">5</span>The concept cloud</h2>
 <p>All <span data-num="results.map_fields.qwen3.5-2b.math_primary.n" data-fmt="d"></span> primary concepts in three of their top five principal components (the first three to start with), at the preregistered layer. Search for a concept, or click one, to see its nearest neighbours in the trained model and in its twin.</p>
 </div>
 <figure class="fig" id="fig-concepts" data-paper="#h-a4-concrete--abstract-and-pure--applied-are-the-main-axes" data-section="4.5" data-tableid="cloud-table">
-  <div class="fig-head"><span class="fig-num">Figure 7</span><span class="fig-title">Every concept, and its neighbours</span>
+  <div class="fig-head"><span class="fig-num"></span><span class="fig-title">Every concept, and its neighbours</span>
     <div class="fig-tools">
       <input id="search" type="search" placeholder="Find a concept…" list="concept-list" aria-label="Find a concept">
       <datalist id="concept-list"></datalist>
@@ -170,12 +237,12 @@
 </figure>
 
 <div class="prose">
-<h2 class="section" id="s-shapes"><span class="num">5</span>Shapes: circles, lines and a broken circle</h2>
+<h2 class="section" id="s-shapes"><span class="num">6</span>Shapes: circles, lines and a broken circle</h2>
 <p>Ordered families should trace a path through activation space. Days and months are our <b>positive control</b>: Engels et al. found them on circles. The <i>ring chain</i> (rng ⊃ ring ⊃ commutative ring ⊃ integral domain ⊃ … ⊃ field) and the <i>space chain</i> (T0 ⊃ T1 ⊃ Hausdorff ⊃ … ⊃ Hilbert space) are inclusions of definitions. We predicted that angles from 0° to 330° would close into a circle, with 330° next to 0°.</p>
 <span class="sidenote"><b>Cycle score.</b> The fraction of items whose angular neighbour in the PC plane is the true next item. 1 = perfect cyclic order, which an open arc can also reach; the <i>closed-cycle</i> test also requires the loop to close. Post-hoc. <b>Robinson score:</b> the fraction of item triples consistent with the true order; chance is 1/3.</span>
 </div>
-<figure class="fig" id="fig-families" data-paper="#43-h-b-shapes-of-ordered-families" data-section="4.3" data-tableid="fam-table">
-  <div class="fig-head"><span class="fig-num">Figure 8</span><span class="fig-title" id="fam-title">Family geometry across depth</span></div>
+<figure class="fig" id="fig-families" data-paper="#44-h-b-shapes-of-ordered-families" data-section="4.4" data-tableid="fam-table">
+  <div class="fig-head"><span class="fig-num"></span><span class="fig-title" id="fam-title">Family geometry across depth</span></div>
   <div class="chips" id="fam-chips"></div>
   <div class="view-row"><button data-view="fam" aria-pressed="true" title="Switch between the 3-D and the 2-D view">3D view</button><button data-spin="fam" aria-pressed="false" title="Turn both views slowly; drag to stop">⟳ Spin</button><label>Axes <select id="axes-fam" aria-label="Principal components shown"></select></label></div>
   <div class="panels">
@@ -190,62 +257,11 @@
 </figure>
 
 <div class="prose">
-<h2 class="section" id="s-axioms"><span class="num">6</span>Axioms as directions</h2>
-<p>Thirteen group-like structures, from magma to abelian group, are each a set of four axioms: associativity, identity, divisibility (inverses) and commutativity. If “adding an axiom” is a direction in the model, then every pair of structures that differs only in that axiom should have the same difference vector. Examples are semigroup → monoid, quasigroup → loop and magma → unital magma. This is the parallelogram picture of word analogies (man : woman :: king : queen).</p>
-<span class="sidenote"><b>Offset consistency.</b> The mean cosine between same-axiom difference vectors. 0 = unrelated arrows; 1 = parallel. Compared with random pairs of structures, and with the twin.</span>
-</div>
-<figure class="fig" id="fig-lattice" data-paper="#44-h-b2-axioms-as-directions" data-section="4.4" data-tableid="lat-table">
-  <div class="fig-head"><span class="fig-num">Figure 9</span><span class="fig-title">Highlight one axiom: in the trained model its arrows run parallel</span></div>
-  <div class="chips" id="axiom-chips"></div>
-  <div class="view-row"><button data-view="lat" aria-pressed="true" title="Switch between the 3-D and the 2-D view">3D view</button><button data-spin="lat" aria-pressed="false" title="Turn both views slowly; drag to stop">⟳ Spin</button><label>Axes <select id="axes-lat" aria-label="Principal components shown"></select></label></div>
-  <div class="panels two"><div class="panel tall" id="lat-trained"></div><div class="panel tall" id="lat-twin"></div></div>
-  <div class="under"><div class="scree" id="scree-lat"></div></div>
-  <figcaption>
-    <span id="lat-note"></span>
-    <span id="lat-bits" class="muted">Click a structure to see which axioms it has.</span>
-    <span class="read">Three of the 13 structures’ top-5 principal components at the slider layer (2-D: the PCA plane), with true proportions and each axis’s share of variance; <b>Axes</b> or the variance chart picks the PCs. Drag to rotate, scroll to zoom, double-click to reset; both views turn together, and <b>⟳ Spin</b> turns them. Blue arrows (cone heads) are the pairs that differ only in the selected axiom; grey lines are all other single-axiom pairs. At the preregistered layer the orange diamond is the analogy chosen in Figure 11, b − a + c, projected exactly, with dashed lines for a → b and c → b − a + c. Click a structure to pin it in both views and list its axioms.</span>
-    <span class="caveat">A 3-D or 2-D picture can hide or exaggerate parallelism; Figure 10 shows the full-dimensional evidence. Nearness to the diamond in the picture is not nearness in full space: the ranks in Figure 11 are.</span>
-  </figcaption>
-</figure>
-
-<figure class="fig" id="fig-cosines" data-paper="#44-h-b2-axioms-as-directions" data-section="4.4">
-  <div class="fig-head"><span class="fig-num">Figure 10</span><span class="fig-title">The full-dimensional evidence: diagonal blocks of parallel arrows</span>
-    <div class="fig-tools"><button data-table="cos-table">Table view</button></div></div>
-  <div class="panels two"><div class="panel tall" id="cos-trained"></div><div class="panel tall" id="cos-twin"></div></div>
-  <div class="table-view" id="cos-table"></div>
-  <figcaption>
-    <span class="read">Cosine between every pair of single-axiom difference vectors at the preregistered layer, grouped by axiom. Red diagonal blocks mean a consistent direction. Hover any cell to see which two arrows it compares.</span>
-    <span class="caveat">Cells marked × compare two arrows that share a structure. Even for random vectors these sit near ±½, so they carry no evidence.</span>
-  </figcaption>
-</figure>
-
-<figure class="fig" id="fig-analogy" data-paper="#44-h-b2-axioms-as-directions" data-section="4.4">
-  <div class="fig-head"><span class="fig-num">Figure 11</span><span class="fig-title">Analogy playground: a is to b as c is to … ?</span></div>
-  <div class="chips">
-    <label>a <select id="an-a"></select></label><label>b <select id="an-b"></select></label><label>c <select id="an-c"></select></label>
-  </div>
-  <div class="panels two"><div id="an-trained"></div><div id="an-twin"></div></div>
-  <figcaption>
-    <span class="read">We compute b − a + c and rank the remaining structures by cosine similarity, excluding a, b and c. The bold row is the structure the axioms predict, when one exists. The computation runs in your browser on exact low-dimensional coordinates, which preserve every cosine of the full residual vectors at the preregistered layer.</span>
-    <span class="caveat">Shared words (“commutative …”) help analogies even in the twin; offset consistency is the stricter test.</span>
-  </figcaption>
-</figure>
-
-<figure class="fig" id="fig-groups" data-paper="#44-h-b2-axioms-as-directions" data-section="4.4" data-tableid="groups-table">
-  <div class="fig-head"><span class="fig-num">Figure 12</span><span class="fig-title">Lie groups sit between “group” and “smooth manifold”</span><div class="fig-tools"></div></div>
-  <div class="panels two"><div class="panel short" id="groups-par"></div><div class="panel short" id="groups-rank"></div></div>
-  <figcaption>
-    <span class="read">Left: mean cosine of three parallelograms, such as Lie group − topological group vs smooth manifold − topological space, for every model and its twin, against a random-quadruple null. Right: where “group” (circle) and “smooth manifold” (diamond) rank among the nearest neighbours of “Lie group”.</span>
-    <span class="caveat">Exploratory. The twins put “group” nearest to “Lie group” because the two names share a token.</span>
-  </figcaption>
-</figure>
-
-<div class="prose">
 <h2 class="section" id="s-abstract"><span class="num">7</span>Concrete to abstract</h2>
 <p>Three LLM judges from model families we do not probe rated every concept’s abstraction from 1 to 7. After removing word frequency and length, the first principal component of the concept cloud correlates with these ratings: ρ = <span data-num="results.axes.qwen3.5-2b.pcs.0.rho_abstraction" data-fmt=".2f"></span>. The second correlates with the pure/applied label. As an outside check, the judges’ ratings rise with how deep a concept’s definition sits in Mathlib’s import graph, though only <span data-num="results.mathlib.n_matched" data-fmt="d"></span> of <span data-num="results.mathlib.n_math_concepts" data-fmt="d"></span> concepts could be matched.</p>
 </div>
 <figure class="fig" id="fig-abstraction" data-paper="#h-a4-concrete--abstract-and-pure--applied-are-the-main-axes" data-section="4.5" data-tableid="ml-table">
-  <div class="fig-head"><span class="fig-num">Figure 13</span><span class="fig-title">Judges’ abstraction vs Mathlib definitional depth</span></div>
+  <div class="fig-head"><span class="fig-num"></span><span class="fig-title">Judges’ abstraction vs Mathlib definitional depth</span></div>
   <div class="panel" id="mathlib"></div>
   <figcaption><span class="read">Each dot is a concept matched to a Mathlib declaration. x = longest chain of Mathlib imports below its defining module; y = mean judge rating. Hover for the declaration.</span>
   <span class="caveat">Only a few percent of glossary terms match Mathlib names, and import depth differs systematically between areas of Mathlib.</span></figcaption>
@@ -254,16 +270,17 @@
 <div class="prose">
 <h2 class="section" id="s-failed"><span class="num">8</span>What did not work</h2>
 <ul>
+  <li><b>Identity and divisibility are weaker directions:</b> they do not survive multiple-comparison correction in every model.</li>
+  <li><b>No “make the operation total” direction</b> in the partial-operation lattice (<a class="figref" href="#fig-partial"></a>).</li>
   <li><b>Angles are not a circle</b> in any model, not in the top-2 plane and, under a pre-specified post-hoc test, not in any plane of the top five principal components either. Their geometry follows the bare numerals 0…330 (ρ = <span data-num="results.shapes.qwen3.5-2b.angles.beyond_reference.rho_fam_ref" data-fmt=".2f"></span> in Qwen3.5-2B). This falsifies our preregistered prediction.</li>
   <li><b>No clean hierarchy.</b> Under the preregistered cophenetic test, the map does not beat the twin as a five-branch tree.</li>
   <li><b>Math pretraining did not sharpen the map.</b> Qwen2.5-Math vs its base: Δρ 95% CI [<span data-num="results.compare.qwen2.5-math-1.5b_vs_qwen2.5-1.5b.boot.delta_vs_qwen2.5-1.5b.ci.0" data-fmt=".2f"></span>, <span data-num="results.compare.qwen2.5-math-1.5b_vs_qwen2.5-1.5b.boot.delta_vs_qwen2.5-1.5b.ci.1" data-fmt=".2f"></span>].</li>
   <li><b>Not specific to LLMs or to math.</b> Qwen3-Embedding reaches a similar map, and science topics cluster as strongly.</li>
-  <li><b>Causal test inconclusive</b>, and identity and divisibility directions do not survive multiple-comparison correction in every model.</li>
-  <li><b>No “make the operation total” direction</b> in the partial-operation lattice (Figure 14).</li>
+  <li><b>Causal test of chain geometry inconclusive.</b></li>
 </ul>
 </div>
-<figure class="fig" id="fig-partial" data-paper="#44-h-b2-axioms-as-directions" data-section="4.4" data-tableid="partial-table">
-  <div class="fig-head"><span class="fig-num">Figure 14</span><span class="fig-title">Partial vs total operations: no consistent direction</span></div>
+<figure class="fig" id="fig-partial" data-paper="#41-h-b2-axioms-as-directions" data-section="4.1" data-tableid="partial-table">
+  <div class="fig-head"><span class="fig-num"></span><span class="fig-title">Partial vs total operations: no consistent direction</span></div>
   <div class="panel short" id="partial"></div>
   <figcaption>
     <span class="read">Offset consistency of the partial-operation lattice (semigroupoid, small category, groupoid vs semigroup, monoid, group), one row per axis. Filled blue: the selected model; open blue: the other models; grey: all twins; grey bar: the selected model’s random-pair null, from its mean to its 95th percentile.</span>
