@@ -50,6 +50,7 @@ All tests run at the preregistered layer, for every model in `mvp`, `robustness`
 - **Statistic.** The direction is the normalized mean of the 5 unit difference vectors X → commutative X. The statistic is the cosine of *abelian group − group* with that direction.
 - **Null.** Exact enumeration of every ordered pair (a, b), a ≠ b, of the 13 items, excluding every commutativity pair in either orientation. p = (1 + #{null ≥ observed}) / (1 + #null).
 - *Semantic transfer* if p < .05 and the trained cosine exceeds every baseline's.
+- **Amendment 1, made before the phase ran on any real data, from a unit test.** The null above still contains pairs that differ in commutativity *and* another axiom, such as magma → commutative quasigroup. These pairs carry the commutative direction too. In a synthetic lattice where commutativity adds one fixed vector, the planted effect got p = .23. The null is therefore restricted to the 72 ordered pairs with **equal** commutativity bits (6·5 + 7·6), i.e. differences that do not involve commutativity. (The audit's read-only number had used random pairs from all 13 items.)
 
 **D4. Group objects beyond word form.**
 - The parallelogram test of `structures.json`, with the same 113-item pool and seed, run on each baseline.
