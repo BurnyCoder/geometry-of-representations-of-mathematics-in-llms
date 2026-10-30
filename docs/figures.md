@@ -35,6 +35,26 @@ uv run python run.py paper --config configs/mvp.yaml
 - **Exact browser-side geometry.** The site's analogy playground uses (n − 1)-dimensional coordinates of the centred vectors. These preserve every distance and cosine exactly, which `tests/test_figdata.py` checks against the Python statistics.
 - **Consistency test.** `tests/test_figdata.py` recomputes, from the figure data of every config, the reported field ρ, the offset consistencies and the cycle scores.
 
+### 3-D views (top principal components, 3-D MDS)
+
+- **The same unsupervised projections, with one more axis.**
+  - Families, the lattice and the concept cloud use each layer's top principal components. Every axis is that layer's own PC; only its sign is aligned to the preregistered layer (and the twin's to the trained model), so the views do not mirror between layers. This is `figdata.pcs_by_layer`.
+  - So the share of variance printed on each axis is exact (`figdata.pca_var`, checked against `sklearn.decomposition.PCA`).
+  - Field maps use 3-D metric MDS, aligned like the 2-D maps.
+- **True proportions.** Plotly scenes use `aspectmode: "data"` and matplotlib panels use `set_box_aspect` set to the data ranges, so a small PC3 looks small.
+- **Every 3-D view says how much it shows:**
+  - PCA views give the variance on each axis, and in total in the title.
+  - MDS views give Kruskal's stress-1 with optimal scaling (`figdata.stress1`; 0 = distances kept exactly) for the 2-D and 3-D layout.
+  - Rank-correlation "fidelity" was tried first and dropped. The arXiv distances are skewed, so it reported the 3-D layout as *less* faithful than the 2-D one, although 3-D cuts the stress from 0.35 to 0.25.
+- **One fixed static camera** (`style.VIEW3D`: elevation 22°, azimuth −55°), never chosen per model. The README turntable shows every angle.
+- **The analogy point is exact.**
+  - The lattice's exported (n − 1)-D coordinates are coordinates in the PC basis.
+  - `figdata.view_map` gives the 5×5 map from them to the view at the preregistered layer, so b − a + c is drawn without approximation.
+  - Nearness in the picture is still not nearness in the full space.
+- **No statistic comes from these views.**
+  - The PC1–2 cycle score and the preregistered full-space statistics are unchanged.
+  - Whether a cycle hides in another PC plane is tested separately: post-hoc 4, the closed-cycle test over the 10 planes of PC1–5, pre-specified in [`reports/prereg_addendum_3d.md`](../reports/prereg_addendum_3d.md).
+
 ## Figure catalogue
 
 | Figure (file in `reports/figures/`) | Shows | Built by | Data |
@@ -53,6 +73,10 @@ uv run python run.py paper --config configs/mvp.yaml
 | `lattice_axes_<model>` | Ideal axiom lattice and per-axiom PCA facets, trained and twin | `figures/lattice.py` | activations, `lattice` |
 | `lattice_cosines_<model>` | Difference-vector cosine matrices and per-axiom offset consistency | `lattice.py` | activations, `lattice` |
 | `abstraction_<model>` | Concept cloud on residualized PC1/PC2 by judge abstraction and pure/applied; judges vs Mathlib | `figures/axes.py` | activations, `axes`, `mathlib_depth.csv` |
+| `families3d_<model>` | Days, months, angles in their top-3 PCs (true proportions, fixed camera), trained and twin; variance and the closed-cycle result under each panel | `families.py: draw_grid3d` | activations, `posthoc` |
+| `chains3d_<model>` | The ordered chains in their top-3 PCs, trained and twin | `families.py: draw_grid3d` | activations |
+| `lattice3d_<model>` | Per-axiom 3-D facets: that axiom's pairs as blue 3-D arrows, trained and twin | `lattice.py: draw_facets3d` | activations, `lattice` |
+| `turntable_qwen3.5-2b.gif` | Days, months and angles in their top-3 PCs rotating once, trained (top) vs twin (bottom); README | `families.py: save_turntable` (via `overview.build`) | activations |
 
 The Markdown scorecard (`{{table:scorecard:all}}`) and its site version come from `render.scorecard_rows`. It uses the same Holm decisions as the Holm table.
 
@@ -67,6 +91,13 @@ The Markdown scorecard (`{{table:scorecard:all}}`) and its site version come fro
 - Mathlib points;
 - the scorecard, forest rows, and a pruned copy of the results.
 
+**3-D keys** (all written by `site.py`; a test checks shapes, file size under 1.5 MB, and the exact analogy map):
+- `fields.<side>.layout3` and `stress` (per layer);
+- `families.<f>.pc5 / var / ideal5`;
+- `lattice.<side>.pc5 / var / to_view`;
+- `concepts.<side>.pc5 / var`;
+- in `index.json`: `fields.arxiv_layout3`, `arxiv_stress`, and the per-layer `posthoc.<model>.pc_planes_cycle`.
+
 **`data/<model>.json`:**
 - per-layer field layouts and rank matrices;
 - concept PCA coordinates and nearest neighbours;
@@ -74,6 +105,15 @@ The Markdown scorecard (`{{table:scorecard:all}}`) and its site version come fro
 - lattice planes, exact coordinates and the cosine matrix.
 
 The twin's family and lattice planes are rotated onto the trained model's plane at the preregistered layer (rotation and reflection only), so the **Trained ↔ twin** button in the control bar morphs the main panels with minimal motion. The field maps of both are already aligned to the arXiv layout.
+
+**3-D interactions** (3-D is the default; a **3D view** button per figure switches to 2-D, `?view=2d` deep-links it, and without WebGL the page falls back to 2-D):
+- drag to rotate, scroll to zoom, double-click to reset;
+- **Link 3-D views** makes sibling panels follow one camera;
+- **⟳ Spin** turns a figure until you drag it;
+- **Axes** picks 3 of PC1–5, and the variance bar chart can be clicked to put a PC on an axis;
+- clicking a field or item pins it across panels, with an info line;
+- the lattice draws the analogy point of the playground;
+- the layer slider, play and trained ↔ twin morph glide in 3-D too: frames are interpolated on wall-clock time because Plotly's transitions do not animate 3-D traces.
 
 **Interactions.** Model menu; layer slider with play button and a depth inset; the global trained ↔ twin morph; linked hover between field maps, distance matrices and the concept cloud; concept search and a card with 10 nearest neighbours in the model and its twin; family picker with an ideal-shape overlay; axiom chips, a lattice click that shows axiom bits, and the analogy playground; scorecard and forest filters by hypothesis; a table view under every chart; light and dark themes. Every chart with two or more series has a legend.
 

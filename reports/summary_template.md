@@ -25,7 +25,8 @@ LLMs store words as long lists of numbers (vectors), and related ideas end up ne
 | LOO field accuracy | How often a concept is closest to its own field's centroid, computed without that concept. |
 | Robinson score | The fraction of item triples whose distances agree with a 1-D ordering. Chance is 1/3. |
 | Offset consistency | The mean cosine between difference vectors of pairs that differ by one axiom. 0 means unrelated; 1 means parallel. |
-| PC-plane cycle score | The fraction of items whose neighbour around the 2-D principal-component plane is the true next item. 1 means a perfect circle. |
+| PC-plane cycle score | The fraction of items whose neighbour around the 2-D principal-component plane is the true next item. 1 means the items go round in order; an open arc (a horseshoe) can also score 1. |
+| Closed-cycle test | The cycle score counted only when the loop also closes in the plane (the last item is no further from the first than about two neighbour steps), checked in every plane of the top-5 principal components. Post-hoc, but written down before it ran. |
 | Post-hoc | An analysis added after seeing data. It is labelled as such and is not confirmatory. |
 
 ## Models and headline numbers
@@ -49,7 +50,7 @@ All models are base (pretrained) checkpoints, measured at relative depth 0.5. Fi
 | Field map stronger than non-LLM baselines | added (plan) | **vs fastText: yes** (Δ CI [{{num:mvp.baselines.qwen3.5-2b.fasttext_covered.boot.delta_vs_fasttext.ci.0:.2f}}, {{num:mvp.baselines.qwen3.5-2b.fasttext_covered.boot.delta_vs_fasttext.ci.1:.2f}}]). **vs Qwen3-Embedding: no** (ρ {{num:mvp.baselines.qwen3.5-2b.all_primary.rsa.qwen3_embedding:.2f}} vs LLM {{num:mvp.baselines.qwen3.5-2b.all_primary.rsa.llm_trained:.2f}}; Δ CI [{{num:mvp.baselines.qwen3.5-2b.all_primary.boot.delta_vs_qwen3_embedding.ci.0:.2f}}, {{num:mvp.baselines.qwen3.5-2b.all_primary.boot.delta_vs_qwen3_embedding.ci.1:.2f}}]) | baseline comparison |
 | H-A3 math pretraining sharpens the map | yes | **not supported (null)**: Δρ CI [{{num:robustness.compare.qwen2.5-math-1.5b_vs_qwen2.5-1.5b.boot.delta_vs_qwen2.5-1.5b.ci.0:.2f}}, {{num:robustness.compare.qwen2.5-math-1.5b_vs_qwen2.5-1.5b.boot.delta_vs_qwen2.5-1.5b.ci.1:.2f}}] | ablation (paired models) |
 | Field map specific to math | yes (specificity check) | **no**: science topics are organized comparably (post-hoc matched test) | correlation |
-| Days/months circle (positive control) | yes | **full-space criterion failed**; post-hoc PC-plane cycle = {{num:mvp.posthoc.qwen3.5-2b.pc_plane_cycle.days.11.score:.2f}} (days) and {{num:mvp.posthoc.qwen3.5-2b.pc_plane_cycle.months.11.score:.2f}} (months) | correlation |
+| Days/months circle (positive control) | yes | **full-space criterion failed**; post-hoc PC-plane cycle = {{num:mvp.posthoc.qwen3.5-2b.pc_plane_cycle.days.11.score:.2f}} (days) and {{num:mvp.posthoc.qwen3.5-2b.pc_plane_cycle.months.11.score:.2f}} (months); a loop that closes: days in 3 of 5 models (top-2 plane), months in 3 of 5 (a lower plane) | correlation |
 | Ring/space chains ordered | yes | **supported**: Robinson p = {{num:mvp.shapes.qwen3.5-2b.ring_chain.robinson_p:.3f}} / {{num:mvp.shapes.qwen3.5-2b.space_chain.robinson_p:.3f}}; twin ≈ chance | correlation |
 | Chain order survives removing word frequency and token count | added (plan) | **yes in the 4 Qwen models, no in Gemma**: ring/space ρ = {{num:mvp.chain_frequency.qwen3.5-2b.ring_chain.loo_order_beyond:.2f}} / {{num:mvp.chain_frequency.qwen3.5-2b.space_chain.loo_order_beyond:.2f}} in Qwen3.5-2B (p = {{num:mvp.chain_frequency.qwen3.5-2b.ring_chain.p:.3f}} / {{num:mvp.chain_frequency.qwen3.5-2b.space_chain.p:.3f}}); two twins also order the ring chain (word form) | correlation; cross-validated confound regression |
 | Angles form a circle | yes | **falsified**: line-like; ρ with the digit RDM = {{num:mvp.shapes.qwen3.5-2b.angles.beyond_reference.rho_fam_ref:.2f}} | correlation |
@@ -96,11 +97,15 @@ The figures show what the model's internal vectors look like, squashed down to t
 
 ![days, months, angles]({{fig:cyclic_qwen3.5-2b}})
 
-**Circles.** Days and months come out as circles; the untrained twin scrambles them. Angles do not close: 330° lands far from 0°.
+**Circles.** Days and months go round in order; the untrained twin scrambles them. Angles do not close: 330° lands far from 0°. In this flat view the months' loop is open between December and January; it closes in another pair of directions (below).
 
 ![circle forming]({{fig:circle_depth_qwen3.5-2b.gif}})
 
 **The circle through the layers.** Days and months, layer by layer, in the model (top row) and in its untrained twin (bottom row). The circle is there almost from the start; the twin never forms one.
+
+![3-D turntable]({{fig:turntable_qwen3.5-2b.gif}})
+
+**The same families in 3-D.** Days, months and angles in their three main directions, turning once (model on top, untrained twin below). A third direction does not turn the angles into a circle. We checked this properly, not by eye: no pair of the top five directions holds a closed loop of angles in any model. We wrote that test down before running it.
 
 ![angles]({{fig:angles_qwen3.5-2b}})
 
