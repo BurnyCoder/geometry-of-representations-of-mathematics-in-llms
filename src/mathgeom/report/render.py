@@ -307,6 +307,12 @@ def _n_of(keys: list[str], ok, noun: str = "models") -> str:
     return f"{len(yes)} of {len(keys)} {noun} (" + (f"all but {join(no)}" if len(no) < len(yes) else join(yes)) + ")"
 
 
+def _span(v: list[float]) -> str:
+    """'0.03 to 0.13': the range of a statistic over models (no '-0.00', no en dash next to a minus sign)."""
+    f = lambda x: f"{x + 0.0:.2f}".replace("-0.00", "0.00")  # noqa: E731
+    return f"{f(min(v))} to {f(max(v))}"
+
+
 def _runs(idx: list[int]) -> list[tuple[int, int]]:
     """Contiguous runs of sorted integers: [1,2,3,7,8] → [(1,3),(7,8)]."""
     runs: list[list[int]] = []
@@ -370,12 +376,12 @@ def fact(r: dict, spec: str) -> str:
         "group_objects_beyond": lambda: _n_of(keys, lambda k: au.group_objects_ok(lx, st, k)),
         "ring_within": lambda: _n_of(keys, lambda k: au.ring_within_ok(lx, k)),
         "space_block": lambda: _n_of(keys, lambda k: au.space_blocks_ok(lx, k)[int(arg)]),
-        "disjoint_range": lambda: (lambda v: f"{min(v):.2f}–{max(v):.2f}")([lx[k]["group_like"]["decomposition"]["trained"][arg]["disjoint_mean"] for k in keys]),
-        "dup_range": lambda: (lambda v: f"{min(v):.2f}–{max(v):.2f}")([lx[k]["group_like"]["decomposition"]["trained"][arg]["dup_mean"] for k in keys]),
+        "disjoint_range": lambda: _span([lx[k]["group_like"]["decomposition"]["trained"][arg]["disjoint_mean"] for k in keys]),
+        "dup_range": lambda: _span([lx[k]["group_like"]["decomposition"]["trained"][arg]["dup_mean"] for k in keys]),
         "sublattice_beyond": lambda: _n_of(keys, lambda k: (lambda s: s["trained"][arg]["consistency"] > max(s[b][arg]["consistency"] for b in au.BASES))(lx[k]["group_like"]["sublattice"])),
-        "sublattice_range": lambda: (lambda v: f"{min(v):.2f}–{max(v):.2f}")([lx[k]["group_like"]["sublattice"]["trained"][arg]["consistency"] for k in keys]),
-        "abelian_range": lambda: (lambda v: f"{min(v):.2f}–{max(v):.2f}")([lx[k]["group_like"]["abelian_heldout"]["trained"]["cos"] for k in keys]),
-        "nonce_range": lambda: (lambda v: f"{min(v):.2f}–{max(v):.2f}")([lx[k]["nonce_modifier"][arg]["trained"]["consistency"] for k in keys]),
+        "sublattice_range": lambda: _span([lx[k]["group_like"]["sublattice"]["trained"][arg]["consistency"] for k in keys]),
+        "abelian_range": lambda: _span([lx[k]["group_like"]["abelian_heldout"]["trained"]["cos"] for k in keys]),
+        "nonce_range": lambda: _span([lx[k]["nonce_modifier"][arg]["trained"]["consistency"] for k in keys]),
     }[name]
     return fn()
 
