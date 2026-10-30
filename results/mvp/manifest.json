@@ -1006,5 +1006,41 @@
    "pandas": "3.1.0",
    "statsmodels": "0.15.0"
   }
+ },
+ {
+  "phase": "lexical",
+  "time": "2026-10-31T00:25:57",
+  "git_sha": "8bd6997b8cc91875a3f4f5abb06baa430ddedd9c",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "ff700eda94c6f40a669616666068feb07b43b650d4f35546162e7ff935ea1de4",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "report",
+  "time": "2026-10-31T00:33:04",
+  "git_sha": "8bd6997b8cc91875a3f4f5abb06baa430ddedd9c",
+  "git_dirty": true,
+  "config": "configs/mvp.yaml",
+  "config_sha256": "ff700eda94c6f40a669616666068feb07b43b650d4f35546162e7ff935ea1de4",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
  }
 ]
