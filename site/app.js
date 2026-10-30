@@ -4,7 +4,8 @@
 "use strict";
 
 const S = { I: null, M: {}, key: null, layer: 12, timer: null, edges: true, allModels: false, fam: "days", ideal: false,
-            axiom: null, cloudTwin: false, colorMode: "field", field: null, picked: null, hover: null, twin: false, hyp: "all" };
+            axiom: null, cloudTwin: false, colorMode: "field", field: null, picked: null, hover: null, twin: false, hyp: "all",
+            view: { map: "3d", fam: "3d", lat: "3d" }, axes: { fam: [0, 1, 2], lat: [0, 1, 2], cloud: [0, 1, 2] }, cam: {}, spin: {}, link: true, camSync: false, pin: { map: null, fam: null } };
 const CFG = { responsive: true, displaylogo: false, modeBarButtonsToRemove: ["lasso2d", "select2d", "toImage"] };
 const $ = (id) => document.getElementById(id);
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
@@ -121,6 +122,113 @@ function placeLabels(xy, labels, el, mx = 0.04, my = 0.04, size = 10) {
     return best.sp;
   });
 }
+// ---------------------------------------------------------------- 3-D views (top principal components / 3-D MDS)
+// Display only: the same unsupervised projections as the 2-D views, with one more axis. Scenes keep true
+// proportions (aspectmode "data", so a small PC3 looks small) and every axis states its share of variance.
+const HAS_GL = (() => { try { const c = document.createElement("canvas"); return !!(c.getContext("webgl2") || c.getContext("webgl")); } catch (_) { return false; } })();
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const CAM0 = { eye: { x: 1.35, y: -1.35, z: 0.85 }, up: { x: 0, y: 0, z: 1 }, center: { x: 0, y: 0, z: 0 } };
+const COMBOS = [];  // the 10 choices of 3 axes out of PC1–5
+for (let a = 0; a < 5; a++) for (let b = a + 1; b < 5; b++) for (let c = b + 1; c < 5; c++) COMBOS.push([a, b, c]);
+const is3d = (fig) => HAS_GL && S.view[fig] === "3d";
+const pick3 = (rows, ax) => rows.map((r) => ax.map((k) => r[k]));  // choose the displayed PCs from 5-column rows
+const cols = (rows) => [0, 1, 2].map((k) => rows.map((r) => (r === null ? null : r[k])));
+function scene3d(fig, titles) {  // axis titles carry the variance; the camera is the figure's shared camera
+  const p = P(), ax = (t) => ({ title: { text: t, font: { size: 10, color: p.muted } }, showticklabels: false, showgrid: true, gridcolor: p.grid,
+    zeroline: false, showbackground: false, showspikes: false, color: p.muted });
+  return { xaxis: ax(titles[0]), yaxis: ax(titles[1]), zaxis: ax(titles[2]), aspectmode: "data", camera: S.cam[fig] || CAM0 };
+}
+const pcTitles = (ax, v) => ax.map((k) => `PC${k + 1} · ${Math.round(100 * v[k])}%`);
+const held = (ax, v) => Math.round(100 * ax.reduce((s, k) => s + v[k], 0));
+function linkCameras(fig, ids) {  // rotate / zoom one panel and its siblings follow (and Spin stops)
+  ids.forEach((id) => {
+    const el = $(id);
+    if (el._camLinked) return;
+    el._camLinked = true;
+    const follow = (ev) => {
+      const cam = ev["scene.camera"];
+      if (!cam || S.camSync) return;
+      if (S.spin[fig]) toggleSpin(fig);
+      S.cam[fig] = cam;
+      if (!S.link) return;
+      S.camSync = true;
+      Promise.all(ids.filter((o) => o !== id && $(o)._fullLayout && $(o)._fullLayout.scene).map((o) => Plotly.relayout($(o), { "scene.camera": cam })))
+        .finally(() => { S.camSync = false; });
+    };
+    el.on("plotly_relayout", follow);
+    el.on("plotly_relayouting", follow);
+  });
+}
+function toggleSpin(fig) {  // turntable: rotate the shared camera about the vertical axis in every linked panel
+  const btn = document.querySelector(`[data-spin="${fig}"]`);
+  if (S.spin[fig]) { cancelAnimationFrame(S.spin[fig]); S.spin[fig] = null; if (btn) btn.setAttribute("aria-pressed", "false"); return; }
+  if (btn) btn.setAttribute("aria-pressed", "true");
+  let t0 = performance.now();
+  const step = (t) => {
+    const c = S.cam[fig] || CAM0, e = c.eye, r = Math.hypot(e.x, e.y), a = Math.atan2(e.y, e.x) + 0.0006 * (t - t0);
+    t0 = t;
+    S.cam[fig] = { ...c, eye: { x: r * Math.cos(a), y: r * Math.sin(a), z: e.z } };
+    S.camSync = true;
+    Promise.all(SPIN_IDS[fig].filter((id) => $(id)._fullLayout && $(id)._fullLayout.scene).map((id) => Plotly.relayout($(id), { "scene.camera": S.cam[fig] })))
+      .finally(() => { S.camSync = false; if (S.spin[fig]) S.spin[fig] = requestAnimationFrame(step); });
+  };
+  S.spin[fig] = requestAnimationFrame(step);
+}
+const SPIN_IDS = { map: ["map-arxiv", "map-trained", "map-twin"], fam: ["fam-trained", "fam-twin"], lat: ["lat-trained", "lat-twin"], cloud: ["cloud"] };
+function plot3d(id, data, lay) {
+  // Plotly's layout transitions do not animate 3-D traces, so glide here: interpolate every trace's x/y/z
+  // from the previous render to this one over a few frames (layer slider, play, model switch, trained ↔ twin)
+  const el = $(id), prev = el._xyz, next = data.map((t) => ({ x: t.x, y: t.y, z: t.z }));
+  el._xyz = next;
+  const tok = (el._tok = (el._tok || 0) + 1);
+  const same = prev && prev.length === next.length && prev.every((q, i) => !q.x || (next[i].x && q.x.length === next[i].x.length));
+  const moved = same && prev.some((q, i) => q.x && q.x.some((v, k) => v !== next[i].x[k] || q.y[k] !== next[i].y[k] || q.z[k] !== next[i].z[k]));
+  if (!moved || REDUCED || document.hidden) return plot(id, data, lay);  // nothing moved (e.g. a hover highlight) or nobody watching: draw at once
+  const DUR = 320, t0 = performance.now(), lerp = (a, b, u) => b.map((v, k) => (v === null || a[k] === null || a[k] === undefined ? v : a[k] + (v - a[k]) * u));
+  const step = () => {
+    if (el._tok !== tok) return;
+    const u = Math.min(1, (performance.now() - t0) / DUR), e = u < 0.5 ? 2 * u * u : 1 - (-2 * u + 2) ** 2 / 2;  // wall-clock ease in-out
+    const frame = u >= 1 ? data : data.map((t, i) => (t.x ? { ...t, x: lerp(prev[i].x, t.x, e), y: lerp(prev[i].y, t.y, e), z: lerp(prev[i].z, t.z, e) } : t));
+    plot(id, frame, lay).then(() => { if (u < 1 && el._tok === tok) setTimeout(step, 16); });  // timers, not rAF: rAF stalls in hidden panes
+  };
+  setTimeout(step, 0);
+  return Promise.resolve(el);
+}
+function purge(ids) {  // switching 2-D ↔ 3-D: cancel pending tweens, free the WebGL context, re-attach listeners on the next render
+  ids.forEach((id) => {
+    const el = $(id);
+    el._tok = (el._tok || 0) + 1;
+    if (el._fullLayout) Plotly.purge(el);
+    Object.assign(el, { _linked: false, _camLinked: false, _xyz: null });
+  });
+}
+function axesPicker(fig) {  // one select with the 10 choices of 3 axes from PC1–5
+  const sel = $(`axes-${fig}`);
+  if (!sel || sel.options.length) return;
+  sel.innerHTML = COMBOS.map((c, i) => `<option value="${i}">${c.map((k) => `PC${k + 1}`).join(" · ")}</option>`).join("");
+  sel.onchange = () => { S.axes[fig] = COMBOS[+sel.value]; rerender([FIG_OF[fig]]); };
+}
+const FIG_OF = { fam: "fig-families", lat: "fig-lattice", cloud: "fig-concepts", map: "fig-map" };
+function scree(fig, vt, vw) {  // PC1–5 variance, trained vs twin; displayed PCs emphasized; click a bar to put that PC on an axis
+  const p = P(), el = $(`scree-${fig}`), ax = S.axes[fig], x = [1, 2, 3, 4, 5].map((k) => `PC${k}`);
+  if (!el) return;
+  const on = (k) => ax.includes(k);
+  plot(`scree-${fig}`, [
+    { type: "bar", name: "twin", x, y: vw, marker: { color: x.map((_, k) => (on(k) ? p.twin : p.grid)) }, hovertemplate: "twin · %{x}: %{y:.0%} of variance<extra></extra>" },
+    { type: "bar", name: "trained", x, y: vt, marker: { color: x.map((_, k) => (on(k) ? p.blue : p.axis)) }, hovertemplate: "trained · %{x}: %{y:.0%} of variance<extra></extra>" }],
+    layout("variance per PC: model blue, twin grey (click a bar to show it)", { height: 150, margin: { l: 34, r: 8, t: 26, b: 22 }, barmode: "group", bargap: 0.25, title: { text: "variance per PC: model blue, twin grey (click a bar to show it)", font: { size: 11, color: p.ink2 }, x: 0.01, xanchor: "left" },
+      xaxis: { visible: true, color: p.muted, fixedrange: true }, yaxis: { visible: true, tickformat: ".0%", gridcolor: p.grid, color: p.muted, fixedrange: true, scaleanchor: null } }));
+  if (!el._linked) {
+    el._linked = true;
+    el.on("plotly_click", (e) => {
+      const k = e.points[0].pointIndex, cur = S.axes[fig];
+      if (cur.includes(k)) return;
+      S.axes[fig] = [cur[0], cur[1], k].sort((a, b) => a - b);
+      $(`axes-${fig}`).value = COMBOS.findIndex((c) => c.join() === S.axes[fig].join());
+      rerender([FIG_OF[fig]]);
+    });
+  }
+}
 function span(rows) {  // forest x-range that always contains 0, so "excludes 0" can be judged by eye
   const lo = Math.min(0, ...rows.map((r) => r.ci[0])), hi = Math.max(0, ...rows.map((r) => r.ci[1])), pad = (hi - lo) * 0.06;
   return [lo - pad, hi + pad];
@@ -202,18 +310,51 @@ function mapTraces(xy, highlight, keys = false, el = null) {  // keys: add legen
       customdata: F.names.map((_, i) => i), hovertemplate: F.labels.map((l, i) => `<b>${l}</b><br>${S.I.fields.branch_labels[F.branch[i]] || F.branch[i]} · ${F.pa[i]}<extra></extra>`) },
   ];
 }
+function mapTraces3d(xyz, highlight, keys) {  // 3-D MDS: edges as 3-D lines, pure / applied as two series (the legend)
+  const p = P(), F = S.I.fields, [X, Y, Z] = cols(xyz), pin = S.pin.map, ex = [], ey = [], ez = [];
+  if (S.edges) F.edges.forEach(([i, j]) => { ex.push(X[i], X[j], null); ey.push(Y[i], Y[j], null); ez.push(Z[i], Z[j], null); });
+  const hl = (i) => highlight === null || highlight === i || pin === i;
+  const pts = (kind, color, name) => {
+    const idx = F.names.map((_, i) => i).filter((i) => F.pa[i] === kind);
+    return { type: "scatter3d", mode: "markers+text", name, showlegend: keys, x: idx.map((i) => X[i]), y: idx.map((i) => Y[i]), z: idx.map((i) => Z[i]),
+      text: idx.map((i) => F.labels[i]), textposition: "top center", textfont: { size: 10, color: idx.map((i) => (hl(i) ? p.ink2 : p.grid)) },
+      marker: { size: idx.map((i) => (i === pin ? 12 : i === highlight ? 10 : 7)), color, line: { color: idx.map((i) => (i === pin ? p.ink : p.surface)), width: 1 } },
+      customdata: idx, hovertemplate: idx.map((i) => `<b>${F.labels[i]}</b><br>${F.branch_labels[F.branch[i]] || F.branch[i]} · ${F.pa[i]}<br>click to pin<extra></extra>`) };
+  };
+  return [{ type: "scatter3d", mode: "lines", x: ex, y: ey, z: ez, line: { color: p.axis, width: 2 }, hoverinfo: "skip", name: "2 nearest arXiv neighbours", showlegend: keys },
+    pts("pure", p.blue, "pure field"), pts("applied", p.orange, "applied field")];
+}
+function pinInfoMap() {  // a pinned field's three nearest fields in arXiv, in the model and in the twin (full-space distances)
+  const i = S.pin.map, F = S.I.fields, el = $("map-pin");
+  if (i === null) { el.textContent = "Click a field to pin it and list its nearest fields in each map."; return; }
+  const L = S.layer - 1, M = S.M[S.key].fields;
+  const near = (Rk) => Rk[i].map((d, j) => [d, j]).filter(([, j]) => j !== i).sort((a, b) => a[0] - b[0]).slice(0, 3).map(([, j]) => F.labels[j]).join(", ");
+  el.innerHTML = `<b>${F.labels[i]}</b> · nearest in arXiv: ${near(F.arxiv_rank)} · in ${model().name} (layer ${S.layer}): ${near(M.trained.rank[L])} · in the twin: ${near(M.random_init.rank[L])}`;
+}
 function renderMap() {
-  const M = S.M[S.key], F = M.fields, L = S.layer - 1, tr = { transition: TRANSITION };
-  plot("map-arxiv", mapTraces(S.I.fields.arxiv_layout, S.hover, true, $("map-arxiv")), layout("arXiv cross-listing (ground truth)", { ...padded(S.I.fields.arxiv_layout), ...legend() }));
-  plot("map-trained", mapTraces(F[main()].layout[L], S.hover, false, $("map-trained")), layout(fieldTitle(main(), S.twin), { ...padded(F[main()].layout[L]), ...tr }));
-  plot("map-twin", mapTraces(F.random_init.layout[L], S.hover, false, $("map-twin")), layout(fieldTitle("random_init"), { ...padded(F.random_init.layout[L]), ...tr }));
+  const M = S.M[S.key], F = M.fields, L = S.layer - 1, tr = { transition: TRANSITION }, d3 = is3d("map"), k = d3 ? 1 : 0;
+  const hi = S.hover !== null ? S.hover : S.pin.map;
+  const st = (side) => ` · stress ${fmt(F[side].stress[L][k])}`, ast = ` · stress ${fmt(S.I.fields.arxiv_stress[k])}`;
+  if (d3) {
+    const lay = (t, keys) => layout(t, { margin: { l: 0, r: 0, t: 40, b: 0 }, scene: scene3d("map", ["MDS 1", "MDS 2", "MDS 3"]), ...(keys ? legend(4) : {}) });
+    plot3d("map-arxiv", mapTraces3d(S.I.fields.arxiv_layout3, hi, true), lay("arXiv cross-listing (ground truth)" + ast, true));
+    plot3d("map-trained", mapTraces3d(F[main()].layout3[L], hi, false), lay(fieldTitle(main(), S.twin) + st(main()), false));
+    plot3d("map-twin", mapTraces3d(F.random_init.layout3[L], hi, false), lay(fieldTitle("random_init") + st("random_init"), false));
+    linkCameras("map", SPIN_IDS.map);
+  } else {
+    plot("map-arxiv", mapTraces(S.I.fields.arxiv_layout, hi, true, $("map-arxiv")), layout("arXiv cross-listing (ground truth)" + ast, { ...padded(S.I.fields.arxiv_layout), ...legend() }));
+    plot("map-trained", mapTraces(F[main()].layout[L], hi, false, $("map-trained")), layout(fieldTitle(main(), S.twin) + st(main()), { ...padded(F[main()].layout[L]), ...tr }));
+    plot("map-twin", mapTraces(F.random_init.layout[L], hi, false, $("map-twin")), layout(fieldTitle("random_init") + st("random_init"), { ...padded(F.random_init.layout[L]), ...tr }));
+  }
   ["map-arxiv", "map-trained", "map-twin"].forEach((id) => {
     const el = $(id);
     if (el._linked) return;
     el._linked = true;
     el.on("plotly_hover", (e) => { const i = e.points[0].customdata; if (i !== undefined && S.hover !== i) hoverField(i); });
     el.on("plotly_unhover", () => hoverField(null));
+    el.on("plotly_click", (e) => { const i = e.points[0].customdata; if (i === undefined) return; S.pin.map = S.pin.map === i ? null : i; rerender(["fig-map"]); });
   });
+  pinInfoMap();
   const lab = S.I.fields.labels;
   table($("map-table"), ["Field", "Pure/applied", "Branch", "Nearest arXiv neighbours"], lab.map((l, i) => [l, S.I.fields.pa[i], S.I.fields.branch_labels[S.I.fields.branch[i]],
     S.I.fields.edges.filter(([a, b]) => a === i || b === i).map(([a, b]) => lab[a === i ? b : a]).join(", ")]));
@@ -279,7 +420,10 @@ function renderDepth() {
 
 // ---------------------------------------------------------------- figure 7: concept cloud + card
 function renderCloud() {
-  const p = P(), C = S.I.concepts, side = S.cloudTwin ? "random_init" : "trained", xyz = S.M[S.key].concepts[side].xyz;
+  const p = P(), C = S.I.concepts, side = S.cloudTwin ? "random_init" : "trained", Mc = S.M[S.key].concepts, ax = S.axes.cloud;
+  const xyz = pick3(Mc[side].pc5, ax), v = Mc[side].var;
+  axesPicker("cloud");
+  scree("cloud", Mc.trained.var, Mc.random_init.var);
   const cloud = (idx, marker, name) => ({ type: "scatter3d", mode: "markers", name, x: idx.map((i) => xyz[i][0]), y: idx.map((i) => xyz[i][1]), z: idx.map((i) => xyz[i][2]), marker,
     customdata: idx, hovertemplate: idx.map((i) => `<b>${C.concept[i]}</b><br>${label(C.field[i])}<extra></extra>`) });
   const all = C.concept.map((_, i) => i);
@@ -289,9 +433,9 @@ function renderCloud() {
        cloud(all.filter((i) => C.field[i] === S.field), { size: 5, color: p.blue, opacity: 0.95 }, label(S.field))];
   if (S.picked !== null) traces.push({ type: "scatter3d", mode: "markers+text", name: "selected concept", x: [xyz[S.picked][0]], y: [xyz[S.picked][1]], z: [xyz[S.picked][2]], text: [C.concept[S.picked]],
     marker: { size: 8, color: p.orange }, textfont: { color: p.ink }, hoverinfo: "skip" });
-  const ax = { showgrid: false, zeroline: false, showticklabels: false, title: "", showbackground: false };
-  plot("cloud", traces, layout(`${model().name}${S.cloudTwin ? " · random-init twin" : ""} · layer ${model().primary_layer} · PC1–3`,
-    { margin: { l: 0, r: 0, t: 40, b: 0 }, ...(S.colorMode === "abs" ? {} : legend(4)), scene: { xaxis: ax, yaxis: ax, zaxis: ax, aspectmode: "cube", camera: { eye: { x: 0.95, y: 0.95, z: 0.7 } } } }));
+  plot3d("cloud", traces, layout(`${model().name}${S.cloudTwin ? " · random-init twin" : ""} · layer ${model().primary_layer} · ${ax.map((k) => `PC${k + 1}`).join("/")} hold ${held(ax, v)}% of variance`,
+    { margin: { l: 0, r: 0, t: 40, b: 0 }, ...(S.colorMode === "abs" ? {} : legend(4)), scene: scene3d("cloud", pcTitles(ax, v)) }));
+  linkCameras("cloud", SPIN_IDS.cloud);
   const el = $("cloud");
   if (!el._linked) {
     el._linked = true;
@@ -313,8 +457,8 @@ function pick(i) {
 
 // ---------------------------------------------------------------- figure 8: families
 const FAM_TAKE = {
-  days: "Positive control: the days close into a cycle at almost every depth; the twin never does.",
-  months: "Positive control: the months form a cycle at most depths; the twin never does.",
+  days: "Positive control: the days keep their cyclic order at almost every depth; the twin never does. Whether the loop also closes is the line under the variance chart.",
+  months: "Positive control: the months keep their cyclic order at most depths, but in the top-2 plane their loop can stay open; it closes in a lower plane in some models.",
   angles: "Falsified prediction: angles follow the number line, so 330° lands far from 0° (orange edge).",
   ring_chain: "Ordered: the chain of ring definitions runs as a path; the twin is a tangle.",
   space_chain: "Ordered: the separation-axiom chain runs as a path; the twin is a tangle.",
@@ -353,13 +497,62 @@ function famTraces(xy, items, closed, isAngles, cycle, el) {
     hovertemplate: items.map((s, i) => `<b>${s}</b><br>position ${i + 1} of ${items.length}${stat}<extra></extra>`) });
   return t;
 }
+const shortItem = (s) => s.replace(" degrees", "°").replace("-dimensional", "-d");
+function famTraces3d(V, items, closed, isAngles, cycle, ideal) {  // one family in 3 of its top-5 PCs
+  const p = P(), [X, Y, Z] = cols(V), n = V.length, seq = closed ? [...V.keys(), 0] : [...V.keys()], pin = S.pin.fam;
+  const line = (A, B, C, idx) => ({ x: idx.map((i) => A[i]), y: idx.map((i) => B[i]), z: idx.map((i) => C[i]) });
+  const t = [];
+  if (S.ideal) {
+    const [IX, IY, IZ] = cols(ideal);
+    t.push({ type: "scatter3d", mode: "lines+markers", name: `ideal ${closed ? "circle" : "line"} (fitted in PC1–5)`, ...line(IX, IY, IZ, seq), line: { color: p.grid, width: 9 }, marker: { size: 3, color: p.axis }, hoverinfo: "skip" });
+  }
+  t.push({ type: "scatter3d", mode: "lines", name: "path in true order", ...line(X, Y, Z, seq), line: { color: p.axis, width: 3 }, hoverinfo: "skip" });
+  if (isAngles) t.push({ type: "scatter3d", mode: "lines", name: "330° → 0° (predicted neighbours)", ...line(X, Y, Z, [n - 1, 0]), line: { color: p.orange, width: 6 }, hoverinfo: "skip" });
+  const stat = cycle === undefined ? "" : `<br>PC1–2 cycle score at this layer ${fmt(cycle)} (post-hoc)`;
+  t.push({ type: "scatter3d", mode: "markers+text", showlegend: false, x: X, y: Y, z: Z, text: items.map(shortItem), textposition: "top center",
+    textfont: { size: 10, color: items.map((_, i) => (i === pin ? p.ink : p.ink2)) },
+    marker: { size: items.map((_, i) => (i === pin ? 13 : 9)), color: ramp(n), line: { color: items.map((_, i) => (i === pin ? p.orange : p.surface)), width: 2 } },
+    customdata: items.map((_, i) => i), hovertemplate: items.map((s, i) => `<b>${s}</b><br>position ${i + 1} of ${n}${stat}<br>click to pin<extra></extra>`) });
+  return t;
+}
+function pinInfoFam(F, L) {  // pinned item: position, and its coordinates on the displayed PCs in the model and the twin
+  const i = S.pin.fam, el = $("fam-pin"), ax = S.axes.fam;
+  if (i === null || i >= F.items.length) { el.textContent = "Click an item to pin it in both panels."; return; }
+  const at = (side) => ax.map((k) => `PC${k + 1} ${fmt(F.pc5[side][L][i][k])}`).join(", ");
+  el.innerHTML = `<b>${F.items[i]}</b> · position ${i + 1} of ${F.items.length} · ${model().name}: ${at("trained")} · twin: ${at("random_init")}`;
+}
 function renderFamilies() {
   const p = P(), f = S.fam, F = S.M[S.key].families[f], L = S.layer - 1, closed = F.expected === "circle", ang = f === "angles";
   const name = (S.I.family_labels[f] || f).split("\n")[0], tr = { transition: TRANSITION };
   const cyc = R(`posthoc.${S.key}.pc_plane_cycle.${f}`), cycT = R(`posthoc.${S.key}__random.pc_plane_cycle.${f}`);
   const mc = S.twin ? cycT : cyc;  // the main panel follows the global trained ↔ twin morph
-  plot("fam-trained", famTraces(F[main()][L], F.items, closed, ang, mc && mc[L], $("fam-trained")), layout(`${name} · ${S.twin ? "random-init twin (morphed)" : model().name} · layer ${S.layer}`, { ...tr, ...legend() }));
-  plot("fam-twin", famTraces(F.random_init[L], F.items, closed, ang, cycT && cycT[L], $("fam-twin")), layout(`${name} · random-init twin`, tr));
+  const who = S.twin ? "random-init twin (morphed)" : model().name, ax = S.axes.fam;
+  axesPicker("fam");
+  $("axes-fam").disabled = !is3d("fam");
+  scree("fam", F.var.trained[L], F.var.random_init[L]);
+  if (is3d("fam")) {
+    const V = (s) => pick3(F.pc5[s][L], ax), I = (s) => pick3(F.ideal5[s][L], ax), v = (s) => F.var[s][L];
+    const pcs = ax.map((k) => `PC${k + 1}`).join("/");
+    const lay = (t, s, keys) => layout(t, { margin: { l: 0, r: 0, t: 40, b: 0 }, scene: scene3d("fam", pcTitles(ax, v(s))), ...(keys ? legend(4) : {}) });
+    plot3d("fam-trained", famTraces3d(V(main()), F.items, closed, ang, mc && mc[L], I(main())), lay(`${name} · ${who} · layer ${S.layer} · ${pcs} hold ${held(ax, v(main()))}%`, main(), true));
+    plot3d("fam-twin", famTraces3d(V("random_init"), F.items, closed, ang, cycT && cycT[L], I("random_init")), lay(`${name} · random-init twin · ${pcs} hold ${held(ax, v("random_init"))}%`, "random_init", false));
+    linkCameras("fam", SPIN_IDS.fam);
+  } else {
+    plot("fam-trained", famTraces(F[main()][L], F.items, closed, ang, mc && mc[L], $("fam-trained")), layout(`${name} · ${who} · layer ${S.layer}`, { ...tr, ...legend() }));
+    plot("fam-twin", famTraces(F.random_init[L], F.items, closed, ang, cycT && cycT[L], $("fam-twin")), layout(`${name} · random-init twin`, tr));
+  }
+  ["fam-trained", "fam-twin"].forEach((id) => {
+    const el = $(id);
+    if (el._linked) return;
+    el._linked = true;
+    el.on("plotly_click", (e) => { const i = e.points[0].customdata ?? e.points[0].pointIndex; if (e.points[0].data.mode !== "markers+text") return; S.pin.fam = S.pin.fam === i ? null : i; rerender(["fig-families"]); });
+  });
+  pinInfoFam(F, L);
+  // post-hoc 4 (reports/prereg_addendum_3d.md): the best closed-cycle plane among PC1–5 at this layer
+  const bp = (k) => { const e = R(`posthoc.${k}.pc_planes_cycle.${f}`); return e && e[L]; };
+  const b = bp(S.key), bt = bp(`${S.key}__random`);
+  $("fam-planes").innerHTML = b ? `<b>Closed cycle in any plane of PC1–5</b> (post-hoc, pre-specified addendum): best plane PC${b[1] + 1}–PC${b[2] + 1}, score ${fmt(b[0])}, ` +
+    `p ${fmt(b[3], ".3f")} (max over the 10 planes; unadjusted per layer)${bt ? `; twin ${fmt(bt[0])}, p ${fmt(bt[3], ".3f")}` : ""}.` : "";
   table($("fam-table"), ["Item", "Position", `${model().name} PC1`, "PC2", "Twin PC1", "Twin PC2"],
     F.items.map((it, i) => [it, i + 1, fmt(F.trained[L][i][0]), fmt(F.trained[L][i][1]), fmt(F.random_init[L][i][0]), fmt(F.random_init[L][i][1])]));
   if (cyc) $("fam-table").insertAdjacentHTML("beforeend", `<table><thead><tr><th>Layer</th><th>Cycle score, trained</th><th>Cycle score, twin</th></tr></thead><tbody>${
@@ -400,13 +593,59 @@ function latTraces(side, keys = false, el = null) {  // keys: legend entries for
       hovertemplate: Lt.items.map((s, i) => `<b>${s}</b><br>axioms: ${has(Lt.bits[i])}<extra></extra>`) },
     { type: "scatter", mode: "lines", x: [null], y: [null], line: { color: p.blue, width: 2.2 }, name: `pairs differing only in ${S.axiom} (arrows)`, showlegend: keys, hoverinfo: "skip" }], ann };
 }
-function renderLattice() {
-  const Lt = S.M[S.key].lattice;
-  if (!S.axiom) S.axiom = Lt.axioms[0];
-  [["lat-trained", main()], ["lat-twin", "random_init"]].forEach(([id, side]) => {  // the main panel follows the global morph
-    const t = latTraces(side, id === "lat-trained", $(id)), who = side === "trained" ? model().name : `random-init twin${id === "lat-trained" ? " (morphed)" : ""}`;
-    plot(id, t.data, layout(`${who} · PCA plane at layer ${S.layer} · + ${S.axiom}`, { annotations: t.ann, transition: TRANSITION, ...(id === "lat-trained" ? legend() : {}) }));
+const ANALOGY0 = ["semigroup", "monoid", "quasigroup"];
+function analogyChoice(Lt) {  // a, b, c from the analogy playground (its defaults before it has rendered)
+  return ["an-a", "an-b", "an-c"].map((id, k) => ($(id).value !== "" ? +$(id).value : Lt.items.indexOf(ANALOGY0[k])));
+}
+function latTraces3d(side, keys) {  // 3 of the top-5 PCs: arrows (lines + cone heads) for the selected axiom, the analogy point
+  const p = P(), Lt = S.M[S.key].lattice, L = S.layer - 1, ax = S.axes.lat, [X, Y, Z] = cols(pick3(Lt[side].pc5[L], ax)), a = Lt.axioms.indexOf(S.axiom);
+  const g = { x: [], y: [], z: [] }, bl = { x: [], y: [], z: [] }, cone = { x: [], y: [], z: [], u: [], v: [], w: [] };
+  Lt.pairs.forEach(([i, j], k) => {
+    const T = Lt.group[k] === a ? bl : g;
+    T.x.push(X[i], X[j], null); T.y.push(Y[i], Y[j], null); T.z.push(Z[i], Z[j], null);
+    if (Lt.group[k] !== a) return;
+    const d = [X[j] - X[i], Y[j] - Y[i], Z[j] - Z[i]], nr = Math.hypot(...d) || 1;
+    cone.x.push(X[j]); cone.y.push(Y[j]); cone.z.push(Z[j]); cone.u.push(d[0] / nr); cone.v.push(d[1] / nr); cone.w.push(d[2] / nr);
   });
+  const has = (b) => Lt.axioms.filter((_, q) => b[q]).join(", ") || "none";
+  const data = [
+    { type: "scatter3d", mode: "lines", ...g, line: { color: p.grid, width: 2 }, hoverinfo: "skip", name: "other single-axiom pairs", showlegend: keys },
+    { type: "scatter3d", mode: "lines", ...bl, line: { color: p.blue, width: 5 }, hoverinfo: "skip", name: `pairs differing only in ${S.axiom}`, showlegend: keys },
+    { type: "cone", ...cone, anchor: "tip", sizemode: "absolute", sizeref: 0.24, colorscale: [[0, p.blue], [1, p.blue]], showscale: false, hoverinfo: "skip", showlegend: false,
+      lighting: { ambient: 1, diffuse: 0, specular: 0, roughness: 1, fresnel: 0 } },  // flat colour: arrowheads read as the arrows' colour
+    { type: "scatter3d", mode: "markers+text", name: "structures", showlegend: false, x: X, y: Y, z: Z, text: Lt.items.map((s) => s.replace("commutative ", "comm. ")), textposition: "top center",
+      textfont: { size: 10, color: p.ink2 }, marker: { size: 7, color: p.ink2 }, customdata: Lt.items.map((_, i) => i),
+      hovertemplate: Lt.items.map((s, i) => `<b>${s}</b><br>axioms: ${has(Lt.bits[i])}<br>click for its axioms<extra></extra>`) }];
+  if (S.layer === model().primary_layer) {
+    // the analogy query b − a + c from Figure 11, placed exactly: exact (PC-basis) coordinates → this view via to_view
+    const [ia, ib, ic] = analogyChoice(Lt), E = Lt[side].exact, M = Lt[side].to_view;
+    const q = E[ib].map((v, k) => v - E[ia][k] + E[ic][k]).slice(0, 5), q5 = [0, 1, 2, 3, 4].map((c) => q.reduce((s, v, r) => s + v * M[r][c], 0)), Q = ax.map((k) => q5[k]);
+    data.push({ type: "scatter3d", mode: "lines", name: "analogy: a → b and c → b − a + c", showlegend: keys, hoverinfo: "skip",
+      x: [X[ia], X[ib], null, X[ic], Q[0]], y: [Y[ia], Y[ib], null, Y[ic], Q[1]], z: [Z[ia], Z[ib], null, Z[ic], Q[2]], line: { color: p.orange, width: 4, dash: "dash" } });
+    data.push({ type: "scatter3d", mode: "markers+text", name: "b − a + c", showlegend: false, x: [Q[0]], y: [Q[1]], z: [Q[2]], text: ["b − a + c"], textposition: "bottom center",
+      textfont: { size: 10, color: p.orange }, marker: { size: 7, color: p.orange, symbol: "diamond" },
+      hovertemplate: `${Lt.items[ib]} − ${Lt.items[ia]} + ${Lt.items[ic]}<br>exact projection onto the shown PCs; nearness here is not nearness in full space<extra></extra>` });
+  }
+  return data;
+}
+function renderLattice() {
+  const Lt = S.M[S.key].lattice, L = S.layer - 1, ax = S.axes.lat;
+  if (!S.axiom) S.axiom = Lt.axioms[0];
+  axesPicker("lat");
+  $("axes-lat").disabled = !is3d("lat");
+  scree("lat", Lt.trained.var[L], Lt.random_init.var[L]);
+  [["lat-trained", main()], ["lat-twin", "random_init"]].forEach(([id, side]) => {  // the main panel follows the global morph
+    const who = side === "trained" ? model().name : `random-init twin${id === "lat-trained" ? " (morphed)" : ""}`;
+    if (is3d("lat")) {
+      const v = Lt[side].var[L];
+      plot3d(id, latTraces3d(side, id === "lat-trained"), layout(`${who} · layer ${S.layer} · + ${S.axiom} · ${ax.map((k) => `PC${k + 1}`).join("/")} hold ${held(ax, v)}%`,
+        { margin: { l: 0, r: 0, t: 40, b: 0 }, scene: scene3d("lat", pcTitles(ax, v)), ...(id === "lat-trained" ? legend(4) : {}) }));
+    } else {
+      const t = latTraces(side, id === "lat-trained", $(id));
+      plot(id, t.data, layout(`${who} · PCA plane at layer ${S.layer} · + ${S.axiom}`, { annotations: t.ann, transition: TRANSITION, ...(id === "lat-trained" ? legend() : {}) }));
+    }
+  });
+  if (is3d("lat")) linkCameras("lat", SPIN_IDS.lat);
   table($("lat-table"), ["Structure", ...Lt.axioms, `+ ${S.axiom} leads to`], Lt.items.map((it, i) => [it, ...Lt.bits[i].map((b) => (b ? "✓" : "")),
     Lt.pairs.filter(([a], k) => a === i && Lt.group[k] === Lt.axioms.indexOf(S.axiom)).map(([, b]) => Lt.items[b]).join(", ") || "—"]));
   const o = R(`lattice.${S.key}.group_like.offsets.${S.axiom}`), ot = R(`lattice.${S.key}__random.group_like.offsets.${S.axiom}`);
@@ -415,12 +654,14 @@ function renderLattice() {
     if (el._linked) return;
     el._linked = true;
     el.on("plotly_click", (e) => {
-      const i = e.points[0].pointIndex, Ltc = S.M[S.key].lattice;
-      if (e.points[0].curveNumber !== 1) return;
+      const pt = e.points[0], Ltc = S.M[S.key].lattice;
+      if (pt.data.mode !== "markers+text" || pt.data.name === "b − a + c") return;  // structures only (2-D: trace 1; 3-D: "structures")
+      const i = pt.customdata ?? pt.pointIndex;
       $("lat-bits").innerHTML = `<b>${Ltc.items[i]}</b>: ` + Ltc.axioms.map((a, q) => `${a} ${Ltc.bits[i][q] ? "✓" : "✗"}`).join(" · ");
     });
   });
-  $("lat-note").innerHTML = `<b>+ ${S.axiom}:</b> offset consistency ${fmt(o.consistency)} (random-pair null 95th percentile ${fmt(o.null95)}, p ${fmt(o.p, ".3f")}); twin ${fmt(ot.consistency)}. Values at the preregistered layer.`;
+  $("lat-note").innerHTML = `<b>+ ${S.axiom}:</b> offset consistency ${fmt(o.consistency)} (random-pair null 95th percentile ${fmt(o.null95)}, p ${fmt(o.p, ".3f")}); twin ${fmt(ot.consistency)}. Values at the preregistered layer.` +
+    (is3d("lat") ? (S.layer === model().primary_layer ? " The orange diamond is the Figure 11 analogy query, projected exactly." : " The analogy query (orange diamond) is drawn at the preregistered layer only.") : "");
   $("axiom-chips").innerHTML = Lt.axioms.map((a) => `<button data-a="${a}" aria-pressed="${a === S.axiom}">+ ${a}</button>`).join("");
   $("axiom-chips").querySelectorAll("button").forEach((b) => b.onclick = () => { S.axiom = b.dataset.a; renderLattice(); });
 }
@@ -457,7 +698,7 @@ function analogy(E, a, b, c) {  // rank of every candidate for b − a + c by co
 function renderAnalogy() {
   const Lt = S.M[S.key].lattice, sel = ["an-a", "an-b", "an-c"].map((id) => $(id));
   if (!sel[0].options.length) {
-    sel.forEach((s, k) => { s.innerHTML = Lt.items.map((it, i) => `<option value="${i}">${it}</option>`).join(""); s.value = Lt.items.indexOf(["semigroup", "monoid", "quasigroup"][k]); s.onchange = renderAnalogy; });
+    sel.forEach((s, k) => { s.innerHTML = Lt.items.map((it, i) => `<option value="${i}">${it}</option>`).join(""); s.value = Lt.items.indexOf(ANALOGY0[k]); s.onchange = () => { renderAnalogy(); rerender(["fig-lattice"]); }; });
   }
   const [a, b, c] = sel.map((s) => +s.value);
   const want = Lt.bits[b].map((v, k) => v - Lt.bits[a][k] + Lt.bits[c][k]);
@@ -593,6 +834,24 @@ function wire() {
     $("cloud-twin").setAttribute("aria-pressed", String(S.cloudTwin));
     rerender(["fig-map", "fig-rdm", "fig-families", "fig-lattice", "fig-concepts"]);
   };
+  document.querySelectorAll("[data-view]").forEach((b) => {  // 2-D ↔ 3-D per figure (3-D by default; 2-D without WebGL)
+    const fig = b.dataset.view;
+    b.setAttribute("aria-pressed", String(is3d(fig)));
+    if (!HAS_GL) { b.disabled = true; b.title = "3-D views need WebGL; showing the 2-D view"; }
+    b.onclick = () => {
+      if (S.spin[fig]) toggleSpin(fig);
+      S.view[fig] = is3d(fig) ? "2d" : "3d";
+      b.setAttribute("aria-pressed", String(is3d(fig)));
+      document.querySelector(`[data-spin="${fig}"]`).disabled = !is3d(fig);
+      purge(SPIN_IDS[fig]);
+      rerender([FIG_OF[fig]]);
+    };
+  });
+  document.querySelectorAll("[data-spin]").forEach((b) => {
+    b.disabled = REDUCED || !(b.dataset.spin === "cloud" ? HAS_GL : is3d(b.dataset.spin));
+    b.onclick = () => toggleSpin(b.dataset.spin);
+  });
+  $("link").onclick = (e) => { S.link = !S.link; e.target.setAttribute("aria-pressed", String(S.link)); };
   $("edges-toggle").onclick = (e) => { S.edges = !S.edges; e.target.setAttribute("aria-pressed", String(S.edges)); rerender(["fig-map"]); };
   $("all-models").onclick = (e) => { S.allModels = !S.allModels; e.target.setAttribute("aria-pressed", String(S.allModels)); rerender(["fig-depth"]); };
   $("ideal").onclick = (e) => { S.ideal = !S.ideal; e.target.setAttribute("aria-pressed", String(S.ideal)); rerender(["fig-families"]); };
@@ -613,6 +872,8 @@ function wire() {
 async function boot() {
   try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (_) { /* ignore */ }
   S.I = await (await fetch("data/index.json")).json();
+  const q = new URLSearchParams(location.search);
+  if (q.get("view") === "2d" || !HAS_GL) Object.keys(S.view).forEach((f) => { S.view[f] = "2d"; });  // ?view=2d deep-links the 2-D views
   fillNums();
   decorate();
   wire();
@@ -622,7 +883,6 @@ async function boot() {
   register("fig-concepts", renderCloud); register("fig-families", renderFamilies); register("fig-lattice", renderLattice);
   register("fig-cosines", renderCosines); register("fig-analogy", renderAnalogy); register("fig-groups", renderGroups); register("fig-abstraction", renderMathlib);
   register("fig-partial", renderPartial);
-  const q = new URLSearchParams(location.search);
   const key = S.I.models.some((m) => m.key === q.get("model")) ? q.get("model") : conf();
   S.layer = +q.get("layer") || S.I.models.find((m) => m.key === key).primary_layer;
   if (["light", "dark"].includes(q.get("theme"))) document.documentElement.dataset.theme = q.get("theme");
