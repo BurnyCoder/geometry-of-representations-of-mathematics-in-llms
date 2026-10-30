@@ -520,5 +520,23 @@
    "pandas": "3.1.0",
    "statsmodels": "0.15.0"
   }
+ },
+ {
+  "phase": "lexical",
+  "time": "2026-10-31T00:24:07",
+  "git_sha": "8bd6997b8cc91875a3f4f5abb06baa430ddedd9c",
+  "git_dirty": true,
+  "config": "configs/mvp_variants.yaml",
+  "config_sha256": "b6ae60479d09fbf8cd2cfb7ffa052b99121b2d8539a8ed8c75677e03810f22da",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
  }
 ]

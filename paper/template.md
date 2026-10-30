@@ -456,6 +456,7 @@ At block {{num:mvp.sae.qwen3.5-2b.sae_block}}, we encoded the template-averaged 
 - **Word form.** Our preregistered control, the random-init twin, did not control the spelling of names; the audit's word-form baselines do, post-hoc. Lexical cues beyond character 3-grams, bags of words and context-free token embeddings are not ruled out.
 - **Twin seeds.** Five random draws for the confirmatory model's twin; one for each other model.
 - **Specificity.** The non-math control fields are whole sciences; a granularity-matched control was not run.
+- **Bootstrap intervals.** Concept resampling duplicates concepts and pulls resampled field ρ toward zero, so the preregistered percentile intervals sit below the point estimates; BCa intervals are reported next to them (§4.1). The bias works against H-A1 and cancels in the H-A3 contrast.
 - **Ridge penalty.** The preregistered α = 10 is not scale-invariant, so the leave-one-out order test has different power in different models (§4.3).
 - **Correlation, not mechanism.** Every test except the noise-injection test on the chains (§4.5) is correlational, including the axiom offsets (§4.4).
 - **Abstraction ground truth.** Abstraction ratings come from LLM judges. Their validation against Mathlib import depth rests on only {{num:mvp.mathlib.n_matched}} of {{num:mvp.mathlib.n_math_concepts}} concepts that could be matched to Mathlib, and import depth also differs systematically between areas of Mathlib.
@@ -463,7 +464,7 @@ At block {{num:mvp.sae.qwen3.5-2b.sae_block}}, we encoded the template-averaged 
   - Qwen3.5-4B in 8-bit, whose random-init twin cannot be held in 8 GB;
   - the optional OctoThinker pair;
   - persistent homology, since no family has ≥30 points.
-- **Baseline scope.** The fastText and Qwen3-Embedding baselines, SMDS and the template variants were run for the confirmatory model only.
+- **Baseline scope.** The fastText and Qwen3-Embedding baselines, SMDS and the template variants were run for the confirmatory model only; the audit's word-form baselines cover all five models.
 
 # 7 Conclusion
 
