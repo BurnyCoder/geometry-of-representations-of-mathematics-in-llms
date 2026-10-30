@@ -4,6 +4,7 @@ index.html resolves, and the page text contains no hand-typed decimal numbers.""
 import json
 import re
 
+import numpy as np
 import pytest
 
 from mathgeom.config import ROOT
@@ -38,9 +39,22 @@ def test_site_data_schema_and_page_numbers():
         assert path.stat().st_size < 1.5e6
         d = json.loads(path.read_text())
         assert len(d["fields"]["trained"]["layout"]) == m["n_layers"] and len(d["fields"]["trained"]["layout"][0]) == n_fields
-        assert len(d["concepts"]["trained"]["xyz"]) == len(idx["concepts"]["concept"])
+        L = m["n_layers"]
+        for side in ("trained", "random_init"):  # 3-D views: one k-column layout per layer, plus how much each shows
+            F = d["fields"][side]
+            assert len(F["layout3"]) == L and np.array(F["layout3"][0]).shape == (n_fields, 3) and len(F["stress"]) == L
+            C = d["concepts"][side]
+            assert np.array(C["pc5"]).shape == (len(idx["concepts"]["concept"]), 5) and len(C["var"]) == 5
+            for f, fam in d["families"].items():
+                assert np.array(fam["pc5"][side]).shape == (L, len(fam["items"]), 5), f
+                assert np.array(fam["ideal5"][side]).shape == (L, len(fam["items"]), 5) and np.array(fam["var"][side]).shape == (L, 5), f
         lt = d["lattice"]
         assert len(lt["trained"]["exact"]) == len(lt["items"]) and len(lt["trained"]["cos"]) == len(lt["pairs"])
+        for side in ("trained", "random_init"):
+            # the analogy point is exact: exported PC-basis coordinates map onto the view at the preregistered layer
+            E, M, V = np.array(lt[side]["exact"]), np.array(lt[side]["to_view"]), np.array(lt[side]["pc5"][m["primary_layer"] - 1])
+            np.testing.assert_allclose(E[:, :5] @ M, V, atol=2e-3)  # 3-decimal rounding of the exported view
+    assert np.array(idx["fields"]["arxiv_layout3"]).shape == (n_fields, 3)
     html = (SITE / "index.html").read_text(encoding="utf-8")
     for path in re.findall(r'data-num="([^"]+)"', html):
         assert isinstance(_get(idx, path), (int, float)), path

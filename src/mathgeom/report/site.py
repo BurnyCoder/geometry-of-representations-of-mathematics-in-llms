@@ -49,33 +49,52 @@ def export_model(cfg: Config, key: str, mp_key: dict) -> dict:
     from mathgeom.geometry.preprocess import cosine_rdm
     from mathgeom.pipeline import load_acts
 
+    base3, cloud_ref = figdata.mds(setup["arxiv"], k=3), None
     for side, k in (("trained", key), ("random_init", f"{key}__random")):
         X = load_acts(cfg, k, "field_neutral")["last"][setup["mask"]]
         rdms = [cosine_rdm(field_centroids(X[:, l], setup["labels"], names)) for l in range(1, X.shape[1])]
         ref = figdata.align(figdata.mds(rdms[Lp - 1]), base)
-        out["fields"][side] = {"layout": [_r(figdata.align(figdata.mds(D), ref)) for D in rdms], "rank": [_r(figdata.rank_unit(D), 3) for D in rdms]}
-        pts = figdata.pca(X[:, Lp], 3)
-        out.setdefault("concepts", {})[side] = {"xyz": _r(pts, 3), "nn": figdata.concept_neighbours(X[:, Lp], 10).tolist()}
-    # families: PC planes at every layer, aligned to the pre-registered layer; the twin's are also rotated
-    # onto the trained plane so the trained ↔ twin morph is a minimal motion
+        ref3 = figdata.align(figdata.mds(rdms[Lp - 1], k=3), base3)  # 3-D view, aligned to the arXiv 3-D MDS
+        lay2 = [figdata.align(figdata.mds(D), ref) for D in rdms]
+        lay3 = [figdata.align(figdata.mds(D, k=3), ref3) for D in rdms]
+        out["fields"][side] = {"layout": [_r(P) for P in lay2], "rank": [_r(figdata.rank_unit(D), 3) for D in rdms], "layout3": [_r(P) for P in lay3],
+                               "stress": [[round(figdata.stress1(a, D), 3), round(figdata.stress1(b, D), 3)] for a, b, D in zip(lay2, lay3, rdms)]}
+        # concept cloud: its own top-5 PCs at the preregistered layer (the twin's signs aligned to the trained cloud)
+        pc5 = figdata.pcs_by_layer(X[:, [0, Lp]], 1, onto=cloud_ref)[0]  # the preregistered layer only
+        cloud_ref = pc5 if cloud_ref is None else cloud_ref
+        out.setdefault("concepts", {})[side] = {"pc5": _r(pc5), "var": _r(figdata.pca_var(X[:, Lp], 5), 4), "nn": figdata.concept_neighbours(X[:, Lp], 10).tolist()}
+    # families: PC planes (2-D, rotated onto the pre-registered layer and the twin onto the trained model, so the
+    # morph is a minimal motion) and top-5 PC views (3-D: each layer's own PCs, only signs aligned, so the
+    # variance printed on each axis is exact)
     chains = load_yaml("families.yaml")["chains"]
     out["families"] = {}
     for f in SHOW_FAMILIES:
-        tr = figdata.planes_by_layer(figdata.family_acts(cfg, key, f), Lp)
-        tw = figdata.planes_by_layer(figdata.family_acts(cfg, f"{key}__random", f), Lp, onto=tr[Lp - 1])
-        out["families"][f] = {"items": figdata.family_items(cfg, f), "expected": chains[f]["expected"], "trained": _r(tr), "random_init": _r(tw)}
-    # group-like lattice: per-layer planes, exact coordinates and the offset cosine matrix at the primary layer
+        Xt, Xw = figdata.family_acts(cfg, key, f), figdata.family_acts(cfg, f"{key}__random", f)
+        tr = figdata.planes_by_layer(Xt, Lp)
+        tw = figdata.planes_by_layer(Xw, Lp, onto=tr[Lp - 1])
+        tr5 = figdata.pcs_by_layer(Xt, Lp)
+        tw5 = figdata.pcs_by_layer(Xw, Lp, onto=tr5[Lp - 1])
+        closed = chains[f]["expected"] == "circle"
+        out["families"][f] = {"items": figdata.family_items(cfg, f), "expected": chains[f]["expected"], "trained": _r(tr), "random_init": _r(tw),
+                              "pc5": {"trained": _r(tr5), "random_init": _r(tw5)},
+                              "var": {s: [_r(figdata.pca_var(Xs[:, l], 5), 4) for l in range(1, Xs.shape[1])] for s, Xs in (("trained", Xt), ("random_init", Xw))},
+                              "ideal5": {s: [_r(figdata.ideal_fit(P, closed)) for P in Ps] for s, Ps in (("trained", tr5), ("random_init", tw5))}}
+    # group-like lattice: per-layer planes and top-5 views, exact coordinates, the map from exact coordinates to the
+    # view (places the analogy point b − a + c exactly) and the offset cosine matrix at the primary layer
     lat = load_yaml("families.yaml")["lattices"]["group_like"]
     items, axioms = list(lat["items"]), lat["axioms"]
     bits = np.array([lat["items"][c] for c in items])
     lt = {"items": items, "axioms": axioms, "bits": bits.tolist()}
-    onto = None
+    onto = onto5 = None
     for side, k in (("trained", key), ("random_init", f"{key}__random")):
         X = figdata.family_acts(cfg, k, "group_like", items)
         om = figdata.offset_matrix(X[:, Lp], bits, axioms)
         planes = figdata.planes_by_layer(X, Lp, onto=onto)  # twin rotated onto the trained plane (morph)
-        onto = planes[Lp - 1]
-        lt[side] = {"planes": _r(planes), "exact": _r(figdata.exact_coords(X[:, Lp]), 5), "cos": _r(om["cos"])}
+        planes5 = figdata.pcs_by_layer(X, Lp, onto=onto5)  # 3-D: own PCs per layer, signs aligned (twin onto trained)
+        onto, onto5 = planes[Lp - 1], planes5[Lp - 1]
+        E = figdata.exact_coords(X[:, Lp])
+        lt[side] = {"planes": _r(planes), "exact": _r(E, 5), "cos": _r(om["cos"]), "pc5": _r(planes5),
+                    "var": [_r(figdata.pca_var(X[:, l], 5), 4) for l in range(1, X.shape[1])], "to_view": _r(figdata.view_map(E, planes5[Lp - 1]), 6)}
         lt["pairs"], lt["group"], lt["shared"] = [list(p) for p in om["pairs"]], om["group"].tolist(), om["shared"].astype(int).tolist()
     out["lattice"] = lt
     return out
@@ -109,7 +128,9 @@ def write_index(cfg: Config) -> None:
         "models": [{"key": k, "name": S.MODEL[k], "primary_layer": r["map_fields"][k]["primary_layer"], "n_layers": len(r["map_fields"][k]["math_primary"]["layer_curve"]["trained"])} for k in keys],
         "fields": {"names": setup["names"], "labels": [S.FIELD.get(n, n) for n in setup["names"]], "pa": setup["pa"], "branch": setup["branch"],
                    "branch_labels": S.BRANCH, "order": setup["order"], "arxiv_rank": _r(figdata.rank_unit(setup["arxiv"])),
-                   "arxiv_layout": _r(figdata.unit_rms(figdata.mds(setup["arxiv"]))), "edges": figdata.neighbour_edges(setup["arxiv"]), "n_papers": setup["n_papers"]},
+                   "arxiv_layout": _r(figdata.unit_rms(figdata.mds(setup["arxiv"]))), "arxiv_layout3": _r(figdata.unit_rms(figdata.mds(setup["arxiv"], k=3))),
+                   "arxiv_stress": [round(figdata.stress1(figdata.mds(setup["arxiv"], k=k), setup["arxiv"]), 3) for k in (2, 3)],
+                   "edges": figdata.neighbour_edges(setup["arxiv"]), "n_papers": setup["n_papers"]},
         "concepts": {"concept": cdf.concept.tolist(), "field": cdf.field.tolist(), "abstraction": _r(cdf.concept.map(abstr).values, 2),
                      "mathlib": [None if ml is None or c not in ml.index or pd.isna(ml.loc[c, "depth"]) else {"decl": ml.loc[c, "decl"], "depth": int(ml.loc[c, "depth"])} for c in cdf.concept]},
         "mathlib_points": [] if ml is None else [{"concept": c, "field": S.FIELD.get(row.field, row.field), "decl": row.decl, "depth": int(row.depth), "rating": round(float(row.mean_rating), 3)}
@@ -121,6 +142,8 @@ def write_index(cfg: Config) -> None:
                     for k, v in r.items() if k not in ("numbers", "manifest", "sae", "smds", "calibration")},
     }
     for k in list(idx["results"].get("posthoc", {})):  # keep only the cycle scores the site plots
-        pc = idx["results"]["posthoc"][k].get("pc_plane_cycle", {})
-        idx["results"]["posthoc"][k] = {"pc_plane_cycle": {f: [round(e["score"], 3) for e in pc[f]] for f in ("days", "months", "angles") if f in pc}}
+        pc, pl = idx["results"]["posthoc"][k].get("pc_plane_cycle", {}), idx["results"]["posthoc"][k].get("pc_planes_cycle", {})
+        idx["results"]["posthoc"][k] = {"pc_plane_cycle": {f: [round(e["score"], 3) for e in pc[f]] for f in ("days", "months", "angles") if f in pc},
+                                        # post-hoc 4 (reports/prereg_addendum_3d.md): best closed-cycle plane of PC1–5 per layer
+                                        "pc_planes_cycle": {f: [[round(e["score"], 3), e["plane"][0], e["plane"][1], round(e["p"], 4)] for e in pl[f]] for f in pl}}
     (SITE / "index.json").write_text(json.dumps(idx, separators=(",", ":"), default=float))
