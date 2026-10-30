@@ -394,5 +394,41 @@
    "pandas": "3.1.0",
    "statsmodels": "0.15.0"
   }
+ },
+ {
+  "phase": "report",
+  "time": "2026-10-30T17:52:16",
+  "git_sha": "a46c5b1402971ad8f88dd13617ce77fead1f022a",
+  "git_dirty": true,
+  "config": "configs/mvp_variants.yaml",
+  "config_sha256": "b6ae60479d09fbf8cd2cfb7ffa052b99121b2d8539a8ed8c75677e03810f22da",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "report",
+  "time": "2026-10-30T18:10:43",
+  "git_sha": "a46c5b1402971ad8f88dd13617ce77fead1f022a",
+  "git_dirty": true,
+  "config": "configs/mvp_variants.yaml",
+  "config_sha256": "b6ae60479d09fbf8cd2cfb7ffa052b99121b2d8539a8ed8c75677e03810f22da",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
  }
 ]
