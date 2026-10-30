@@ -220,7 +220,7 @@ def table_holm(mp: dict, sh: dict, la: dict) -> str:
     return "\n".join(out)
 
 
-SCORE_LEGEND = ("● significant (Holm-adjusted for the axiom and chain tests; 95% CI excludes 0 for Δ tests) · ◐ raw p < .05 only · ○ not significant · "
+SCORE_LEGEND = ("● significant (Holm-adjusted over the 8 pre-registered confirmatory tests for the axiom and chain rows, the falsified angles rule counted with p = 1; 95% CI excludes 0 for Δ tests) · ◐ raw p < .05 only · ○ not significant · "
                 "✗ pre-registered prediction falsified (every random-init twin meets the angles rule, so it is not specific). "
                 "Chains: p = max(Robinson p, LOO order p), the pre-registered conjunction, and trained Robinson > twin. "
                 "Numbers: the statistic for the trained model. Audit rows (post-hoc, reports/prereg_addendum_lexical.md): field map = lowest lower CI bound of "
@@ -583,7 +583,7 @@ def phase_report(cfg: Config) -> None:
         "POST-HOC: field-map ρ after removing the top-k principal components (all-but-the-top sweep)": table_posthoc(_j(cfg, "posthoc.json")) if _j(cfg, "posthoc.json") else "*not run*",
         "POST-HOC: cyclic order in the top-2-PC plane at the pre-registered layer (1 = every item's angular neighbour is its true successor; an open arc also scores 1; positive-control debug)": table_cycles(_j(cfg, "posthoc.json"), {k: v["primary_layer"] for k, v in _j(cfg, "shapes.json").items()}) if _j(cfg, "posthoc.json") else "*not run*",
         "POST-HOC 4 (reports/prereg_addendum_3d.md): closed cycle in the best plane of PC1–5 at the pre-registered layer (score · plane · max-over-planes p; twin in brackets)": table_planes_cycle(_j(cfg, "posthoc.json"), {k: v["primary_layer"] for k, v in _j(cfg, "shapes.json").items()}) if _j(cfg, "posthoc.json") else "*not run*",
-        "Multiplicity: Holm correction over the 7 p-valued pre-registered confirmatory tests; the 8th, angles, is a decision rule without a p (H-A1 bootstrap p = (1 + #resamples with Δ ≤ 0)/(1 + 2000); chain p = max(Robinson p, LOO order p))": table_holm(mp, sh, la),
+        "Multiplicity: Holm correction over the 8 pre-registered confirmatory tests; the angles prediction is a decision rule without a p and enters with p = 1 when falsified (audit D8; H-A1 bootstrap p = (1 + #resamples with Δ ≤ 0)/(1 + 2000); chain p = max(Robinson p, LOO order p))": table_holm(mp, sh, la),
         "H-A1c clustering specificity: math fields vs non-math control fields": table_clustering(mp),
         "H-B shape families (primary layer; permutation p-values; † = post-hoc statistic, see docs/deviations.md)": table_shapes(sh, fams),
         "H-B negative control: random 11-item lists of math concepts (should reject ≈5%)": table_negative_control(sh),
