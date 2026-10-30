@@ -61,17 +61,17 @@ uv run python run.py paper --config configs/mvp.yaml
 
 ## Figure catalogue
 
-Rows are in the order the README, summary and paper present the results: axioms first, 3-D views before 2-D ones. The order is a presentation choice; the field map (H-A1) was the primary preregistered hypothesis.
+Rows are grouped by figure type; the README, summary and paper present the results in the order of how well they survive the independent audit's word-form controls (field map, shapes, axiom offsets), 3-D views before 2-D ones.
 
 | Figure (file in `reports/figures/`) | Shows | Built by | Data |
 |---|---|---|---|
-| `hero` | Three-row overview: (1) the commutativity arrows at one common origin in 3-D, trained vs twin, and the offset consistency of every axiom in every model and twin; (2) field-map ρ in all models vs twins and the arXiv / trained / twin maps; (3) days and angles | `figures/overview.py: draw_hero` | `map_fields`, `posthoc`, `shapes`, `lattice` + activations |
+| `hero` | Three-row overview: (1) field-map ρ in all models vs twins and two word-form baselines (× character 3-grams, + layer-0 token bag), and the arXiv / trained / twin maps; (2) the commutativity arrows at one common origin in 3-D, trained vs twin, and the offset consistency of every axiom in every model and twin with the names' character 3-grams (×); (3) days, angles, ring chain (with its within-“domain” p) and space chain (with its within-block p) | `figures/overview.py: draw_hero` | `map_fields`, `posthoc`, `shapes`, `lattice`, `lexical` + activations |
 | `axioms_explainer_<model>` | How the axiom test works, in four steps: (1) the lattice of structures (ground truth); (2) one axiom's pairs as arrows in the model's top-3 PCs; (3) the same arrows at one common origin in 3-D, trained vs twin, with their offset consistency; (4) a compass per axiom of full-space angles between each same-axiom difference vector and the leave-one-out mean of the others (`figdata.axiom_angles`), trained above the dashed line and twin below | `figures/lattice.py: draw_explainer` | activations, `lattice` |
 | `axiom_arrows_qwen3.5-2b.gif` | README animation: one axiom at a time, its pairs appear as 3-D arrows in the top-3 PCs and slide to one common origin, trained (left) vs twin (right), with each panel's offset consistency; the camera turns ±15° | `lattice.py: save_axiom_gif` | activations, `lattice` |
 | `lattice3d_<model>` | Per-axiom 3-D facets: that axiom's pairs as blue 3-D arrows with filled, camera-facing heads of fixed size (`style.arrow3d`), trained and twin | `lattice.py: draw_facets3d` | activations, `lattice` |
 | `lattice_axes_<model>` | Ideal axiom lattice and per-axiom PCA facets (2-D), trained and twin | `figures/lattice.py` | activations, `lattice` |
-| `lattice_cosines_<model>` | Difference-vector cosine matrices and per-axiom offset consistency | `lattice.py` | activations, `lattice` |
-| `group_objects` | Group-object parallelograms and the parent ranks of "Lie group", all models | `overview.py: draw_group_objects` | `structures` |
+| `lattice_cosines_<model>` | Difference-vector cosine matrices and per-axiom offset consistency, with the names' character 3-grams (×; audit) | `lattice.py` | activations, `lattice`, `lexical` |
+| `group_objects` | Group-object parallelograms (with the names' character 3-grams, ×; audit) and the parent ranks of "Lie group", all models | `overview.py: draw_group_objects` | `structures`, `lexical` |
 | `partial_operation` | Negative result: partial- vs total-operation offsets, all models and twins | `overview.py: draw_partial_operation` | `lattice` (`audit2`) |
 | `forest` | Effect sizes with 95% CIs, faceted by metric | `overview.py: draw_forest` | `map_fields`, `baselines`, `compare`, `hierarchy`, `mathlib` |
 | `field_maps_<model>` | MDS of the arXiv, trained and twin distance matrices with ground-truth neighbour edges | `figures/maps.py` | activations, `field_distance.json` |

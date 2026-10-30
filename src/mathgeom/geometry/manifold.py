@@ -15,7 +15,6 @@ from typing import Callable
 
 import numpy as np
 from scipy.stats import spearmanr
-from sklearn.linear_model import Ridge
 
 from mathgeom.stats.rdm_regression import upper
 
@@ -65,16 +64,31 @@ def pca_order_rho(X: np.ndarray, order: np.ndarray) -> float:
     return float(abs(spearmanr(proj, rank)[0]))
 
 
-def loo_order_rho(X: np.ndarray, order: np.ndarray, alpha: float = 10.0) -> float:
-    """Leave-one-out ridge prediction of rank from representation; Spearman ρ of held-out predictions."""
+def loo_order_rho(X: np.ndarray, order: np.ndarray, alpha: float | str = 10.0) -> float:
+    """Leave-one-out ridge prediction of rank from representation; Spearman ρ of held-out predictions.
+
+    Kernel (dual) form of sklearn's `Ridge(alpha)` with an intercept — the same estimator (unit test to
+    1e-9) without the d-dimensional solve, so 10,000-permutation nulls are affordable (independent audit,
+    reports/prereg_addendum_lexical.md D9). In each fold the training items are centred: with
+    Kc = H K H the dual weights are a = (Kc + αI)⁻¹ (y − ȳ), and the held-out prediction is
+    ȳ + kc·a, where kc is the held-out row of the kernel centred with the training means.
+    `alpha="rel"` (D10, sensitivity only) sets α to the mean diagonal of Kc, i.e. the mean squared norm of
+    the centred training items, which makes the fit invariant to the scale of X; the pre-registered
+    α = 10 is not (mean ‖x‖² differs by ~1000× between models).
+    """
     n = len(order)
     rank = np.empty(n)
     rank[order] = np.arange(n)
+    K = X.astype(np.float64) @ X.astype(np.float64).T
     pred = np.empty(n)
     for i in range(n):
         tr = np.arange(n) != i
-        m = Ridge(alpha=alpha).fit(X[tr], rank[tr])
-        pred[i] = m.predict(X[i : i + 1])[0]
+        Kt, y = K[np.ix_(tr, tr)], rank[tr]
+        H = np.eye(n - 1) - 1.0 / (n - 1)
+        Kc = H @ Kt @ H
+        kc = K[i, tr] - K[i, tr].mean() - Kt.mean(1) + Kt.mean()  # held-out row, centred with the training means
+        a = np.linalg.solve(Kc + (np.mean(np.diag(Kc)) if alpha == "rel" else alpha) * np.eye(n - 1), y - y.mean())
+        pred[i] = y.mean() + kc @ a
     return float(spearmanr(pred, rank)[0])
 
 
@@ -87,7 +101,10 @@ def permutation_null(
 
 
 def perm_p(observed: float, null: np.ndarray) -> float:
-    """One-sided permutation p-value with the +1 correction (Phipson & Smyth 2010)."""
+    """One-sided permutation p-value with the +1 correction (Phipson & Smyth 2010). An undefined statistic
+    (NaN, e.g. a rank correlation on a constant RDM) has an undefined p, not 1/(n+1)."""
+    if np.isnan(observed):
+        return float("nan")
     return float((1 + (null >= observed).sum()) / (1 + len(null)))
 
 

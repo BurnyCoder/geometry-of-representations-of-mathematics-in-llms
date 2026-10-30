@@ -22,10 +22,11 @@ def test_chain_p_is_the_conjunction_of_robinson_and_loo():
 
 
 @pytest.mark.skipif(not (ROOT / "results" / "robustness" / "shapes.json").exists(), reason="results not generated")
-def test_holm_family_has_seven_p_values_with_the_conjunctive_chain_p():
+def test_holm_family_has_eight_tests_with_the_conjunctive_chain_p():
     r = _results("robustness")
     rows = render.holm_rows(r["map_fields"], r["shapes"], r["lattice"], "qwen3.5-0.8b")
-    assert len(rows) == 7  # prereg §4 lists 8 tests; the angles rule has no p
+    assert len(rows) == 8  # prereg §4 lists 8 tests; the falsified angles rule enters with p = 1 (audit D8)
+    assert dict(rows)[render.ANGLES_ROW] == 1.0
     ring = dict(rows)["H-B ring chain (Robinson and LOO order)"]
     s = r["shapes"]["qwen3.5-0.8b"]["ring_chain"]
     assert ring == max(s["robinson_p"], s["loo_order_p"]) and ring > 0.05  # LOO order p = .076 in this model

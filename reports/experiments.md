@@ -382,6 +382,45 @@ The new items were appended after the existing ones. Extraction runs at batch si
 
 **Result.** The list of every change is in `docs/deviations.md` (rows dated 2026-10-30, audit). No results file changed; only report code, prose, captions, citations and the card.
 
+## E12: Independent audit: word-form controls, twin seeds, test precision
+
+**Why.** The user asked for an independent check, ignoring the earlier audits, of whether any methodological error invalidates a finding. Every number of this entry is in the generated report [`audit_lexical.md`](audit_lexical.md).
+
+**How the problem was found.** The audit read the code of each statistic and asked, for each result, what the simplest non-semantic explanation would be.
+- Most group-like names literally contain their axioms ("commutative monoid"). Several pairs of same-axiom pairs repeat one head-noun change with and without "commutative". Most associativity and divisibility targets end in "-group" while their sources do not.
+- So we recomputed the offset test on character-3-gram count vectors of the names, read-only, with the repo's own functions. They passed it for all four axioms.
+- We then looked at why the twin had not caught this. In the Qwen3.5 twins, two pairs that differ only by the word "commutative" are not parallel at all. A random network scrambles even exact word composition, so "beats the twin" never ruled out spelling.
+- The same reasoning flagged the ring chain, whose names end in contiguous blocks of head nouns (rng | ring | … domain | field).
+
+**What we did.**
+- We wrote the addendum `prereg_addendum_lexical.md` and committed it before running anything new. It lists what the read-only exploration had already seen.
+- New phase `lexical`:
+  - three word-form baselines run through every test with the same statistic and null;
+  - the duplicate/disjoint split of each axiom's cosines;
+  - the 8 names without "commutative" and a held-out abelian-group test;
+  - a nonce-modifier lattice ("wooden", "zorbic"), appended to the family items;
+  - exact within-block chain tests, a block-only simulation and BCa intervals.
+- New phase `twins`, with 4 extra random-init seeds of the confirmatory model.
+- The Holm family now has 8 tests, the LOO null 10,000 permutations, and there is a scale-relative ridge-penalty sensitivity.
+
+**Issues and how they were fixed.**
+- *A null that contained the effect.* The pre-specified null for the abelian test still contained pairs that change commutativity together with another axiom. A unit test with a planted commutativity vector failed (p = .23 for a perfect effect). The null was restricted to pairs with equal commutativity bits and recorded as amendment 1, committed before any real-data run.
+- *A test that could not tell scales apart.* The first version of the α-sensitivity unit test compared X with 1000·X and found the same LOO ρ for α = 10. Both scales were large relative to α. On tiny activations (0.01·X), α = 10 shrinks every fold to the training mean, and the LOO ρ is exactly −1. That artifact is the origin of the strongly negative LOO ρ values of the Qwen3.5 models and their twins.
+- *NaN p-values.* A word bag of one-word items has a constant RDM, so its template ρ is NaN, and `perm_p` returned 1/(n+1) for it. `perm_p` now returns NaN.
+- *Appended items must not move earlier results.* The `structures` pool and the `lattice` token-count direction used "all family items", so they would have changed when the nonce items were appended. Both now exclude the audit's families (`pipeline.AUDIT_FAMILIES`). Rerunning both phases gives byte-identical JSON, and the first 181 cached rows are byte-identical to a backup.
+- *Bash heredocs on Windows.* Two multi-line Python edits containing curly quotes failed to parse in the Bash tool ("unexpected EOF"). Writing the edit script to a file first worked.
+
+**Why these choices.**
+- Character 3-grams need no model and capture shared substrings such as "-group" and "-ber".
+- The word bag captures shared words.
+- The layer-0 token bag uses the model's own token meanings without context, which is the strictest of the three for "spelling plus word meaning".
+- The nonce control asks the question the twin could not answer: how parallel does adding *any* word make the offsets?
+
+**Result.**
+- Survives every control: the field map, and the space chain within its metric block.
+- Does not survive as stated: the axiom offsets (mostly word form, with associativity and the abelian-group transfer as suggestive exceptions), the group-object parallelograms (word form) and the ring chain's order (head nouns).
+- The "not specific to mathematics" claim was withdrawn, because its controls are whole sciences, not sub-fields.
+
 ## Tooling learnings (continued)
 
 - **Line endings.** On Windows, `Path.write_text` translates `\n` to `\r\n`. Python heredoc scripts that search-and-replace code containing `"\n"` literals therefore corrupted files three times. The fix was to make code edits with the editor tool.

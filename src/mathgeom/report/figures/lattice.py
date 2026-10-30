@@ -12,6 +12,8 @@ differing only in that axiom are parallel (offset consistency, lattice.json). Th
 
 from __future__ import annotations
 
+import json
+
 import numpy as np
 
 from mathgeom.analyses.lattice import axiom_pairs
@@ -241,8 +243,9 @@ def save_axiom_gif(cfg, key: str, la: dict, Lp: int, outdir, frames_per_axiom: i
     return path.name
 
 
-def draw_cosines(oms: dict, axioms: list[str], la_key: dict, la_twin: dict, titles: dict):
-    """Cosine matrices of single-axiom difference vectors (trained, twin) + per-axiom dot plot."""
+def draw_cosines(oms: dict, axioms: list[str], la_key: dict, la_twin: dict, titles: dict, lex: dict | None = None):
+    """Cosine matrices of single-axiom difference vectors (trained, twin) + per-axiom dot plot; `lex` = the
+    offsets of the names' character 3-grams (independent audit D2, results/<cfg>/lexical.json), drawn as ×."""
     import matplotlib.pyplot as plt
     from matplotlib.patches import Rectangle
 
@@ -278,6 +281,8 @@ def draw_cosines(oms: dict, axioms: list[str], la_key: dict, la_twin: dict, titl
         lp = la_key.get("audit2", {}).get("group_like_offsets", {}).get("length_projected", {}).get(name)
         if lp:
             ax.scatter(lp["consistency"], yi - 0.18, facecolors=S.SURFACE, edgecolors=S.BLUE, s=30, zorder=3, label="trained, token-count direction removed" if yi == y[0] else None)
+        if lex:
+            ax.scatter(lex[name]["consistency"], yi + 0.18, marker="x", color=S.ORANGE, s=36, zorder=4, linewidths=1.5, label="names' character 3-grams (no model)" if yi == y[0] else None)
         ax.scatter(o["consistency"], yi, color=S.BLUE, s=42, zorder=4, label="trained" if yi == y[0] else None)
         ax.text(1.0, yi, S.fmt_p(o["p"]), fontsize=6.8, color=S.INK2, va="center", ha="right")
     ax.axvline(0, color=S.AXIS, lw=0.7)
@@ -295,6 +300,8 @@ def build(cfg, la: dict, outdir) -> list[str]:
     lat = load_yaml("families.yaml")["lattices"]["group_like"]
     names, axioms = list(lat["items"]), lat["axioms"]
     bits = np.array([lat["items"][c] for c in names])
+    lx_path = cfg.results_dir / "lexical.json"
+    lx = json.loads(lx_path.read_text()) if lx_path.exists() else {}
     for key in [k for k in la if not k.endswith("__random")]:
         Lp = la[key]["primary_layer"]
         X = {"trained": figdata.family_acts(cfg, key, "group_like", names)[:, Lp], "random_init": figdata.family_acts(cfg, f"{key}__random", "group_like", names)[:, Lp]}
@@ -311,5 +318,6 @@ def build(cfg, la: dict, outdir) -> list[str]:
         out.append(S.save(draw_explainer(X, names, bits, axioms, off, "commutative", S.pretty(key)), outdir, f"axioms_explainer_{key}"))
         oms = {k: figdata.offset_matrix(v, bits, axioms) for k, v in X.items()}
         titles = {"trained": f"{S.pretty(key)} · layer {Lp}", "random_init": "random-init twin"}
-        out.append(S.save(draw_cosines(oms, axioms, la[key], la[f"{key}__random"], titles), outdir, f"lattice_cosines_{key}"))
+        lex = lx.get(key, {}).get("group_like", {}).get("offsets", {}).get("char3")
+        out.append(S.save(draw_cosines(oms, axioms, la[key], la[f"{key}__random"], titles, lex), outdir, f"lattice_cosines_{key}"))
     return out

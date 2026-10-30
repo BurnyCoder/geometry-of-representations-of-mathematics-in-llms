@@ -100,8 +100,6 @@ def test_paper_links_point_at_paper_sections():
     (lower-case, punctuation dropped, spaces → hyphens, as github-slugger does)."""
     html = (SITE / "index.html").read_text(encoding="utf-8")
     headings = re.findall(r"^#+ (.+?)\s*$", (ROOT / "paper" / "paper.md").read_text(encoding="utf-8"), flags=re.M)
-    if not any(h.startswith("4.1 H-B2") for h in headings):
-        pytest.skip("paper/paper.md is not yet renumbered axioms-first (4.1 H-B2)")
     slugs = {re.sub(r"[^\w\- ]", "", h.lower()).replace(" ", "-") for h in headings}
     anchors = set(re.findall(r'data-paper="#([^"]+)"', html))
     assert anchors and not anchors - slugs, anchors - slugs

@@ -40,7 +40,7 @@ def _results(cfg_name: str) -> dict:
 
 def render_template(tpl: str, fig_prefix: str = "../reports/figures/", fig_ext: str = ".png") -> str:
     """Resolve {{num:..}}, {{table:..}} and {{fig:..}} placeholders in a Markdown template."""
-    from mathgeom.report import render
+    from mathgeom.report import audit, render
 
     cache: dict[str, dict] = {}
     fams = load_yaml("families.yaml")
@@ -90,6 +90,19 @@ def render_template(tpl: str, fig_prefix: str = "../reports/figures/", fig_ext: 
             "lattice_probes": lambda: render.table_lattice_probes(r["lattice"], r["structures"]),
             "lattice_variants": lambda: render.table_lattice_variants(r["lattice"]),
             "scorecard": lambda: render.table_scorecard(r),
+            # independent audit (reports/prereg_addendum_lexical.md)
+            "lexical_field": lambda: audit.table_field(r["lexical"]),
+            "lexical_offsets": lambda: audit.table_offsets(r["lexical"], r["lattice"]),
+            "lexical_sublattice": lambda: audit.table_sublattice(r["lexical"]),
+            "abelian": lambda: audit.table_abelian(r["lexical"]),
+            "nonce": lambda: audit.table_nonce(r["lexical"]),
+            "lexical_group_objects": lambda: audit.table_group_objects(r["lexical"], r["structures"]),
+            "blocks": lambda: audit.table_blocks(r["lexical"]),
+            "lexical_chains": lambda: audit.table_chains(r["lexical"], audit._models(r["lexical"])[0][0]),
+            "block_simulation": lambda: audit.table_block_simulation(r["lexical"]),
+            "bootstrap": lambda: audit.table_bootstrap(r["lexical"]),
+            "loo_alpha": lambda: audit.table_loo_alpha(r["shapes"], fams),
+            "twins": lambda: audit.table_twins(r["twins"]),
         }[name]
         return fn()
 
@@ -122,6 +135,12 @@ def build_summary() -> None:
     """reports/summary.md from reports/summary_template.md (layman summary + tables)."""
     tpl = (ROOT / "reports" / "summary_template.md").read_text(encoding="utf-8")
     (ROOT / "reports" / "summary.md").write_text(render_template(tpl, fig_prefix="figures/"), encoding="utf-8")
+
+
+def build_audit() -> None:
+    """reports/audit_lexical.md from reports/audit_template.md (the independent audit's report)."""
+    tpl = (ROOT / "reports" / "audit_template.md").read_text(encoding="utf-8")
+    (ROOT / "reports" / "audit_lexical.md").write_text(render_template(tpl, fig_prefix="figures/"), encoding="utf-8")
 
 
 README_BLOCKS = {"TOP": "readme_top_template.md", "RESULTS": "readme_results_template.md"}  # marker → template in reports/

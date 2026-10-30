@@ -1,0 +1,38 @@
+[
+ {
+  "phase": "extract",
+  "time": "2026-10-30T22:16:32",
+  "git_sha": "f66d3dd315f7b287765765608f4972687ccbd721",
+  "git_dirty": true,
+  "config": "configs/twin_seeds.yaml",
+  "config_sha256": "3ffaebff6e170f34b3556c84d24d0705a3f713c6b6716fdf3ffdd6267cef0640",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "twins",
+  "time": "2026-10-30T22:23:11",
+  "git_sha": "f66d3dd315f7b287765765608f4972687ccbd721",
+  "git_dirty": true,
+  "config": "configs/twin_seeds.yaml",
+  "config_sha256": "3ffaebff6e170f34b3556c84d24d0705a3f713c6b6716fdf3ffdd6267cef0640",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ }
+]

@@ -18,20 +18,25 @@ def _unit(v: np.ndarray) -> np.ndarray:
     return v / (np.linalg.norm(v, axis=-1, keepdims=True) + 1e-12)
 
 
-def offset_consistency(X: np.ndarray, pairs: list[tuple[int, int]]) -> float:
-    """Mean pairwise cosine between normalized difference vectors X[b]−X[a] over `pairs`."""
+def offset_consistency(X: np.ndarray, pairs: list[tuple[int, int]], keep: list[tuple[int, int]] | None = None) -> float:
+    """Mean pairwise cosine between normalized difference vectors X[b]−X[a] over `pairs`.
+
+    `keep` (indices into `pairs`) restricts the mean to some of the cosines — the independent audit's
+    lexically disjoint pairs (reports/prereg_addendum_lexical.md D2); None = all pairs of pairs."""
     diffs = _unit(np.stack([X[b] - X[a] for a, b in pairs]))
-    sims = [diffs[i] @ diffs[j] for i, j in combinations(range(len(pairs)), 2)]
+    sims = [diffs[i] @ diffs[j] for i, j in (keep if keep is not None else combinations(range(len(pairs)), 2))]
     return float(np.mean(sims))
 
 
-def random_pair_null(X: np.ndarray, pool: np.ndarray, n_pairs: int, n_perm: int = 2000, seed: int = 0) -> np.ndarray:
-    """Null for `offset_consistency`: same number of random (a,b) pairs drawn from a concept pool."""
+def random_pair_null(X: np.ndarray, pool: np.ndarray, n_pairs: int, n_perm: int = 2000, seed: int = 0,
+                     keep: list[tuple[int, int]] | None = None) -> np.ndarray:
+    """Null for `offset_consistency`: same number of random (a,b) pairs drawn from a concept pool
+    (and, with `keep`, the same positions of cosines averaged as in the observed statistic)."""
     rng = np.random.default_rng(seed)
     out = np.empty(n_perm)
     for t in range(n_perm):
         pr = [tuple(rng.choice(pool, 2, replace=False)) for _ in range(n_pairs)]
-        out[t] = offset_consistency(X, pr)
+        out[t] = offset_consistency(X, pr, keep)
     return out
 
 

@@ -10,10 +10,6 @@ from __future__ import annotations
 
 import json
 import logging
-import re
-
-import numpy as np
-import pandas as pd
 
 from mathgeom.config import ROOT, Config, load_yaml
 
@@ -177,20 +173,31 @@ def chain_p(s: dict) -> float:
     return max(s["robinson_p"], s["loo_order_p"])
 
 
+def angles_met(a: dict) -> bool:
+    """The pre-registered angles decision rule (docs/prereg.md H-B): closure < 2 AND circle ρ > line ρ."""
+    return a["closure"] < 2 and a["circle_rho"] > a["line_rho"]
+
+
+ANGLES_ROW = "H-B angles circle prediction (decision rule; p = 1 when falsified)"
+
+
 def holm_rows(mp: dict, sh: dict, la: dict, key: str) -> list[tuple[str, float]]:
-    """The p-valued pre-registered confirmatory tests of the MVP (docs/prereg.md §4) and their p-values:
-    7 tests; the 8th, the angles prediction, is a decision rule without a p (listed by table_holm).
+    """The 8 pre-registered confirmatory tests of the MVP (docs/prereg.md §4) and their p-values.
+    The angles prediction is a decision rule without a p: it enters with p = 1 when the rule fails, so it
+    counts in the family size without being rejected (independent audit, reports/prereg_addendum_lexical.md D8;
+    a 7-test family had been used before, which is less conservative than the frozen text), and p = 0 if met.
     The H-A1 bootstrap p is (1 + #resamples with Δ ≤ 0)/(1 + n_boot), the same +1 convention as the
     permutation p-values, so 0 of 2,000 resamples gives 1/2001 rather than an impossible 0."""
     n_boot = load_yaml("mvp.yaml")["n_boot"]  # every run config uses the same n_boot
     rows = [("H-A1 Δρ trained − random-init ≤ 0 (bootstrap)", (1 + mp[key]["math_primary"]["rsa_boot"]["delta_vs_random_init"]["p_le_0"] * n_boot) / (1 + n_boot)),
             ("H-B ring chain (Robinson and LOO order)", chain_p(sh[key]["ring_chain"])), ("H-B space chain (Robinson and LOO order)", chain_p(sh[key]["space_chain"]))]
     rows += [(f"H-B2 {a} offset consistency", o["p"]) for a, o in la[key]["group_like"]["offsets"].items()]
+    rows.append((ANGLES_ROW, 0.0 if angles_met(sh[key]["angles"]) else 1.0))
     return rows
 
 
 def holm_decisions(mp: dict, sh: dict, la: dict, key: str) -> list[dict]:
-    """Holm (statsmodels multipletests) over one model's 7 p-valued confirmatory tests."""
+    """Holm (statsmodels multipletests) over one model's 8 confirmatory tests."""
     from statsmodels.stats.multitest import multipletests
 
     rows = holm_rows(mp, sh, la, key)
@@ -199,21 +206,26 @@ def holm_decisions(mp: dict, sh: dict, la: dict, key: str) -> list[dict]:
 
 
 def table_holm(mp: dict, sh: dict, la: dict) -> str:
-    """Holm over the p-valued confirmatory tests; the angles prediction is a pre-registered decision
-    rule (closure < 2 AND circle ρ > line ρ) with no p-value, so it is listed but not adjusted."""
+    """Holm over the 8 confirmatory tests; the angles prediction is a pre-registered decision rule
+    (closure < 2 AND circle ρ > line ρ) whose row shows the rule instead of a p-value."""
     out = ["| Test | Model | p | Holm-adjusted p | reject at α=0.05 |", "|---|---|---|---|---|"]
     for key in mp:
-        out += [f"| {d['name']} | {key} | {_p(d['p'])} | {_p(d['p_holm'])} | {'yes' if d['reject'] else 'no'} |" for d in holm_decisions(mp, sh, la, key)]
-        a = sh[key]["angles"]
-        met = a["closure"] < 2 and a["circle_rho"] > a["line_rho"]
-        out.append(f"| H-B angles circle prediction (decision rule: closure {a['closure']:.2f} < 2 and circle ρ {a['circle_rho']:.2f} > line ρ {a['line_rho']:.2f}) | {key} | — | — | {'met' if met else 'not met (prediction falsified)'} |")
+        for d in holm_decisions(mp, sh, la, key):
+            if d["name"] == ANGLES_ROW:
+                a = sh[key]["angles"]
+                out.append(f"| H-B angles circle prediction (decision rule: closure {a['closure']:.2f} < 2 and circle ρ {a['circle_rho']:.2f} > line ρ {a['line_rho']:.2f}; "
+                           f"counted with p = {d['p']:.0f}) | {key} | — | — | {'met' if angles_met(a) else 'not met (prediction falsified)'} |")
+            else:
+                out.append(f"| {d['name']} | {key} | {_p(d['p'])} | {_p(d['p_holm'])} | {'yes' if d['reject'] else 'no'} |")
     return "\n".join(out)
 
 
 SCORE_LEGEND = ("● significant (Holm-adjusted for the axiom and chain tests; 95% CI excludes 0 for Δ tests) · ◐ raw p < .05 only · ○ not significant · "
                 "✗ pre-registered prediction falsified (every random-init twin meets the angles rule, so it is not specific). "
                 "Chains: p = max(Robinson p, LOO order p), the pre-registered conjunction, and trained Robinson > twin. "
-                "Numbers: the statistic for the trained model.")
+                "Numbers: the statistic for the trained model. Audit rows (post-hoc, reports/prereg_addendum_lexical.md): field map = lowest lower CI bound of "
+                "Δρ against the three lexical baselines; ring chain = Robinson score within the “… domain” items; held-out pair = cosine of abelian group − group "
+                "with the “commutative” direction; modifier and group-object rows = trained value vs the highest control; ● = the addendum's decision rule is met.")
 
 
 def table_scorecard(r: dict) -> str:
@@ -248,20 +260,30 @@ def scorecard_rows(r: dict) -> dict:
         return f"{'●' if d['reject'] and above else '◐' if d['p'] < 0.05 and above else '○'} {s['robinson']:.2f}"
 
     def angles(key):
-        a = sh[key]["angles"]
-        return f"{'●' if a['closure'] < 2 and a['circle_rho'] > a['line_rho'] else '✗'} {a['closure']:.2f}"
+        return f"{'●' if angles_met(sh[key]['angles']) else '✗'} {sh[key]['angles']['closure']:.2f}"
 
     conf_, pre, added = "pre-registered, confirmatory", "pre-registered", "added by plan audit"
     planes = planes_decision(ph, {k: mp[k]["primary_layer"] for k in keys}) if all("pc_planes_cycle" in ph.get(k, {}) for k in keys) else {}
-    rows = [  # axioms as directions first (the lead result), then the other results in their earlier order
-        *[(f"Axiom direction: {a} (offset consistency; Holm)", conf_, lambda k, a=a: axiom(k, a)) for a in la[keys[0]]["group_like"]["offsets"]],
-        ("Lie / topological / algebraic groups as parallelograms", "pre-registered, exploratory", lambda k: f"{'●' if st[k]['group_objects']['parallelograms']['p'] < 0.05 else '○'} {st[k]['group_objects']['parallelograms']['cos']:.2f}"),
+    audit = {}
+    if all(k in r.get("lexical", {}) for k in keys):  # independent audit (reports/prereg_addendum_lexical.md)
+        from mathgeom.report.audit import scorecard_audit_rows
+
+        audit = scorecard_audit_rows(r, keys)
+    a_row = lambda *ids: [audit[i] for i in ids if i in audit]  # noqa: E731
+    rows = [  # the results that survive the audit's word-form controls first, each followed by its audit row
         ("Field map tracks arXiv beyond the twin (H-A1; Δρ CI)", conf_, lambda k: f"{'●' if ex(mp[k]['math_primary']['rsa_boot']['delta_vs_random_init']['ci']) else '○'} {mp[k]['math_primary']['rsa']['trained']:.2f}"),
+        *a_row("field"),
         ("Field map is a hierarchy beyond the twin (H-A2; cophenetic Δ CI)", pre, lambda k: f"{'●' if ex(hi[k]['coph_match_delta_vs_random_ci']) else '○'} {hi[k]['coph_match']['trained']:.2f}"),
-        ("Days form a cycle (positive control; PC plane)", "positive control; post-hoc statistic", cyc),
-        ("Ring chain ordered (Robinson and LOO order; Holm; > twin)", conf_, lambda k: chain(k, "ring_chain")),
         ("Space chain ordered (Robinson and LOO order; Holm; > twin)", conf_, lambda k: chain(k, "space_chain")),
+        *a_row("space"),
+        ("Ring chain ordered (Robinson and LOO order; Holm; > twin)", conf_, lambda k: chain(k, "ring_chain")),
+        *a_row("ring"),
         ("Ring / space order beyond frequency", added, lambda k: " / ".join("●" if cf[k][f]["p"] < 0.05 else "○" for f in ("ring_chain", "space_chain"))),
+        *[(f"Axiom direction: {a} (offset consistency; Holm)", conf_, lambda k, a=a: axiom(k, a)) for a in la[keys[0]]["group_like"]["offsets"]],
+        *a_row("axioms", "abelian", "nonce"),
+        ("Lie / topological / algebraic groups as parallelograms", "pre-registered, exploratory", lambda k: f"{'●' if st[k]['group_objects']['parallelograms']['p'] < 0.05 else '○'} {st[k]['group_objects']['parallelograms']['cos']:.2f}"),
+        *a_row("group_objects"),
+        ("Days form a cycle (positive control; PC plane)", "positive control; post-hoc statistic", cyc),
         ("Angles form a circle (closure < 2 and circle ρ > line ρ)", conf_, angles),
         *([("Angles: closed cycle in any top-5 PC plane (addendum rule)", "post-hoc, pre-specified addendum", lambda k: f"{'●' if planes[k]['accepted'] else '○'} {planes[k]['score']:.2f}"),
            ("Days / months: a loop that closes in some top-5 PC plane (p < .05, unadjusted)", "post-hoc, descriptive",
@@ -285,6 +307,12 @@ def _n_of(keys: list[str], ok, noun: str = "models") -> str:
     return f"{len(yes)} of {len(keys)} {noun} (" + (f"all but {join(no)}" if len(no) < len(yes) else join(yes)) + ")"
 
 
+def _span(v: list[float]) -> str:
+    """'0.03 to 0.13': the range of a statistic over models (no '-0.00', no en dash next to a minus sign)."""
+    f = lambda x: f"{x + 0.0:.2f}".replace("-0.00", "0.00")  # noqa: E731
+    return f"{f(min(v))} to {f(max(v))}"
+
+
 def _runs(idx: list[int]) -> list[tuple[int, int]]:
     """Contiguous runs of sorted integers: [1,2,3,7,8] → [(1,3),(7,8)]."""
     runs: list[list[int]] = []
@@ -302,7 +330,10 @@ def fact(r: dict, spec: str) -> str:
     from mathgeom.report.style import MODEL
 
     name, _, arg = spec.partition(".")
+    from mathgeom.report import audit as au
+
     mp, sh, la, st, hi, ph, cf = (r[k] for k in ("map_fields", "shapes", "lattice", "structures", "hierarchy", "posthoc", "chain_frequency"))
+    lx = r.get("lexical", {})
     keys = [k for k in MODEL if k in mp]
     L = lambda k: mp[k.replace("__random", "")]["primary_layer"] - 1  # noqa: E731  (list index of the pre-registered layer)
     holm = lambda k, prefix: next(d for d in holm_decisions(mp, sh, la, k) if d["name"].startswith(prefix))  # noqa: E731
@@ -336,7 +367,21 @@ def fact(r: dict, spec: str) -> str:
         "closes_lower_plane": lambda: _n_of(keys, lambda k: closed(k, arg)["p"] < 0.05 and closed(k, arg)["plane"] != [0, 1]),
         "twin_closes": lambda: _n_of(keys, lambda k: closed(k + "__random", arg)["p"] < 0.05, "twins"),
         "line_beats_circle": lambda: _n_of(keys, lambda k: sh[k][arg]["line_rho"] > sh[k][arg]["circle_rho"]),
-        "twins_meet_angles_rule": lambda: _n_of(keys, lambda k: (lambda a: a["closure"] < 2 and a["circle_rho"] > a["line_rho"])(sh[k + "__random"]["angles"]), "twins"),
+        "twins_meet_angles_rule": lambda: _n_of(keys, lambda k: angles_met(sh[k + "__random"]["angles"]), "twins"),
+        # independent audit (reports/prereg_addendum_lexical.md): decision rules D1–D6, D13 and ranges over models
+        "field_beyond_lexical": lambda: _n_of(keys, lambda k: au.field_beyond_ok(lx, k)),
+        "axiom_beyond_lexical": lambda: _n_of(keys, lambda k: au.axiom_beyond_ok(lx, la, k, arg)),
+        "abelian_transfer": lambda: _n_of(keys, lambda k: au.abelian_ok(lx, k)),
+        "nonce_above": lambda: _n_of(keys, lambda k: au.nonce_above_ok(lx, k)),
+        "group_objects_beyond": lambda: _n_of(keys, lambda k: au.group_objects_ok(lx, st, k)),
+        "ring_within": lambda: _n_of(keys, lambda k: au.ring_within_ok(lx, k)),
+        "space_block": lambda: _n_of(keys, lambda k: au.space_blocks_ok(lx, k)[int(arg)]),
+        "disjoint_range": lambda: _span([lx[k]["group_like"]["decomposition"]["trained"][arg]["disjoint_mean"] for k in keys]),
+        "dup_range": lambda: _span([lx[k]["group_like"]["decomposition"]["trained"][arg]["dup_mean"] for k in keys]),
+        "sublattice_beyond": lambda: _n_of(keys, lambda k: (lambda s: s["trained"][arg]["consistency"] > max(s[b][arg]["consistency"] for b in au.BASES))(lx[k]["group_like"]["sublattice"])),
+        "sublattice_range": lambda: _span([lx[k]["group_like"]["sublattice"]["trained"][arg]["consistency"] for k in keys]),
+        "abelian_range": lambda: _span([lx[k]["group_like"]["abelian_heldout"]["trained"]["cos"] for k in keys]),
+        "nonce_range": lambda: _span([lx[k]["nonce_modifier"][arg]["trained"]["consistency"] for k in keys]),
     }[name]
     return fn()
 
@@ -498,6 +543,34 @@ def build_model_figures(cfg: Config, outdir) -> list[str]:
     return [f if f.endswith(".gif") else f + ".png" for f in figs]
 
 
+def audit_sections(cfg: Config, fams: dict, sh: dict, la: dict, st: dict) -> dict[str, str]:
+    """Report sections of the independent audit (reports/prereg_addendum_lexical.md, post-hoc), where its results exist."""
+    from mathgeom.report import audit
+
+    out, A = {}, "AUDIT (post-hoc, reports/prereg_addendum_lexical.md) "
+    lx = _j(cfg, "lexical.json")
+    if lx:
+        out[A + "D1: field map vs word-form baselines (character 3-grams, word bag, layer-0 token bag)"] = audit.table_field(lx)
+        out[A + "D2: axiom offsets vs word-form baselines; lexically duplicated vs disjoint cosine pairs"] = audit.table_offsets(lx, la)
+        out[A + "D2: axiom offsets on the 8 names without “commutative”"] = audit.table_sublattice(lx)
+        out[A + "D3: does the “commutative” direction predict abelian group − group?"] = audit.table_abelian(lx)
+        if all("nonce_modifier" in v for _, v in audit._models(lx)):
+            out[A + "D13: X → m X for m = commutative / wooden / zorbic"] = audit.table_nonce(lx)
+        if st:
+            out[A + "D4: group-object parallelograms vs word-form baselines"] = audit.table_group_objects(lx, st)
+        out[A + "D5–D6: order within the ring chain's “… domain” items and within the space chain's topical blocks"] = audit.table_blocks(lx)
+        out[A + f"D5: ordered families on word-form baselines ({cfg.models[0]['key']} tokenizer)"] = audit.table_chains(lx, cfg.models[0]["key"])
+        if "block_only_simulation" in lx:
+            out[A + "D7: how often head-noun clusters alone pass the pre-registered chain test"] = audit.table_block_simulation(lx)
+        out[A + "D11: bootstrap bias and BCa intervals of the field map"] = audit.table_bootstrap(lx)
+    if any("loo_order_rel" in v.get(f, {}) for v in sh.values() for f in fams["chains"]):
+        out[A + "D9–D10: LOO order with 10,000 permutations; pre-registered α = 10 vs a scale-relative α"] = audit.table_loo_alpha(sh, fams)
+    tw = ROOT / "results" / "twin_seeds" / "twins.json"
+    if cfg.name == "mvp" and tw.exists():
+        out[A + "D12: twin statistics across random-init seeds (configs/twin_seeds.yaml)"] = audit.table_twins(json.loads(tw.read_text()))
+    return out
+
+
 def phase_report(cfg: Config) -> None:
     sub = cfg.raw.get("figure_subdir", "")  # variant configs reuse model keys: keep their figures apart
     fams = load_yaml("families.yaml")
@@ -534,7 +607,8 @@ def phase_report(cfg: Config) -> None:
                             ("Exploratory: Qwen-Scope SAE codes", "sae.json", table_sae)):
         if _j(cfg, name):
             sections[title] = fn(_j(cfg, name))
-    md = f"# Results: `{cfg.name}` run\n\nGenerated by `python run.py report --config configs/{cfg.name}.yaml` from `results/{cfg.name}/*.json`. Do not edit by hand.\n\n"
+    sections.update(audit_sections(cfg, fams, sh, la, st))
+    md = f"# Results:`{cfg.name}` run\n\nGenerated by `python run.py report --config configs/{cfg.name}.yaml` from `results/{cfg.name}/*.json`. Do not edit by hand.\n\n"
     for title, tab in sections.items():
         md += f"## {title}\n\n{tab}\n\n"
     md += "## Figures\n\n" + "\n\n".join(f"![{f}](figures/{sub + '/' if sub else ''}{f})" for f in figs) + "\n"

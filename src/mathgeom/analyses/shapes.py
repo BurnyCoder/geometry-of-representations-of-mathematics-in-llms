@@ -27,8 +27,12 @@ from mathgeom.geometry.preprocess import center, euclid_rdm
 from mathgeom.stats.rdm_regression import rdm_regression, upper
 
 
-def family_stats(X: np.ndarray, n_perm: int = 2000, seed: int = 0) -> dict:
-    """All shape statistics for one family whose rows are in ground-truth order."""
+def family_stats(X: np.ndarray, n_perm: int = 2000, seed: int = 0, n_perm_loo: int | None = None) -> dict:
+    """All shape statistics for one family whose rows are in ground-truth order.
+
+    The LOO-order null has min(n_perm, 300) permutations unless `n_perm_loo` is given; the pre-registered
+    layer uses 10,000 (independent audit, reports/prereg_addendum_lexical.md D9; the kernel-form ridge made it
+    affordable), and then the scale-relative-α sensitivity variant (D10) is added as loo_order_rel."""
     X = center(X.astype(np.float64))
     D = euclid_rdm(X)
     n = len(X)
@@ -52,8 +56,11 @@ def family_stats(X: np.ndarray, n_perm: int = 2000, seed: int = 0) -> dict:
     out["closure_far"] = float(D[0, -1] / D[0, n // 2])
     out["closure_far_null95"] = float(np.percentile(permutation_null(lambda p: D[p[0], p[-1]] / D[p[0], p[n // 2]], n, n_perm=n_perm or 1, seed=seed), 5))
     loo = loo_order_rho(X, o)
-    loo_null = permutation_null(lambda p: loo_order_rho(X, p), n, n_perm=min(n_perm, 300), seed=seed)
+    loo_null = permutation_null(lambda p: loo_order_rho(X, p), n, n_perm=n_perm_loo or min(n_perm, 300), seed=seed)
     out["loo_order"], out["loo_order_p"] = loo, perm_p(loo, loo_null)
+    if n_perm_loo:  # D10 sensitivity: ridge penalty relative to the data scale (α = mean squared norm of the training items)
+        rel = loo_order_rho(X, o, alpha="rel")
+        out["loo_order_rel"], out["loo_order_rel_p"] = rel, perm_p(rel, permutation_null(lambda p: loo_order_rho(X, p, alpha="rel"), n, n_perm=n_perm_loo, seed=seed))
     return out
 
 

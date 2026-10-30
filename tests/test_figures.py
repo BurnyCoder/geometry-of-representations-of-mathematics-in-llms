@@ -192,7 +192,6 @@ def test_axiom_explainer_and_gif_render(tmp_path):
     """The 4-step 'how the test works' figure (synthetic data) and the 3-D arrow GIF (2 frames, real
     activations, skipped without them)."""
     from mathgeom.config import load_config
-    from mathgeom.report import figdata
     from mathgeom.report.figures import lattice
 
     rng = np.random.default_rng(11)
