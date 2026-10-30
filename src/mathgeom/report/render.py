@@ -116,6 +116,58 @@ def table_cycles(ph: dict, layer_of: dict) -> str:
     return "\n".join(rows)
 
 
+PLANE_FAMS = ("days", "months", "angles", "digits_0_330")
+
+
+def _plane(e: dict) -> str:
+    return f"PC{e['plane'][0] + 1}–PC{e['plane'][1] + 1}"
+
+
+def table_planes_cycle(ph: dict, layer_of: dict) -> str:
+    """POST-HOC 4 (reports/prereg_addendum_3d.md): best closed-cycle score over the 10 planes of PC1–5 at
+    the pre-registered layer, its plane and max-over-planes permutation p; the twin's score in brackets."""
+    keys = [k for k in ph if not k.endswith("__random") and "pc_planes_cycle" in ph[k]]
+    if not keys:
+        return "*not run*"
+    at = lambda k, f: ph[k]["pc_planes_cycle"][f][layer_of[k.replace("__random", "")] - 1]  # noqa: E731
+    rows = ["| Family | " + " | ".join(keys) + " |", "|---" * (len(keys) + 1) + "|"]
+    for f in PLANE_FAMS:
+        rows.append(f"| {f} | " + " | ".join(f"{at(k, f)['score']:.2f} · {_plane(at(k, f))} · p={_p(at(k, f)['p'])} (twin {at(k + '__random', f)['score']:.2f})" for k in keys) + " |")
+    return "\n".join(rows)
+
+
+def planes_decision(ph: dict, layer_of: dict) -> dict:
+    """The pre-specified rule for "angles have a circular component beyond PC1–2" (addendum, all four must
+    hold at the pre-registered layer): Holm across models on the best-plane p; best plane ≠ PC1–2; trained
+    score > twin's; and the bare numerals do not meet the first two conditions themselves."""
+    from statsmodels.stats.multitest import multipletests
+
+    keys = [k for k in ph if not k.endswith("__random") and "pc_planes_cycle" in ph[k]]
+    at = lambda k, f: ph[k]["pc_planes_cycle"][f][layer_of[k.replace("__random", "")] - 1]  # noqa: E731
+    holm = {f: dict(zip(keys, multipletests([at(k, f)["p"] for k in keys], alpha=0.05, method="holm")[0])) for f in ("angles", "digits_0_330")}
+    out = {}
+    for k in keys:
+        a, d, tw = at(k, "angles"), at(k, "digits_0_330"), at(k + "__random", "angles")
+        c = {"holm": bool(holm["angles"][k]), "not_pc12": a["plane"] != [0, 1], "beats_twin": a["score"] > tw["score"],
+             "numerals_clear": not (bool(holm["digits_0_330"][k]) and d["plane"] != [0, 1])}
+        out[k] = {"score": a["score"], "plane": _plane(a), "p": a["p"], **c, "accepted": all(c.values())}
+    return out
+
+
+def table_planes_decision(ph: dict, layer_of: dict) -> str:
+    from mathgeom.report.style import MODEL
+
+    d = planes_decision(ph, layer_of)
+    yn = lambda b: "yes" if b else "no"  # noqa: E731
+    rows = ["| Model | Angles: best closed plane | p (max over planes) | 1. Holm across models | 2. not PC1–PC2 | 3. > twin | 4. numerals do not cycle | Accepted |", "|---" * 8 + "|"]
+    rows += [f"| {MODEL.get(k, k)} | {v['score']:.2f} · {v['plane']} | {_p(v['p'])} | {yn(v['holm'])} | {yn(v['not_pc12'])} | {yn(v['beats_twin'])} | {yn(v['numerals_clear'])} | **{yn(v['accepted'])}** |"
+             for k, v in d.items()]
+    met = [MODEL.get(k, k) for k, v in d.items() if v["accepted"]]
+    verdict = (f"**The rule is met in {', '.join(met)}**: there, the post-hoc result is a circular component beyond PC1–2." if met else
+               "**No model meets the rule**, so \"angles are not a circle\" stands, now for every plane of the top 5 principal components too.")
+    return "\n".join(rows + ["", verdict])
+
+
 def holm_rows(mp: dict, sh: dict, la: dict, key: str) -> list[tuple[str, float]]:
     """The 8 pre-registered confirmatory tests of the MVP (docs/prereg.md §4) and their p-values."""
     rows = [("H-A1 Δρ trained − random-init ≤ 0 (bootstrap)", mp[key]["math_primary"]["rsa_boot"]["delta_vs_random_init"]["p_le_0"]),
@@ -184,6 +236,7 @@ def scorecard_rows(r: dict) -> dict:
         return f"{'●' if a['closure'] < 2 and a['circle_rho'] > a['line_rho'] else '✗'} {a['closure']:.2f}"
 
     conf_, pre, added = "pre-registered, confirmatory", "pre-registered", "added by plan audit"
+    planes = planes_decision(ph, {k: mp[k]["primary_layer"] for k in keys}) if all("pc_planes_cycle" in ph.get(k, {}) for k in keys) else {}
     rows = [
         ("Field map tracks arXiv beyond the twin (H-A1; Δρ CI)", conf_, lambda k: f"{'●' if ex(mp[k]['math_primary']['rsa_boot']['delta_vs_random_init']['ci']) else '○'} {mp[k]['math_primary']['rsa']['trained']:.2f}"),
         ("Field map is a hierarchy beyond the twin (H-A2; cophenetic Δ CI)", pre, lambda k: f"{'●' if ex(hi[k]['coph_match_delta_vs_random_ci']) else '○'} {hi[k]['coph_match']['trained']:.2f}"),
@@ -192,6 +245,10 @@ def scorecard_rows(r: dict) -> dict:
         ("Space chain ordered (Robinson; > twin)", conf_, lambda k: chain(k, "space_chain")),
         ("Ring / space order beyond frequency", added, lambda k: " / ".join("●" if cf[k][f]["p"] < 0.05 else "○" for f in ("ring_chain", "space_chain"))),
         ("Angles form a circle (closure < 2 and circle ρ > line ρ)", conf_, angles),
+        *([("Angles: closed cycle in any top-5 PC plane (addendum rule)", "post-hoc, pre-specified addendum", lambda k: f"{'●' if planes[k]['accepted'] else '○'} {planes[k]['score']:.2f}"),
+           ("Days / months: a loop that closes in some top-5 PC plane (p < .05, unadjusted)", "post-hoc, descriptive",
+            lambda k: " / ".join(("●" if e["p"] < 0.05 else "○") + f" {e['score']:.2f}" for e in (ph[k]["pc_planes_cycle"][f][mp[k]["primary_layer"] - 1] for f in ("days", "months"))))]
+          if planes else []),
         *[(f"Axiom direction: {a} (offset consistency; Holm)", conf_, lambda k, a=a: axiom(k, a)) for a in la[keys[0]]["group_like"]["offsets"]],
         ("Lie / topological / algebraic groups as parallelograms", "pre-registered, exploratory", lambda k: f"{'●' if st[k]['group_objects']['parallelograms']['p'] < 0.05 else '○'} {st[k]['group_objects']['parallelograms']['cos']:.2f}"),
     ]
@@ -366,6 +423,7 @@ def phase_report(cfg: Config) -> None:
         "H-A1 field map (field-centroid RSA vs arXiv cross-listing distance; LOO nearest-centroid field accuracy)": table_field_map(mp),
         "POST-HOC: field-map ρ after removing the top-k principal components (all-but-the-top sweep)": table_posthoc(_j(cfg, "posthoc.json")) if _j(cfg, "posthoc.json") else "*not run*",
         "POST-HOC: cyclic order in the top-2-PC plane at the pre-registered layer (1 = perfect cycle; positive-control debug)": table_cycles(_j(cfg, "posthoc.json"), {k: v["primary_layer"] for k, v in _j(cfg, "shapes.json").items()}) if _j(cfg, "posthoc.json") else "*not run*",
+        "POST-HOC 4 (reports/prereg_addendum_3d.md): closed cycle in the best plane of PC1–5 at the pre-registered layer (score · plane · max-over-planes p; twin in brackets)": table_planes_cycle(_j(cfg, "posthoc.json"), {k: v["primary_layer"] for k, v in _j(cfg, "shapes.json").items()}) if _j(cfg, "posthoc.json") else "*not run*",
         "Multiplicity: Holm correction over the 8 pre-registered confirmatory tests (bootstrap p for H-A1 is the fraction of resamples with Δ ≤ 0; 0 means < 1/2000)": table_holm(mp, sh, la),
         "H-A1c clustering specificity: math fields vs non-math control fields": table_clustering(mp),
         "H-B shape families (primary layer; permutation p-values; † = post-hoc statistic, see docs/deviations.md)": table_shapes(sh, fams),

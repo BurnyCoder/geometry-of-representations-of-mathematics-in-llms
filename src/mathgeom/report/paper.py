@@ -81,6 +81,8 @@ def render_template(tpl: str, fig_prefix: str = "../reports/figures/", fig_ext: 
             "smds": lambda: render.table_smds(r["smds"]),
             "posthoc": lambda: render.table_posthoc(r["posthoc"]),
             "cycles": lambda: render.table_cycles(r["posthoc"], {k: v["primary_layer"] for k, v in r["shapes"].items()}),
+            "planes": lambda: render.table_planes_cycle(r["posthoc"], {k: v["primary_layer"] for k, v in r["shapes"].items()}),
+            "planes_decision": lambda: render.table_planes_decision(r["posthoc"], {k: v["primary_layer"] for k, v in r["shapes"].items()}),
             "mathlib": lambda: render.table_mathlib(r["mathlib"]),
             "chain_frequency": lambda: render.table_chain_frequency(r["chain_frequency"]),
             "lattice_probes": lambda: render.table_lattice_probes(r["lattice"], r["structures"]),
