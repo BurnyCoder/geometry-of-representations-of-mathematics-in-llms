@@ -18,14 +18,14 @@
     <a href="https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms">Code &amp; preregistration</a>
     <a href="https://huggingface.co/datasets/BurnyCoder/geometry-of-mathematics-in-llms">Data &amp; activations</a>
   </div>
-  <p class="kicker">LLMs put the days of the week on a circle (<a href="https://arxiv.org/abs/2405.14860">Engels et al., 2024</a>). We asked whether abstract mathematics has a shape too: are axioms <i>directions</i>, is there a <i>map</i> of mathematical fields, and are chains of definitions laid out in order? Each of five open base models is compared with its <b>random-init twin</b>, the same network and tokenizer with untrained weights.</p>
+  <p class="kicker">LLMs put the days of the week on a circle (<a href="https://arxiv.org/abs/2405.14860">Engels et al., 2024</a>). We asked whether abstract mathematics has a shape too: are axioms <i>directions</i>, is there a <i>map</i> of mathematical fields, and are chains of definitions laid out in order? Each of five open base models is compared with its <b>random-init twin</b>, the same network and tokenizer with untrained weights, and, since an independent audit, with <b>word-form baselines</b> that encode only the spelling of the names (<a href="https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms/blob/master/reports/audit_lexical.md">audit report</a>).</p>
   <div class="tldr">
     <h2>TL;DR</h2>
     <ul>
-      <li><b>Axioms act as directions.</b> “Add commutativity” is a consistent arrow (offset consistency <span data-num="results.lattice.qwen3.5-2b.group_like.offsets.commutative.consistency" data-fmt=".2f"></span>, twin <span data-num="results.lattice.qwen3.5-2b__random.group_like.offsets.commutative.consistency" data-fmt=".2f"></span>), as is “add associativity”; identity and divisibility are weaker.</li>
-      <li><b>Fields form a map.</b> Distances between field centroids correlate with arXiv cross-listing: ρ = <span data-num="results.map_fields.qwen3.5-2b.math_primary.rsa.trained" data-fmt=".2f"></span> in the confirmatory model, against <span data-num="results.map_fields.qwen3.5-2b.math_primary.rsa.random_init" data-fmt=".2f"></span> for its twin, and in every model we tested.</li>
-      <li><b>Days go round in order in every model, months in most (the positive control, post-hoc); class-inclusion chains are ordered</b> in the confirmatory model and pass the full preregistered test in most models (scorecard). Angles are <i>not</i> circles, which falsified one of our preregistered predictions.</li>
-      <li><b>Not special to LLMs or to math.</b> A text-embedding model reaches a similar map (ρ = <span data-num="results.baselines.qwen3.5-2b.all_primary.rsa.qwen3_embedding" data-fmt=".2f"></span>), science topics cluster by field even more strongly, and over a trillion tokens of math pretraining did not sharpen it.</li>
+      <li><b>Fields form a map.</b> Distances between field centroids correlate with arXiv cross-listing: ρ = <span data-num="results.map_fields.qwen3.5-2b.math_primary.rsa.trained" data-fmt=".2f"></span> in the confirmatory model, against <span data-num="results.map_fields.qwen3.5-2b.math_primary.rsa.random_init" data-fmt=".2f"></span> for its twin and <span data-num="results.lexical.qwen3.5-2b.field_map.rsa.char3" data-fmt=".2f"></span> for the names' spelling alone, and in every model we tested.</li>
+      <li><b>The space chain is ordered</b> (T0 ⊃ … ⊃ Hilbert space), also within its blocks. The ring chain passes the preregistered test too, but its order follows the last word of its names (ring, domain, field). Days go round in order in every model, months in most (the positive control, post-hoc). Angles are <i>not</i> circles, which falsified one of our preregistered predictions.</li>
+      <li><b>Axiom offsets are mostly word form.</b> “Add commutativity” is a consistent arrow (offset consistency <span data-num="results.lattice.qwen3.5-2b.group_like.offsets.commutative.consistency" data-fmt=".2f"></span>, twin <span data-num="results.lattice.qwen3.5-2b__random.group_like.offsets.commutative.consistency" data-fmt=".2f"></span>), but so is adding a meaningless word (“zorbic monoid”: <span data-num="results.lexical.qwen3.5-2b.nonce_modifier.zorbic.trained.consistency" data-fmt=".2f"></span>), and the names' letter triples alone pass the same test. Associativity, and a “commutative” direction that also points from group to abelian group, go beyond spelling.</li>
+      <li><b>Not special to LLMs.</b> A text-embedding model reaches a similar map (ρ = <span data-num="results.baselines.qwen3.5-2b.all_primary.rsa.qwen3_embedding" data-fmt=".2f"></span>), and over a trillion tokens of math pretraining did not sharpen it. Whether the map is special to mathematics is untested: our control topics are whole sciences, not sub-fields.</li>
     </ul>
   </div>
 </header>
@@ -51,7 +51,7 @@
 <div class="prose">
 <h2 class="section" id="s-method"><span class="num">1</span>How we look inside the model</h2>
 <p>For every concept we run eight short sentences that end with its name, for example “In mathematics, one important concept is ⟨concept⟩”. We read the model’s internal vector (the <i>residual stream</i>) at the concept’s last token, and average over the eight templates. The field-map templates never name a field, so a field cannot be read off the prompt. Family items use one fixed domain per family, e.g. “In abstract algebra, consider monoid”, so the domain is the same for every item compared.</p>
-<span class="sidenote"><b>Random-init twin.</b> The same architecture and tokenizer with weights redrawn at random. Any geometry it shows comes from word form alone (shared tokens, length). Every claim here is a <i>difference</i> from the twin.</span>
+<span class="sidenote"><b>Random-init twin.</b> The same architecture and tokenizer with weights redrawn at random. It shows what the architecture and tokenizer produce without learning, but it is <i>not</i> a control for spelling: random weights scramble even exact word combinations. The audit's word-form baselines (letter triples, word bags, context-free token embeddings) fill that gap.</span>
 <p>Then we ask simple geometric questions of those vectors. Are differences such as monoid − semigroup parallel to loop − quasigroup? Are related fields close? Do chains of definitions line up in order? All views below are <b>unsupervised</b> projections (PCA, MDS): nothing is fitted to the labels, because with a dozen points in thousands of dimensions a fitted projection can draw any shape.</p>
 </div>
 
@@ -72,7 +72,7 @@
     <text class="tw" x="240" y="150">The random-init twin goes through exactly the same steps; the evidence is trained − twin.</text>
   </svg>
   <figcaption>
-    <span><b>Every figure below starts from one vector per concept, and every claim is a difference from the untrained twin.</b></span>
+    <span><b>Every figure below starts from one vector per concept, and every claim is a difference from the untrained twin and, since the audit, from word-form baselines that encode only the spelling of the names.</b></span>
     <span class="read">Read left to right: prompts in, one averaged residual-stream vector per concept and layer out, then geometry and its comparison with ground truth. The grey sentence is the control path.</span>
     <span class="caveat">This is a single read-out (last token, averaged over templates). Template wording changes absolute values, though split-half reliability is high; see the paper’s limitations.</span>
   </figcaption>
@@ -107,11 +107,11 @@
 </figure>
 
 <div class="prose">
-<h2 class="section" id="s-axioms"><span class="num">3</span>Axioms as directions</h2>
-<p>Thirteen group-like structures, from magma to abelian group, are each a set of four axioms: associativity, identity, divisibility (inverses) and commutativity. If “adding an axiom” is a direction in the model, then every pair of structures that differs only in that axiom should have the same difference vector. Examples are semigroup → monoid, quasigroup → loop and magma → unital magma. This is the parallelogram picture of word analogies (man : woman :: king : queen; <a href="https://aclanthology.org/N13-1090/">Mikolov et al., 2013</a>). <a class="figref" href="#fig-axiom-how"></a> walks through the test in four steps; the figures after it show the evidence.</p>
+<h2 class="section" id="s-axioms"><span class="num">3</span>Axiom offsets: consistent, but mostly word form</h2>
+<p>Thirteen group-like structures, from magma to abelian group, are each a set of four axioms: associativity, identity, divisibility (inverses) and commutativity. If “adding an axiom” is a direction in the model, then every pair of structures that differs only in that axiom should have the same difference vector. Examples are semigroup → monoid, quasigroup → loop and magma → unital magma. This is the parallelogram picture of word analogies (man : woman :: king : queen; <a href="https://aclanthology.org/N13-1090/">Mikolov et al., 2013</a>). <a class="figref" href="#fig-axiom-how"></a> <b>Audit:</b> the names encode the axioms (“commutative monoid” is “monoid” plus a word), and the names' letter triples alone, with no model, give about as parallel arrows; so does adding a meaningless word. Associativity, and a “commutative” direction that also points from group to abelian group, are the parts that go beyond spelling (<a href="https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms/blob/master/reports/audit_lexical.md">audit report</a>). walks through the test in four steps; the figures after it show the evidence.</p>
 <span class="sidenote"><b>Offset consistency.</b> The mean cosine between same-axiom difference vectors. 0 = unrelated arrows; 1 = parallel. Compared with random pairs of structures, and with the twin.</span>
 </div>
-<figure class="fig" id="fig-axiom-how" data-paper="#41-h-b2-axioms-as-directions" data-section="4.1">
+<figure class="fig" id="fig-axiom-how" data-paper="#44-h-b2-axiom-lattices" data-section="4.4">
   <div class="fig-head"><span class="fig-num"></span><span class="fig-title">How the test works: is “adding an axiom” one direction?</span></div>
   <div class="chips" id="how-chips"></div>
   <div class="view-row" id="how-steps" role="group" aria-label="Steps of the test">
@@ -127,7 +127,7 @@
   </figcaption>
 </figure>
 
-<figure class="fig" id="fig-lattice" data-paper="#41-h-b2-axioms-as-directions" data-section="4.1" data-tableid="lat-table">
+<figure class="fig" id="fig-lattice" data-paper="#44-h-b2-axiom-lattices" data-section="4.4" data-tableid="lat-table">
   <div class="fig-head"><span class="fig-num"></span><span class="fig-title">Highlight one axiom: in the trained model its arrows run parallel</span></div>
   <div class="chips" id="axiom-chips"></div>
   <div class="view-row"><button data-view="lat" aria-pressed="true" title="Switch between the 3-D and the 2-D view">3D view</button><button data-spin="lat" aria-pressed="false" title="Turn both views slowly; drag to stop">⟳ Spin</button><label>Axes <select id="axes-lat" aria-label="Principal components shown"></select></label></div>
@@ -141,7 +141,7 @@
   </figcaption>
 </figure>
 
-<figure class="fig" id="fig-cosines" data-paper="#41-h-b2-axioms-as-directions" data-section="4.1">
+<figure class="fig" id="fig-cosines" data-paper="#44-h-b2-axiom-lattices" data-section="4.4">
   <div class="fig-head"><span class="fig-num"></span><span class="fig-title">The full-dimensional evidence: diagonal blocks of parallel arrows</span>
     <div class="fig-tools"><button data-table="cos-table">Table view</button></div></div>
   <div class="panels two"><div class="panel tall" id="cos-trained"></div><div class="panel tall" id="cos-twin"></div></div>
@@ -152,7 +152,7 @@
   </figcaption>
 </figure>
 
-<figure class="fig" id="fig-analogy" data-paper="#41-h-b2-axioms-as-directions" data-section="4.1">
+<figure class="fig" id="fig-analogy" data-paper="#44-h-b2-axiom-lattices" data-section="4.4">
   <div class="fig-head"><span class="fig-num"></span><span class="fig-title">Analogy playground: a is to b as c is to … ?</span></div>
   <div class="chips">
     <label>a <select id="an-a"></select></label><label>b <select id="an-b"></select></label><label>c <select id="an-c"></select></label>
@@ -164,7 +164,7 @@
   </figcaption>
 </figure>
 
-<figure class="fig" id="fig-groups" data-paper="#41-h-b2-axioms-as-directions" data-section="4.1" data-tableid="groups-table">
+<figure class="fig" id="fig-groups" data-paper="#44-h-b2-axiom-lattices" data-section="4.4" data-tableid="groups-table">
   <div class="fig-head"><span class="fig-num"></span><span class="fig-title">Lie groups sit between “group” and “smooth manifold”</span><div class="fig-tools"></div></div>
   <div class="panels two"><div class="panel short" id="groups-par"></div><div class="panel short" id="groups-rank"></div></div>
   <figcaption>
@@ -180,7 +180,7 @@
 <p>Use the <b>layer slider</b> above to scrub through depth, and the model menu to switch models. Hover a field to highlight it in all three maps and in the matrices below.</p>
 </div>
 
-<figure class="fig" id="fig-map" data-paper="#42-h-a1-a-map-of-mathematical-fields" data-section="4.2">
+<figure class="fig" id="fig-map" data-paper="#41-h-a1-a-map-of-mathematical-fields" data-section="4.1">
   <div class="fig-head"><span class="fig-num"></span><span class="fig-title">Related fields stay close in the trained model; the twin scrambles them</span>
     <div class="fig-tools"><button id="edges-toggle" aria-pressed="true">Neighbour edges</button><button data-table="map-table">Table view</button></div></div>
   <div class="view-row"><button data-view="map" aria-pressed="true" title="Switch between the 3-D and the 2-D view">3D view</button><button data-spin="map" aria-pressed="false" title="Turn all three maps slowly; drag any map to stop">⟳ Spin</button></div>
@@ -195,7 +195,7 @@
   </figcaption>
 </figure>
 
-<figure class="fig" id="fig-rdm" data-paper="#42-h-a1-a-map-of-mathematical-fields" data-section="4.2" data-tableid="rdm-table">
+<figure class="fig" id="fig-rdm" data-paper="#41-h-a1-a-map-of-mathematical-fields" data-section="4.1" data-tableid="rdm-table">
   <div class="fig-head"><span class="fig-num"></span><span class="fig-title">The same comparison as distance matrices</span></div>
   <div class="panels">
     <div class="panel tall" id="rdm-arxiv"></div><div class="panel tall" id="rdm-trained"></div><div class="panel tall" id="rdm-twin"></div>
@@ -206,7 +206,7 @@
   </figcaption>
 </figure>
 
-<figure class="fig" id="fig-depth" data-paper="#42-h-a1-a-map-of-mathematical-fields" data-section="4.2" data-tableid="depth-table">
+<figure class="fig" id="fig-depth" data-paper="#41-h-a1-a-map-of-mathematical-fields" data-section="4.1" data-tableid="depth-table">
   <div class="fig-head"><span class="fig-num"></span><span class="fig-title">The map across depth: every layer in the Qwen models, most layers in Gemma</span>
     <div class="fig-tools"><button id="all-models" aria-pressed="false">Compare all models</button></div></div>
   <div class="panel" id="depth"></div>
@@ -241,7 +241,7 @@
 <p>Ordered families should trace a path through activation space. Days and months are our <b>positive control</b>: Engels et al. found them on circles. The <i>ring chain</i> (rng ⊃ ring ⊃ commutative ring ⊃ integral domain ⊃ … ⊃ field ⊃ algebraically closed field) and the <i>space chain</i> (T0 ⊃ T1 ⊃ Hausdorff ⊃ … ⊃ Hilbert space) are inclusions of definitions. We predicted that angles from 0° to 330° would close into a circle, with 330° next to 0°.</p>
 <span class="sidenote"><b>Cycle score.</b> The fraction of items whose angular neighbour in the PC plane is the true next item. 1 = perfect cyclic order, which an open arc can also reach; the <i>closed-cycle</i> test also requires the loop to close. Post-hoc. <b>Robinson score:</b> the fraction of item triples consistent with the true order; chance is 1/3.</span>
 </div>
-<figure class="fig" id="fig-families" data-paper="#44-h-b-shapes-of-ordered-families" data-section="4.4" data-tableid="fam-table">
+<figure class="fig" id="fig-families" data-paper="#43-h-b-shapes-of-ordered-families" data-section="4.3" data-tableid="fam-table">
   <div class="fig-head"><span class="fig-num"></span><span class="fig-title" id="fam-title">Family geometry across depth</span></div>
   <div class="chips" id="fam-chips"></div>
   <div class="view-row"><button data-view="fam" aria-pressed="true" title="Switch between the 3-D and the 2-D view">3D view</button><button data-spin="fam" aria-pressed="false" title="Turn both views slowly; drag to stop">⟳ Spin</button><label>Axes <select id="axes-fam" aria-label="Principal components shown"></select></label></div>
@@ -270,17 +270,18 @@
 <div class="prose">
 <h2 class="section" id="s-failed"><span class="num">8</span>What did not work</h2>
 <ul>
-  <li><b>Identity and divisibility are weaker directions:</b> they do not survive multiple-comparison correction in every model.</li>
+  <li><b>Axiom offsets are mostly word form</b> (independent audit): the names' letter triples alone pass the same test for all four axioms, and adding a meaningless word (“wooden X”, “zorbic X”) gives about as parallel arrows as adding “commutative”. Identity's offset comes from pairs that repeat the same head-noun change with and without “commutative”.</li>
+  <li><b>Lie and other group objects are word form too</b> (audit): every parallelogram shares “topological” or “algebraic” on both sides, and the names' letter triples are more parallel than any model.</li>
   <li><b>No “make the operation total” direction</b> in the partial-operation lattice (<a class="figref" href="#fig-partial"></a>).</li>
   <li><b>Angles are not a circle</b> in any model, not in the top-2 plane and, under a pre-specified post-hoc test, not significantly in any plane of the top five principal components either. Their geometry follows the bare numerals 0…330 (ρ = <span data-num="results.shapes.qwen3.5-2b.angles.beyond_reference.rho_fam_ref" data-fmt=".2f"></span> in Qwen3.5-2B). This falsifies our preregistered prediction.</li>
   <li><b>No clean hierarchy.</b> Under the preregistered cophenetic test, the map does not beat the twin as a five-branch tree.</li>
   <li><b>Math pretraining did not sharpen the map.</b> Qwen2.5-Math vs its base: Δρ 95% CI [<span data-num="results.compare.qwen2.5-math-1.5b_vs_qwen2.5-1.5b.boot.delta_vs_qwen2.5-1.5b.ci.0" data-fmt=".2f"></span>, <span data-num="results.compare.qwen2.5-math-1.5b_vs_qwen2.5-1.5b.boot.delta_vs_qwen2.5-1.5b.ci.1" data-fmt=".2f"></span>].</li>
-  <li><b>Not specific to LLMs or to math.</b> Qwen3-Embedding reaches a similar map (Qwen3.5-2B), and science topics cluster by field even more strongly.</li>
-  <li><b>The ring chain fails the full preregistered test in two models</b> (its leave-one-out order is not significant there; see the scorecard); in Gemma the space chain also misses Holm significance.</li>
+  <li><b>Not specific to LLMs.</b> Qwen3-Embedding reaches a similar map (Qwen3.5-2B). Whether the map is specific to mathematics is untested: our control topics are whole sciences, not sub-fields.</li>
+  <li><b>The ring chain's order is not established beyond its head nouns</b> (audit): its names end in contiguous blocks (ring, domain, field), clusters of head nouns without any order often pass the preregistered test, and the six “… domain” items are rarely ordered among themselves (see the scorecard).</li>
   <li><b>Causal test of chain geometry inconclusive.</b></li>
 </ul>
 </div>
-<figure class="fig" id="fig-partial" data-paper="#41-h-b2-axioms-as-directions" data-section="4.1" data-tableid="partial-table">
+<figure class="fig" id="fig-partial" data-paper="#44-h-b2-axiom-lattices" data-section="4.4" data-tableid="partial-table">
   <div class="fig-head"><span class="fig-num"></span><span class="fig-title">Partial vs total operations: no consistent direction</span></div>
   <div class="panel short" id="partial"></div>
   <figcaption>
