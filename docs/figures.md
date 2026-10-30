@@ -25,6 +25,10 @@ uv run python run.py paper --config configs/mvp.yaml
   - On the site's dark theme the ramp runs from step 600 to step 100 (dark → light), because the light-theme ramp's darkest step has only 1.5:1 contrast on the dark surface. The 7-step dark ramp passes the ordinal check.
 - **Roles.** Trained models are always blue and random-init twins always grey; nulls are grey bands or lines; signed similarity uses a blue ↔ red scale with a grey midpoint.
 - **Output.** PNG files have an opaque background so they read correctly in GitHub's dark mode. PDFs embed TrueType fonts (`pdf.fonttype=42`) and carry no timestamps, so regenerating them doesn't change the files.
+- **Direct labels** are de-overlapped with [adjustText](https://github.com/Phlya/adjustText) (MIT) under a fixed iteration limit (`style.label_points`, `iter_lim=1000`).
+  - Its default stops after 1 second of wall-clock time, which made label positions, and so the figures, depend on machine load.
+  - A rerun of `run.py report` now reproduces the figures byte for byte.
+- **Arrows** in the lattice figures have large filled heads (2-D: `-|>` with longer, wider heads; 3-D: `style.arrow3d`, a filled triangle facing the camera with a fixed size), so direction reads at a glance.
 
 ## Integrity rules for every picture (`src/mathgeom/report/figdata.py`)
 
@@ -75,7 +79,7 @@ uv run python run.py paper --config configs/mvp.yaml
 | `abstraction_<model>` | Concept cloud on residualized PC1/PC2 by judge abstraction and pure/applied; judges vs Mathlib | `figures/axes.py` | activations, `axes`, `mathlib_depth.csv` |
 | `families3d_<model>` | Days, months, angles in their top-3 PCs (true proportions, fixed camera), trained and twin; variance and the closed-cycle result under each panel | `families.py: draw_grid3d` | activations, `posthoc` |
 | `chains3d_<model>` | The ordered chains in their top-3 PCs, trained and twin | `families.py: draw_grid3d` | activations |
-| `lattice3d_<model>` | Per-axiom 3-D facets: that axiom's pairs as blue 3-D arrows, trained and twin | `lattice.py: draw_facets3d` | activations, `lattice` |
+| `lattice3d_<model>` | Per-axiom 3-D facets: that axiom's pairs as blue 3-D arrows with filled, camera-facing heads of fixed size (`style.arrow3d`), trained and twin | `lattice.py: draw_facets3d` | activations, `lattice` |
 | `turntable_qwen3.5-2b.gif` | Days, months and angles in their top-3 PCs rotating once, trained (top) vs twin (bottom); README | `families.py: save_turntable` (via `overview.build`) | activations |
 
 The Markdown scorecard (`{{table:scorecard:all}}`) and its site version come from `render.scorecard_rows`. It uses the same Holm decisions as the Holm table.

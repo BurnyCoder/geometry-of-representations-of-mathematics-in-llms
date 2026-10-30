@@ -303,6 +303,17 @@ The new items were appended after the existing ones. Extraction runs at batch si
 - the Plotly limitation is cited;
 - new tests: a turntable smoke test, and a test that the earlier post-hoc numbers equal the files from before the addendum.
 
+**Arrowheads.** The user asked for bigger arrowheads so arrow direction reads at a glance. The changes:
+- *Static 2-D facets:* filled heads about 2.7× longer.
+- *Static 3-D facets:* a filled triangle facing the fixed camera, with a fixed size (9% of the panel's extent, at most 60% of the arrow), replacing `quiver` heads that shrank with short arrows.
+- *Site 2-D:* Plotly `arrowsize` 1.9 with a filled head.
+- *Site 3-D:* cones in `sizemode: "raw"`, each as long as its vector: 13% of the view's extent, at most 60% of the arrow.
+  - The earlier `"absolute"` mode multiplies the size by an internal spacing factor, so the cones were too small to see in the rendered page.
+  - An inline comment had also briefly swallowed the cones' colour settings (a red colorscale appeared); caught by looking at a screenshot.
+- *A reproducibility bug found on the way.* Regenerating also changed figures that had not been touched. Pixel diffs put every change in label positions.
+  - The cause: adjustText stops after 1 s of wall-clock time by default, so placement depended on machine load.
+  - The fix: a fixed iteration limit, about as fast. A test checks that two identical calls place labels identically, and a second `run.py report` reproduces every figure's hash.
+
 **Issues found while building, all fixed.**
 - *Hidden browser pane.* `requestAnimationFrame` never fires in a hidden pane, so tweens hung; they now use timers on wall-clock time.
 - *Stale tween frame.* A stale frame overwrote the 2D switch; purging a panel now cancels pending tweens.

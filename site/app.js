@@ -590,7 +590,7 @@ function latTraces(side, keys = false, el = null) {  // keys: legend entries for
   const p = P(), Lt = S.M[S.key].lattice, xy = Lt[side].planes[S.layer - 1], a = Lt.axioms.indexOf(S.axiom);
   const gx = [], gy = [], ann = [];
   Lt.pairs.forEach(([i, j], k) => {
-    if (Lt.group[k] === a) ann.push({ x: xy[j][0], y: xy[j][1], ax: xy[i][0], ay: xy[i][1], xref: "x", yref: "y", axref: "x", ayref: "y", showarrow: true, arrowhead: 3, arrowsize: 1.1, arrowwidth: 2.2, arrowcolor: p.blue, standoff: 6, startstandoff: 6 });
+    if (Lt.group[k] === a) ann.push({ x: xy[j][0], y: xy[j][1], ax: xy[i][0], ay: xy[i][1], xref: "x", yref: "y", axref: "x", ayref: "y", showarrow: true, arrowhead: 2, arrowsize: 1.9, arrowwidth: 2.2, arrowcolor: p.blue, standoff: 6, startstandoff: 6 });  // big filled heads: direction at a glance
     else { gx.push(xy[i][0], xy[j][0], null); gy.push(xy[i][1], xy[j][1], null); }
   });
   const has = (b) => Lt.axioms.filter((_, q) => b[q]).join(", ") || "none";
@@ -607,19 +607,21 @@ function analogyChoice(Lt) {  // a, b, c from the analogy playground (its defaul
 function latTraces3d(side, keys) {  // 3 of the top-5 PCs: arrows (lines + cone heads) for the selected axiom, the analogy point
   const p = P(), Lt = S.M[S.key].lattice, L = S.layer - 1, ax = S.axes.lat, [X, Y, Z] = cols(pick3(Lt[side].pc5[L], ax)), a = Lt.axioms.indexOf(S.axiom);
   const g = { x: [], y: [], z: [] }, bl = { x: [], y: [], z: [] }, cone = { x: [], y: [], z: [], u: [], v: [], w: [] };
+  const ext = Math.max(...[X, Y, Z].map((c) => Math.max(...c) - Math.min(...c))), head = 0.13 * ext;  // arrowhead length: 13% of the view, ≤ 60% of its arrow
   Lt.pairs.forEach(([i, j], k) => {
     const T = Lt.group[k] === a ? bl : g;
     T.x.push(X[i], X[j], null); T.y.push(Y[i], Y[j], null); T.z.push(Z[i], Z[j], null);
     if (Lt.group[k] !== a) return;
-    const d = [X[j] - X[i], Y[j] - Y[i], Z[j] - Z[i]], nr = Math.hypot(...d) || 1;
-    cone.x.push(X[j]); cone.y.push(Y[j]); cone.z.push(Z[j]); cone.u.push(d[0] / nr); cone.v.push(d[1] / nr); cone.w.push(d[2] / nr);
+    const d = [X[j] - X[i], Y[j] - Y[i], Z[j] - Z[i]], nr = Math.hypot(...d) || 1, hl = Math.min(head, 0.6 * nr);
+    cone.x.push(X[j]); cone.y.push(Y[j]); cone.z.push(Z[j]); cone.u.push((d[0] / nr) * hl); cone.v.push((d[1] / nr) * hl); cone.w.push((d[2] / nr) * hl);
   });
   const has = (b) => Lt.axioms.filter((_, q) => b[q]).join(", ") || "none";
   const data = [
     { type: "scatter3d", mode: "lines", ...g, line: { color: p.grid, width: 2 }, hoverinfo: "skip", name: "other single-axiom pairs", showlegend: keys },
     { type: "scatter3d", mode: "lines", ...bl, line: { color: p.blue, width: 5 }, hoverinfo: "skip", name: `pairs differing only in ${S.axiom}`, showlegend: keys },
-    { type: "cone", ...cone, anchor: "tip", sizemode: "absolute", sizeref: 0.24, colorscale: [[0, p.blue], [1, p.blue]], showscale: false, hoverinfo: "skip", showlegend: false,
-      lighting: { ambient: 1, diffuse: 0, specular: 0, roughness: 1, fresnel: 0 } },  // flat colour: arrowheads read as the arrows' colour
+    // arrowheads: "raw" makes each cone exactly as long as its vector (https://plotly.com/javascript/reference/cone/); flat blue
+    { type: "cone", ...cone, anchor: "tip", sizemode: "raw", sizeref: 1, colorscale: [[0, p.blue], [1, p.blue]], showscale: false, hoverinfo: "skip", showlegend: false,
+      lighting: { ambient: 1, diffuse: 0, specular: 0, roughness: 1, fresnel: 0 } },
     { type: "scatter3d", mode: "markers+text", name: "structures", showlegend: false, x: X, y: Y, z: Z, text: Lt.items.map((s) => s.replace("commutative ", "comm. ")), textposition: "top center",
       textfont: { size: 10, color: p.ink2 }, marker: { size: Lt.items.map((_, i) => (i === S.pin.lat ? 12 : 7)), color: Lt.items.map((_, i) => (i === S.pin.lat ? p.orange : p.ink2)) }, customdata: Lt.items.map((_, i) => i),
       hovertemplate: Lt.items.map((s, i) => `<b>${s}</b><br>axioms: ${has(Lt.bits[i])}<br>click for its axioms<extra></extra>`) }];
