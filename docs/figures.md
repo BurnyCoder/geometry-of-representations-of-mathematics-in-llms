@@ -8,7 +8,7 @@ To regenerate the per-model figures, report tables and site data for one config:
 uv run python run.py report --config configs/mvp.yaml
 ```
 
-To regenerate the cross-model figures, the two generated README blocks (`TOP`: scorecard and GIF, from `reports/readme_top_template.md`; `RESULTS`, from `reports/readme_results_template.md`), the summary and the paper:
+To regenerate the cross-model figures, the two generated README blocks (`TOP`: the axiom GIF and the scorecard, from `reports/readme_top_template.md`; `RESULTS`, from `reports/readme_results_template.md`), the summary and the paper:
 
 ```bash
 uv run python run.py paper --config configs/mvp.yaml
@@ -61,26 +61,30 @@ uv run python run.py paper --config configs/mvp.yaml
 
 ## Figure catalogue
 
+Rows are in the order the README, summary and paper present the results: axioms first, 3-D views before 2-D ones. The order is a presentation choice; the field map (H-A1) was the primary preregistered hypothesis.
+
 | Figure (file in `reports/figures/`) | Shows | Built by | Data |
 |---|---|---|---|
-| `hero` | Two-row overview: field-map ρ in all models vs twins and the arXiv / trained / twin maps; days, angles and axiom offsets | `figures/overview.py: draw_hero` | `map_fields`, `posthoc`, `shapes`, `lattice` + activations |
-| `forest` | Effect sizes with 95% CIs, faceted by metric | `overview.py: draw_forest` | `map_fields`, `baselines`, `compare`, `hierarchy`, `mathlib` |
-| `depth_curves` | Field-map ρ at every layer, per model, with the max-over-layers null | `overview.py: draw_depth` | `map_fields` layer curves |
+| `hero` | Three-row overview: (1) the commutativity arrows at one common origin in 3-D, trained vs twin, and the offset consistency of every axiom in every model and twin; (2) field-map ρ in all models vs twins and the arXiv / trained / twin maps; (3) days and angles | `figures/overview.py: draw_hero` | `map_fields`, `posthoc`, `shapes`, `lattice` + activations |
+| `axioms_explainer_<model>` | How the axiom test works, in four steps: (1) the lattice of structures (ground truth); (2) one axiom's pairs as arrows in the model's top-3 PCs; (3) the same arrows at one common origin in 3-D, trained vs twin, with their offset consistency; (4) a compass per axiom of full-space angles between each same-axiom difference vector and the leave-one-out mean of the others (`figdata.axiom_angles`), trained above the dashed line and twin below | `figures/lattice.py: draw_explainer` | activations, `lattice` |
+| `axiom_arrows_qwen3.5-2b.gif` | README animation: one axiom at a time, its pairs appear as 3-D arrows in the top-3 PCs and slide to one common origin, trained (left) vs twin (right), with each panel's offset consistency; the camera turns ±15° | `lattice.py: save_axiom_gif` | activations, `lattice` |
+| `lattice3d_<model>` | Per-axiom 3-D facets: that axiom's pairs as blue 3-D arrows with filled, camera-facing heads of fixed size (`style.arrow3d`), trained and twin | `lattice.py: draw_facets3d` | activations, `lattice` |
+| `lattice_axes_<model>` | Ideal axiom lattice and per-axiom PCA facets (2-D), trained and twin | `figures/lattice.py` | activations, `lattice` |
+| `lattice_cosines_<model>` | Difference-vector cosine matrices and per-axiom offset consistency | `lattice.py` | activations, `lattice` |
 | `group_objects` | Group-object parallelograms and the parent ranks of "Lie group", all models | `overview.py: draw_group_objects` | `structures` |
 | `partial_operation` | Negative result: partial- vs total-operation offsets, all models and twins | `overview.py: draw_partial_operation` | `lattice` (`audit2`) |
+| `forest` | Effect sizes with 95% CIs, faceted by metric | `overview.py: draw_forest` | `map_fields`, `baselines`, `compare`, `hierarchy`, `mathlib` |
 | `field_maps_<model>` | MDS of the arXiv, trained and twin distance matrices with ground-truth neighbour edges | `figures/maps.py` | activations, `field_distance.json` |
 | `field_rdms_<model>` | The same matrices as within-matrix ranks | `maps.py` | same |
+| `depth_curves` | Field-map ρ at every layer, per model, with the max-over-layers null | `overview.py: draw_depth` | `map_fields` layer curves |
+| `turntable_qwen3.5-2b.gif` | Days, months and angles in their top-3 PCs rotating once, trained (top) vs twin (bottom); README | `families.py: save_turntable` (via `overview.build`) | activations |
+| `families3d_<model>` | Days, months, angles in their top-3 PCs (true proportions, fixed camera), trained and twin; variance and the closed-cycle result under each panel | `families.py: draw_grid3d` | activations, `posthoc` |
+| `chains3d_<model>` | The ordered chains in their top-3 PCs, trained and twin | `families.py: draw_grid3d` | activations |
 | `cyclic_<model>` | Days, months and angles in the PC plane, trained and twin | `figures/families.py` | activations, `posthoc` |
 | `circle_depth_<model>` (`.png`, `.gif`) | Days and months at fixed depths; the GIF animates every layer, trained (top row) and twin (bottom row) | `families.py` | activations, `posthoc` |
 | `angles_<model>` | Preregistered prediction vs observed angles vs bare numbers, plus the twin as control; both halves of the decision rule | `families.py` | activations, `shapes` |
 | `chains_<model>` | Ordered chains with Robinson scores and the frequency control | `families.py` | activations, `shapes`, `chain_frequency` |
-| `lattice_axes_<model>` | Ideal axiom lattice and per-axiom PCA facets, trained and twin | `figures/lattice.py` | activations, `lattice` |
-| `lattice_cosines_<model>` | Difference-vector cosine matrices and per-axiom offset consistency | `lattice.py` | activations, `lattice` |
 | `abstraction_<model>` | Concept cloud on residualized PC1/PC2 by judge abstraction and pure/applied; judges vs Mathlib | `figures/axes.py` | activations, `axes`, `mathlib_depth.csv` |
-| `families3d_<model>` | Days, months, angles in their top-3 PCs (true proportions, fixed camera), trained and twin; variance and the closed-cycle result under each panel | `families.py: draw_grid3d` | activations, `posthoc` |
-| `chains3d_<model>` | The ordered chains in their top-3 PCs, trained and twin | `families.py: draw_grid3d` | activations |
-| `lattice3d_<model>` | Per-axiom 3-D facets: that axiom's pairs as blue 3-D arrows with filled, camera-facing heads of fixed size (`style.arrow3d`), trained and twin | `lattice.py: draw_facets3d` | activations, `lattice` |
-| `turntable_qwen3.5-2b.gif` | Days, months and angles in their top-3 PCs rotating once, trained (top) vs twin (bottom); README | `families.py: save_turntable` (via `overview.build`) | activations |
 
 The Markdown scorecard (`{{table:scorecard:all}}`) and its site version come from `render.scorecard_rows`. It uses the same Holm decisions as the Holm table.
 
