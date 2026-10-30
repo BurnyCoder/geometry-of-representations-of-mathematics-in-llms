@@ -124,7 +124,7 @@ def save_gif(cfg, key: str, ph: dict, L: int, Lp: int, outdir) -> str:
             ax.set_title(f"{S.FAMILY[f].split(chr(10))[0]} · cycle score {_cycle(ph, k, f, l + 1)['score']:.2f}", fontsize=8.5)
             if f == "days":  # row label: which network this row shows
                 ax.set_ylabel(S.pretty(key) if k == key else "random-init twin", fontsize=9, color=S.INK if k == key else S.INK2)
-        fig.suptitle(f"layer {l + 1} of {L} (depth {(l + 1) / L:.2f}) · cycle score 1 = perfect circle (post-hoc)", fontsize=8.5, color=S.INK2)
+        fig.suptitle(f"layer {l + 1} of {L} (depth {(l + 1) / L:.2f}) · cycle score 1 = every item's angular neighbour is its true successor; an open arc also scores 1 (post-hoc)", fontsize=8.5, color=S.INK2)
 
     anim = FuncAnimation(fig, frame, frames=L, interval=450)
     path = outdir / f"circle_depth_{key}.gif"
@@ -242,7 +242,8 @@ def draw_angles(cfg, key: str, sh: dict, Lp: int):
     t = sh[f"{key}__random"]["angles"]  # control: the same projection of the random-init twin
     draw_plane(axes[3], figdata.pca(figdata.family_acts(cfg, f"{key}__random", "angles")[:, Lp]), lab, closed=False, highlight=((len(items) - 1, 0),))
     axes[3].set_title("Control: random-init twin", fontsize=9)
-    S.note(axes[3], f"closure = {t['closure']:.2f}; circle ρ = {t['circle_rho']:.2f} vs line ρ = {t['line_rho']:.2f}")
+    S.note(axes[3], f"closure = {t['closure']:.2f}; circle ρ = {t['circle_rho']:.2f} vs line ρ = {t['line_rho']:.2f}\n"
+                    "meets the circle rule by chance: a structureless cloud passes it, so the rule is not specific")
     fig.tight_layout(w_pad=1.0)
     return fig
 

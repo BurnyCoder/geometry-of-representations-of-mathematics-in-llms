@@ -74,7 +74,7 @@ def length_direction(X_all: np.ndarray, n_tokens: np.ndarray) -> np.ndarray:
     """Unit direction of maximal covariance with token count across `X_all` (rows = items).
 
     A one-direction analogue of the distractor removal of Li et al. 2024 (arXiv:2410.19750 §3), who
-    project out word-length-like directions with LDA; with 13 lattice items in d ≥ 1536 a fitted LDA
+    project out word-length-like directions with LDA; with 13 lattice items in d ≥ 1024 a fitted LDA
     would be degenerate, so the direction is estimated on all family items instead.
     """
     Xc = X_all - X_all.mean(0)

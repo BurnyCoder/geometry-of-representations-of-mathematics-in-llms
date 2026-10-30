@@ -41,7 +41,7 @@ def pca(X: np.ndarray, k: int = 2) -> np.ndarray:
 
 def pca_var(X: np.ndarray, k: int = 5) -> np.ndarray:
     """Fraction of total variance on each of the top-k PCs (= sklearn PCA.explained_variance_ratio_);
-    every PCA view states it, so a picture is never read as more than the variance it shows."""
+    the 3-D views and the site state it per axis, so a picture is not read as more than the variance it shows."""
     S = np.linalg.svd(X.astype(np.float64) - X.astype(np.float64).mean(0), compute_uv=False)
     return (S[:k] ** 2) / (S**2).sum()
 
@@ -65,7 +65,7 @@ def mds(D: np.ndarray, seed: int = 0, k: int = 2) -> np.ndarray:
 def stress1(layout: np.ndarray, D: np.ndarray) -> float:
     """Kruskal's stress-1 of a 2-D/3-D layout against the full-space distances D, with the optimal scale
     factor (so display scaling does not matter): √(Σ(b·d − δ)² / Σδ²). 0 = distances kept exactly; the
-    standard goodness-of-fit of metric MDS (Kruskal 1964, Psychometrika 29:1–27), which every MDS view states."""
+    standard goodness-of-fit of metric MDS (Kruskal 1964, Psychometrika 29:1–27), stated by the site's MDS views."""
     from scipy.spatial.distance import pdist
 
     d, delta = pdist(layout), D[np.triu_indices(len(D), 1)]
