@@ -1,7 +1,8 @@
 # Curated concept families for H-B (ordered chains / circles) and H-B2 (axiom lattices).
 # Pre-registered before any activation was analyzed. `domain` fills the {D} slot of the family
 # templates (constant within a family, so it cannot create within-family differences).
-# `items` are listed in ground-truth order (chains: general → specific; cycles: cyclic order).
+# `items` are listed in ground-truth order (chains: general → specific, except number_systems, listed
+# specific → general (ℕ ⊂ … ⊂ octonions); cycles: cyclic order). Order statistics are symmetric in direction.
 
 chains:
   days:  # POSITIVE CONTROL — Engels et al. 2024 (arXiv:2405.14860) circle
@@ -19,7 +20,9 @@ chains:
     expected: line
     role: test
     items: [rng, ring, commutative ring, integral domain, integrally closed domain, GCD domain, unique factorization domain, principal ideal domain, Euclidean domain, field, algebraically closed field]
-  space_chain:  # separation axioms https://en.wikipedia.org/wiki/Separation_axiom + metric/normed/Banach/Hilbert inclusions
+  space_chain:  # separation axioms https://en.wikipedia.org/wiki/Separation_axiom + metric/normed/Banach/Hilbert inclusions.
+    # A chain only if "regular" = T3 and "normal" = T4 (both include T1), as in Munkres, Topology §31–32; Wikipedia's
+    # article defines regular/normal without T1, under which Hausdorff ⊃ regular fails (docs/deviations.md, 2026-10-30).
     domain: "topology and analysis"
     expected: line
     role: test
@@ -93,7 +96,7 @@ lattices:
       quandle: [1, 1, 1, 0]
       kei: [1, 1, 1, 1]
 
-group_objects:  # https://en.wikipedia.org/wiki/Lie_group ("a group that is also a smooth manifold")
+group_objects:  # https://en.wikipedia.org/wiki/Lie_group ("a group that is also a differentiable manifold"; smooth by convention)
   domain: "mathematics"
   role: exploratory
   objects:
@@ -105,7 +108,7 @@ group_objects:  # https://en.wikipedia.org/wiki/Lie_group ("a group that is also
     - [topological group, Lie group, topological space, smooth manifold]
     - [group, algebraic group, set, algebraic variety]
 
-transfer:  # learned on group_like pairs, tested on these held-out pairs (pre-registered secondary)
+transfer:  # learned on group_like pairs, tested on these held-out pairs (pre-registered as exploratory, prereg §3 H-B2)
   domain: "abstract algebra"
   identity: [[rng, ring]]
   commutative: [[ring, commutative ring], [division ring, field]]

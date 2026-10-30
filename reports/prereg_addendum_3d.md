@@ -111,5 +111,5 @@ Every preregistered statistic is computed in the full activation space, and none
 - The results go to the `pc_planes_cycle` block of `results/<config>/posthoc.json`, produced by `python run.py posthoc --config configs/<config>.yaml`.
 - The tests in `tests/test_geometry.py` cover:
   - a cycle planted in the PC3–PC4 plane is found;
-  - on structureless data the test rejects at about the nominal 5% rate (200 simulations, rejection rate within [0.02, 0.09]);
+  - on structureless data the test rejects at about the nominal 5% rate (200 simulations, rejection rate within [0.02, 0.09]); *note added 2026-10-30 (audit): superseded by amendment 2, which made the test conservative, so the committed test checks validity with 300 simulations and a rejection rate ≤ 0.08 (`tests/test_geometry.py`)*;
   - the default plane equals the old function.
