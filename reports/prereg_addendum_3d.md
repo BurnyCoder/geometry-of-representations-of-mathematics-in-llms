@@ -62,6 +62,19 @@ Made before any real-data run, and committed separately.
 
 **What it does not change.** The existing PC1–2 scores are unchanged. We report that a high PC1–2 cycle score alone does not show a *closed* loop. For days and months, the full-space closure ratios (1.2–2.0) say whether the loop closes.
 
+### Amendment 2: the test is conservative
+
+Made before any real-data run.
+
+**The finding.** The closure rule gives many null draws a score of exactly 0. That makes the statistic discrete with an atom at 0, and the test conservative. In 1,000 simulations on structureless Gaussian data, the rejection rate at α = 0.05 was:
+- n = 12: 1.8% ± 0.8%;
+- n = 7: 4.0% ± 1.2%.
+
+**What changes.**
+- A conservative test keeps the false-positive rate below α, so the decision rule is unchanged; it only lowers power.
+- The unit-test criterion in "Code" (rejection within [0.02, 0.09]) is replaced by a validity check: rejection ≤ 0.08 at n = 7 and n = 12.
+- A non-significant result for angles (n = 12) is reported together with this loss of power.
+
 ## Decision rule (angles)
 
 "Angles have a circular component beyond PC1–2" is accepted only if **all four** hold at the preregistered layer:
