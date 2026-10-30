@@ -358,5 +358,23 @@
    "pandas": "3.1.0",
    "statsmodels": "0.15.0"
   }
+ },
+ {
+  "phase": "report",
+  "time": "2026-10-30T19:06:03",
+  "git_sha": "5ff8d37351c9709f02208ecd75d5a6ac209d4c52",
+  "git_dirty": true,
+  "config": "configs/gemma.yaml",
+  "config_sha256": "54a4331c9832de251a590d84923189009471ef42da756db7e598dbaea3f24b72",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
  }
 ]
