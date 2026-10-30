@@ -130,10 +130,10 @@ def field_rdms(cfg: Config, key: str, setup: dict, layer: int) -> dict[str, np.n
     return out
 
 
-def field_layouts(rdms: dict[str, np.ndarray], ref: np.ndarray | None = None) -> dict[str, np.ndarray]:
-    """2-D metric MDS of each RDM, aligned to the arXiv layout (or to `ref`, e.g. for the layer slider)."""
-    base = mds(rdms["arxiv"]) if ref is None else ref
-    return {k: align(mds(D), base) for k, D in rdms.items()}
+def field_layouts(rdms: dict[str, np.ndarray], ref: np.ndarray | None = None, k: int = 2) -> dict[str, np.ndarray]:
+    """k-D metric MDS of each RDM (2-D maps; 3-D for the hero), aligned to the arXiv layout (or to `ref`)."""
+    base = mds(rdms["arxiv"], k=k) if ref is None else ref
+    return {name: align(mds(D, k=k), base) for name, D in rdms.items()}
 
 
 def neighbour_edges(D: np.ndarray, k: int = 2) -> list[tuple[int, int]]:
@@ -223,6 +223,28 @@ def offset_matrix(X: np.ndarray, bits: np.ndarray, axioms: list[str]) -> dict:
     C = V @ V.T
     shared = np.array([[len({*p} & {*q}) > 0 and i != j for j, q in enumerate(pairs)] for i, p in enumerate(pairs)])
     return {"pairs": pairs, "group": np.array(group), "cos": C, "shared": shared}
+
+
+def axiom_angles(X: np.ndarray, bits: np.ndarray, axioms: list[str]) -> dict:
+    """The "compass" of the axiom explainer: for every pair of structures that differ only in axiom a,
+    the full-space angle (degrees) between its difference vector and the mean direction of the *other*
+    same-axiom difference vectors (leave-one-out). 0° = it points where the others point; 90° = unrelated.
+    These are the vectors whose mean pairwise cosine is the reported offset consistency. Differences do
+    not depend on centring, so exact (n−1)-D coordinates give identical angles (tested)."""
+    from mathgeom.analyses.lattice import axiom_pairs
+
+    X = np.asarray(X, dtype=np.float64)
+    out = {}
+    for a, name in enumerate(axioms):
+        pairs = axiom_pairs(bits, a)
+        U = np.stack([X[q] - X[p] for p, q in pairs])
+        U /= np.linalg.norm(U, axis=1, keepdims=True) + 1e-12
+        deg = []
+        for k in range(len(pairs)):
+            m = U[np.arange(len(pairs)) != k].sum(0)
+            deg.append(float(np.degrees(np.arccos(np.clip(U[k] @ m / (np.linalg.norm(m) + 1e-12), -1.0, 1.0)))))
+        out[name] = {"pairs": [tuple(map(int, p)) for p in pairs], "deg": deg}
+    return out
 
 
 def concept_neighbours(X: np.ndarray, k: int = 10) -> np.ndarray:

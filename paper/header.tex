@@ -1,3 +1,7 @@
 % Smaller tables so the wide results tables fit the text width (pandoc renders tables as longtable).
 \usepackage{etoolbox}
 \AtBeginEnvironment{longtable}{\scriptsize}
+% ✗ (scorecard: preregistered prediction falsified) is missing from Cambria Math; take it from Segoe UI Symbol.
+\usepackage{newunicodechar}
+\newfontfamily\symbolfont{Segoe UI Symbol}
+\newunicodechar{✗}{{\symbolfont ✗}}

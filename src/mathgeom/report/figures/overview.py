@@ -40,27 +40,53 @@ def offset_dots(ax, off, axes_names: list[str], conf: str, extra=None):
     ax.legend(loc="upper center", bbox_to_anchor=(0.45, -0.17), ncol=2, fontsize=6.3)
 
 
-def map_panel(ax, P: np.ndarray, fmap: dict, title: str, note: str) -> None:
-    """One field-map layout with the ground-truth neighbour edges (shared by the hero panels)."""
+def map_panel3d(ax, P: np.ndarray, fmap: dict, title: str, note: str) -> None:
+    """One 3-D field map (3-D metric MDS) with the ground-truth neighbour edges, true proportions, fixed camera."""
     for i, j in fmap["edges"]:
-        ax.plot(*P[[i, j]].T, color=S.AXIS, lw=0.8, zorder=1)
-    ax.scatter(P[:, 0], P[:, 1], c=[S.BLUE if p == "pure" else S.ORANGE for p in fmap["pa"]], s=28, zorder=3, edgecolors=S.SURFACE, linewidths=1.0)
-    S.label_points(ax, P, [S.FIELD.get(n, n) for n in fmap["names"]], size=5.2)
-    S.bare(ax)
-    S.note(ax, note)
+        ax.plot(*P[[i, j]].T, color=S.AXIS, lw=0.7)
+    ax.scatter(*P.T, c=[S.BLUE if p == "pure" else S.ORANGE for p in fmap["pa"]], s=18, depthshade=False, edgecolors=S.SURFACE, linewidths=0.6)
+    for (x, y, z), n in zip(P, fmap["names"]):
+        ax.text(x, y, z, " " + S.FIELD.get(n, n), fontsize=4.6, color=S.INK2)
+    S.bare3d(ax, P, zoom=1.15)
+    for setter, lab in zip((ax.set_xlabel, ax.set_ylabel, ax.set_zlabel), ("MDS 1", "MDS 2", "MDS 3")):
+        setter(lab, fontsize=6, color=S.MUTED, labelpad=-12)
+    S.note3d(ax, note)
     ax.set_title(title, fontsize=9)
 
 
-def draw_hero(r: dict, planes: dict, fmap: dict, conf: str):
-    """Row 1: (A) field-map ρ for all models vs twins; (B) arXiv / trained / twin field maps with the
-    ground-truth neighbour edges. Row 2: (C, D) days cycle vs angles line; (E) axiom offsets."""
+def draw_hero(r: dict, fam3d: dict, lat3d: dict, fmap: dict, conf: str):
+    """Results at a glance, 3-D first. Row 1, axioms as directions: (A) the '+ commutativity' arrows of the
+    confirmatory model and of its twin drawn from one origin in each model's top-3 PCs; (B) offset
+    consistency of all four axioms in all models vs null and twins. Row 2, the field map: (C) rho with arXiv
+    for all models vs twins; (D) 3-D MDS maps of arXiv, the model and its twin. Row 3, ordered families in
+    their top-3 PCs: (E) days, angles, ring chain, space chain."""
     import matplotlib.pyplot as plt
     from matplotlib.lines import Line2D
 
+    from mathgeom.report.figures.families import draw_plane3d
+    from mathgeom.report.figures.lattice import _arrows_at_origin
+
     mp, la, sh, ph = r["map_fields"], r["lattice"], r["shapes"], r["posthoc"]
-    fig = plt.figure(figsize=(16, 9.2))
-    gs = fig.add_gridspec(2, 4, width_ratios=[1.2, 1, 1, 1], hspace=0.42, wspace=0.28)
-    ax = fig.add_subplot(gs[0, 0])
+    Lp = mp[conf]["primary_layer"]
+    fig = plt.figure(figsize=(16, 14))
+    gs = fig.add_gridspec(3, 4, width_ratios=[1.15, 1, 1, 1], hspace=0.42, wspace=0.22)
+    # row 1 . axioms as directions
+    for col, side in enumerate(("trained", "random_init")):
+        V, pairs = lat3d[side], lat3d["pairs"]
+        lim = max(np.linalg.norm(V[q] - V[p]) for p, q in pairs) * 1.05
+        ax = fig.add_subplot(gs[0, col], projection="3d")
+        _arrows_at_origin(ax, V, pairs, S.BLUE if side == "trained" else S.TWIN, lim)
+        k = conf if side == "trained" else f"{conf}__random"
+        c = la[k]["group_like"]["offsets"]["commutative"]["consistency"]
+        ax.set_title(("A · Axioms act as directions\n" if col == 0 else "\n") + (f"{S.MODEL[conf]} ★" if side == "trained" else "its random-init twin"), fontsize=9)
+        S.note3d(ax, f"'+ commutativity' arrows from one origin\nconsistency {c:.2f}")
+    ax = fig.add_subplot(gs[0, 2:])
+    lp = la[conf].get("audit2", {}).get("group_like_offsets", {}).get("length_projected", {})
+    offset_dots(ax, lambda k, a: la[k]["group_like"]["offsets"][a], list(la[conf]["group_like"]["offsets"]), conf,
+                extra=lambda a: lp[a]["consistency"] if a in lp else None)  # diamonds: word-length (token-count) control
+    ax.set_title("B · All four axioms, all five models: parallel arrows, unlike the twins", fontsize=9)
+    # row 2 . the field map
+    ax = fig.add_subplot(gs[1, 0])
     y = np.arange(len(KEYS))[::-1]
     for yi, k in zip(y, KEYS):
         m = mp[k]["math_primary"]
@@ -73,31 +99,26 @@ def draw_hero(r: dict, planes: dict, fmap: dict, conf: str):
     ax.set_xlabel("ρ(field-centroid distances, arXiv distances)", fontsize=7.5)
     ax.scatter([], [], color=S.BLUE, label="trained (95% CI)"), ax.scatter([], [], color=S.TWIN, label="random-init twin")
     ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.17), ncol=2, fontsize=6.5)
-    ax.set_title("A · Fields form a map in every model", fontsize=9)
+    ax.set_title("C · Fields form a map in every model", fontsize=9)
     m = mp[conf]["math_primary"]["rsa"]
-    for col, (k, title, note) in enumerate((("arxiv", "B · arXiv cross-listing (ground truth)", "grey edges: each field's 2 nearest arXiv neighbours"),
-                                             ("trained", f"{S.MODEL[conf]} ★: related fields sit together", f"ρ with arXiv = {m['trained']:.2f}; most edges stay short"),
-                                             ("random_init", "Its random-init twin: no map", f"ρ with arXiv = {m['random_init']:.2f}; edges cross the map")), start=1):
-        map_panel(fig.add_subplot(gs[0, col]), fmap["lay"][k], fmap, title, note)
+    for col, (k, title, note) in enumerate((("arxiv", "D · arXiv cross-listing (ground truth)", "grey edges: each field's 2 nearest arXiv neighbours"),
+                                             ("trained", f"{S.MODEL[conf]} ★: related fields sit together", f"ρ with arXiv = {m['trained']:.2f}"),
+                                             ("random_init", "Its random-init twin: no map", f"ρ with arXiv = {m['random_init']:.2f}")), start=1):
+        map_panel3d(fig.add_subplot(gs[1, col], projection="3d"), fmap["lay3"][k], fmap, title, note)
     fig.legend(handles=[Line2D([], [], marker="o", ls="", color=S.BLUE, label="pure field"), Line2D([], [], marker="o", ls="", color=S.ORANGE, label="applied field")],
-               loc="upper center", bbox_to_anchor=(0.62, 0.5), ncol=2, fontsize=6.5)
-    Lp = mp[conf]["primary_layer"]
-    from mathgeom.report.figures.families import draw_plane
-
-    for col, (f, title, closed) in enumerate((("days", "C · Days: a circle", True), ("angles", "D · Angles: not a circle", False))):
-        ax = fig.add_subplot(gs[1, col])
-        P, items = planes[f]
-        draw_plane(ax, P, items, closed=closed, size=6, highlight=((len(P) - 1, 0),) if f == "angles" else ())
-        if f == "days":
-            S.note(ax, f"cycle score {ph[conf]['pc_plane_cycle']['days'][Lp - 1]['score']:.2f} (twin {ph[conf + '__random']['pc_plane_cycle']['days'][Lp - 1]['score']:.2f})")
-        else:
-            S.note(ax, f"d(0°, 330°) = {sh[conf]['angles']['closure']:.2f} × neighbour distance (twin {sh[conf + '__random']['angles']['closure']:.2f})")
-        ax.set_title(title, fontsize=9)
-    ax = fig.add_subplot(gs[1, 2:])
-    lp = la[conf].get("audit2", {}).get("group_like_offsets", {}).get("length_projected", {})
-    offset_dots(ax, lambda k, a: la[k]["group_like"]["offsets"][a], list(la[conf]["group_like"]["offsets"]), conf,
-                extra=lambda a: lp[a]["consistency"] if a in lp else None)  # diamonds: word-length (token-count) control
-    ax.set_title("E · Axioms act as directions", fontsize=9)
+               loc="upper center", bbox_to_anchor=(0.62, 0.355), ncol=2, fontsize=6.5)
+    # row 3 . ordered families in 3-D
+    notes = {"days": f"cycle score {ph[conf]['pc_plane_cycle']['days'][Lp - 1]['score']:.2f} (twin {ph[conf + '__random']['pc_plane_cycle']['days'][Lp - 1]['score']:.2f})",
+             "angles": f"d(0°, 330°) = {sh[conf]['angles']['closure']:.2f} × neighbour step (twin {sh[conf + '__random']['angles']['closure']:.2f})",
+             "ring_chain": f"Robinson {sh[conf]['ring_chain']['robinson']:.2f} (twin {sh[conf + '__random']['ring_chain']['robinson']:.2f})",
+             "space_chain": f"Robinson {sh[conf]['space_chain']['robinson']:.2f} (twin {sh[conf + '__random']['space_chain']['robinson']:.2f})"}
+    titles = {"days": "E · Days: a circle", "angles": "Angles: not a circle", "ring_chain": "Ring chain: an ordered path", "space_chain": "Space chain: an ordered path"}
+    for col, f in enumerate(("days", "angles", "ring_chain", "space_chain")):
+        ax = fig.add_subplot(gs[2, col], projection="3d")
+        P, var, labels = fam3d[f]
+        draw_plane3d(ax, P, labels, f in ("days", "angles"), var, highlight=((len(P) - 1, 0),) if f == "angles" else (), size=5.0)
+        S.note3d(ax, notes[f])
+        ax.set_title(titles[f], fontsize=9)
     return fig
 
 
@@ -229,14 +250,28 @@ def draw_group_objects(r: dict):
 
 def build(r: dict, cfg_conf, outdir) -> list[str]:
     from mathgeom.report.figures.families import save_turntable, short
+    from mathgeom.report.figures.lattice import save_axiom_gif
 
     conf = cfg_conf.models[0]["key"]  # the pre-registered confirmatory model
     Lp = r["map_fields"][conf]["primary_layer"]
-    planes = {f: (figdata.pca(figdata.family_acts(cfg_conf, conf, f)[:, Lp]), [short(f, c)[:3] if f == "days" else (short(f, c) if i in (0, 3, 6, 11) else "") for i, c in enumerate(figdata.family_items(cfg_conf, f))])
-              for f in ("days", "angles")}
+    from mathgeom.analyses.lattice import axiom_pairs
+    from mathgeom.config import load_yaml
+    from mathgeom.report.figures.families import views3d
+    from mathgeom.report.figures.lattice import _views3d
+
+    fams = ("days", "angles", "ring_chain", "space_chain")
+    v3 = views3d(cfg_conf, conf, list(fams), Lp)
+    lab = lambda f, i, c: short(f, c)[:3] if f == "days" else (short(f, c) if f != "angles" or i in (0, 3, 6, 11) else "")  # noqa: E731
+    fam3d = {f: (*v3[(conf, f)], [lab(f, i, c) for i, c in enumerate(figdata.family_items(cfg_conf, f))]) for f in fams}
+    lat = load_yaml("families.yaml")["lattices"]["group_like"]
+    names = list(lat["items"])
+    bits = np.array([lat["items"][c] for c in names])
+    X = {"trained": figdata.family_acts(cfg_conf, conf, "group_like", names)[:, Lp], "random_init": figdata.family_acts(cfg_conf, f"{conf}__random", "group_like", names)[:, Lp]}
+    lat3d = {s: v[0] for s, v in _views3d(X).items()} | {"pairs": axiom_pairs(bits, lat["axioms"].index("commutative"))}
     setup = figdata.field_setup(cfg_conf, r["map_fields"][conf])
-    fmap = {"lay": figdata.field_layouts(figdata.field_rdms(cfg_conf, conf, setup, Lp)), "names": setup["names"], "pa": setup["pa"],
+    fmap = {"lay3": figdata.field_layouts(figdata.field_rdms(cfg_conf, conf, setup, Lp), k=3), "names": setup["names"], "pa": setup["pa"],
             "edges": figdata.neighbour_edges(setup["arxiv"])}
-    return [S.save(draw_hero(r, planes, fmap, conf), outdir, "hero"), S.save(draw_depth(r), outdir, "depth_curves"), S.save(draw_forest(r), outdir, "forest"),
+    return [S.save(draw_hero(r, fam3d, lat3d, fmap, conf), outdir, "hero"), S.save(draw_depth(r), outdir, "depth_curves"), S.save(draw_forest(r), outdir, "forest"),
             S.save(draw_group_objects(r), outdir, "group_objects"), S.save(draw_partial_operation(r, conf), outdir, "partial_operation"),
-            save_turntable(cfg_conf, conf, Lp, outdir)]  # README 3-D turntable, confirmatory model only (≈1.5 MB per GIF)
+            save_turntable(cfg_conf, conf, Lp, outdir),  # README 3-D turntable, confirmatory model only (≈1.5 MB per GIF)
+            save_axiom_gif(cfg_conf, conf, r["lattice"], Lp, outdir)]  # README lead animation: axiom arrows in 3-D, to one origin

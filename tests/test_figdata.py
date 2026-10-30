@@ -162,3 +162,22 @@ def test_view_variance_matches_the_figures():
     np.testing.assert_allclose(v["angles"]["var5"][Lp - 1], d["families"]["angles"]["var"]["trained"][Lp - 1], atol=1e-4)
     np.testing.assert_allclose(v["group_like"]["var5"][Lp - 1], d["lattice"]["trained"]["var"][Lp - 1], atol=1e-4)
     assert v["angles"]["cum3"][Lp - 1] == pytest.approx(sum(v["angles"]["var5"][Lp - 1][:3]), abs=1e-3)
+
+
+# ------------------------------------------------------------------ "how the axiom test works" compass
+def test_axiom_angles_are_exact_and_separate_parallel_from_random():
+    """Leave-one-out angle of each same-axiom difference vector to the others' mean direction: identical
+    from exact (n-1)-D coordinates and from the full vectors; parallel offsets give ~0 deg, random ~90 deg."""
+    rng = np.random.default_rng(10)
+    bits = np.array([[a, i, d, c] for a in (0, 1) for i in (0, 1) for d in (0, 1) for c in (0, 1)])[:13]
+    axioms = ["associative", "identity", "divisible", "commutative"]
+    X = rng.normal(size=(13, 400))
+    full = figdata.axiom_angles(X, bits, axioms)
+    exact = figdata.axiom_angles(figdata.exact_coords(X), bits, axioms)
+    for a in axioms:
+        assert full[a]["pairs"] == exact[a]["pairs"]
+        np.testing.assert_allclose(full[a]["deg"], exact[a]["deg"], atol=1e-9)
+        assert 70 < np.mean(full[a]["deg"]) < 110  # random structures: arrows unrelated
+    D = rng.normal(size=(4, 400)) * 3  # one fixed direction per axiom, plus small noise
+    Xp = bits @ D + 0.05 * rng.normal(size=(13, 400))
+    assert all(np.max(figdata.axiom_angles(Xp, bits, axioms)[a]["deg"]) < 10 for a in axioms)

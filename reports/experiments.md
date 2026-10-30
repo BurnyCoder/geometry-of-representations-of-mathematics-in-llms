@@ -242,7 +242,7 @@ The new items were appended after the existing ones. Extraction runs at batch si
 - *Scorecard at the top.* The plan put the scorecard next to the hero; it sat inside the results block. The README now has two generated blocks: `TOP` (scorecard and the GIF with its three-part caption, from `reports/readme_top_template.md`) and `RESULTS`. The GIF had also appeared twice; it now appears once.
 - *Legends.* The plan asks for a legend whenever a chart has two or more series; the site charts had none. The field map, depth curve, cycle-score curve, forest plot, concept cloud, family planes, lattice and group-object charts now carry one.
 - *The global trained ↔ twin morph.* A control-bar button switches the main panels (field map and matrix, families, lattice, concept cloud) to the twin; 2-D points glide with a Plotly transition. To make the motion minimal, the twin's family and lattice planes are rotated onto the trained plane (rotation and reflection only; a test checks that no distance changes).
-- *Missing pieces.* The site had no partial-operation chart (now Figure 14, with the selected model, the other models, all twins and the null), the forest plot had no filter by hypothesis (now chips), and the method figure had no caption. The paper's partial-operation caption now links to the site.
+- *Missing pieces.* The site had no partial-operation chart (now `#fig-partial`, with the selected model, the other models, all twins and the null), the forest plot had no filter by hypothesis (now chips), and the method figure had no caption. The paper's partial-operation caption now links to the site.
 
 ## E9: 3-D views, and a closed-cycle test beyond the top-2 plane
 
@@ -318,6 +318,35 @@ The new items were appended after the existing ones. Extraction runs at batch si
 - *Hidden browser pane.* `requestAnimationFrame` never fires in a hidden pane, so tweens hung; they now use timers on wall-clock time.
 - *Stale tween frame.* A stale frame overwrote the 2D switch; purging a panel now cancels pending tweens.
 - *URL parameter.* The `?view=2d` parameter was read after the buttons were wired.
+
+## E10: Axioms first, with a picture of how the test works
+
+**Goal.** The user asked to make "axioms as directions" (H-B2) the first highlighted result everywhere, with visuals of how the test works, 3-D shown first, and the other results after it. No analysis was rerun and no number changed; this entry records a change of presentation.
+
+**What changed.**
+- *New figures* (built in a parallel session; see [`docs/figures.md`](../docs/figures.md)):
+  - `axioms_explainer_<model>`: the test in four steps. The lattice of structures; one axiom's pairs as arrows in the top-3 PCs; the same arrows at one common origin, trained vs twin; and a compass of full-space angles for every axiom.
+  - `axiom_arrows_qwen3.5-2b.gif`: the arrows sliding to one common origin in 3-D, at the top of the README.
+  - A three-row hero with the axioms in the top row.
+- *Order.*
+  - README: the axiom GIF, then the scorecard; the axioms bullet leads the highlights, and the results block opens with the axioms section.
+  - Paper: §4.1 H-B2 axioms, §4.2 H-A1 map, §4.3 robustness (now also the template variants), §4.4 H-B shapes, §4.5 secondary. The abstract, contributions, discussion and conclusion lead with the axioms.
+  - Summary: the plain-words list, the hypotheses table and the figures lead with the axioms.
+  - Everywhere, a 3-D view comes before the 2-D view of the same data (lattice, families, chains). The days/months layer GIF moved from the top of the README into the shapes section.
+
+**What did not change, and how the text says so.**
+- H-A1 (the field map) stays the primary preregistered hypothesis.
+- Every test keeps its status label (confirmatory, secondary, exploratory, added or post-hoc), the Holm family is unchanged, and every number is still a placeholder resolved from `results/*/*.json`.
+- The paper's Results section, the README results block, the summary and the hero caption each say in one sentence that the order is a presentation choice. A reader who sees axioms first could otherwise take H-B2 for the primary hypothesis.
+
+**Integrity choices in the new captions.**
+- *The picture is not the statistic.* The explainer's steps 2–3 and the GIF are 3-D projections. Every caption says that offset consistency is computed in the full residual stream.
+- *The compass is a visual aid, not a test.* It shows each difference vector's angle to the leave-one-out mean of the others, which is not the same quantity as the mean pairwise cosine that is tested. Its numbers are therefore not quoted in the text; only the reported consistencies, null percentiles and p-values are.
+- *Holm per model.* While reordering, two hand-written statements turned out to be wrong. The paper abstract said divisibility does not survive Holm correction, and the summary said divisibility and identity are significant only before correction. Both hold for the confirmatory model, but not for every replication model: the scorecard shows divisibility surviving Holm correction in two models and identity in one. The abstract now says "in the confirmatory model neither survives Holm correction", and the summary gives the counts.
+
+**Issues found while doing it.**
+- *Renumbered sections.* Renumbering the paper's Results sections changed the anchors the site uses to link figures to paper sections (`data-paper`); the new anchors were handed to the site session. In the paper, one `§` reference pointed at an old number (the closed-cycle test, §4.3 → §4.4). Two vague ones ("see §6 and the causal results", "all tests except §4.5") now name the test they mean.
+- *New site anchor.* The new link `#fig-axiom-how` resolves only once the site has the explainer figure. `tests/test_site.py` checks every such link.
 
 ## Tooling learnings (continued)
 

@@ -1,5 +1,6 @@
 """The explorable site reads only generated data: schema of site/data/*.json, every data-num path in
-index.html resolves, and the page text contains no hand-typed decimal numbers."""
+index.html resolves, the page text contains no hand-typed decimal numbers or figure numbers, and the
+full-space "compass" of the axiom stepper equals the one computed from the full activations."""
 
 import json
 import re
@@ -7,7 +8,7 @@ import re
 import numpy as np
 import pytest
 
-from mathgeom.config import ROOT
+from mathgeom.config import ROOT, load_config
 
 SITE = ROOT / "site"
 
@@ -82,3 +83,65 @@ def test_script_targets_exist_in_page():
     looked_up = set(re.findall(r'\$\("([\w-]+)"\)', js))
     assert registered and registered <= ids
     assert not (looked_up - ids - created), looked_up - ids - created
+
+
+def test_figure_numbers_come_from_page_order():
+    """Figures are numbered by app.js in page order, so reordering sections cannot leave a stale number:
+    no "Figure N" is typed into the page or the script, and every figref points at a figure that exists."""
+    html, js = (SITE / "index.html").read_text(encoding="utf-8"), (SITE / "app.js").read_text(encoding="utf-8")
+    figures = set(re.findall(r'<figure class="fig" id="([\w-]+)"', html))
+    refs = set(re.findall(r'class="figref" href="#([\w-]+)"', html)) | set(re.findall(r'figref\("([\w-]+)"\)', js))
+    assert refs and not refs - figures, refs - figures
+    assert not re.findall(r"figures? *\d", html, flags=re.I) and not re.findall(r"figures? *\d", js, flags=re.I)
+
+
+def test_paper_links_point_at_paper_sections():
+    """Every figure's "Details in the paper" anchor is the GitHub slug of a paper/paper.md heading
+    (lower-case, punctuation dropped, spaces → hyphens, as github-slugger does)."""
+    html = (SITE / "index.html").read_text(encoding="utf-8")
+    headings = re.findall(r"^#+ (.+?)\s*$", (ROOT / "paper" / "paper.md").read_text(encoding="utf-8"), flags=re.M)
+    if not any(h.startswith("4.1 H-B2") for h in headings):
+        pytest.skip("paper/paper.md is not yet renumbered axioms-first (4.1 H-B2)")
+    slugs = {re.sub(r"[^\w\- ]", "", h.lower()).replace(" ", "-") for h in headings}
+    anchors = set(re.findall(r'data-paper="#([^"]+)"', html))
+    assert anchors and not anchors - slugs, anchors - slugs
+
+
+def _compass(X: np.ndarray, pairs: list) -> tuple[np.ndarray, float]:
+    """Python mirror of `compass` in site/app.js: for each pair (i, j), the angle (degrees) between the unit
+    difference vector X[j] − X[i] and the mean of the other pairs' unit vectors (leave-one-out), and the
+    mean pairwise cosine of the unit vectors (= offset consistency, mathgeom.geometry.offsets)."""
+    U = np.stack([X[j] - X[i] for i, j in pairs])
+    U /= np.linalg.norm(U, axis=1, keepdims=True)
+    deg = []
+    for k in range(len(U)):
+        m = U[np.arange(len(U)) != k].sum(0)
+        deg.append(np.degrees(np.arccos(np.clip(U[k] @ m / np.linalg.norm(m), -1.0, 1.0))))
+    return np.array(deg), float((U @ U.T)[np.triu_indices(len(U), 1)].mean())
+
+
+@pytest.mark.skipif(not (SITE / "data" / "index.json").exists(), reason="site data not generated")
+def test_compass_angles_match_full_activations():
+    """Step 4 of the axiom stepper computes its angles in the browser from lattice.<side>.exact, which keeps
+    every inner product of the centred vectors; recomputed here from those coordinates they must equal the
+    angles from the full residual activations, and the mean cosine must equal the reported consistency."""
+    from mathgeom.report import figdata
+
+    cfg = load_config("configs/mvp.yaml")  # default template conditions; activations are stored per model key
+    idx = json.loads((SITE / "data" / "index.json").read_text(encoding="utf-8"))
+    checked = 0
+    for m in idx["models"]:
+        lt = json.loads((SITE / "data" / f"{m['key']}.json").read_text())["lattice"]
+        for side, key in (("trained", m["key"]), ("random_init", f"{m['key']}__random")):
+            if not (cfg.artifacts / "acts" / key / "family.npz").exists():
+                continue
+            X = figdata.family_acts(cfg, key, "group_like", lt["items"])[:, m["primary_layer"]]
+            E = np.array(lt[side]["exact"])
+            for a, name in enumerate(lt["axioms"]):
+                pairs = [p for p, g in zip(lt["pairs"], lt["group"]) if g == a]
+                (deg_full, _), (deg_exact, cons) = _compass(X, pairs), _compass(E, pairs)
+                np.testing.assert_allclose(deg_exact, deg_full, atol=0.01, err_msg=f"{key} {name}")
+                assert cons == pytest.approx(idx["results"]["lattice"][key]["group_like"]["offsets"][name]["consistency"], abs=1e-4), (key, name)
+            checked += 1
+    if not checked:
+        pytest.skip("activations not present")

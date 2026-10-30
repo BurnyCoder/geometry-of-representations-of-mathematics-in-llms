@@ -131,6 +131,16 @@ td.num, th.num { font-variant-numeric: tabular-nums; text-align: right; }
 footer { color: var(--ink2); font-size: 0.85rem; padding: 40px 0 60px; border-top: 1px solid var(--grid); margin-top: 60px; }
 @media (max-width: 640px) { body { font-size: 15px; } figure.fig { padding: 12px 10px 8px; } .panel.tall { min-height: 340px; } }
 
+/* how the axiom test works: step text (fixed height, so the panels do not jump between steps) and the step-1 table */
+.how-text { font-size: 0.9rem; color: var(--ink2); margin: 4px 0 8px; min-height: 6.4em; }
+.how-text b { color: var(--ink); }
+.how-card { min-height: 420px; overflow-x: auto; }
+.how-card table { font-size: 0.8rem; }
+.how-card th, .how-card td { padding: 3px 6px; }
+.how-card .sel { background: var(--accent-wash); color: var(--blue); font-weight: 600; }
+.how-card p { margin: 8px 0 0; }
+a.figref { white-space: nowrap; }
+
 /* pinned item's row in a table view; the no-WebGL note */
 tr.pinned td { background: var(--accent-wash); font-weight: 600; }
 .gl-note { font-size: 0.8rem; color: var(--orange); }

@@ -125,10 +125,12 @@ def test_cross_model_extra_figures_render(tmp_path):
     D = np.abs(rng.normal(size=(n, n)))
     D = (D + D.T) / 2
     np.fill_diagonal(D, 0)
-    fmap = {"lay": {k: rng.normal(size=(n, 2)) for k in ("arxiv", "trained", "random_init")}, "names": [f"f{i}" for i in range(n)], "pa": ["pure"] * n,
+    fmap = {"lay3": {k: rng.normal(size=(n, 3)) for k in ("arxiv", "trained", "random_init")}, "names": [f"f{i}" for i in range(n)], "pa": ["pure"] * n,
             "edges": fd.neighbour_edges(D)}
-    planes = {"days": (rng.normal(size=(7, 2)), [f"d{i}" for i in range(7)]), "angles": (rng.normal(size=(12, 2)), [f"a{i}" for i in range(12)])}
-    style.save(overview.draw_hero(r, planes, fmap, conf), tmp_path, "hero")
+    var = np.array([0.3, 0.2, 0.1, 0.05, 0.05])
+    fam3d = {f: (rng.normal(size=(m, 3)), var, [f"{f[0]}{i}" for i in range(m)]) for f, m in (("days", 7), ("angles", 12), ("ring_chain", 11), ("space_chain", 11))}
+    lat3d = {"trained": rng.normal(size=(13, 3)), "random_init": rng.normal(size=(13, 3)), "pairs": [(0, 1), (2, 3), (4, 5)]}
+    style.save(overview.draw_hero(r, fam3d, lat3d, fmap, conf), tmp_path, "hero")
     style.save(overview.draw_group_objects(r), tmp_path, "groups")
     style.save(overview.draw_partial_operation(r, conf), tmp_path, "partial")
     rows = [rw for _, rr in overview.forest_rows(r) for rw in rr]
@@ -184,3 +186,32 @@ def test_label_placement_is_reproducible():
         return pos
 
     np.testing.assert_array_equal(place(), place())
+
+
+def test_axiom_explainer_and_gif_render(tmp_path):
+    """The 4-step 'how the test works' figure (synthetic data) and the 3-D arrow GIF (2 frames, real
+    activations, skipped without them)."""
+    from mathgeom.config import load_config
+    from mathgeom.report import figdata
+    from mathgeom.report.figures import lattice
+
+    rng = np.random.default_rng(11)
+    bits = np.array([[a, i, d, c] for a in (0, 1) for i in (0, 1) for d in (0, 1) for c in (0, 1)])[:13]
+    axioms = ["associative", "identity", "divisible", "commutative"]
+    names = [f"s{i}" for i in range(13)]
+    X = {k: rng.normal(size=(13, 60)) for k in ("trained", "random_init")}
+    off = {a: {"consistency": 0.3, "null95": 0.2, "p": 0.01} for a in axioms}
+    style.save(lattice.draw_explainer(X, names, bits, axioms, {"trained": off, "random_init": off}, "commutative", "M"), tmp_path, "explainer")
+    assert (tmp_path / "explainer.png").exists()
+    cfg = load_config("configs/mvp.yaml")
+    if not (cfg.artifacts / "acts" / "family_index.json").exists():
+        pytest.skip("activations not present")
+    import json
+
+    from mathgeom.config import ROOT
+
+    la = json.loads((ROOT / "results" / "mvp" / "lattice.json").read_text())
+    name = lattice.save_axiom_gif(cfg, "qwen3.5-2b", la, 12, tmp_path, frames_per_axiom=1, axioms_shown=["commutative", "associative"])
+    from PIL import Image
+
+    assert Image.open(tmp_path / name).n_frames == 2
