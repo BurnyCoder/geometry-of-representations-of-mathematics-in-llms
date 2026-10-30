@@ -177,20 +177,31 @@ def chain_p(s: dict) -> float:
     return max(s["robinson_p"], s["loo_order_p"])
 
 
+def angles_met(a: dict) -> bool:
+    """The pre-registered angles decision rule (docs/prereg.md H-B): closure < 2 AND circle ρ > line ρ."""
+    return a["closure"] < 2 and a["circle_rho"] > a["line_rho"]
+
+
+ANGLES_ROW = "H-B angles circle prediction (decision rule; p = 1 when falsified)"
+
+
 def holm_rows(mp: dict, sh: dict, la: dict, key: str) -> list[tuple[str, float]]:
-    """The p-valued pre-registered confirmatory tests of the MVP (docs/prereg.md §4) and their p-values:
-    7 tests; the 8th, the angles prediction, is a decision rule without a p (listed by table_holm).
+    """The 8 pre-registered confirmatory tests of the MVP (docs/prereg.md §4) and their p-values.
+    The angles prediction is a decision rule without a p: it enters with p = 1 when the rule fails, so it
+    counts in the family size without being rejected (independent audit, reports/prereg_addendum_lexical.md D8;
+    a 7-test family had been used before, which is less conservative than the frozen text), and p = 0 if met.
     The H-A1 bootstrap p is (1 + #resamples with Δ ≤ 0)/(1 + n_boot), the same +1 convention as the
     permutation p-values, so 0 of 2,000 resamples gives 1/2001 rather than an impossible 0."""
     n_boot = load_yaml("mvp.yaml")["n_boot"]  # every run config uses the same n_boot
     rows = [("H-A1 Δρ trained − random-init ≤ 0 (bootstrap)", (1 + mp[key]["math_primary"]["rsa_boot"]["delta_vs_random_init"]["p_le_0"] * n_boot) / (1 + n_boot)),
             ("H-B ring chain (Robinson and LOO order)", chain_p(sh[key]["ring_chain"])), ("H-B space chain (Robinson and LOO order)", chain_p(sh[key]["space_chain"]))]
     rows += [(f"H-B2 {a} offset consistency", o["p"]) for a, o in la[key]["group_like"]["offsets"].items()]
+    rows.append((ANGLES_ROW, 0.0 if angles_met(sh[key]["angles"]) else 1.0))
     return rows
 
 
 def holm_decisions(mp: dict, sh: dict, la: dict, key: str) -> list[dict]:
-    """Holm (statsmodels multipletests) over one model's 7 p-valued confirmatory tests."""
+    """Holm (statsmodels multipletests) over one model's 8 confirmatory tests."""
     from statsmodels.stats.multitest import multipletests
 
     rows = holm_rows(mp, sh, la, key)
@@ -199,14 +210,17 @@ def holm_decisions(mp: dict, sh: dict, la: dict, key: str) -> list[dict]:
 
 
 def table_holm(mp: dict, sh: dict, la: dict) -> str:
-    """Holm over the p-valued confirmatory tests; the angles prediction is a pre-registered decision
-    rule (closure < 2 AND circle ρ > line ρ) with no p-value, so it is listed but not adjusted."""
+    """Holm over the 8 confirmatory tests; the angles prediction is a pre-registered decision rule
+    (closure < 2 AND circle ρ > line ρ) whose row shows the rule instead of a p-value."""
     out = ["| Test | Model | p | Holm-adjusted p | reject at α=0.05 |", "|---|---|---|---|---|"]
     for key in mp:
-        out += [f"| {d['name']} | {key} | {_p(d['p'])} | {_p(d['p_holm'])} | {'yes' if d['reject'] else 'no'} |" for d in holm_decisions(mp, sh, la, key)]
-        a = sh[key]["angles"]
-        met = a["closure"] < 2 and a["circle_rho"] > a["line_rho"]
-        out.append(f"| H-B angles circle prediction (decision rule: closure {a['closure']:.2f} < 2 and circle ρ {a['circle_rho']:.2f} > line ρ {a['line_rho']:.2f}) | {key} | — | — | {'met' if met else 'not met (prediction falsified)'} |")
+        for d in holm_decisions(mp, sh, la, key):
+            if d["name"] == ANGLES_ROW:
+                a = sh[key]["angles"]
+                out.append(f"| H-B angles circle prediction (decision rule: closure {a['closure']:.2f} < 2 and circle ρ {a['circle_rho']:.2f} > line ρ {a['line_rho']:.2f}; "
+                           f"counted with p = {d['p']:.0f}) | {key} | — | — | {'met' if angles_met(a) else 'not met (prediction falsified)'} |")
+            else:
+                out.append(f"| {d['name']} | {key} | {_p(d['p'])} | {_p(d['p_holm'])} | {'yes' if d['reject'] else 'no'} |")
     return "\n".join(out)
 
 

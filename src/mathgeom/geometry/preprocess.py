@@ -11,6 +11,8 @@ random concepts look orthogonal/polytope-structured.
 
 from __future__ import annotations
 
+from collections import Counter
+
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
 
@@ -62,15 +64,20 @@ def same_label_rdm(labels) -> np.ndarray:
     return (lab[:, None] != lab[None, :]).astype(float)
 
 
+def char_ngrams(s: str, n: int = 3) -> Counter:
+    """Counts of the character n-grams of a lower-cased string padded with one space on each side,
+    so that word boundaries form n-grams (" gr", "up "). Shared by the lexical-overlap RDM below and the
+    character-3-gram baseline of the independent audit (analyses/lexical.py)."""
+    t = f" {s.lower()} "
+    return Counter(t[i : i + n] for i in range(len(t) - n + 1))
+
+
 def char_ngram_rdm(strings: list[str], n: int = 3) -> np.ndarray:
     """1 − Jaccard similarity of character n-gram sets — a lexical-overlap nuisance RDM.
 
     Captures e.g. 'semigroup'/'quasigroup'/'group' sharing the substring 'group'.
     """
-    grams = []
-    for s in strings:
-        t = f" {s.lower()} "  # pad so word boundaries form n-grams
-        grams.append({t[i : i + n] for i in range(len(t) - n + 1)})
+    grams = [set(char_ngrams(s, n)) for s in strings]
     k = len(strings)
     D = np.zeros((k, k))
     for i in range(k):
