@@ -1,0 +1,17 @@
+# Independent audit (reports/prereg_addendum_lexical.md D12), post-hoc: extra random-init twins of the
+# confirmatory model (seeds 1-4; seed 0 is the twin of configs/mvp.yaml), to measure how much the twin
+# statistics vary with the random draw. The trained model and the seed-0 twin are read from the mvp caches.
+name: twin_seeds
+models:
+  - key: qwen3.5-2b
+    id: Qwen/Qwen3.5-2B-Base
+    random_control: true
+    twin_seeds: [1, 2, 3, 4]
+conditions: [field_neutral, family]
+analysis_split: confirmatory
+n_perm: 10000
+n_boot: 2000
+seed: 0
+max_concepts_per_field: 30
+pilot_fraction: 0.2
+primary_rel_depth: 0.5

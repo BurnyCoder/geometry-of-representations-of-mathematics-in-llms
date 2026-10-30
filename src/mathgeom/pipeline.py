@@ -58,6 +58,9 @@ def family_items(fams: dict) -> list[tuple[str, str, str]]:
     if ex:
         out += [("partial_operation", c, ex["domain"]) for c in ex["partial_operation"]["items"]]
         out += [("lattice_transfer", c, ex["domain"]) for c in sorted({x for pr in ex["lattice_transfer"]["identity"] for x in pr})]
+        nm = ex.get("nonce_modifier")  # independent audit (D13): heads, then every "modifier head" in modifier order
+        if nm:
+            out += [("nonce_modifier", c, ex["domain"]) for c in nm["heads"] + [f"{m} {h}" for m in nm["modifiers"] for h in nm["heads"]]]
     return out
 
 
@@ -87,13 +90,16 @@ def phase_extract(cfg: Config) -> None:
         return len(fam) - n
 
     for m in cfg.models:
-        for rnd in ([False, True] if m.get("random_control", True) else [False]):
-            key = m["key"] + ("__random" if rnd else "")
+        # (key, random_init, seed): the trained model, its seed-`cfg.seed` twin, and optional extra twin seeds
+        # (`twin_seeds`, independent audit D12) stored as <key>__random_s<seed>
+        runs = [(m["key"], False, cfg.seed)] + ([(m["key"] + "__random", True, cfg.seed)] if m.get("random_control", True) else [])
+        runs += [(f"{m['key']}__random_s{s}", True, s) for s in m.get("twin_seeds", [])]
+        for key, rnd, seed in runs:
             odir = cfg.artifacts / "acts" / key
             if all(n_missing(odir / f"{c}.npz", c) == 0 for c in conds):
                 log.info("skip %s (cached)", key)
                 continue
-            model, tok = load_model(m["id"], random_init=rnd, seed=cfg.seed, device_map=m.get("device_map", "cuda"))
+            model, tok = load_model(m["id"], random_init=rnd, seed=seed, device_map=m.get("device_map", "cuda"))
             odir.mkdir(parents=True, exist_ok=True)
             for cond in conds:
                 miss = n_missing(odir / f"{cond}.npz", cond)

@@ -135,3 +135,8 @@ extra:
     # https://en.wikipedia.org/wiki/Semilattice ("A bounded semilattice is an idempotent commutative monoid");
     # https://en.wikipedia.org/wiki/Lattice_(order) (bounded lattice: top and bottom are identities of meet and join)
     identity: [[semilattice, bounded semilattice], [lattice, bounded lattice]]
+  # Independent audit (reports/prereg_addendum_lexical.md D13), post-hoc: how consistent is X → "m X" for a
+  # modifier m that carries no axiom? "wooden" is a real adjective unrelated to algebra, "zorbic" a nonce word.
+  nonce_modifier:
+    heads: [magma, quasigroup, loop, semigroup, monoid, group]
+    modifiers: [commutative, wooden, zorbic]
