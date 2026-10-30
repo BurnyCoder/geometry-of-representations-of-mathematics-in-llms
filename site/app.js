@@ -5,7 +5,7 @@
 
 const S = { I: null, M: {}, key: null, layer: 12, timer: null, edges: true, allModels: false, fam: "days", ideal: false,
             axiom: null, cloudTwin: false, colorMode: "field", field: null, picked: null, hover: null, twin: false, hyp: "all",
-            view: { map: "3d", fam: "3d", lat: "3d" }, axes: { fam: [0, 1, 2], lat: [0, 1, 2], cloud: [0, 1, 2] }, cam: {}, spin: {}, link: true, camSync: false, pin: { map: null, fam: null } };
+            view: { map: "3d", fam: "3d", lat: "3d" }, axes: { fam: [0, 1, 2], lat: [0, 1, 2], cloud: [0, 1, 2] }, cam: {}, spin: {}, link: true, camSync: false, pin: { map: null, fam: null, lat: null } };
 const CFG = { responsive: true, displaylogo: false, modeBarButtonsToRemove: ["lasso2d", "select2d", "toImage"] };
 const $ = (id) => document.getElementById(id);
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
@@ -176,7 +176,8 @@ function toggleSpin(fig) {  // turntable: rotate the shared camera about the ver
 }
 const SPIN_IDS = { map: ["map-arxiv", "map-trained", "map-twin"], fam: ["fam-trained", "fam-twin"], lat: ["lat-trained", "lat-twin"], cloud: ["cloud"] };
 function plot3d(id, data, lay) {
-  // Plotly's layout transitions do not animate 3-D traces, so glide here: interpolate every trace's x/y/z
+  // Plotly's layout transitions do not animate 3-D traces ("only scatter traces may be smoothly transitioned",
+  // https://plotly.com/javascript/animations/), so glide here: interpolate every trace's x/y/z
   // from the previous render to this one over a few frames (layer slider, play, model switch, trained ↔ twin)
   const el = $(id), prev = el._xyz, next = data.map((t) => ({ x: t.x, y: t.y, z: t.z }));
   el._xyz = next;
@@ -193,6 +194,9 @@ function plot3d(id, data, lay) {
   };
   setTimeout(step, 0);
   return Promise.resolve(el);
+}
+function pinRow(tableId, i) {  // the pinned item's row in the figure's table view
+  $(tableId).querySelectorAll("table:first-of-type tbody tr").forEach((tr, k) => tr.classList.toggle("pinned", k === i));
 }
 function purge(ids) {  // switching 2-D ↔ 3-D: cancel pending tweens, free the WebGL context, re-attach listeners on the next render
   ids.forEach((id) => {
@@ -358,6 +362,7 @@ function renderMap() {
   const lab = S.I.fields.labels;
   table($("map-table"), ["Field", "Pure/applied", "Branch", "Nearest arXiv neighbours"], lab.map((l, i) => [l, S.I.fields.pa[i], S.I.fields.branch_labels[S.I.fields.branch[i]],
     S.I.fields.edges.filter(([a, b]) => a === i || b === i).map(([a, b]) => lab[a === i ? b : a]).join(", ")]));
+  pinRow("map-table", S.pin.map);
 }
 function hoverField(i) {  // linked highlight: field maps ↔ distance matrices → concept cloud (that field's concepts)
   S.hover = i;
@@ -493,7 +498,7 @@ function famTraces(xy, items, closed, isAngles, cycle, el) {
   if (isAngles) t.push({ type: "scatter", mode: "lines", name: "330° → 0° (predicted neighbours)", x: [xy[xy.length - 1][0], xy[0][0]], y: [xy[xy.length - 1][1], xy[0][1]], line: { color: p.orange, width: 2.5 }, hoverinfo: "skip" });
   const stat = cycle === undefined ? "" : `<br>cycle score at this layer ${fmt(cycle)} (post-hoc)`;
   t.push({ type: "scatter", mode: "markers+text", showlegend: false, x: xy.map((d) => d[0]), y: xy.map((d) => d[1]), text: items.map((s) => s.replace(" degrees", "°").replace("-dimensional", "-d")),
-    textposition: placeLabels(xy, items.map((s) => s.replace(" degrees", "°").replace("-dimensional", "-d")), el, 0.3, 0.1), cliponaxis: false, textfont: { size: 10, color: p.ink2 }, marker: { size: 11, color: ramp(xy.length), line: { color: p.surface, width: 1.5 } },
+    textposition: placeLabels(xy, items.map((s) => s.replace(" degrees", "°").replace("-dimensional", "-d")), el, 0.3, 0.1), cliponaxis: false, textfont: { size: 10, color: p.ink2 }, marker: { size: items.map((_, i) => (i === S.pin.fam ? 15 : 11)), color: ramp(xy.length), line: { color: items.map((_, i) => (i === S.pin.fam ? p.orange : p.surface)), width: 2 } },
     hovertemplate: items.map((s, i) => `<b>${s}</b><br>position ${i + 1} of ${items.length}${stat}<extra></extra>`) });
   return t;
 }
@@ -515,11 +520,12 @@ function famTraces3d(V, items, closed, isAngles, cycle, ideal) {  // one family 
     customdata: items.map((_, i) => i), hovertemplate: items.map((s, i) => `<b>${s}</b><br>position ${i + 1} of ${n}${stat}<br>click to pin<extra></extra>`) });
   return t;
 }
-function pinInfoFam(F, L) {  // pinned item: position, and its coordinates on the displayed PCs in the model and the twin
+function pinInfoFam(F, L, cyc) {  // pinned item: position, its coordinates on the displayed PCs, and the family's statistic at this layer
   const i = S.pin.fam, el = $("fam-pin"), ax = S.axes.fam;
   if (i === null || i >= F.items.length) { el.textContent = "Click an item to pin it in both panels."; return; }
   const at = (side) => ax.map((k) => `PC${k + 1} ${fmt(F.pc5[side][L][i][k])}`).join(", ");
-  el.innerHTML = `<b>${F.items[i]}</b> · position ${i + 1} of ${F.items.length} · ${model().name}: ${at("trained")} · twin: ${at("random_init")}`;
+  el.innerHTML = `<b>${F.items[i]}</b> · position ${i + 1} of ${F.items.length} · ${model().name}: ${at("trained")} · twin: ${at("random_init")}` +
+    (cyc ? ` · the family's PC1–2 cycle score at this layer: ${fmt(cyc[L])} (post-hoc)` : "");
 }
 function renderFamilies() {
   const p = P(), f = S.fam, F = S.M[S.key].families[f], L = S.layer - 1, closed = F.expected === "circle", ang = f === "angles";
@@ -547,7 +553,7 @@ function renderFamilies() {
     el._linked = true;
     el.on("plotly_click", (e) => { const i = e.points[0].customdata ?? e.points[0].pointIndex; if (e.points[0].data.mode !== "markers+text") return; S.pin.fam = S.pin.fam === i ? null : i; rerender(["fig-families"]); });
   });
-  pinInfoFam(F, L);
+  pinInfoFam(F, L, cyc);
   // post-hoc 4 (reports/prereg_addendum_3d.md): the best closed-cycle plane among PC1–5 at this layer
   const bp = (k) => { const e = R(`posthoc.${k}.pc_planes_cycle.${f}`); return e && e[L]; };
   const b = bp(S.key), bt = bp(`${S.key}__random`);
@@ -557,6 +563,7 @@ function renderFamilies() {
     F.items.map((it, i) => [it, i + 1, fmt(F.trained[L][i][0]), fmt(F.trained[L][i][1]), fmt(F.random_init[L][i][0]), fmt(F.random_init[L][i][1])]));
   if (cyc) $("fam-table").insertAdjacentHTML("beforeend", `<table><thead><tr><th>Layer</th><th>Cycle score, trained</th><th>Cycle score, twin</th></tr></thead><tbody>${
     cyc.map((v, l) => `<tr><td>${l + 1}</td><td>${fmt(v)}</td><td>${fmt(cycT[l])}</td></tr>`).join("")}</tbody></table>`);
+  pinRow("fam-table", S.pin.fam);
   $("fam-takeaway").innerHTML = `<b>${FAM_TAKE[f] || ""}</b>`;
   if (cyc) {
     const tw = cycT, x = cyc.map((_, i) => (i + 1) / cyc.length);
@@ -589,7 +596,7 @@ function latTraces(side, keys = false, el = null) {  // keys: legend entries for
   const has = (b) => Lt.axioms.filter((_, q) => b[q]).join(", ") || "none";
   return { data: [{ type: "scatter", mode: "lines", x: gx, y: gy, line: { color: p.grid, width: 1 }, hoverinfo: "skip", name: "other single-axiom pairs", showlegend: keys },
     { type: "scatter", mode: "markers+text", showlegend: false, x: xy.map((d) => d[0]), y: xy.map((d) => d[1]), text: Lt.items.map((s) => s.replace("commutative ", "comm. ")), textposition: placeLabels(xy, Lt.items.map((s) => s.replace("commutative ", "comm. ")), el || {}, 0.3, 0.1), cliponaxis: false,
-      textfont: { size: 10, color: p.ink2 }, marker: { size: 9, color: p.ink2, line: { color: p.surface, width: 1.5 } },
+      textfont: { size: 10, color: p.ink2 }, marker: { size: Lt.items.map((_, i) => (i === S.pin.lat ? 14 : 9)), color: Lt.items.map((_, i) => (i === S.pin.lat ? p.orange : p.ink2)), line: { color: p.surface, width: 1.5 } },
       hovertemplate: Lt.items.map((s, i) => `<b>${s}</b><br>axioms: ${has(Lt.bits[i])}<extra></extra>`) },
     { type: "scatter", mode: "lines", x: [null], y: [null], line: { color: p.blue, width: 2.2 }, name: `pairs differing only in ${S.axiom} (arrows)`, showlegend: keys, hoverinfo: "skip" }], ann };
 }
@@ -614,7 +621,7 @@ function latTraces3d(side, keys) {  // 3 of the top-5 PCs: arrows (lines + cone 
     { type: "cone", ...cone, anchor: "tip", sizemode: "absolute", sizeref: 0.24, colorscale: [[0, p.blue], [1, p.blue]], showscale: false, hoverinfo: "skip", showlegend: false,
       lighting: { ambient: 1, diffuse: 0, specular: 0, roughness: 1, fresnel: 0 } },  // flat colour: arrowheads read as the arrows' colour
     { type: "scatter3d", mode: "markers+text", name: "structures", showlegend: false, x: X, y: Y, z: Z, text: Lt.items.map((s) => s.replace("commutative ", "comm. ")), textposition: "top center",
-      textfont: { size: 10, color: p.ink2 }, marker: { size: 7, color: p.ink2 }, customdata: Lt.items.map((_, i) => i),
+      textfont: { size: 10, color: p.ink2 }, marker: { size: Lt.items.map((_, i) => (i === S.pin.lat ? 12 : 7)), color: Lt.items.map((_, i) => (i === S.pin.lat ? p.orange : p.ink2)) }, customdata: Lt.items.map((_, i) => i),
       hovertemplate: Lt.items.map((s, i) => `<b>${s}</b><br>axioms: ${has(Lt.bits[i])}<br>click for its axioms<extra></extra>`) }];
   if (S.layer === model().primary_layer) {
     // the analogy query b − a + c from Figure 11, placed exactly: exact (PC-basis) coordinates → this view via to_view
@@ -657,11 +664,15 @@ function renderLattice() {
       const pt = e.points[0], Ltc = S.M[S.key].lattice;
       if (pt.data.mode !== "markers+text" || pt.data.name === "b − a + c") return;  // structures only (2-D: trace 1; 3-D: "structures")
       const i = pt.customdata ?? pt.pointIndex;
-      $("lat-bits").innerHTML = `<b>${Ltc.items[i]}</b>: ` + Ltc.axioms.map((a, q) => `${a} ${Ltc.bits[i][q] ? "✓" : "✗"}`).join(" · ");
+      S.pin.lat = S.pin.lat === i ? null : i;
+      rerender(["fig-lattice"]);
     });
   });
   $("lat-note").innerHTML = `<b>+ ${S.axiom}:</b> offset consistency ${fmt(o.consistency)} (random-pair null 95th percentile ${fmt(o.null95)}, p ${fmt(o.p, ".3f")}); twin ${fmt(ot.consistency)}. Values at the preregistered layer.` +
     (is3d("lat") ? (S.layer === model().primary_layer ? " The orange diamond is the Figure 11 analogy query, projected exactly." : " The analogy query (orange diamond) is drawn at the preregistered layer only.") : "");
+  const pl = S.pin.lat;
+  $("lat-bits").innerHTML = pl === null ? "Click a structure to pin it and see its axioms." : `<b>${Lt.items[pl]}</b>: ` + Lt.axioms.map((a, q) => `${a} ${Lt.bits[pl][q] ? "✓" : "✗"}`).join(" · ");
+  pinRow("lat-table", pl);
   $("axiom-chips").innerHTML = Lt.axioms.map((a) => `<button data-a="${a}" aria-pressed="${a === S.axiom}">+ ${a}</button>`).join("");
   $("axiom-chips").querySelectorAll("button").forEach((b) => b.onclick = () => { S.axiom = b.dataset.a; renderLattice(); });
 }
@@ -834,6 +845,7 @@ function wire() {
     $("cloud-twin").setAttribute("aria-pressed", String(S.cloudTwin));
     rerender(["fig-map", "fig-rdm", "fig-families", "fig-lattice", "fig-concepts"]);
   };
+  if (!HAS_GL) $("gl-note").hidden = false;
   document.querySelectorAll("[data-view]").forEach((b) => {  // 2-D ↔ 3-D per figure (3-D by default; 2-D without WebGL)
     const fig = b.dataset.view;
     b.setAttribute("aria-pressed", String(is3d(fig)));

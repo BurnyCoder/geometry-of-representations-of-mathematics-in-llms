@@ -130,3 +130,7 @@ td.num, th.num { font-variant-numeric: tabular-nums; text-align: right; }
 .muted { color: var(--muted); }
 footer { color: var(--ink2); font-size: 0.85rem; padding: 40px 0 60px; border-top: 1px solid var(--grid); margin-top: 60px; }
 @media (max-width: 640px) { body { font-size: 15px; } figure.fig { padding: 12px 10px 8px; } .panel.tall { min-height: 340px; } }
+
+/* pinned item's row in a table view; the no-WebGL note */
+tr.pinned td { background: var(--accent-wash); font-weight: 600; }
+.gl-note { font-size: 0.8rem; color: var(--orange); }

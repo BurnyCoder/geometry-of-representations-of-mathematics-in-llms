@@ -42,6 +42,7 @@
     <svg id="spark" width="150" height="28" role="img" aria-label="Field-map correlation with arXiv at every layer; the dot marks the current layer"></svg>
     <button id="reset-layer" title="Back to the preregistered layer">Pre-registered layer</button>
     <button id="theme" title="Toggle light/dark">◐ Theme</button>
+    <span id="gl-note" class="gl-note" hidden>3-D views need WebGL, which this browser does not provide, so the figures show their 2-D versions.</span>
     <div class="toc"><a href="#s-glance">At a glance</a><a href="#s-map">Map</a><a href="#s-cloud">Concepts</a><a href="#s-shapes">Shapes</a><a href="#s-axioms">Axioms</a><a href="#s-abstract">Abstraction</a><a href="#s-failed">What failed</a></div>
   </div>
 </nav>
@@ -164,7 +165,7 @@
   <div class="view-row"><label>Axes <select id="axes-cloud" aria-label="Principal components shown"></select></label><button data-spin="cloud" aria-pressed="false" title="Turn the cloud slowly; drag to stop">⟳ Spin</button></div>
   <div class="panels two"><div class="panel tall" id="cloud"></div><div id="concept-card" class="card"><span class="muted">Click a point or search for a concept.</span></div></div>
   <div class="under"><div class="scree" id="scree-cloud"></div></div>
-  <figcaption><span class="read">One highlighted field (blue) against all others (grey); or colour by the judges’ abstraction rating (light = concrete, dark = abstract). Drag to rotate; <b>Axes</b> picks three of the top-5 PCs, and the bars show each PC’s share of variance in the model (blue) and its twin (grey).</span>
+  <figcaption><span class="read">One highlighted field (blue) against all others (grey); or colour by the judges’ abstraction rating (light = concrete, dark = abstract). Drag to rotate, scroll to zoom, double-click to reset, or <b>⟳ Spin</b>; <b>Axes</b> picks three of the top-5 PCs, and the bars show each PC’s share of variance in the model (blue) and its twin (grey); click a bar to show that PC.</span>
   <span class="caveat">Three components keep only a small part of the variance (the title says how much), and proportions are true; the neighbour lists use the full vectors.</span></figcaption>
 </figure>
 
@@ -183,7 +184,7 @@
   <div class="under"><div class="scree" id="scree-fam"></div><div><div class="pin-note muted" id="fam-pin"></div><div class="pin-note" id="fam-planes"></div></div></div>
   <figcaption>
     <span id="fam-takeaway"></span>
-    <span class="read">In 3-D, three of the family’s top-5 principal components at the slider layer (pick them with <b>Axes</b>, or click a bar in the variance chart); each axis is that layer’s own PC and is labelled with its share of variance, with true proportions. The 2-D view is the top-2 PCA plane. Colour runs light → dark along the true order and the path joins consecutive items; click an item to pin it in both panels. The orange edge on angles is the 330° → 0° closure the preregistration predicted. Right: the post-hoc cycle score at every layer. <b>Ideal shape</b> overlays the expected circle or line, rotated and scaled onto the points. It is drawn the same way for the twin.</span>
+    <span class="read">In 3-D, three of the family’s top-5 principal components at the slider layer (pick them with <b>Axes</b>, or click a bar in the variance chart); each axis is that layer’s own PC and is labelled with its share of variance, with true proportions. Drag to rotate, scroll to zoom, double-click to reset; both views turn together (<b>Link 3-D views</b>), and <b>⟳ Spin</b> turns them for you. The 2-D view is the top-2 PCA plane. Colour runs light → dark along the true order and the path joins consecutive items; click an item to pin it in both panels. The orange edge on angles is the 330° → 0° closure the preregistration predicted. Right: the post-hoc cycle score at every layer. <b>Ideal shape</b> overlays the expected circle or line, rotated and scaled onto the points. It is drawn the same way for the twin.</span>
     <span class="caveat">With 7–13 items per family, every statistic is tested against an order-permutation null; supervised fits are avoided because they would find any order. The ideal-shape overlay is a reading aid, not a statistic. The cycle score is defined in the PC1–2 plane; the line under the variance chart tests all 10 planes of PC1–5 (post-hoc, pre-specified in an addendum).</span>
   </figcaption>
 </figure>
@@ -202,7 +203,7 @@
   <figcaption>
     <span id="lat-note"></span>
     <span id="lat-bits" class="muted">Click a structure to see which axioms it has.</span>
-    <span class="read">Three of the 13 structures’ top-5 principal components at the slider layer (2-D: the PCA plane). Blue arrows (cone heads) are the pairs that differ only in the selected axiom; grey lines are all other single-axiom pairs. At the preregistered layer the orange diamond is the analogy chosen in Figure 11, b − a + c, projected exactly, with dashed lines for a → b and c → b − a + c. Click a structure to see its axioms.</span>
+    <span class="read">Three of the 13 structures’ top-5 principal components at the slider layer (2-D: the PCA plane), with true proportions and each axis’s share of variance; <b>Axes</b> or the variance chart picks the PCs. Drag to rotate, scroll to zoom, double-click to reset; both views turn together, and <b>⟳ Spin</b> turns them. Blue arrows (cone heads) are the pairs that differ only in the selected axiom; grey lines are all other single-axiom pairs. At the preregistered layer the orange diamond is the analogy chosen in Figure 11, b − a + c, projected exactly, with dashed lines for a → b and c → b − a + c. Click a structure to pin it in both views and list its axioms.</span>
     <span class="caveat">A 3-D or 2-D picture can hide or exaggerate parallelism; Figure 10 shows the full-dimensional evidence. Nearness to the diamond in the picture is not nearness in full space: the ranks in Figure 11 are.</span>
   </figcaption>
 </figure>
