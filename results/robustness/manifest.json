@@ -376,5 +376,77 @@
    "pandas": "3.1.0",
    "statsmodels": "0.15.0"
   }
+ },
+ {
+  "phase": "extract",
+  "time": "2026-10-30T20:38:46",
+  "git_sha": "d4610b3234bd2c0e9a98d9dd1cf0a338715d5e05",
+  "git_dirty": true,
+  "config": "configs/robustness.yaml",
+  "config_sha256": "4e09a05c225c75be2c6caa7c932f244069fd18bd9ecee1c9d1c494b41532e32c",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "lexical",
+  "time": "2026-10-30T21:00:45",
+  "git_sha": "d4610b3234bd2c0e9a98d9dd1cf0a338715d5e05",
+  "git_dirty": true,
+  "config": "configs/robustness.yaml",
+  "config_sha256": "4e09a05c225c75be2c6caa7c932f244069fd18bd9ecee1c9d1c494b41532e32c",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "shapes",
+  "time": "2026-10-30T22:08:01",
+  "git_sha": "f66d3dd315f7b287765765608f4972687ccbd721",
+  "git_dirty": true,
+  "config": "configs/robustness.yaml",
+  "config_sha256": "4e09a05c225c75be2c6caa7c932f244069fd18bd9ecee1c9d1c494b41532e32c",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
+ },
+ {
+  "phase": "report",
+  "time": "2026-10-30T22:18:58",
+  "git_sha": "f66d3dd315f7b287765765608f4972687ccbd721",
+  "git_dirty": true,
+  "config": "configs/robustness.yaml",
+  "config_sha256": "4e09a05c225c75be2c6caa7c932f244069fd18bd9ecee1c9d1c494b41532e32c",
+  "seed": 0,
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "transformers": "5.21.0",
+   "numpy": "2.5.4",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.9.1",
+   "pandas": "3.1.0",
+   "statsmodels": "0.15.0"
+  }
  }
 ]
