@@ -96,7 +96,8 @@ The Markdown scorecard (`{{table:scorecard:all}}`) and its site version come fro
 - `families.<f>.pc5 / var / ideal5`;
 - `lattice.<side>.pc5 / var / to_view`;
 - `concepts.<side>.pc5 / var`;
-- in `index.json`: `fields.arxiv_layout3`, `arxiv_stress`, and the per-layer `posthoc.<model>.pc_planes_cycle`.
+- in `index.json`: `fields.arxiv_layout3`, `arxiv_stress`, and the per-layer `posthoc.<model>.pc_planes_cycle`;
+- in `results/<config>/views.json` (written by `run.py report`): each family's share of variance on PC1–5 and PC1–3 at every layer, which the README and paper captions read through placeholders.
 
 **`data/<model>.json`:**
 - per-layer field layouts and rank matrices;
@@ -106,14 +107,15 @@ The Markdown scorecard (`{{table:scorecard:all}}`) and its site version come fro
 
 The twin's family and lattice planes are rotated onto the trained model's plane at the preregistered layer (rotation and reflection only), so the **Trained ↔ twin** button in the control bar morphs the main panels with minimal motion. The field maps of both are already aligned to the arXiv layout.
 
-**3-D interactions** (3-D is the default; a **3D view** button per figure switches to 2-D, `?view=2d` deep-links it, and without WebGL the page falls back to 2-D):
+**3-D interactions.** 3-D is the default. A **3D view** button per figure switches to 2-D, and `?view=2d` deep-links it. Without WebGL the page falls back to 2-D, with a note in the control bar; this was tested with headless Edge `--disable-3d-apis`. The interactions:
 - drag to rotate, scroll to zoom, double-click to reset;
 - **Link 3-D views** makes sibling panels follow one camera;
 - **⟳ Spin** turns a figure until you drag it;
 - **Axes** picks 3 of PC1–5, and the variance bar chart can be clicked to put a PC on an axis;
-- clicking a field or item pins it across panels, with an info line;
+- clicking a field, family item or lattice structure pins it in every panel of its figure and highlights its row in the table view, with an info line;
+- the camera is kept as shared state per figure (instead of Plotly's `uirevision`), so it survives layer and model changes and can be synced between panels;
 - the lattice draws the analogy point of the playground;
-- the layer slider, play and trained ↔ twin morph glide in 3-D too: frames are interpolated on wall-clock time because Plotly's transitions do not animate 3-D traces.
+- the layer slider, play and trained ↔ twin morph glide in 3-D too. Frames are interpolated on wall-clock time, because Plotly transitions only scatter traces ("only scatter traces may be smoothly transitioned", <https://plotly.com/javascript/animations/>).
 
 **Interactions.** Model menu; layer slider with play button and a depth inset; the global trained ↔ twin morph; linked hover between field maps, distance matrices and the concept cloud; concept search and a card with 10 nearest neighbours in the model and its twin; family picker with an ideal-shape overlay; axiom chips, a lattice click that shows axiom bits, and the analogy playground; scorecard and forest filters by hypothesis; a table view under every chart; light and dark themes. Every chart with two or more series has a legend.
 
