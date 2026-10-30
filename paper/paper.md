@@ -1,17 +1,17 @@
 ---
-title: "Do LLMs Organize Mathematics Geometrically? Axiom Lattices, Field Maps and Ordered Chains in Residual Streams"
+title: "Do LLMs Organize Mathematics Geometrically? Field Maps, Ordered Chains and Axiom Lattices in Residual Streams"
 author: "Libor \"Burny\" Burian"
 date: "October 2026"
 abstract: |
-  Large language models represent days of the week and months on circles (Engels et al., 2024). We ask whether *abstract mathematics* is organized geometrically too. We test three preregistered hypotheses on five small base models (the Qwen models have at most 1.9B text parameters; Gemma-4-E2B has 2.3B effective, 5.1B with embeddings), comparing every model with a random-init twin (same architecture and tokenizer, no learning). We report the axiom result first; the field map (A) was the primary preregistered hypothesis.
+  Large language models represent days of the week and months on circles (Engels et al., 2024). We ask whether *abstract mathematics* is organized geometrically too. We test three preregistered hypotheses on five small base models (the Qwen models have at most 1.9B text parameters; Gemma-4-E2B has 2.3B effective, 5.1B with embeddings) and compare every model with a random-init twin (same architecture and tokenizer, no learning). An independent post-hoc audit then reran every test on representations that encode only the spelling of the concept names, because the twin turned out not to control word form: it scrambles even exact word composition.
 
-  **(B2) Axiom lattices.** Group-like structures (magma … abelian group) are defined by which of four axioms they satisfy. For each axiom we take every pair of structures that differ only in that axiom and measure how parallel their difference vectors are (offset consistency: the mean pairwise cosine). Adding an axiom behaves like a consistent direction: in Qwen3.5-2B-Base, offset consistency is 0.53 for commutativity and 0.43 for associativity, against 0.01 and 0.02 in its random-init twin. Both survive Holm correction in the confirmatory model; associativity does so in all 5 models and commutativity in all 5 models. The evidence is weaker for divisibility (raw p < .05 in all 5 models) and for identity (raw p < .05 in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B)); in the confirmatory model neither survives Holm correction.
+  **(A) Field map, the primary hypothesis.** Centroids of 17 mathematical fields are computed from concepts drawn from Wikipedia glossaries, excluding concepts whose names leak the field. In Qwen3.5-2B-Base, their geometry correlates with field relatedness measured by arXiv cross-listing over 3.2M papers: Spearman ρ = 0.39, against ρ = -0.12 for the random-init twin (paired bootstrap 95% CI of the difference [0.28, 0.58]). The map replicates in Qwen3.5-0.8B (ρ = 0.37), Qwen2.5-1.5B (ρ = 0.41) and Gemma-4-E2B (ρ = 0.44). It does not follow from the names: their character 3-grams give ρ = 0.10 and the model's own input embeddings of the names ρ = 0.16, and the trained map exceeds all three word-form baselines in all 5 models. It is not a clean hierarchy (our preregistered cophenetic test does not beat the twin), a contrastive text embedder (Qwen3-Embedding-0.6B) matches it, and over one trillion tokens of math continued pretraining (Qwen2.5-Math) do not sharpen it (Δρ CI [-0.06, 0.02]).
 
-  **(A) Field map.** Centroids of 17 mathematical fields are computed from concepts drawn from Wikipedia glossaries, excluding concepts whose names leak the field. In Qwen3.5-2B-Base, their geometry correlates with field relatedness measured by arXiv cross-listing over 3.2M papers: Spearman ρ = 0.39, against ρ = -0.12 for the random-init twin. The paired bootstrap 95% CI of the difference is [0.28, 0.58]. The map replicates in Qwen3.5-0.8B (ρ = 0.37), Qwen2.5-1.5B (ρ = 0.41) and Gemma-4-E2B (ρ = 0.44). In every case the random-init twin is near zero or below. It is, however, not specific to mathematics (non-math science topics cluster by field more strongly), and in the confirmatory model it is no stronger than in a contrastive text embedder (Qwen3-Embedding-0.6B). It is also not a clean hierarchy: our preregistered cophenetic test does not beat the random-init twin. Over one trillion tokens of math continued pretraining (Qwen2.5-Math) do not sharpen it (Δρ CI [-0.06, 0.02]).
+  **(B) Shapes.** The space chain (T0 ⊃ … ⊃ Hilbert space) is ordered under the full preregistered test (Robinson score and leave-one-out order, Holm-corrected, above the twin) in all 5 models; spelling baselines do not order it, and it stays ordered within its metrizable … Hilbert block in all 5 models. The ring chain (rng ⊃ ring ⊃ … ⊃ algebraically closed field) passes the same test in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B), but its order is confounded with its head nouns (rng | ring | … domain | field): clusters of head nouns with no order at all pass the test in up to 55% of simulations, and the six "… domain" items are ordered among themselves in 1 of 5 models (Qwen2.5-Math-1.5B). Angles 0°–330° are encoded like the number line rather than a circle in all five models, which falsifies our preregistered prediction.
 
-  **(B) Shapes.** Class-inclusion chains (rng ⊃ ring ⊃ … ⊃ algebraically closed field; T0 ⊃ … ⊃ Hilbert space) are ordered beyond permutation nulls and beyond the twin in the confirmatory model. Under the full preregistered test (Robinson score and leave-one-out order, Holm-corrected), the space chain replicates in 4 of 5 models (all but Gemma-4-E2B) and the ring chain in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B). Angles 0°–330°, however, are encoded like the number line rather than a circle in all five models, which falsifies our preregistered prediction.
+  **(B2) Axiom lattices.** For each axiom of the group-like structures (magma … abelian group), difference vectors between structures that differ only in that axiom are more parallel than random pairs: in Qwen3.5-2B, offset consistency is 0.53 for commutativity and 0.43 for associativity, against 0.01 and 0.02 in the twin (Holm-significant for associativity in all 5 models and for commutativity in all 5 models). The audit shows that most of this follows from the names. Character 3-grams of the names, with no model, pass the same test for all four axioms. "X → wooden X" and the nonsense "X → zorbic X" are about as consistent as "X → commutative X"; "commutative" is the most consistent of the three in 1 of 5 models (Gemma-4-E2B). Two signs of more than word form remain. Associativity exceeds every word-form baseline and its lexically disjoint pairs pass the null in all 5 models. The "commutative" direction predicts *abelian group − group*, a pair that shares no word with it, in all 5 models. Group-object parallelograms (Lie group − topological group ≈ smooth manifold − topological space) are explained by shared words.
 
-  The days/months positive control met our preregistered full-space criterion only partially. A post-hoc test in the top-2 principal-component plane recovers perfect cyclic order for days in all 5 models and for months in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B), but that score also rewards open arcs. Counting only loops that close in their plane (post-hoc, pre-specified in an addendum), days close in the top-2 plane in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B) and months in a lower principal-component plane in 3 of 5 models (all but Qwen3.5-0.8B and Qwen2.5-1.5B). The same test finds no significant closed cycle for angles in any plane of the top five components. Simulations show why we use paired random-init contrasts as primary tests: partial regression on distance matrices inflates type-I error when nuisances are proxies of confounders.
+  The days/months positive control met our preregistered criterion only partially; in post-hoc tests, days close into a loop in the top-2 principal-component plane in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B) and months in a lower plane in 3 of 5 models (all but Qwen3.5-0.8B and Qwen2.5-1.5B). Methodologically, partial regression on distance matrices inflates type-I error when nuisances are proxies of confounders, and a random-init twin is not a control for word form: studies of concept geometry need spelling-only baselines.
 ---
 
 # 1 Introduction
@@ -28,11 +28,11 @@ Mathematics is an unusually good test bed for these ideas, because its concepts 
 
 **Contributions.**
 
-1. Evidence that axioms of group-like structures act as consistent directions (parallelograms): difference vectors between structures that differ in one axiom are more parallel than random pairs, and much less so or not at all in the random-init twins. This holds after Holm correction for associativity and commutativity in every model, and more weakly for identity and divisibility. Lie, topological and algebraic groups also sit where their two parents predict (exploratory).
-2. Evidence that field-level geometry tracks how mathematicians cross-list papers, the primary preregistered hypothesis, replicated across five models from two families and unchanged by heavy math pretraining.
-3. Evidence that class-inclusion chains are ordered: under the full preregistered test, the space chain in 4 of 5 models (all but Gemma-4-E2B) and the ring chain in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B).
-4. A preregistered test (`docs/prereg.md`, git tag `prereg-v1`) of three geometric hypotheses about mathematics in LLMs, with random-init twins, leakage flags, permutation nulls and paired bootstrap contrasts.
-5. Two negative results: angles are not circular, and math pretraining does not sharpen the map. There is also one methodological negative: partial RDM regression is miscalibrated under realistic confounding.
+1. Evidence that field-level geometry tracks how mathematicians cross-list papers (H-A1, the primary preregistered hypothesis), replicated across five models from two families, beyond random-init twins and beyond three word-form baselines, and unchanged by heavy math pretraining.
+2. Evidence that the space chain of separation axioms through normed, Banach and Hilbert spaces is an ordered path, also within its topical blocks. The ring chain's order is not established beyond the head nouns of its names.
+3. A sober reading of axiom offsets: they are consistent, but mostly because the names encode the axioms. Associativity, and a commutativity direction that reaches "abelian group", are suggestive exceptions.
+4. A preregistered test (`docs/prereg.md`, git tag `prereg-v1`) with random-init twins, leakage flags, permutation nulls and paired bootstrap contrasts, followed by an independent post-hoc audit (`reports/prereg_addendum_lexical.md`) with word-form baselines, nonce modifiers, exact within-block tests and extra twin seeds.
+5. Negative results: angles are not circular, math pretraining does not sharpen the map, and group-object parallelograms are lexical. Two methodological negatives: partial RDM regression is miscalibrated under realistic confounding, and a random-init twin does not control for word form.
 
 # 2 Related work
 
@@ -44,6 +44,8 @@ Mathematics is an unusually good test bed for these ideas, because its concepts 
 **Hierarchy and categories.** [Park et al. (2024)](https://arxiv.org/abs/2406.01506) proposed orthogonality between hierarchical concepts. Golechha et al., *Intricacies of Feature Geometry in Large Language Models* ([ICLR 2025 blog track](https://iclr.cc/virtual/2025/poster/31349); [long version](https://www.greaterwrong.com/posts/eczwWrmX5XNEo7JsS/intricacies-of-feature-geometry-in-large-language-models)), showed that the same geometry appears for random concepts and random unembeddings after whitening. We therefore avoid whitening and compare every statistic with an untrained twin.
 
 **Science concepts.** [Lei & Cooper (2025)](https://arxiv.org/abs/2502.10871) found a periodic-table spiral. Mathematical "world models" in LLMs have been reported as local and not robust ([Kvinge et al., 2025](https://icml.cc/virtual/2025/49128), *Probing the Limits of Mathematical World Models in LLMs*, ICML 2025 workshop poster).
+
+**Offsets and word form.** Vector offsets of word embeddings ([Mikolov, Yih & Zweig, 2013](https://aclanthology.org/N13-1090/)) mix offset consistency with plain similarity, and simple baselines solve many analogies without the offset ([Linzen, 2016](https://aclanthology.org/W16-2503/)). With additive composition, "modifier + noun" is a fixed offset by construction ([Mitchell & Lapata, 2010](https://doi.org/10.1111/j.1551-6709.2010.01106.x)). Our audit therefore compares axiom offsets with nonce modifiers and with spelling-only baselines.
 
 **Statistics.** Partial Mantel tests are known to be anticonservative ([Guillot & Rousset, 2013](https://doi.org/10.1111/2041-210X.12018)). We test Freedman–Lane permutation ([Freedman & Lane, 1983](https://doi.org/10.1080/07350015.1983.10509354); compared with alternatives by [Anderson & Legendre, 1999](https://doi.org/10.1080/00949659908811936)) in our setting (Section 3.5).
 
@@ -107,153 +109,60 @@ Before analysing any LLM data, we simulated regression on distance matrices with
 | field level, nuisance = noisy proxy of a confounder (null) | 0.525 ± 0.035 | 200 |
 | field level, true field geometry present (power) | 0.995 ± 0.005 | 200 |
 
-The test is calibrated when the nuisance distance matrix *is* the confounder. It rejects far too often when the nuisance only approximates the confounder, which is exactly the situation for lexical form and frequency. We therefore made **paired contrasts against the random-init twin** the primary tests. The twin measures form-only similarity on the same concepts. Uncertainty comes from a stratified concept bootstrap with identical resamples for both models: 2,000 resamples for H-A1 and H-A3, and 1,000 for the hierarchy, baseline and tree-distance contrasts.
+The test is calibrated when the nuisance distance matrix *is* the confounder. It rejects far too often when the nuisance only approximates the confounder, which is exactly the situation for lexical form and frequency. We therefore made **paired contrasts against the random-init twin** the primary tests. We intended the twin to measure form-only similarity on the same concepts; the audit (§3.6) shows that it does not, because a random network scrambles even exact word composition. Uncertainty comes from a stratified concept bootstrap with identical resamples for both models: 2,000 resamples for H-A1 and H-A3, and 1,000 for the hierarchy, baseline and tree-distance contrasts.
 
 - **Field map.** We use field-level RSA, i.e. the Spearman ρ between the centroid RDM and the arXiv distance, with a Mantel permutation over field labels (10,000 permutations) and a max-over-layers null for layer curves.
-- **Families.** Every statistic is unsupervised or leave-one-out, and is tested against an order-permutation null. With n ≤ 13 items in more than 1,000 dimensions, a supervised fit can impose any order. As a negative control, 100 random 11-item lists of math concepts must be rejected at about 5%.
-- **Figures, including 3-D views.** Every picture is an unsupervised projection: PCA, or metric MDS for field maps. 3-D views show each layer's own top principal components with true proportions, and state the share of variance on each axis (PCA) or the stress-1 of the layout (MDS; [Kruskal, 1964](https://doi.org/10.1007/BF02289565)). Alignment between panels and layers is display-only: rotation, or only sign flips for 3-D PCA axes. No statistic is computed from a picture. The single test that looks beyond PC1–2, the closed-cycle test over the top-5 planes, is post-hoc and was pre-specified in an addendum before it ran (§4.4).
+- **Families.** Every statistic is unsupervised or leave-one-out, and is tested against an order-permutation null. With n ≤ 13 items in more than 1,000 dimensions, a supervised fit can impose any order. As a negative control, 100 random 11-item lists of math concepts must be rejected at about 5%; this checks the code, since a permutation test is exact under exchangeability by construction, and it cannot detect confounds such as spelling. The leave-one-out order null has 10,000 permutations at the preregistered layer (300 before the audit).
+- **Multiplicity.** Holm correction over the 8 preregistered confirmatory tests (§4 of the preregistration); the angles prediction is a decision rule without a p-value and enters with p = 1, because it was falsified.
+- **Figures, including 3-D views.** Every picture is an unsupervised projection: PCA, or metric MDS for field maps. 3-D views show each layer's own top principal components with true proportions, and state the share of variance on each axis (PCA) or the stress-1 of the layout (MDS; [Kruskal, 1964](https://doi.org/10.1007/BF02289565)). Alignment between panels and layers is display-only: rotation, or only sign flips for 3-D PCA axes. No statistic is computed from a picture. The single test that looks beyond PC1–2, the closed-cycle test over the top-5 planes, is post-hoc and was pre-specified in an addendum before it ran (§4.3).
+
+## 3.6 Independent audit: word-form controls (post-hoc)
+
+After all preregistered results were known, an independent audit found that no control measured word form directly. In the Qwen3.5-2B twin, the pairs magma → semigroup and commutative magma → commutative semigroup, which differ only by the literal word "commutative", have difference vectors with cosine 0.04; the trained model gives 0.86, and a bag of words gives 1. We pre-specified the following in an addendum committed before the analyses ran ([`reports/prereg_addendum_lexical.md`](https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms/blob/master/reports/prereg_addendum_lexical.md)); all of it is post-hoc.
+- **Word-form baselines.** Every test is rerun, with the same statistic, centring, null and seed, on (i) counts of the names' character 3-grams, (ii) a bag of words and (iii) the sum of the model's trained input embeddings over the name's tokens, which carries token meaning but no context.
+- **Where the axiom offsets come from.** Same-axiom pairs that coincide after deleting "commutative" are *lexical duplicates*; the remaining, disjoint cosines are tested against the same null. We also test the 8 names without "commutative", and whether the "commutative" direction predicts *abelian group − group*, the one commutativity pair that shares no word with it (exact null over the 72 ordered pairs that do not change commutativity). A nonce-modifier lattice calibrates plain composition: X → wooden X and X → zorbic X for six heads.
+- **Chains.** Exact within-block order tests (the six "… domain" items of the ring chain; the separation-axiom and metric blocks of the space chain) and a simulation of how often head-noun clusters without any order pass the preregistered chain test.
+- **Precision.** 10,000 leave-one-out permutations (a kernel-form ridge identical to the preregistered one), a scale-relative ridge penalty as sensitivity, the 8-test Holm family, BCa bootstrap intervals ([Efron, 1987](https://doi.org/10.1080/01621459.1987.10478410)) and four extra random-init seeds for the confirmatory model's twin.
+
+An effect counts as *beyond word form* if it exceeds every word-form baseline and, for the axioms, its lexically disjoint pairs also pass the null.
 
 # 4 Results
 
-We present the results in a different order from the preregistration. H-B2, axioms as directions, comes first (§4.1), with a step-by-step figure of how its test works. H-A1, the field map, was the primary preregistered hypothesis; it follows in §4.2, with its robustness checks in §4.3. The shapes of ordered families (H-B) are in §4.4 and the secondary analyses in §4.5. The order is a presentation choice: every test keeps its preregistered status (confirmatory, secondary or exploratory; analyses added later are labelled as added or post-hoc), and the Holm family and every number are unchanged. Where a 3-D and a 2-D view of the same data exist, the 3-D view comes first.
+The results follow how well they survive the audit's word-form controls: the field map (H-A1, the primary preregistered hypothesis, §4.1) and its robustness (§4.2), the shapes of ordered families (H-B, §4.3), the axiom lattices (H-B2, §4.4) and the secondary analyses (§4.5). Every test keeps its preregistered status (confirmatory, secondary or exploratory); analyses added later are labelled as added, post-hoc or audit. Where a 3-D and a 2-D view of the same data exist, the 3-D view comes first.
 
-![**Results at a glance.** Blue: trained model; grey: its random-init twin (same architecture and tokenizer, no learning). The starred model is the preregistered confirmatory model, Qwen3.5-2B. *Top row, axioms as directions.* Left: every pair of structures that differ only in commutativity, drawn as an arrow from one common origin in the top-3 principal components, in the confirmatory model and its twin; the model's arrows point roughly one way. Right: offset consistency per axiom for the confirmatory model, the other four models and the five twins, against the confirmatory model's random-pair null (grey bar: mean to 95th percentile); diamonds show the confirmatory model with the token-count direction removed. *Middle row, the field map.* Left: field-centroid geometry correlates with arXiv cross-listing in all five models (dots: ρ; lines: 95% bootstrap CI); the twins sit at or below zero. Right: 3-D field maps (metric MDS) for arXiv cross-listing, the confirmatory model and its twin; grey edges join each field to its two nearest arXiv neighbours. *Bottom row, shapes.* Days, angles, the ring chain and the space chain in the confirmatory model's top-3 principal components, with the statistic under each panel (twin in brackets). Days of the week go round in order (PC-plane cycle score; positive control). Angles do not close; the orange edge is the 330° → 0° closure the preregistration predicted. The two class-inclusion chains lie along ordered paths (Robinson score). Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#s-glance>.](../reports/figures/hero.pdf){width=100%}
+![**Results at a glance.** Blue: trained model; grey: its random-init twin (same architecture and tokenizer, no learning); × and +: word-form baselines (the names' character 3-grams; the model's own input embeddings summed over the name's tokens). The starred model is the preregistered confirmatory model, Qwen3.5-2B. *Top row, the field map.* Left: field-centroid geometry correlates with arXiv cross-listing in all five models (dots: ρ; lines: 95% bootstrap CI), well above the twins and both word-form baselines. Right: 3-D field maps (metric MDS) for arXiv cross-listing, the confirmatory model and its twin; grey edges join each field to its two nearest arXiv neighbours. *Middle row, axiom offsets.* Left: every pair of structures that differ only in commutativity, drawn as an arrow from one common origin in the top-3 principal components; the model's arrows point roughly one way, and the note gives the consistency of X → wooden X for comparison. Right: offset consistency per axiom for every model and twin, against the confirmatory model's random-pair null (grey bar: mean to 95th percentile); diamonds: the confirmatory model with the token-count direction removed; ×: the names' character 3-grams, which need no model. *Bottom row, shapes.* Days of the week go round in order (PC-plane cycle score; positive control). Angles do not close; the orange edge is the 330° → 0° closure the preregistration predicted. The space chain is an ordered path, also within its blocks; the ring chain is grouped by its head nouns, and its six "… domain" items are not ordered among themselves (exact p under the panel). Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#s-glance>.](../reports/figures/hero.pdf){width=100%}
 
 **Every test in every model.** The table below summarizes the confirmatory and secondary tests for all five models.
 
 | Test | Status | Qwen3.5-2B | Qwen3.5-0.8B | Qwen2.5-1.5B | Qwen2.5-Math-1.5B | Gemma-4-E2B |
 |---|---|---|---|---|---|---|
-| Axiom direction: associative (offset consistency; Holm) | pre-registered, confirmatory | ● 0.43 | ● 0.47 | ● 0.38 | ● 0.35 | ● 0.56 |
-| Axiom direction: identity (offset consistency; Holm) | pre-registered, confirmatory | ◐ 0.24 | ○ 0.22 | ◐ 0.27 | ● 0.27 | ○ 0.19 |
-| Axiom direction: divisible (offset consistency; Holm) | pre-registered, confirmatory | ◐ 0.29 | ◐ 0.26 | ◐ 0.25 | ● 0.30 | ◐ 0.35 |
-| Axiom direction: commutative (offset consistency; Holm) | pre-registered, confirmatory | ● 0.53 | ● 0.57 | ● 0.41 | ● 0.45 | ● 0.74 |
-| Lie / topological / algebraic groups as parallelograms | pre-registered, exploratory | ● 0.40 | ● 0.46 | ● 0.41 | ● 0.41 | ● 0.48 |
 | Field map tracks arXiv beyond the twin (H-A1; Δρ CI) | pre-registered, confirmatory | ● 0.39 | ● 0.37 | ● 0.41 | ● 0.39 | ● 0.44 |
+| Field map beyond word form (Δρ vs char-3-grams, word bag, layer-0 token bag; CIs > 0) | post-hoc, audit addendum | ● +0.14 | ● +0.07 | ● +0.15 | ● +0.12 | ● +0.14 |
 | Field map is a hierarchy beyond the twin (H-A2; cophenetic Δ CI) | pre-registered | ○ 0.24 | ○ 0.25 | ○ 0.24 | ○ 0.11 | ○ 0.23 |
-| Days form a cycle (positive control; PC plane) | positive control; post-hoc statistic | ● 1.00 | ● 1.00 | ● 1.00 | ● 1.00 | ● 1.00 |
+| Space chain ordered (Robinson and LOO order; Holm; > twin) | pre-registered, confirmatory | ● 0.65 | ● 0.64 | ● 0.71 | ● 0.68 | ● 0.57 |
+| Space chain ordered within both topical blocks (exact p) | post-hoc, audit addendum | ● / ● | ○ / ● | ○ / ● | ○ / ● | ○ / ● |
 | Ring chain ordered (Robinson and LOO order; Holm; > twin) | pre-registered, confirmatory | ● 0.52 | ○ 0.50 | ● 0.54 | ● 0.56 | ○ 0.50 |
-| Space chain ordered (Robinson and LOO order; Holm; > twin) | pre-registered, confirmatory | ● 0.65 | ● 0.64 | ● 0.71 | ● 0.68 | ◐ 0.57 |
+| Ring chain ordered within the six “… domain” items (exact p) | post-hoc, audit addendum | ○ 0.40 | ○ 0.40 | ○ 0.45 | ● 0.65 | ○ 0.10 |
 | Ring / space order beyond frequency | added by plan audit | ● / ● | ● / ● | ● / ● | ● / ● | ○ / ○ |
+| Axiom direction: associative (offset consistency; Holm) | pre-registered, confirmatory | ● 0.43 | ● 0.47 | ● 0.38 | ● 0.35 | ● 0.56 |
+| Axiom direction: identity (offset consistency; Holm) | pre-registered, confirmatory | ◐ 0.24 | ○ 0.22 | ◐ 0.27 | ◐ 0.27 | ○ 0.19 |
+| Axiom direction: divisible (offset consistency; Holm) | pre-registered, confirmatory | ◐ 0.29 | ◐ 0.26 | ◐ 0.25 | ◐ 0.30 | ◐ 0.35 |
+| Axiom direction: commutative (offset consistency; Holm) | pre-registered, confirmatory | ● 0.53 | ● 0.57 | ● 0.41 | ● 0.45 | ● 0.74 |
+| Axiom offsets beyond word form (assoc / ident / div / comm) | post-hoc, audit addendum | ● / ○ / ○ / ○ | ● / ○ / ○ / ○ | ● / ○ / ○ / ○ | ● / ○ / ○ / ○ | ● / ○ / ● / ○ |
+| Commutative direction predicts abelian group − group (held out) | post-hoc, audit addendum | ● 0.60 | ● 0.54 | ● 0.51 | ● 0.55 | ● 0.73 |
+| “commutative X” more consistent than “wooden X” and “zorbic X” | post-hoc, audit addendum | ○ 0.56 vs 0.68 | ○ 0.62 vs 0.65 | ○ 0.45 vs 0.57 | ○ 0.49 vs 0.61 | ● 0.79 vs 0.72 |
+| Lie / topological / algebraic groups as parallelograms | pre-registered, exploratory | ● 0.40 | ● 0.46 | ● 0.41 | ● 0.41 | ● 0.48 |
+| Group objects beyond word form (cos above every lexical baseline) | post-hoc, audit addendum | ○ 0.40 vs 0.68 | ○ 0.46 vs 0.69 | ○ 0.41 vs 0.68 | ○ 0.41 vs 0.67 | ○ 0.48 vs 0.61 |
+| Days form a cycle (positive control; PC plane) | positive control; post-hoc statistic | ● 1.00 | ● 1.00 | ● 1.00 | ● 1.00 | ● 1.00 |
 | Angles form a circle (closure < 2 and circle ρ > line ρ) | pre-registered, confirmatory | ✗ 2.11 | ✗ 2.59 | ✗ 2.15 | ✗ 1.84 | ✗ 2.03 |
 | Angles: closed cycle in any top-5 PC plane (addendum rule) | post-hoc, pre-specified addendum | ○ 0.33 | ○ 0.33 | ○ 0.17 | ○ 0.25 | ○ 0.42 |
 | Days / months: a loop that closes in some top-5 PC plane (p < .05, unadjusted) | post-hoc, descriptive | ● 1.00 / ● 0.50 | ○ 0.57 / ○ 0.33 | ● 1.00 / ○ 0.33 | ● 1.00 / ● 0.58 | ○ 0.43 / ● 0.50 |
 
-● significant (Holm-adjusted for the axiom and chain tests; 95% CI excludes 0 for Δ tests) · ◐ raw p < .05 only · ○ not significant · ✗ pre-registered prediction falsified (every random-init twin meets the angles rule, so it is not specific). Chains: p = max(Robinson p, LOO order p), the pre-registered conjunction, and trained Robinson > twin. Numbers: the statistic for the trained model.
+● significant (Holm-adjusted for the axiom and chain tests; 95% CI excludes 0 for Δ tests) · ◐ raw p < .05 only · ○ not significant · ✗ pre-registered prediction falsified (every random-init twin meets the angles rule, so it is not specific). Chains: p = max(Robinson p, LOO order p), the pre-registered conjunction, and trained Robinson > twin. Numbers: the statistic for the trained model. Audit rows (post-hoc, reports/prereg_addendum_lexical.md): field map = lowest lower CI bound of Δρ against the three lexical baselines; ring chain = Robinson score within the “… domain” items; held-out pair = cosine of abelian group − group with the “commutative” direction; modifier and group-object rows = trained value vs the highest control; ● = the addendum's decision rule is met.
 
-## 4.1 H-B2: axioms as directions
+## 4.1 H-A1: a map of mathematical fields
 
-**The test.** The 13 group-like structures are defined by four axioms (associativity, identity, divisibility, commutativity), so each sits on a vertex of a 4-cube (§3.3). For each axiom we take every pair of structures that differ only in that axiom, for example monoid → commutative monoid and group → abelian group for commutativity (6 pairs), and compute their difference vectors at the preregistered layer. *Offset consistency* is the mean pairwise cosine of these difference vectors in the full residual stream: 1 if they are parallel, about 0 if they are unrelated. The null draws the same number of random pairs from the same 13 structures (2,000 draws), and p = (1 + the number of null draws at least as large as the observed value)/(1 + 2,000). The next figure walks through the procedure on real data.
-
-![**Adding an axiom moves a structure in a consistent direction in the trained model, and not in its random-init twin.** The test on Qwen3.5-2B at the preregistered layer, in four steps. (1) Each structure is a set of axioms, so the 13 group-like structures form a lattice (ground truth). (2) Every pair of structures that differ only in commutativity, drawn as an arrow in the model's top-3 principal components. (3) The same arrows moved to one common origin: in the model they form a bundle (offset consistency 0.53), in the twin they point every way (0.01). (4) A compass for every axiom, measured in the full residual stream: the angle between each same-axiom difference vector and the mean of the others (leave-one-out); the model is drawn above the dashed line, the twin below; 0° means the same direction and 90° unrelated. Steps 2 and 3 are pictures; the statistic and the compass are computed in the full space, and the compass is a visual aid rather than a test. Interactive version, step by step: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-axiom-how>.](../reports/figures/axioms_explainer_qwen3.5-2b.pdf){width=100%}
-
-| Lattice | Model | axiom-RDM β (p) | lexical β | offset consistency per axiom: obs / null95 (p) | analogy top-1 (chance) | mean rank (chance) |
-|---|---|---|---|---|---|---|
-| group_like | qwen3.5-2b | +0.492 (0.0002) | +0.236 | associative: 0.43/0.23 (0.0035); identity: 0.24/0.22 (0.0425); divisible: 0.29/0.22 (0.0275); commutative: 0.53/0.20 (0.0010) | 0.56 (0.10) | 2.5 (5.5) |
-| self_distributive | qwen3.5-2b | +0.123 (0.3393) | -0.446 | invertible: 0.48/0.78 (0.2039); idempotent: 0.17/0.78 (0.4268) | 1.00 (0.50) | 1.0 (1.5) |
-| gender control | qwen3.5-2b | — | — | gender: 0.28/0.09 | king:queen rank 1 | — |
-| group_like | qwen3.5-2b__random | +0.302 (0.0010) | -0.403 | associative: 0.02/0.16 (0.3678); identity: 0.04/0.16 (0.3068); divisible: 0.01/0.16 (0.4338); commutative: 0.01/0.14 (0.4048) | 0.31 (0.10) | 3.6 (5.5) |
-| self_distributive | qwen3.5-2b__random | +0.316 (0.1284) | -0.275 | invertible: -0.01/0.56 (0.5207); idempotent: 0.01/0.56 (0.4493) | 1.00 (0.50) | 1.0 (1.5) |
-| gender control | qwen3.5-2b__random | — | — | gender: 0.00/0.07 | king:queen rank 15 | — |
-
-![**In 3-D, the trained model's same-axiom arrows stay roughly parallel; the twin's point every way.** The 13 structures in their top-3 principal components (70% of their variance; twin 52%), with true proportions and one fixed camera. In each facet, the arrows (blue; grey in the twin) are the pairs that differ only in that axiom. Top row: Qwen3.5-2B; bottom row: its twin. A 3-D view can still hide or exaggerate parallelism; the cosine matrices below are the evidence. Interactive 3-D version, with the analogy query b − a + c placed exactly: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-lattice>.](../reports/figures/lattice3d_qwen3.5-2b.pdf){width=100%}
-
-![**The same facets in the top-2 plane.** Left: the ideal geometry, in which each axiom is one fixed step. Other panels: the same unsupervised PCA plane of the 13 group-like structures, one panel per axiom, with the pairs that differ only in that axiom drawn as arrows (blue; grey in the twin). Parallel arrows mean a consistent direction. Below each panel: offset consistency and its random-pair p. Bottom row: the twin. Interactive version, with an analogy playground: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-lattice>.](../reports/figures/lattice_axes_qwen3.5-2b.pdf){width=100%}
-
-![**The direction evidence, unprojected.** Cosine between every pair of single-axiom difference vectors in the full residual space, grouped by axiom. Red diagonal blocks mean a consistent direction. Hatched cells are cross-axiom pairs that share a structure; isotropic noise alone puts these near ±0.5, so they carry no evidence. The self-cosines on the diagonal are masked. Right: offset consistency per axiom for the trained model, the trained model with the token-count direction removed, and the twin, against the random-pair null. Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-cosines>.](../reports/figures/lattice_cosines_qwen3.5-2b.pdf){width=100%}
-
-For every group-like axiom, difference vectors between structures that differ only in that axiom are more parallel than random pairs (raw p < .05):
-
-| Axiom | Consistency | Null 95th percentile | p |
-|---|---|---|---|
-| Associativity | 0.43 | 0.23 | 0.0035 |
-| Identity | 0.24 | 0.22 | 0.0425 |
-| Divisibility | 0.29 | 0.22 | 0.0275 |
-| Commutativity | 0.53 | 0.20 | 0.0010 |
-
-In this model's random-init twin, all four consistencies are ≈ 0.
-
-**Analogies.** Analogy completion is top-1 for 0.56 of 45 parallelograms (chance 0.10). The twin reaches 0.31, so part of the analogy accuracy is lexical (shared "commutative" tokens); offset consistency is not.
-
-**Caveats.** The gender-offset positive control passes. Multiplicity across the preregistered confirmatory tests is handled by Holm correction:
-
-| Test | Model | p | Holm-adjusted p | reject at α=0.05 |
-|---|---|---|---|---|
-| H-A1 Δρ trained − random-init ≤ 0 (bootstrap) | qwen3.5-2b | 0.0005 | 0.0035 | yes |
-| H-B ring chain (Robinson and LOO order) | qwen3.5-2b | 0.0133 | 0.0399 | yes |
-| H-B space chain (Robinson and LOO order) | qwen3.5-2b | 0.0033 | 0.0166 | yes |
-| H-B2 associative offset consistency | qwen3.5-2b | 0.0035 | 0.0166 | yes |
-| H-B2 identity offset consistency | qwen3.5-2b | 0.0425 | 0.0550 | no |
-| H-B2 divisible offset consistency | qwen3.5-2b | 0.0275 | 0.0550 | no |
-| H-B2 commutative offset consistency | qwen3.5-2b | 0.0010 | 0.0060 | yes |
-| H-B angles circle prediction (decision rule: closure 2.11 < 2 and circle ρ 0.29 > line ρ 0.56) | qwen3.5-2b | — | — | not met (prediction falsified) |
-
-- **After correction:** associativity and commutativity remain significant; identity and divisibility do not.
-- **Across the replication models (Appendix A):** all four offsets are positive in every model. They are near zero in the Qwen3.5 twins. The other twins are weaker but not always null: raw p < .05 for commutativity in the two Qwen2.5 twins (consistency ≈ 0.16) and for associativity and divisibility in Gemma's twin, all lexical. Divisibility reaches raw p < .05 in all 5 models, identity in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B).
-- **Our reading:** strong evidence for associativity and commutativity directions, and suggestive evidence for divisibility and identity.
-
-**Lie groups and other group objects (exploratory).** A Lie group is a group that is also a smooth manifold; topological and algebraic groups are defined analogously. We tested three parallelograms:
-- topological group − group ≈ topological space − set;
-- Lie group − topological group ≈ smooth manifold − topological space;
-- algebraic group − group ≈ algebraic variety − set.
-
-| Model | commutativity transfer cos (null95, p) | identity transfer cos (p) | group-object parallelograms cos (null95, p) | parent ranks: topological / Lie / algebraic group |
-|---|---|---|---|---|
-| qwen3.5-2b | +0.198 (0.198, 0.0510) | +0.015 (0.3983) | +0.398 (0.235, 0.0045) | [5, 8] / [3, 7] / [3, 6] (of 113) |
-| qwen3.5-2b__random | -0.017 (0.167, 0.7126) | +0.001 (0.4743) | +0.006 (0.031, 0.3768) | [2, 44] / [1, 18] / [3, 71] (of 113) |
-
-| Model | commutativity transfer cos (null95, p) | identity transfer cos (p) | group-object parallelograms cos (null95, p) | parent ranks: topological / Lie / algebraic group |
-|---|---|---|---|---|
-| qwen3.5-0.8b | +0.188 (0.212, 0.0760) | +0.075 (0.1794) | +0.457 (0.241, 0.0025) | [5, 15] / [4, 6] / [4, 5] (of 113) |
-| qwen3.5-0.8b__random | +0.010 (0.144, 0.4038) | -0.014 (0.6552) | -0.028 (0.058, 0.7941) | [1, 72] / [1, 65] / [2, 88] (of 113) |
-| qwen2.5-1.5b | +0.183 (0.165, 0.0380) | +0.020 (0.3933) | +0.406 (0.221, 0.0035) | [4, 6] / [3, 6] / [4, 6] (of 113) |
-| qwen2.5-1.5b__random | +0.142 (0.135, 0.0435) | +0.038 (0.1424) | +0.156 (0.138, 0.0350) | [1, 2] / [1, 18] / [1, 2] (of 113) |
-| qwen2.5-math-1.5b | +0.202 (0.160, 0.0210) | +0.096 (0.1244) | +0.409 (0.208, 0.0015) | [4, 7] / [3, 6] / [3, 6] (of 113) |
-| qwen2.5-math-1.5b__random | +0.124 (0.137, 0.0600) | +0.005 (0.4358) | +0.150 (0.139, 0.0410) | [1, 2] / [1, 15] / [1, 2] (of 113) |
-
-| Model | commutativity transfer cos (null95, p) | identity transfer cos (p) | group-object parallelograms cos (null95, p) | parent ranks: topological / Lie / algebraic group |
-|---|---|---|---|---|
-| gemma-4-e2b | +0.129 (0.271, 0.2324) | -0.180 (0.9320) | +0.484 (0.303, 0.0085) | [41, 6] / [2, 10] / [7, 3] (of 113) |
-| gemma-4-e2b__random | +0.003 (0.063, 0.4568) | +0.037 (0.2344) | -0.003 (0.141, 0.5337) | [2, 31] / [2, 6] / [2, 7] (of 113) |
-
-![**Lie, topological and algebraic groups combine their parents in every trained model.** Left: mean cosine of the three parallelograms (for example, Lie group − topological group vs smooth manifold − topological space) for each model (blue) and its twin (grey), against the 95th percentile of each model's random-quadruple null (dark tick) and of the twin's own null (small grey tick); p values from those nulls. Right: the nearest-neighbour rank of "group" (circle) and "smooth manifold" (diamond) among the family items around "Lie group", trained vs twin (log scale). Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-groups>.](../reports/figures/group_objects.pdf){width=88%}
-
-**Group objects: supported.**
-- The parallelograms hold in all 5 models: mean cosine 0.40 in Qwen3.5-2B (p = 0.0045). The twins are near zero, except the Qwen2.5 twins, whose weak lexical signal also passes their own nulls (p = 0.035 and 0.041).
-- Trained models place "Lie group" close to *both* parents: "group" and "smooth manifold" rank 3 and 7 among 113 items.
-- The twins rank "group" first or second (Gemma's twin: second) because of the shared token. "Smooth manifold" ranks 18 in the Qwen3.5-2B twin; Gemma's twin is the exception, ranking it 6.
-
-**Axiom transfer: inconclusive.**
-- The commutativity direction learned on group-like pairs transfers only weakly to ring → commutative ring and division ring → field (0.20, p = 0.051).
-- Some Qwen twins show similar values. "Commutative ring" literally contains the token "commutative", so we consider transfer not established.
-- Identity transfer, from the single pair rng → ring, is null.
-
-**Further lattice items from the plan (exploratory; second audit).**
-
-| Model | associative quasigroup: d(·, group) / d(·, quasigroup) (3 nearest) | inverse semigroup: 3 nearest | identity direction → lattice-like pairs: cos (null95, p) |
-|---|---|---|---|
-| qwen3.5-2b | 2.81 (commutative quasigroup, quasigroup, commutative loop) | semigroup, commutative semigroup, monoid | +0.074 (0.157, 0.1359) |
-| qwen3.5-2b__random | 1.11 (quasigroup, semigroup, monoid) | semigroup, quasigroup, loop | +0.054 (0.149, 0.1454) |
-
-| Model | Variant | offset consistency per axiom: obs / null95 (p) |
-|---|---|---|
-| qwen3.5-2b | group-like, mean-pooled tokens | associative: 0.30 / 0.22 (0.0235); identity: 0.26 / 0.23 (0.0305); divisible: 0.21 / 0.24 (0.0750); commutative: 0.60 / 0.19 (0.0005) |
-| qwen3.5-2b | group-like, token-count direction removed | associative: 0.44 / 0.23 (0.0035); identity: 0.26 / 0.22 (0.0360); divisible: 0.31 / 0.22 (0.0235); commutative: 0.46 / 0.20 (0.0010) |
-| qwen3.5-2b | partial-operation lattice | total: 0.29 / 0.54 (0.1704); identity: 0.07 / 0.82 (0.4518); divisible: -0.22 / 0.80 (0.5817) |
-| qwen3.5-2b__random | group-like, mean-pooled tokens | associative: 0.03 / 0.17 (0.3378); identity: 0.03 / 0.16 (0.3283); divisible: 0.01 / 0.17 (0.4058); commutative: 0.10 / 0.14 (0.1084) |
-| qwen3.5-2b__random | group-like, token-count direction removed | associative: 0.02 / 0.16 (0.3633); identity: 0.04 / 0.16 (0.3068); divisible: 0.01 / 0.16 (0.4278); commutative: -0.02 / 0.14 (0.5487) |
-| qwen3.5-2b__random | partial-operation lattice | total: -0.03 / 0.38 (0.5272); identity: -0.08 / 0.55 (0.6872); divisible: -0.07 / 0.55 (0.6707) |
-
-- *No semantic collapse.* A non-empty associative quasigroup is a group, but the model does not place it there. It is 2.8× farther from "group" than from "quasigroup" (twin 1.1×), and its nearest neighbours are quasigroup-like. The representation follows the name's parts, not this theorem.
-- *Inverse semigroup* sits next to semigroup, commutative semigroup and monoid in the trained model, which is sensible.
-- *Not a length artifact.* Removing the token-count direction (fitted on all family items) leaves the group-like offsets intact: commutativity 0.46 (p = 0.0010), associativity 0.44 (p = 0.0035). Across the five models (Appendix A), after this projection the offsets stay significant before correction for associativity in all 5 models, commutativity in all 5 models, divisibility in all 5 models and identity in 4 of 5 models (all but Gemma-4-E2B). Mean-pooling the concept's tokens gives a similar pattern, with divisibility no longer significant (table above). This is a one-direction analogue of the LDA distractor removal of [Li et al. (2024)](https://arxiv.org/abs/2410.19750).
-- *Partial-operation lattice: no evidence.* The "total operation" offset (semigroupoid → semigroup, small category → monoid, groupoid → group) is 0.29, below its null's 95th percentile (0.54). With 6 items and 2–3 pairs per axis, the test is weak.
-- *Identity transfer to lattice-like pairs* (semilattice → bounded semilattice, lattice → bounded lattice) is null too: cos = 0.07, p = 0.14.
-
-![**A negative result: no consistent "make the operation total" direction.** Offset consistency for the partial-operation lattice (semigroupoid, small category, groupoid vs semigroup, monoid, group): the confirmatory model (filled), the other four models (open) and the five twins (grey), against the confirmatory model's random-pair null (grey bar: mean to 95th percentile). With 6 items and 2–3 pairs per axis the test has little power. Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-partial>.](../reports/figures/partial_operation.pdf){width=70%}
-
-## 4.2 H-A1: a map of mathematical fields
-
-![**Effect sizes with 95% bootstrap CIs (unadjusted).** Blue: CI excludes 0. "Added" marks analyses added by the plan audits rather than the preregistration. The field map beats the twin in every model; in Qwen3.5-2B it beats fastText, but not the Qwen3-Embedding text embedder. The Judges-vs-Mathlib line is a plain bootstrap of one correlation. Math pretraining (H-A3) and the hierarchy test (H-A2) are nulls. Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-forest>.](../reports/figures/forest.pdf){width=82%}
+![**Effect sizes with 95% bootstrap CIs (unadjusted).** Blue: CI excludes 0. "Added" marks analyses added by the plan audits and "audit" those of the independent audit, rather than the preregistration. The field map beats the twin and the names' character 3-grams in every model; in Qwen3.5-2B it beats fastText, but not the Qwen3-Embedding text embedder. The Judges-vs-Mathlib line is a plain bootstrap of one correlation. Math pretraining (H-A3) and the hierarchy test (H-A2) are nulls. Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-forest>.](../reports/figures/forest.pdf){width=82%}
 
 | Model | Concept set | n concepts / fields | ρ_field trained (perm p) [95% CI] | ρ random-init | ρ layer-0 | Δ trained − random-init [95% CI] | LOO field acc trained / random / layer-0 (chance) | split-half reliability |
 |---|---|---|---|---|---|---|---|---|
@@ -322,7 +231,7 @@ The pre-registered comparison confounds domain with the number of fields: 17 for
 - **Control fields:** 0.814.
 - **Overlap:** 0.12 of the math subsets reach or exceed the control value.
 
-Mathematical fields are therefore not organized more strongly than general science topics: the control fields cluster more strongly than most matched math subsets in all 5 models (Gemma: 0.00 of the subsets reach the control value). The field map is an instance of topical organization, not something specific to mathematics.
+The control fields cluster more strongly than most matched math subsets in all 5 models (Gemma: 0.00 of the subsets reach the control value). This does not show that the map is unspecific to mathematics: the controls are four whole sciences, while the math fields are sub-fields of one discipline, so the comparison confounds domain with granularity (audit). A granularity-matched control, sub-fields of another science, was not run, and specificity remains open.
 
 **Baselines (plan; added after the first report; Qwen3.5-2B only).** We compare against two non-generative representations of the same concepts:
 - **fastText** wiki-news-300d-1M vectors, averaged over words ([Mikolov et al., 2018](https://arxiv.org/abs/1712.09405)), and **[Qwen3-Embedding-0.6B](https://huggingface.co/Qwen/Qwen3-Embedding-0.6B)**, a contrastively trained text embedder built on an LLM.
@@ -338,7 +247,40 @@ So the field map is a property of contextual text representations in general, no
 
 infini-gram (v4_dolma-v1_7_llama): Spearman ρ(wordfreq Zipf, log count) = 0.316; concepts with zero count: 0.2%.
 
-## 4.3 Robustness: scale, model family, math training, templates
+**Beyond word form (audit).** Could the map follow from the spelling of the concept names, for example suffixes shared within a glossary? Character 3-grams, a bag of words and the model's own input embeddings of the names give field maps of ρ = 0.10, -0.02 and 0.16 in Qwen3.5-2B, far below the trained model's 0.39. The paired bootstrap Δ CIs exclude zero against all three baselines in all 5 models. The map is built by the model's processing of the names in context, not read off their spelling.
+
+| Model | ρ trained | ρ char-3-grams (Mantel p) | ρ word bag (p) | ρ layer-0 token bag (p) | Δ − char-3-grams [CI] | Δ − word bag [CI] | Δ − layer-0 bag [CI] | LOO field acc: trained / char-3 / word / layer-0 |
+|---|---|---|---|---|---|---|---|---|
+| qwen3.5-2b | 0.387 | 0.105 (0.1353) | -0.017 (0.5205) | 0.157 (0.0303) | +0.283 [0.135, 0.398] | +0.404 [0.220, 0.518] | +0.230 [0.139, 0.344] | 0.472 / 0.261 / 0.249 / 0.349 |
+| qwen3.5-0.8b | 0.369 | 0.105 (0.1353) | -0.017 (0.5205) | 0.218 (0.0071) | +0.264 [0.117, 0.376] | +0.385 [0.198, 0.490] | +0.151 [0.068, 0.270] | 0.430 / 0.261 / 0.249 / 0.312 |
+| qwen2.5-1.5b | 0.406 | 0.105 (0.1353) | -0.017 (0.5205) | 0.178 (0.0276) | +0.302 [0.150, 0.416] | +0.423 [0.238, 0.531] | +0.228 [0.147, 0.363] | 0.565 / 0.261 / 0.249 / 0.337 |
+| qwen2.5-math-1.5b | 0.390 | 0.105 (0.1353) | -0.017 (0.5205) | 0.201 (0.0112) | +0.285 [0.140, 0.396] | +0.407 [0.223, 0.506] | +0.189 [0.117, 0.317] | 0.588 / 0.261 / 0.249 / 0.372 |
+| gemma-4-e2b | 0.436 | 0.105 (0.1353) | -0.017 (0.5205) | 0.209 (0.0136) | +0.332 [0.190, 0.441] | +0.453 [0.272, 0.566] | +0.227 [0.137, 0.355] | 0.417 / 0.261 / 0.249 / 0.322 |
+
+**Bootstrap bias (audit).** Resampling concepts with replacement duplicates some of them, which makes resampled centroids noisier and pulls resampled ρ toward zero. The preregistered percentile intervals therefore sit below the point estimates: in Qwen3.5-2B, ρ = 0.387 but the bootstrap mean is 0.341. BCa intervals ([Efron, 1987](https://doi.org/10.1080/01621459.1987.10478410)) correct for this bias and shift every interval upward; no conclusion changes, because the bias works against H-A1 and cancels in the H-A3 contrast:
+
+| Model | Statistic | point | bootstrap mean (bias) | percentile 95% CI (pre-registered) | BCa 95% CI |
+|---|---|---|---|---|---|
+| qwen3.5-2b | trained | +0.387 | +0.341 (-0.046) | [0.262, 0.420] | [0.357, 0.468] |
+| qwen3.5-2b | random_init | -0.118 | -0.087 (+0.032) | [-0.215, 0.058] | [-0.255, -0.009] |
+| qwen3.5-2b | delta_vs_random_init | +0.506 | +0.427 (-0.078) | [0.277, 0.576] | [0.436, 0.672] |
+| qwen3.5-0.8b | trained | +0.369 | +0.319 (-0.049) | [0.243, 0.402] | [0.336, 0.450] |
+| qwen3.5-0.8b | random_init | -0.182 | -0.129 (+0.053) | [-0.252, 0.002] | [-0.333, -0.111] |
+| qwen3.5-0.8b | delta_vs_random_init | +0.551 | +0.448 (-0.102) | [0.300, 0.588] | [0.514, 0.672] |
+| qwen2.5-1.5b | trained | +0.406 | +0.361 (-0.046) | [0.288, 0.436] | [0.375, 0.476] |
+| qwen2.5-1.5b | random_init | -0.093 | -0.085 (+0.008) | [-0.195, 0.024] | [-0.210, 0.013] |
+| qwen2.5-1.5b | delta_vs_random_init | +0.499 | +0.445 (-0.054) | [0.318, 0.565] | [0.429, 0.661] |
+| qwen2.5-math-1.5b | trained | +0.390 | +0.340 (-0.050) | [0.264, 0.416] | [0.364, 0.460] |
+| qwen2.5-math-1.5b | random_init | -0.087 | -0.079 (+0.008) | [-0.186, 0.026] | [-0.198, 0.013] |
+| qwen2.5-math-1.5b | delta_vs_random_init | +0.477 | +0.419 (-0.059) | [0.297, 0.540] | [0.414, 0.668] |
+| gemma-4-e2b | trained | +0.436 | +0.393 (-0.043) | [0.315, 0.477] | [0.394, 0.555] |
+| gemma-4-e2b | random_init | -0.021 | -0.055 (-0.034) | [-0.185, 0.085] | [-0.114, 0.158] |
+| gemma-4-e2b | delta_vs_random_init | +0.457 | +0.449 (-0.009) | [0.290, 0.598] | [0.301, 0.607] |
+| qwen2.5-math-1.5b_vs_qwen2.5-1.5b | qwen2.5-math-1.5b | +0.390 | +0.340 (-0.050) | [0.264, 0.416] | [0.364, 0.460] |
+| qwen2.5-math-1.5b_vs_qwen2.5-1.5b | qwen2.5-1.5b | +0.406 | +0.361 (-0.046) | [0.288, 0.436] | [0.375, 0.476] |
+| qwen2.5-math-1.5b_vs_qwen2.5-1.5b | delta_vs_qwen2.5-1.5b | -0.017 | -0.021 (-0.004) | [-0.059, 0.017] | [-0.050, 0.026] |
+
+## 4.2 Robustness: scale, model family, math training, templates
 
 | Model | Concept set | n concepts / fields | ρ_field trained (perm p) [95% CI] | ρ random-init | ρ layer-0 | Δ trained − random-init [95% CI] | LOO field acc trained / random / layer-0 (chance) | split-half reliability |
 |---|---|---|---|---|---|---|---|---|
@@ -356,6 +298,20 @@ infini-gram (v4_dolma-v1_7_llama): Spearman ρ(wordfreq Zipf, log count) = 0.316
 
 **H-A3 (math training): null.** Qwen2.5-Math-1.5B is Qwen2.5-1.5B continued on over 1T tokens of math ([Qwen2.5-Math report](https://arxiv.org/abs/2409.12122)). Its field map is no stronger than its base's: ρ = 0.390 vs 0.406, and the paired CI of the difference is [-0.059, 0.017].
 
+**Twin seeds (audit).** Every twin contrast above uses one random draw (seed 0). Four more draws of the confirmatory model's twin show how much the twin statistics vary. The trained model exceeds all 5 draws for the field ρ (True), and the lowest lower bound of the H-A1 Δ CI over the draws is +0.239; the last column gives the same comparison for the other statistics:
+
+| Statistic (qwen3.5-2b) | trained | twin seed0 | twin seed1 | twin seed2 | twin seed3 | twin seed4 | twin range | trained > every twin |
+|---|---|---|---|---|---|---|---|---|
+| field ρ | 0.387 | -0.118 | -0.162 | -0.156 | -0.106 | -0.161 | -0.162 to -0.106 | yes |
+| LOO field accuracy | 0.472 | 0.090 | 0.101 | 0.121 | 0.098 | 0.116 | 0.090 to 0.121 | yes |
+| offset consistency: associative | 0.432 | 0.021 | 0.010 | 0.015 | 0.023 | 0.019 | 0.010 to 0.023 | yes |
+| offset consistency: identity | 0.237 | 0.040 | 0.031 | 0.020 | 0.036 | 0.024 | 0.020 to 0.040 | yes |
+| offset consistency: divisible | 0.289 | 0.012 | 0.015 | 0.007 | 0.020 | 0.029 | 0.007 to 0.029 | yes |
+| offset consistency: commutative | 0.534 | 0.013 | 0.011 | 0.012 | 0.000 | 0.004 | 0.000 to 0.013 | yes |
+| ring chain Robinson | 0.515 | 0.297 | 0.242 | 0.382 | 0.412 | 0.345 | 0.242 to 0.412 | yes |
+| space chain Robinson | 0.655 | 0.333 | 0.388 | 0.333 | 0.382 | 0.376 | 0.333 to 0.388 | yes |
+| field Δρ trained − twin [95% CI] | — | [0.279, 0.571] | [0.289, 0.611] | [0.289, 0.599] | [0.239, 0.584] | [0.289, 0.599] | lowest bound +0.239 | — |
+
 **Template variants (exploratory; Qwen3.5-2B).** We reran the field-map, shape, lattice, group-object, post-hoc and chain-frequency analyses with two other template sets (not the hierarchy, baseline, SMDS, axis, causal or SAE analyses).
 
 *Field-revealing concept templates* name the field, e.g. "In group theory, the notion of X":
@@ -363,33 +319,33 @@ infini-gram (v4_dolma-v1_7_llama): Spearman ρ(wordfreq Zipf, log count) = 0.316
 - Leave-one-out field accuracy jumps to 0.633, and the twin also rises to 0.332. This is exactly the label leakage the preregistration excluded from the primary analysis.
 
 *No-domain family templates* drop the shared context, e.g. "Consider X":
-- Axiom offsets (§4.1) weaken but persist for commutativity (0.47, p = 0.0020) and associativity (0.31, p = 0.0215).
+- Axiom offsets (§4.4) weaken but persist for commutativity (0.47, p = 0.0020) and associativity (0.31, p = 0.0215).
 - Group-object parallelograms persist (0.47, p = 0.0005).
-- Of the shapes (§4.4), days remain a perfect PC-plane cycle, and months lose theirs.
-- The chains' Robinson scores stay above their nulls before correction (p = 0.020 and 0.021), but the ring chain's leave-one-out order does not (p = 0.103), and neither chain survives Holm correction in this run. Angles remain line-like.
+- Of the shapes (§4.3), days remain a perfect PC-plane cycle, and months lose theirs.
+- The chains' Robinson scores stay above their nulls before correction (p = 0.020 and 0.021), but the ring chain's leave-one-out order does not (p = 0.111), and neither chain survives Holm correction in this run. Angles remain line-like.
 
 Full tables: `reports/mvp_variants_results.md`.
 
-## 4.4 H-B: shapes of ordered families
+## 4.3 H-B: shapes of ordered families
 
 | Family | Expected | Model | line ρ | circle ρ | closure (d first-last / adjacent) | closure_far† (null 5%) | Robinson (p) | PCA order \|ρ\| (p) | LOO order ρ (p) |
 |---|---|---|---|---|---|---|---|---|---|
-| days | circle | qwen3.5-2b | 0.78 | 0.65 | 1.19 | 0.99 (0.76) | 0.77 (0.0010) | 0.54 (0.2284) | -0.14 (0.0731) |
-| days | circle | qwen3.5-2b__random | -0.04 | -0.07 | 0.99 | 1.02 (0.96) | 0.34 (0.5002) | 0.18 (0.7106) | -0.93 (0.1993) |
-| months | circle | qwen3.5-2b | 0.79 | 0.70 | 1.23 | 0.96 (0.76) | 0.66 (0.0005) | 0.55 (0.0730) | 0.77 (0.0066) |
-| months | circle | qwen3.5-2b__random | -0.10 | -0.06 | 0.99 | 0.97 (0.94) | 0.30 (0.6962) | 0.32 (0.3048) | -0.78 (0.6013) |
-| ring_chain | line | qwen3.5-2b | 0.48 | 0.38 | 1.63 | 1.04 (0.63) | 0.52 (0.0105) | 0.46 (0.1619) | 0.65 (0.0133) |
-| ring_chain | line | qwen3.5-2b__random | -0.03 | -0.01 | 1.17 | 1.84 (0.53) | 0.30 (0.6667) | 0.50 (0.1234) | -0.45 (0.2292) |
-| space_chain | line | qwen3.5-2b | 0.67 | 0.40 | 1.79 | 1.42 (0.57) | 0.65 (0.0005) | 0.83 (0.0025) | 0.87 (0.0033) |
-| space_chain | line | qwen3.5-2b__random | -0.04 | 0.03 | 0.66 | 0.99 (0.54) | 0.33 (0.4993) | 0.56 (0.0770) | -0.41 (0.2625) |
-| number_systems | line | qwen3.5-2b | 0.77 | 0.36 | 1.67 | 1.66 (0.56) | 0.74 (0.0045) | 0.96 (0.0020) | 0.71 (0.0066) |
-| number_systems | line | qwen3.5-2b__random | 0.11 | 0.16 | 1.01 | 1.01 (0.93) | 0.26 (0.7856) | 0.39 (0.3773) | -0.82 (0.3887) |
-| ngons | number_reference | qwen3.5-2b | 0.56 | 0.28 | 1.94 | 1.06 (0.54) | 0.64 (0.0010) | 0.87 (0.0030) | 0.90 (0.0033) |
-| ngons | number_reference | qwen3.5-2b__random | 0.42 | 0.14 | 1.65 | 1.76 (0.57) | 0.42 (0.1159) | 0.19 (0.6007) | -0.89 (0.9236) |
-| dimensions | number_reference | qwen3.5-2b | 0.66 | 0.37 | 2.17 | 1.02 (0.31) | 0.75 (0.0005) | 0.95 (0.0010) | 0.72 (0.0033) |
-| dimensions | number_reference | qwen3.5-2b__random | -0.17 | -0.15 | 1.01 | 1.01 (0.93) | 0.32 (0.6117) | 0.00 (1.0000) | -0.75 (0.6578) |
-| angles | circle | qwen3.5-2b | 0.56 | 0.29 | 2.11 | 1.01 (0.39) | 0.65 (0.0005) | 0.90 (0.0005) | 0.76 (0.0033) |
-| angles | circle | qwen3.5-2b__random | -0.01 | 0.22 | 0.80 | 1.01 (0.77) | 0.26 (0.8581) | 0.08 (0.8076) | -0.49 (0.3754) |
+| days | circle | qwen3.5-2b | 0.78 | 0.65 | 1.19 | 0.99 (0.76) | 0.77 (0.0010) | 0.54 (0.2284) | -0.14 (0.0812) |
+| days | circle | qwen3.5-2b__random | -0.04 | -0.07 | 0.99 | 1.02 (0.96) | 0.34 (0.5002) | 0.18 (0.7106) | -0.93 (0.2202) |
+| months | circle | qwen3.5-2b | 0.79 | 0.70 | 1.23 | 0.96 (0.76) | 0.66 (0.0005) | 0.55 (0.0730) | 0.77 (0.0015) |
+| months | circle | qwen3.5-2b__random | -0.10 | -0.06 | 0.99 | 0.97 (0.94) | 0.30 (0.6962) | 0.32 (0.3048) | -0.78 (0.6252) |
+| ring_chain | line | qwen3.5-2b | 0.48 | 0.38 | 1.63 | 1.04 (0.63) | 0.52 (0.0105) | 0.46 (0.1619) | 0.65 (0.0085) |
+| ring_chain | line | qwen3.5-2b__random | -0.03 | -0.01 | 1.17 | 1.84 (0.53) | 0.30 (0.6667) | 0.50 (0.1234) | -0.45 (0.2381) |
+| space_chain | line | qwen3.5-2b | 0.67 | 0.40 | 1.79 | 1.42 (0.57) | 0.65 (0.0005) | 0.83 (0.0025) | 0.87 (0.0001) |
+| space_chain | line | qwen3.5-2b__random | -0.04 | 0.03 | 0.66 | 0.99 (0.54) | 0.33 (0.4993) | 0.56 (0.0770) | -0.41 (0.2562) |
+| number_systems | line | qwen3.5-2b | 0.77 | 0.36 | 1.67 | 1.66 (0.56) | 0.74 (0.0045) | 0.96 (0.0020) | 0.71 (0.0069) |
+| number_systems | line | qwen3.5-2b__random | 0.11 | 0.16 | 1.01 | 1.01 (0.93) | 0.26 (0.7856) | 0.39 (0.3773) | -0.82 (0.3742) |
+| ngons | number_reference | qwen3.5-2b | 0.56 | 0.28 | 1.94 | 1.06 (0.54) | 0.64 (0.0010) | 0.87 (0.0030) | 0.90 (0.0001) |
+| ngons | number_reference | qwen3.5-2b__random | 0.42 | 0.14 | 1.65 | 1.76 (0.57) | 0.42 (0.1159) | 0.19 (0.6007) | -0.89 (0.9457) |
+| dimensions | number_reference | qwen3.5-2b | 0.66 | 0.37 | 2.17 | 1.02 (0.31) | 0.75 (0.0005) | 0.95 (0.0010) | 0.72 (0.0002) |
+| dimensions | number_reference | qwen3.5-2b__random | -0.17 | -0.15 | 1.01 | 1.01 (0.93) | 0.32 (0.6117) | 0.00 (1.0000) | -0.75 (0.6614) |
+| angles | circle | qwen3.5-2b | 0.56 | 0.29 | 2.11 | 1.01 (0.39) | 0.65 (0.0005) | 0.90 (0.0005) | 0.76 (0.0010) |
+| angles | circle | qwen3.5-2b__random | -0.01 | 0.22 | 0.80 | 1.01 (0.77) | 0.26 (0.8581) | 0.08 (0.8076) | -0.49 (0.4139) |
 
 ![**A third principal component does not turn the angles into a circle.** Days, months and angles in their top-3 principal components at the preregistered layer. Each axis is that model's own PC, labelled with its share of variance, with true proportions and one fixed camera for every panel. Top row: Qwen3.5-2B; bottom row: its random-init twin. Below each panel: the share of variance in PC1–3 (for example 85% for the angles, 33% in the twin), and the best plane among PC1–5 where the loop closes, with its p (the closed-cycle test below): days and months close in some plane, while the angles have no significant closed cycle in any (best score 0.33, p = 0.34). A single camera angle can shorten or lengthen any edge; the evidence is the test, not the picture. Interactive 3-D version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families>.](../reports/figures/families3d_qwen3.5-2b.pdf){width=82%}
 
@@ -423,9 +379,9 @@ Full tables: `reports/mvp_variants_results.md`.
 | angles | 0.33 · PC3–PC5 · p=0.3447 (twin 0.33) | 0.33 · PC3–PC5 · p=0.3327 (twin 0.33) | 0.17 · PC2–PC3 · p=0.9890 (twin 0.17) | 0.25 · PC2–PC3 · p=0.8472 (twin 0.42) | 0.42 · PC2–PC4 · p=0.0839 (twin 0.17) |
 | digits_0_330 | 0.33 · PC2–PC3 · p=0.3287 (twin 0.33) | 0.17 · PC2–PC3 · p=0.9950 (twin 0.25) | 0.25 · PC2–PC3 · p=0.7912 (twin 0.25) | 0.17 · PC2–PC4 · p=0.9910 (twin 0.25) | 0.33 · PC2–PC5 · p=0.3287 (twin 0.25) |
 
-This statistic is post-hoc. We conclude that the pipeline works, and that the full-space template criterion was insensitive because variance outside the circle plane dominates.
+This statistic is post-hoc. We conclude that the pipeline works, and that the full-space template criterion was insensitive because variance outside the circle plane dominates. Spelling contributes to the order statistics of the positive control too: character 3-grams of the month names alone order the months (Robinson p = 0.0010; the "-ber" and "-uary" endings; Appendix A).
 
-**Chains.** In the confirmatory model the ring and space chains are ordered beyond permutation nulls and beyond the twin (Robinson p = 0.010 and 0.0005; leave-one-out order p = 0.013 and 0.0033). Across models, the full preregistered test holds for the space chain in 4 of 5 models (all but Gemma-4-E2B) and for the ring chain in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B); the leave-one-out order fails for the ring chain in Qwen3.5-0.8B (p = 0.076) and Gemma (p = 0.103). Robinson scores 0.52 and 0.65, against about 1/3 for chance and for the twin. Random concept lists are rejected at the nominal rate:
+**Chains.** In the confirmatory model the ring and space chains are ordered beyond permutation nulls and beyond the twin (Robinson p = 0.010 and 0.0005; leave-one-out order p = 0.008 and 0.0001). Across models, the full preregistered test holds for the space chain in all 5 models and for the ring chain in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B); the leave-one-out order fails for the ring chain in Qwen3.5-0.8B (p = 0.074) and Gemma (p = 0.105). Robinson scores 0.52 and 0.65, against about 1/3 for chance and for the twin. Random concept lists are rejected at the nominal rate (by construction; §3.5):
 
 | Model | Robinson reject rate | PCA-order reject rate | line-ρ reject rate | n lists |
 |---|---|---|---|---|
@@ -450,6 +406,34 @@ This statistic is post-hoc. We conclude that the pipeline works, and that the fu
 | space_chain | qwen3.5-2b__random | -0.10 | -0.05 | -0.04 (0.41, 0.5349) |
 | number_systems | qwen3.5-2b | -0.57 | +0.80 | +0.21 (0.86, 0.3920) |
 | number_systems | qwen3.5-2b__random | -0.57 | +0.80 | -0.21 (0.89, 0.5681) |
+
+**Within-block order and the head-noun confound (audit).** The ring chain's names end in four head nouns that form contiguous blocks of its order: rng | ring, commutative ring | six "… domain" items | field, algebraically closed field. Any representation that groups items by head noun therefore scores above chance on both preregistered order statistics, even with no order between or within the groups. In a simulation with equidistant head-noun clusters and no order, the preregistered conjunction rejected in 2%, 40% and 55% of simulations at three cluster strengths. Within the six "… domain" items, where the head noun is constant, the order is significant in 1 of 5 models (Qwen2.5-Math-1.5B) (exact test over all 720 orders). The space chain, whose items all end in "space", is ordered within its separation-axiom block (T0 … normal) in 1 of 5 models (Qwen3.5-2B) and within its metric block (metrizable … Hilbert) in all 5 models, and its spelling does not order it (Appendix A). We therefore count the space chain as ordered, and the ring chain's order as not established beyond its head nouns.
+
+| Model | Block (n) | trained: Robinson (exact p); PC1 \|ρ\| (p) | twin | char-3-grams | layer-0 token bag |
+|---|---|---|---|---|---|
+| qwen3.5-2b | ring chain, “… domain” items (6) | 0.40 (0.3194); 0.77 (0.1028) | 0.15 (0.8889) | 0.25 (0.7944) | 0.05 (0.9556) |
+| qwen3.5-2b | space chain, T0 to normal (6) | 0.70 (0.0167); 0.94 (0.0167) | 0.25 (0.7667) | 0.25 (0.9333) | 0.05 (0.9944) |
+| qwen3.5-2b | space chain, metrizable to Hilbert (5) | 1.00 (0.0167); 1.00 (0.0167) | 0.40 (0.4000) | 0.60 (0.2833) | 0.30 (0.6667) |
+| qwen3.5-0.8b | ring chain, “… domain” items (6) | 0.40 (0.3528); 0.77 (0.1028) | 0.20 (0.8389) | 0.25 (0.7944) | 0.05 (0.9556) |
+| qwen3.5-0.8b | space chain, T0 to normal (6) | 0.30 (0.6694); 0.83 (0.0583) | 0.20 (0.8861) | 0.25 (0.9333) | 0.10 (0.9944) |
+| qwen3.5-0.8b | space chain, metrizable to Hilbert (5) | 0.90 (0.0167); 1.00 (0.0167) | 0.50 (0.2500) | 0.60 (0.2833) | 0.40 (0.5667) |
+| qwen2.5-1.5b | ring chain, “… domain” items (6) | 0.45 (0.2306); 0.83 (0.0583) | 0.10 (0.9556) | 0.25 (0.7944) | 0.20 (0.8222) |
+| qwen2.5-1.5b | space chain, T0 to normal (6) | 0.55 (0.0944); 0.60 (0.2417) | 0.20 (0.9028) | 0.25 (0.9333) | 0.05 (0.9944) |
+| qwen2.5-1.5b | space chain, metrizable to Hilbert (5) | 1.00 (0.0167); 1.00 (0.0167) | 0.30 (0.6667) | 0.60 (0.2833) | 0.40 (0.5667) |
+| qwen2.5-math-1.5b | ring chain, “… domain” items (6) | 0.65 (0.0056); 0.77 (0.1028) | 0.10 (0.9611) | 0.25 (0.7944) | 0.20 (0.8556) |
+| qwen2.5-math-1.5b | space chain, T0 to normal (6) | 0.55 (0.0861); 0.94 (0.0167) | 0.25 (0.7667) | 0.25 (0.9333) | 0.15 (0.9722) |
+| qwen2.5-math-1.5b | space chain, metrizable to Hilbert (5) | 1.00 (0.0167); 1.00 (0.0167) | 0.30 (0.6667) | 0.60 (0.2833) | 0.40 (0.5667) |
+| gemma-4-e2b | ring chain, “… domain” items (6) | 0.10 (1.0000); 0.09 (0.9194) | 0.20 (0.8389) | 0.25 (0.7944) | 0.20 (0.8417) |
+| gemma-4-e2b | space chain, T0 to normal (6) | 0.35 (0.4694); 0.26 (0.6583) | 0.25 (0.7500) | 0.25 (0.9333) | 0.15 (0.9889) |
+| gemma-4-e2b | space chain, metrizable to Hilbert (5) | 0.90 (0.0167); 1.00 (0.0167) | 0.10 (0.9333) | 0.60 (0.2833) | 0.30 (0.6833) |
+
+| head-noun cluster SNR | conjunction rejects (Robinson p < .05 and LOO p < .05) | mean Robinson | mean LOO ρ | simulations |
+|---|---|---|---|---|
+| 0.5 | 0.03 | 0.44 | -0.34 | 40 |
+| 1.0 | 0.40 | 0.44 | +0.30 | 40 |
+| 2.0 | 0.55 | 0.45 | +0.42 | 40 |
+
+**Test precision and the ridge penalty (audit).** The leave-one-out order nulls have 10,000 permutations (300 before the audit). Together with the 8-test Holm family (§3.5), this changes three decisions: Gemma-4-E2B's space chain becomes Holm-significant, and identity and divisibility lose Holm significance in Qwen2.5-Math-1.5B. The preregistered ridge penalty α = 10 is not scale-invariant: the residual streams of the Qwen3.5 models have much smaller norms than those of Qwen2.5 and Gemma, so their leave-one-out fits shrink toward the training mean, whose ranks are anti-correlated with the held-out ranks. This is why leave-one-out ρ is strongly negative for many families in those models and their twins; these values are not effect sizes. A scale-relative penalty is reported in Appendix A as a sensitivity analysis.
 
 **Angles: preregistered prediction falsified.** Angles are not circular: closure ratio 2.11 (range 1.84–2.59 across models), no cycle in the top-2 PC plane, and, under the pre-specified addendum rule, no significant closed cycle in any plane of the top five components in any model (below). Their geometry closely matches that of the bare digits 0–330 (ρ = 0.84). At this scale, "330 degrees" is farther from "0 degrees" than neighbouring angles are from each other.
 
@@ -506,6 +490,202 @@ The addendum's decision rule for "angles have a circular component beyond PC1–
   - Months fit both templates beyond the null.
 
 This agrees with the unsupervised statistics, including the conclusion that angles are line-like.
+
+## 4.4 H-B2: axiom lattices
+
+**The test.** The 13 group-like structures are defined by four axioms (associativity, identity, divisibility, commutativity), so each sits on a vertex of a 4-cube (§3.3). For each axiom we take every pair of structures that differ only in that axiom, for example monoid → commutative monoid and group → abelian group for commutativity (6 pairs), and compute their difference vectors at the preregistered layer. *Offset consistency* is the mean pairwise cosine of these difference vectors in the full residual stream: 1 if they are parallel, about 0 if they are unrelated. The null draws the same number of random pairs from the same 13 structures (2,000 draws), and p = (1 + the number of null draws at least as large as the observed value)/(1 + 2,000). The next figure walks through the procedure on real data.
+
+![**Adding an axiom moves a structure in a consistent direction in the trained model, and not in its random-init twin; the word-form controls below show that the names' spelling produces such bundles too.** The test on Qwen3.5-2B at the preregistered layer, in four steps. (1) Each structure is a set of axioms, so the 13 group-like structures form a lattice (ground truth). (2) Every pair of structures that differ only in commutativity, drawn as an arrow in the model's top-3 principal components. (3) The same arrows moved to one common origin: in the model they form a bundle (offset consistency 0.53), in the twin they point every way (0.01). (4) A compass for every axiom, measured in the full residual stream: the angle between each same-axiom difference vector and the mean of the others (leave-one-out); the model is drawn above the dashed line, the twin below; 0° means the same direction and 90° unrelated. Steps 2 and 3 are pictures; the statistic and the compass are computed in the full space, and the compass is a visual aid rather than a test. Interactive version, step by step: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-axiom-how>.](../reports/figures/axioms_explainer_qwen3.5-2b.pdf){width=100%}
+
+| Lattice | Model | axiom-RDM β (p) | lexical β | offset consistency per axiom: obs / null95 (p) | analogy top-1 (chance) | mean rank (chance) |
+|---|---|---|---|---|---|---|
+| group_like | qwen3.5-2b | +0.492 (0.0002) | +0.236 | associative: 0.43/0.23 (0.0035); identity: 0.24/0.22 (0.0425); divisible: 0.29/0.22 (0.0275); commutative: 0.53/0.20 (0.0010) | 0.56 (0.10) | 2.5 (5.5) |
+| self_distributive | qwen3.5-2b | +0.123 (0.3393) | -0.446 | invertible: 0.48/0.78 (0.2039); idempotent: 0.17/0.78 (0.4268) | 1.00 (0.50) | 1.0 (1.5) |
+| gender control | qwen3.5-2b | — | — | gender: 0.28/0.09 | king:queen rank 1 | — |
+| group_like | qwen3.5-2b__random | +0.302 (0.0010) | -0.403 | associative: 0.02/0.16 (0.3678); identity: 0.04/0.16 (0.3068); divisible: 0.01/0.16 (0.4338); commutative: 0.01/0.14 (0.4048) | 0.31 (0.10) | 3.6 (5.5) |
+| self_distributive | qwen3.5-2b__random | +0.316 (0.1284) | -0.275 | invertible: -0.01/0.56 (0.5207); idempotent: 0.01/0.56 (0.4493) | 1.00 (0.50) | 1.0 (1.5) |
+| gender control | qwen3.5-2b__random | — | — | gender: 0.00/0.07 | king:queen rank 15 | — |
+
+![**In 3-D, the trained model's same-axiom arrows stay roughly parallel; the twin's point every way.** The 13 structures in their top-3 principal components (70% of their variance; twin 52%), with true proportions and one fixed camera. In each facet, the arrows (blue; grey in the twin) are the pairs that differ only in that axiom. Top row: Qwen3.5-2B; bottom row: its twin. A 3-D view can still hide or exaggerate parallelism; the cosine matrices below are the evidence. Interactive 3-D version, with the analogy query b − a + c placed exactly: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-lattice>.](../reports/figures/lattice3d_qwen3.5-2b.pdf){width=100%}
+
+![**The same facets in the top-2 plane.** Left: the ideal geometry, in which each axiom is one fixed step. Other panels: the same unsupervised PCA plane of the 13 group-like structures, one panel per axiom, with the pairs that differ only in that axiom drawn as arrows (blue; grey in the twin). Parallel arrows mean a consistent direction. Below each panel: offset consistency and its random-pair p. Bottom row: the twin. Interactive version, with an analogy playground: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-lattice>.](../reports/figures/lattice_axes_qwen3.5-2b.pdf){width=100%}
+
+![**The direction evidence, unprojected.** Cosine between every pair of single-axiom difference vectors in the full residual space, grouped by axiom. Red diagonal blocks mean a consistent direction. Hatched cells are cross-axiom pairs that share a structure; isotropic noise alone puts these near ±0.5, so they carry no evidence. The self-cosines on the diagonal are masked. Right: offset consistency per axiom for the trained model, the trained model with the token-count direction removed, the twin and the names' character 3-grams (×), against the random-pair null. Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-cosines>.](../reports/figures/lattice_cosines_qwen3.5-2b.pdf){width=100%}
+
+For every group-like axiom, difference vectors between structures that differ only in that axiom are more parallel than random pairs (raw p < .05):
+
+| Axiom | Consistency | Null 95th percentile | p |
+|---|---|---|---|
+| Associativity | 0.43 | 0.23 | 0.0035 |
+| Identity | 0.24 | 0.22 | 0.0425 |
+| Divisibility | 0.29 | 0.22 | 0.0275 |
+| Commutativity | 0.53 | 0.20 | 0.0010 |
+
+In this model's random-init twin, all four consistencies are ≈ 0.
+
+**Analogies.** Analogy completion is top-1 for 0.56 of 45 parallelograms (chance 0.10). The twin reaches 0.31 and the names' character 3-grams 0.38, so much of the analogy accuracy is lexical. So is much of the offset consistency (word-form controls below).
+
+**Caveats.** The gender-offset positive control passes. Multiplicity across the preregistered confirmatory tests is handled by Holm correction:
+
+| Test | Model | p | Holm-adjusted p | reject at α=0.05 |
+|---|---|---|---|---|
+| H-A1 Δρ trained − random-init ≤ 0 (bootstrap) | qwen3.5-2b | 0.0005 | 0.0040 | yes |
+| H-B ring chain (Robinson and LOO order) | qwen3.5-2b | 0.0105 | 0.0420 | yes |
+| H-B space chain (Robinson and LOO order) | qwen3.5-2b | 0.0005 | 0.0040 | yes |
+| H-B2 associative offset consistency | qwen3.5-2b | 0.0035 | 0.0175 | yes |
+| H-B2 identity offset consistency | qwen3.5-2b | 0.0425 | 0.0850 | no |
+| H-B2 divisible offset consistency | qwen3.5-2b | 0.0275 | 0.0825 | no |
+| H-B2 commutative offset consistency | qwen3.5-2b | 0.0010 | 0.0060 | yes |
+| H-B angles circle prediction (decision rule: closure 2.11 < 2 and circle ρ 0.29 > line ρ 0.56; counted with p = 1) | qwen3.5-2b | — | — | not met (prediction falsified) |
+
+- **After correction:** associativity and commutativity remain significant; identity and divisibility do not.
+- **Across the replication models (Appendix A):** all four offsets are positive in every model. They are near zero in the Qwen3.5 twins. The other twins are weaker but not always null: raw p < .05 for commutativity in the two Qwen2.5 twins (consistency ≈ 0.16) and for associativity and divisibility in Gemma's twin, all lexical. Divisibility reaches raw p < .05 in all 5 models, identity in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B).
+**Word-form controls (audit).** The names encode the axioms. Five of the six commutativity pairs add the word "commutative". Most associativity and divisibility pairs end in "-group" on one side only (magma → semigroup, loop → group; magma → quasigroup, monoid → group). Several pairs of pairs repeat the same head-noun change with and without "commutative". A representation that knew only the spelling would therefore show consistent offsets, and it does: character 3-grams of the names pass the same random-pair test for every axiom (associativity 0.32, identity 0.32, divisibility 0.32, commutativity 0.62; p ≤ 0.032).
+
+| Model | Axiom | trained (p) | char-3-grams (p) | word bag (p) | layer-0 token bag (p) | duplicated cosines: n, mean | disjoint cosines: mean (p); twin | beyond word form |
+|---|---|---|---|---|---|---|---|---|
+| qwen3.5-2b | associative | 0.43 (0.0035) | 0.32 (0.0215) | 0.25 (0.0380) | 0.23 (0.0680) | 1, 0.86 | 0.38 (0.0080); 0.02 | yes |
+| qwen3.5-2b | identity | 0.24 (0.0425) | 0.32 (0.0215) | 0.20 (0.0675) | 0.34 (0.0190) | 2, 0.83 | 0.09 (0.2264); 0.04 | no |
+| qwen3.5-2b | divisible | 0.29 (0.0275) | 0.32 (0.0320) | 0.25 (0.0460) | 0.22 (0.0780) | 1, 0.92 | 0.22 (0.0600); 0.01 | no |
+| qwen3.5-2b | commutative | 0.53 (0.0010) | 0.62 (0.0005) | 0.67 (0.0005) | 0.71 (0.0005) | 0, — | 0.53 (0.0010); 0.01 | no |
+| qwen3.5-0.8b | associative | 0.47 (0.0035) | 0.32 (0.0215) | 0.25 (0.0380) | 0.24 (0.0585) | 1, 0.93 | 0.41 (0.0065); 0.05 | yes |
+| qwen3.5-0.8b | identity | 0.22 (0.0570) | 0.32 (0.0215) | 0.20 (0.0675) | 0.33 (0.0200) | 2, 0.91 | 0.05 (0.3163); 0.05 | no |
+| qwen3.5-0.8b | divisible | 0.26 (0.0430) | 0.32 (0.0320) | 0.25 (0.0460) | 0.21 (0.0840) | 1, 0.94 | 0.18 (0.0925); 0.04 | no |
+| qwen3.5-0.8b | commutative | 0.57 (0.0010) | 0.62 (0.0005) | 0.67 (0.0005) | 0.72 (0.0005) | 0, — | 0.57 (0.0010); 0.02 | no |
+| qwen2.5-1.5b | associative | 0.38 (0.0055) | 0.32 (0.0215) | 0.25 (0.0380) | 0.24 (0.0560) | 1, 0.79 | 0.33 (0.0145); 0.10 | yes |
+| qwen2.5-1.5b | identity | 0.27 (0.0310) | 0.32 (0.0215) | 0.20 (0.0675) | 0.29 (0.0300) | 2, 0.86 | 0.12 (0.1654); 0.03 | no |
+| qwen2.5-1.5b | divisible | 0.25 (0.0410) | 0.32 (0.0320) | 0.25 (0.0460) | 0.23 (0.0685) | 1, 0.82 | 0.19 (0.0790); 0.07 | no |
+| qwen2.5-1.5b | commutative | 0.41 (0.0025) | 0.62 (0.0005) | 0.67 (0.0005) | 0.69 (0.0005) | 0, — | 0.41 (0.0025); 0.16 | no |
+| qwen2.5-math-1.5b | associative | 0.35 (0.0090) | 0.32 (0.0215) | 0.25 (0.0380) | 0.24 (0.0530) | 1, 0.80 | 0.30 (0.0230); 0.07 | yes |
+| qwen2.5-math-1.5b | identity | 0.27 (0.0265) | 0.32 (0.0215) | 0.20 (0.0675) | 0.27 (0.0370) | 2, 0.84 | 0.13 (0.1509); 0.02 | no |
+| qwen2.5-math-1.5b | divisible | 0.30 (0.0195) | 0.32 (0.0320) | 0.25 (0.0460) | 0.22 (0.0725) | 1, 0.86 | 0.23 (0.0430); 0.07 | no |
+| qwen2.5-math-1.5b | commutative | 0.45 (0.0010) | 0.62 (0.0005) | 0.67 (0.0005) | 0.72 (0.0005) | 0, — | 0.45 (0.0010); 0.15 | no |
+| gemma-4-e2b | associative | 0.56 (0.0020) | 0.32 (0.0215) | 0.25 (0.0380) | 0.26 (0.0390) | 1, 0.87 | 0.53 (0.0035); 0.16 | yes |
+| gemma-4-e2b | identity | 0.19 (0.0900) | 0.32 (0.0215) | 0.20 (0.0675) | 0.20 (0.0675) | 2, 0.84 | 0.03 (0.3673); -0.02 | no |
+| gemma-4-e2b | divisible | 0.35 (0.0230) | 0.32 (0.0320) | 0.25 (0.0460) | 0.28 (0.0270) | 1, 0.86 | 0.30 (0.0355); 0.17 | yes |
+| gemma-4-e2b | commutative | 0.74 (0.0005) | 0.62 (0.0005) | 0.67 (0.0005) | 0.77 (0.0005) | 0, — | 0.74 (0.0005); 0.02 | no |
+
+- *Commutativity is largely composition with a modifier.* For six heads, X → wooden X and X → zorbic X are about as consistent as X → commutative X; "commutative" is the most consistent of the three modifiers in 1 of 5 models (Gemma-4-E2B). Plain composition with any modifier gives offsets of this size.
+
+| Model | modifier m (X → m X, 6 heads) | trained (null95, p) | twin | char-3-grams | layer-0 token bag |
+|---|---|---|---|---|---|
+| qwen3.5-2b | commutative | 0.56 (0.19, 0.0005) | 0.01 | 0.92 | 1.00 |
+| qwen3.5-2b | wooden | 0.59 (0.19, 0.0005) | 0.01 | 0.87 | 1.00 |
+| qwen3.5-2b | zorbic | 0.68 (0.20, 0.0005) | 0.01 | 0.87 | 1.00 |
+| qwen3.5-0.8b | commutative | 0.62 (0.20, 0.0005) | 0.02 | 0.92 | 1.00 |
+| qwen3.5-0.8b | wooden | 0.62 (0.20, 0.0005) | 0.01 | 0.87 | 1.00 |
+| qwen3.5-0.8b | zorbic | 0.65 (0.20, 0.0005) | 0.03 | 0.87 | 1.00 |
+| qwen2.5-1.5b | commutative | 0.45 (0.18, 0.0005) | 0.22 | 0.92 | 1.00 |
+| qwen2.5-1.5b | wooden | 0.49 (0.18, 0.0005) | 0.18 | 0.87 | 1.00 |
+| qwen2.5-1.5b | zorbic | 0.57 (0.19, 0.0005) | 0.23 | 0.87 | 1.00 |
+| qwen2.5-math-1.5b | commutative | 0.49 (0.19, 0.0010) | 0.22 | 0.92 | 1.00 |
+| qwen2.5-math-1.5b | wooden | 0.54 (0.18, 0.0005) | 0.17 | 0.87 | 1.00 |
+| qwen2.5-math-1.5b | zorbic | 0.61 (0.19, 0.0005) | 0.23 | 0.87 | 1.00 |
+| gemma-4-e2b | commutative | 0.79 (0.22, 0.0005) | 0.03 | 0.92 | 1.00 |
+| gemma-4-e2b | wooden | 0.69 (0.21, 0.0005) | 0.02 | 0.87 | 1.00 |
+| gemma-4-e2b | zorbic | 0.72 (0.22, 0.0005) | 0.02 | 0.87 | 1.00 |
+
+- *But the commutative direction carries meaning.* The direction of the five pairs that add the word "commutative" predicts *abelian group − group*, which shares no word with it, in all 5 models (cosine 0.51 to 0.73). Character 3-grams and a bag of words give about 0, and the token-embedding bag stays below the trained models. This is one held-out pair per model: an existence proof, not a systematic result.
+
+| Model | trained: cos (p) | twin: cos (p) | char-3-grams: cos (p) | word bag: cos (p) | layer-0 token bag: cos (p) | semantic transfer |
+|---|---|---|---|---|---|---|
+| qwen3.5-2b | +0.60 (0.0274) | +0.03 (0.3562) | +0.00 (0.8493) | +0.00 (0.9315) | +0.12 (0.0822) | yes |
+| qwen3.5-0.8b | +0.54 (0.0274) | -0.00 (0.5205) | +0.00 (0.8493) | +0.00 (0.9315) | +0.15 (0.0959) | yes |
+| qwen2.5-1.5b | +0.51 (0.0274) | +0.02 (0.3288) | +0.00 (0.8493) | +0.00 (0.9315) | +0.08 (0.0959) | yes |
+| qwen2.5-math-1.5b | +0.55 (0.0274) | +0.03 (0.3288) | +0.00 (0.8493) | +0.00 (0.9315) | +0.15 (0.0822) | yes |
+| gemma-4-e2b | +0.73 (0.0274) | +0.01 (0.4384) | +0.00 (0.8493) | +0.00 (0.9315) | +0.31 (0.0822) | yes |
+
+- *Identity is lexical duplication.* Identity's two duplicated pairs (quasigroup → loop vs commutative quasigroup → commutative loop; semigroup → monoid vs commutative semigroup → commutative monoid) have cosines 0.83 to 0.91; its eight disjoint cosines average 0.03 to 0.13. On the 8 names without "commutative" its consistency is 0.00 to 0.09.
+- *Associativity goes beyond word form most clearly.* It exceeds every word-form baseline and its disjoint pairs pass the null in all 5 models (divisibility: 1 of 5 models (Gemma-4-E2B); identity: none of the 5 models; commutativity: none of the 5 models). On the 8-name sub-lattice it is 0.28 to 0.50, above every baseline in all 5 models, but with three pairs per model no single value is significant.
+
+| Model | Axiom (3 pairs) | trained | twin | char-3-grams | word bag | layer-0 token bag |
+|---|---|---|---|---|---|---|
+| qwen3.5-2b | associative | +0.35 (0.0930) | +0.02 (0.4105) | +0.22 (0.1844) | +0.14 (0.3263) | +0.11 (0.3189) |
+| qwen3.5-2b | identity | +0.02 (0.4183) | +0.02 (0.4179) | +0.12 (0.2981) | +0.00 (0.5187) | +0.12 (0.2873) |
+| qwen3.5-2b | divisible | +0.19 (0.2174) | -0.00 (0.4825) | +0.21 (0.2026) | +0.14 (0.3219) | +0.10 (0.3365) |
+| qwen3.5-0.8b | associative | +0.39 (0.0834) | +0.02 (0.4333) | +0.22 (0.1844) | +0.14 (0.3263) | +0.13 (0.2885) |
+| qwen3.5-0.8b | identity | -0.00 (0.4577) | +0.07 (0.3523) | +0.12 (0.2981) | +0.00 (0.5187) | +0.12 (0.2973) |
+| qwen3.5-0.8b | divisible | +0.15 (0.2505) | +0.02 (0.4319) | +0.21 (0.2026) | +0.14 (0.3219) | +0.09 (0.3407) |
+| qwen2.5-1.5b | associative | +0.29 (0.1260) | +0.11 (0.3119) | +0.22 (0.1844) | +0.14 (0.3263) | +0.12 (0.3085) |
+| qwen2.5-1.5b | identity | +0.08 (0.3483) | +0.00 (0.4637) | +0.12 (0.2981) | +0.00 (0.5187) | +0.07 (0.3659) |
+| qwen2.5-1.5b | divisible | +0.13 (0.2803) | +0.07 (0.3577) | +0.21 (0.2026) | +0.14 (0.3219) | +0.10 (0.3339) |
+| qwen2.5-math-1.5b | associative | +0.28 (0.1340) | +0.09 (0.3475) | +0.22 (0.1844) | +0.14 (0.3263) | +0.13 (0.2863) |
+| qwen2.5-math-1.5b | identity | +0.09 (0.3267) | -0.01 (0.4883) | +0.12 (0.2981) | +0.00 (0.5187) | +0.04 (0.4071) |
+| qwen2.5-math-1.5b | divisible | +0.21 (0.1992) | +0.05 (0.3815) | +0.21 (0.2026) | +0.14 (0.3219) | +0.10 (0.3343) |
+| gemma-4-e2b | associative | +0.50 (0.0522) | +0.12 (0.3177) | +0.22 (0.1844) | +0.14 (0.3263) | +0.13 (0.2899) |
+| gemma-4-e2b | identity | +0.03 (0.3859) | -0.01 (0.4881) | +0.12 (0.2981) | +0.00 (0.5187) | -0.03 (0.5071) |
+| gemma-4-e2b | divisible | +0.32 (0.1336) | +0.13 (0.2857) | +0.21 (0.2026) | +0.14 (0.3219) | +0.14 (0.2785) |
+
+- **Our reading:** most of the offset geometry follows from the names. The evidence for axioms as directions beyond word form is suggestive: an associativity direction, and a commutativity direction that generalizes to "abelian group".
+
+**Lie groups and other group objects (exploratory).** A Lie group is a group that is also a smooth manifold; topological and algebraic groups are defined analogously. We tested three parallelograms:
+- topological group − group ≈ topological space − set;
+- Lie group − topological group ≈ smooth manifold − topological space;
+- algebraic group − group ≈ algebraic variety − set.
+
+| Model | commutativity transfer cos (null95, p) | identity transfer cos (p) | group-object parallelograms cos (null95, p) | parent ranks: topological / Lie / algebraic group |
+|---|---|---|---|---|
+| qwen3.5-2b | +0.198 (0.198, 0.0510) | +0.015 (0.3983) | +0.398 (0.235, 0.0045) | [5, 8] / [3, 7] / [3, 6] (of 113) |
+| qwen3.5-2b__random | -0.017 (0.167, 0.7126) | +0.001 (0.4743) | +0.006 (0.031, 0.3768) | [2, 44] / [1, 18] / [3, 71] (of 113) |
+
+| Model | commutativity transfer cos (null95, p) | identity transfer cos (p) | group-object parallelograms cos (null95, p) | parent ranks: topological / Lie / algebraic group |
+|---|---|---|---|---|
+| qwen3.5-0.8b | +0.188 (0.212, 0.0760) | +0.075 (0.1794) | +0.457 (0.241, 0.0025) | [5, 15] / [4, 6] / [4, 5] (of 113) |
+| qwen3.5-0.8b__random | +0.010 (0.144, 0.4038) | -0.014 (0.6552) | -0.028 (0.058, 0.7941) | [1, 72] / [1, 65] / [2, 88] (of 113) |
+| qwen2.5-1.5b | +0.183 (0.165, 0.0380) | +0.020 (0.3933) | +0.406 (0.221, 0.0035) | [4, 6] / [3, 6] / [4, 6] (of 113) |
+| qwen2.5-1.5b__random | +0.142 (0.135, 0.0435) | +0.038 (0.1424) | +0.156 (0.138, 0.0350) | [1, 2] / [1, 18] / [1, 2] (of 113) |
+| qwen2.5-math-1.5b | +0.202 (0.160, 0.0210) | +0.096 (0.1244) | +0.409 (0.208, 0.0015) | [4, 7] / [3, 6] / [3, 6] (of 113) |
+| qwen2.5-math-1.5b__random | +0.124 (0.137, 0.0600) | +0.005 (0.4358) | +0.150 (0.139, 0.0410) | [1, 2] / [1, 15] / [1, 2] (of 113) |
+
+| Model | commutativity transfer cos (null95, p) | identity transfer cos (p) | group-object parallelograms cos (null95, p) | parent ranks: topological / Lie / algebraic group |
+|---|---|---|---|---|
+| gemma-4-e2b | +0.129 (0.271, 0.2324) | -0.180 (0.9320) | +0.484 (0.303, 0.0085) | [41, 6] / [2, 10] / [7, 3] (of 113) |
+| gemma-4-e2b__random | +0.003 (0.063, 0.4568) | +0.037 (0.2344) | -0.003 (0.141, 0.5337) | [2, 31] / [2, 6] / [2, 7] (of 113) |
+
+![**The group-object parallelograms clear their null, but the names' spelling is more parallel.** Left: mean cosine of the three parallelograms (for example, Lie group − topological group vs smooth manifold − topological space) for each model (blue), its twin (grey) and the names' character 3-grams (×), against the 95th percentile of each model's random-quadruple null (dark tick) and of the twin's own null (small grey tick); p values from those nulls. Right: the nearest-neighbour rank of "group" (circle) and "smooth manifold" (diamond) among the family items around "Lie group", trained vs twin (log scale). Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-groups>.](../reports/figures/group_objects.pdf){width=88%}
+
+**Group objects: explained by shared words.**
+- The parallelograms clear their null in all 5 models: mean cosine 0.40 in Qwen3.5-2B (p = 0.0045). The twins are near zero, except the Qwen2.5 twins, whose weak lexical signal also passes their own nulls (p = 0.035 and 0.041).
+- Trained models place "Lie group" close to *both* parents: "group" and "smooth manifold" rank 3 and 7 among 113 items.
+- The twins rank "group" first or second (Gemma's twin: second) because of the shared token. "Smooth manifold" ranks 18 in the Qwen3.5-2B twin; Gemma's twin is the exception, ranking it 6.
+- *Audit.* Every parallelogram shares "topological" or "algebraic" on both sides, and the names' character 3-grams give a mean cosine of 0.61 and the token-embedding bag 0.68, above Qwen3.5-2B's 0.40. Models whose cosine exceeds every word-form baseline: none of the 5 models. The parallelograms therefore show composition of the names, not knowledge of group objects.
+
+| Model | trained cos (p) | char-3-grams cos (p) | word bag cos (p) | layer-0 token bag cos (p) | beyond word form |
+|---|---|---|---|---|---|
+| qwen3.5-2b | +0.398 (0.0045) | +0.611 (0.0005) | +0.503 (0.0005) | +0.678 (0.0005) | no |
+| qwen3.5-0.8b | +0.457 (0.0025) | +0.611 (0.0005) | +0.503 (0.0005) | +0.688 (0.0005) | no |
+| qwen2.5-1.5b | +0.406 (0.0035) | +0.611 (0.0005) | +0.503 (0.0005) | +0.680 (0.0005) | no |
+| qwen2.5-math-1.5b | +0.409 (0.0015) | +0.611 (0.0005) | +0.503 (0.0005) | +0.674 (0.0005) | no |
+| gemma-4-e2b | +0.484 (0.0085) | +0.611 (0.0005) | +0.503 (0.0005) | +0.522 (0.0005) | no |
+
+**Axiom transfer: inconclusive.**
+- The commutativity direction learned on group-like pairs transfers only weakly to ring → commutative ring and division ring → field (0.20, p = 0.051).
+- Some Qwen twins show similar values. "Commutative ring" literally contains the token "commutative", so we consider transfer not established.
+- Identity transfer, from the single pair rng → ring, is null.
+
+**Further lattice items from the plan (exploratory; second audit).**
+
+| Model | associative quasigroup: d(·, group) / d(·, quasigroup) (3 nearest) | inverse semigroup: 3 nearest | identity direction → lattice-like pairs: cos (null95, p) |
+|---|---|---|---|
+| qwen3.5-2b | 2.81 (commutative quasigroup, quasigroup, commutative loop) | semigroup, commutative semigroup, monoid | +0.074 (0.157, 0.1359) |
+| qwen3.5-2b__random | 1.11 (quasigroup, semigroup, monoid) | semigroup, quasigroup, loop | +0.054 (0.149, 0.1454) |
+
+| Model | Variant | offset consistency per axiom: obs / null95 (p) |
+|---|---|---|
+| qwen3.5-2b | group-like, mean-pooled tokens | associative: 0.30 / 0.22 (0.0235); identity: 0.26 / 0.23 (0.0305); divisible: 0.21 / 0.24 (0.0750); commutative: 0.60 / 0.19 (0.0005) |
+| qwen3.5-2b | group-like, token-count direction removed | associative: 0.44 / 0.23 (0.0035); identity: 0.26 / 0.22 (0.0360); divisible: 0.31 / 0.22 (0.0235); commutative: 0.46 / 0.20 (0.0010) |
+| qwen3.5-2b | partial-operation lattice | total: 0.29 / 0.54 (0.1704); identity: 0.07 / 0.82 (0.4518); divisible: -0.22 / 0.80 (0.5817) |
+| qwen3.5-2b__random | group-like, mean-pooled tokens | associative: 0.03 / 0.17 (0.3378); identity: 0.03 / 0.16 (0.3283); divisible: 0.01 / 0.17 (0.4058); commutative: 0.10 / 0.14 (0.1084) |
+| qwen3.5-2b__random | group-like, token-count direction removed | associative: 0.02 / 0.16 (0.3633); identity: 0.04 / 0.16 (0.3068); divisible: 0.01 / 0.16 (0.4278); commutative: -0.02 / 0.14 (0.5487) |
+| qwen3.5-2b__random | partial-operation lattice | total: -0.03 / 0.38 (0.5272); identity: -0.08 / 0.55 (0.6872); divisible: -0.07 / 0.55 (0.6707) |
+
+- *No semantic collapse.* A non-empty associative quasigroup is a group, but the model does not place it there. It is 2.8× farther from "group" than from "quasigroup" (twin 1.1×), and its nearest neighbours are quasigroup-like. The representation follows the name's parts, not this theorem.
+- *Inverse semigroup* sits next to semigroup, commutative semigroup and monoid in the trained model, which is sensible.
+- *Not a length artifact.* Removing the token-count direction (fitted on all family items) leaves the group-like offsets intact: commutativity 0.46 (p = 0.0010), associativity 0.44 (p = 0.0035). Across the five models (Appendix A), after this projection the offsets stay significant before correction for associativity in all 5 models, commutativity in all 5 models, divisibility in all 5 models and identity in 4 of 5 models (all but Gemma-4-E2B). Mean-pooling the concept's tokens gives a similar pattern, with divisibility no longer significant (table above). This is a one-direction analogue of the LDA distractor removal of [Li et al. (2024)](https://arxiv.org/abs/2410.19750).
+- *Partial-operation lattice: no evidence.* The "total operation" offset (semigroupoid → semigroup, small category → monoid, groupoid → group) is 0.29, below its null's 95th percentile (0.54). With 6 items and 2–3 pairs per axis, the test is weak.
+- *Identity transfer to lattice-like pairs* (semilattice → bounded semilattice, lattice → bounded lattice) is null too: cos = 0.07, p = 0.14.
+
+![**A negative result: no consistent "make the operation total" direction.** Offset consistency for the partial-operation lattice (semigroupoid, small category, groupoid vs semigroup, monoid, group): the confirmatory model (filled), the other four models (open) and the five twins (grey), against the confirmatory model's random-pair null (grey bar: mean to 95th percentile). With 6 items and 2–3 pairs per axis the test has little power. Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-partial>.](../reports/figures/partial_operation.pdf){width=70%}
 
 ## 4.5 Secondary analyses
 
@@ -571,9 +751,11 @@ At block 11, we encoded the template-averaged residuals with the official Qwen-S
 
 # 5 Discussion
 
-**Axioms as directions.** Axioms of group-like structures behave like the man→woman offset of word embeddings ([Mikolov, Yih & Zweig, 2013](https://aclanthology.org/N13-1090/)). The geometry follows definitions stated in the names, not consequences that must be derived: "associative quasigroup" stays with the quasigroups, although a non-empty one is a group. Whether the model uses these directions in reasoning, for example to decide that a monoid with inverses is a group, needs causal tests. We have none for the axioms; our only intervention, on the chains (§4.5), was inconclusive (see also §6).
+**Axioms as directions.** The offsets of group-like structures behave like the man → woman offset of word embeddings ([Mikolov, Yih & Zweig, 2013](https://aclanthology.org/N13-1090/)), and like those offsets they mix structure with word form ([Linzen, 2016](https://aclanthology.org/W16-2503/)). With additive composition, "modifier + noun" is a fixed vector by construction ([Mitchell & Lapata, 2010](https://doi.org/10.1111/j.1551-6709.2010.01106.x)), and the models compose "wooden" and "zorbic" about as consistently as "commutative". What survives the word-form controls is narrower: an associativity direction above every spelling baseline, and a commutativity direction that also points from "group" to "abelian group". The geometry follows the names more than the definitions: "associative quasigroup" stays with the quasigroups, although a non-empty one is a group. Whether the model uses these directions in reasoning, for example to decide that a monoid with inverses is a group, needs causal tests, which we did not run for the axioms (§6).
 
-**The field map.** Relatedness between fields is encoded at the level of field centroids, in the dominant principal components, from the first few layers onward in the Qwen models (Gemma's map is at or below the max-over-layers null in 3 stretches (layers 1–4, 11–15, 23–25 of 35)). It is similarly strong (ρ ≈ 0.4) in models with very different pretraining mixtures. Combined with the null effect of math continued pretraining, this suggests the map is learned from general co-occurrence statistics, as [Karkada et al. (2026)](https://arxiv.org/abs/2602.15029) predict. It does not seem to require math-specific training. The control fields cluster more strongly than most matched math subsets once the number of fields is matched. That supports this reading: the "map of mathematics" is one instance of a general topical map.
+**The field map.** Relatedness between fields is encoded at the level of field centroids, in the dominant principal components, from the first few layers onward in the Qwen models (Gemma's map is at or below the max-over-layers null in 3 stretches (layers 1–4, 11–15, 23–25 of 35)). It is similarly strong (ρ ≈ 0.4) in models with very different pretraining mixtures. Combined with the null effect of math continued pretraining, this suggests the map is learned from general co-occurrence statistics, as [Karkada et al. (2026)](https://arxiv.org/abs/2602.15029) predict. It does not seem to require math-specific training, and it does not follow from the spelling of the names. Whether it is specific to mathematics remains open: our control fields are whole sciences, not sub-fields, so the matched clustering comparison cannot decide it.
+
+**Controls for concept geometry.** A random-init twin controls for architecture and tokenization, but not for word form: it scrambles even exact word composition, so a trained model can "beat the twin" with geometry that any spelling-based representation would show. Spelling-only baselines and nonce controls are cheap and should accompany studies of concept geometry, especially for multi-word names that encode their own structure, as mathematical names often do.
 
 **Angles.** "330 degrees" is not near "0 degrees". This mirrors the finding of [Kantamneni & Tegmark (2025)](https://arxiv.org/abs/2502.00873) that numbers lie on a helix whose dominant axis is linear. A model this size appears to encode degrees by their numerals rather than by their angular meaning.
 
@@ -585,7 +767,11 @@ At block 11, we encoded the template-averaged residuals with the official Qwen-S
 - **Model size.** The Qwen models have at most 1.9B text parameters and Gemma-4-E2B 2.3B effective parameters, because of the 8 GB GPU.
 - **Positive control.** It passed only under post-hoc statistics. In the plane where its loop closes, it holds for days in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B) and for months in 3 of 5 models (all but Qwen3.5-0.8B and Qwen2.5-1.5B).
 - **Family size.** Families are small (n = 5–13), so shape claims rest on permutation tests with limited resolution.
-- **Correlation, not mechanism.** Every test except the noise-injection test on the chains (§4.5) is correlational, including the axiom directions (§4.1).
+- **Word form.** Our preregistered control, the random-init twin, did not control the spelling of names; the audit's word-form baselines do, post-hoc. Lexical cues beyond character 3-grams, bags of words and context-free token embeddings are not ruled out.
+- **Twin seeds.** Five random draws for the confirmatory model's twin; one for each other model.
+- **Specificity.** The non-math control fields are whole sciences; a granularity-matched control was not run.
+- **Ridge penalty.** The preregistered α = 10 is not scale-invariant, so the leave-one-out order test has different power in different models (§4.3).
+- **Correlation, not mechanism.** Every test except the noise-injection test on the chains (§4.5) is correlational, including the axiom offsets (§4.4).
 - **Abstraction ground truth.** Abstraction ratings come from LLM judges. Their validation against Mathlib import depth rests on only 39 of 655 concepts that could be matched to Mathlib, and import depth also differs systematically between areas of Mathlib.
 - **Not run.** Three planned items were not run; reasons are in `docs/deviations.md`:
   - Qwen3.5-4B in 8-bit, whose random-init twin cannot be held in 8 GB;
@@ -595,7 +781,7 @@ At block 11, we encoded the template-averaged residuals with the official Qwen-S
 
 # 7 Conclusion
 
-In LLM residual streams, axioms of algebraic structures act as consistent directions, most clearly associativity and commutativity. Mathematical fields form a map that tracks how mathematicians cross-list their papers, and class-inclusion chains are ordered (under the full preregistered test, the space chain in 4 of 5 models (all but Gemma-4-E2B) and the ring chain in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B)). All of this is absent, or much weaker, in untrained twins. Angles are not circles, and heavy math pretraining does not sharpen the field map.
+Field-level geometry in LLM residual streams tracks how mathematicians cross-list their papers, in five models, beyond random-init twins and beyond the spelling of the concept names; math continued pretraining does not sharpen it. The space chain T0 ⊃ … ⊃ Hilbert space is an ordered path, also within its topical blocks, while the ring chain's order is not established beyond its head nouns. Axioms of group-like structures give consistent offsets, but mostly because the names encode them; an associativity direction and a commutativity direction that reaches "abelian group" are suggestive exceptions. Angles are not circles. A random-init twin does not control for word form, so studies of concept geometry need spelling-only baselines.
 
 # References
 
@@ -606,6 +792,7 @@ Every source cited in the text, with the identifier we checked (arXiv API or Cro
 - Deng, B. et al. (2026). Qwen-Scope: Turning Sparse Features into Development Tools for Large Language Models. [arXiv:2605.11887](https://arxiv.org/abs/2605.11887)
 - Diaconis, P., Goel, S. & Holmes, S. (2008). Horseshoes in multidimensional scaling and local kernel methods. *Ann. Appl. Stat.* 2(3). [arXiv:0811.1477](https://arxiv.org/abs/0811.1477)
 - Engels, J. et al. (2024). Not All Language Model Features Are (One-Dimensionally) Linear. [arXiv:2405.14860](https://arxiv.org/abs/2405.14860)
+- Efron, B. (1987). Better bootstrap confidence intervals. *J. Am. Stat. Assoc.* 82(397):171–185 (BCa intervals). [doi:10.1080/01621459.1987.10478410](https://doi.org/10.1080/01621459.1987.10478410)
 - Freedman, D. & Lane, D. (1983). A nonstochastic interpretation of reported significance levels. *J. Bus. Econ. Stat.* 1:292–298. [doi:10.1080/07350015.1983.10509354](https://doi.org/10.1080/07350015.1983.10509354)
 - Golechha, S., Bushnaq, L., Ong, E., Kayal, N. & Schoots, N. (2025). Intricacies of Feature Geometry in Large Language Models. ICLR 2025 blog track. [iclr.cc/virtual/2025/poster/31349](https://iclr.cc/virtual/2025/poster/31349)
 - Guillot, G. & Rousset, F. (2013). Dismantling the Mantel tests. *Methods Ecol. Evol.* 4. [doi:10.1111/2041-210X.12018](https://doi.org/10.1111/2041-210X.12018)
@@ -617,11 +804,13 @@ Every source cited in the text, with the identifier we checked (arXiv API or Cro
 - Kvinge, H. et al. (2025). Probing the Limits of Mathematical World Models in LLMs. ICML 2025 workshop *Assessing World Models*. [icml.cc/virtual/2025/49128](https://icml.cc/virtual/2025/49128)
 - Lei, G. & Cooper, S. J. (2025). Layerwise Recall and the Geometry of Interwoven Knowledge in LLMs. [arXiv:2502.10871](https://arxiv.org/abs/2502.10871)
 - Li, Y., Michaud, E. J., Baek, D. D., Engels, J., Sun, X. & Tegmark, M. (2024). The Geometry of Concepts: Sparse Autoencoder Feature Structure. [arXiv:2410.19750](https://arxiv.org/abs/2410.19750)
+- Linzen, T. (2016). Issues in evaluating semantic spaces using word analogies. *Proc. 1st Workshop on Evaluating Vector-Space Representations for NLP (RepEval)*, 13–18. [aclanthology.org/W16-2503](https://aclanthology.org/W16-2503/)
 - Liu, J., Min, S., Zettlemoyer, L., Choi, Y. & Hajishirzi, H. (2024). Infini-gram: Scaling Unbounded n-gram Language Models to a Trillion Tokens. [arXiv:2401.17377](https://arxiv.org/abs/2401.17377)
 - Makelov, A., Lange, G. & Nanda, N. (2023). Is This the Subspace You Are Looking for? An Interpretability Illusion for Subspace Activation Patching. [arXiv:2311.17030](https://arxiv.org/abs/2311.17030)
 - Mathematics Subject Classification 2020 (MSC2020). <https://msc2020.org/>
 - Mikolov, T., Yih, W. & Zweig, G. (2013). Linguistic Regularities in Continuous Space Word Representations. NAACL-HLT 2013. [aclanthology.org/N13-1090](https://aclanthology.org/N13-1090/)
 - Mikolov, T., Grave, E., Bojanowski, P., Puhrsch, C. & Joulin, A. (2018). Advances in Pre-Training Distributed Word Representations (fastText vectors). [arXiv:1712.09405](https://arxiv.org/abs/1712.09405)
+- Mitchell, J. & Lapata, M. (2010). Composition in distributional models of semantics. *Cognitive Science* 34(8):1388–1429. [doi:10.1111/j.1551-6709.2010.01106.x](https://doi.org/10.1111/j.1551-6709.2010.01106.x)
 - Modell, A., Rubin-Delanchy, P. & Whiteley, N. (2025). The Origins of Representation Manifolds in Large Language Models. [arXiv:2505.18235](https://arxiv.org/abs/2505.18235)
 - Mu, J. & Viswanath, P. (2018). All-but-the-Top: Simple and Effective Postprocessing for Word Representations. [arXiv:1702.01417](https://arxiv.org/abs/1702.01417)
 - Munkres, J. R. (2000). *Topology*, 2nd ed., §31–32 (regular and normal spaces assume one-point sets closed).
@@ -694,53 +883,53 @@ Code, data, preregistration and every number: <https://github.com/BurnyCoder/geo
 | Family | Expected | Model | line ρ | circle ρ | closure (d first-last / adjacent) | closure_far† (null 5%) | Robinson (p) | PCA order \|ρ\| (p) | LOO order ρ (p) |
 |---|---|---|---|---|---|---|---|---|---|
 | days | circle | qwen3.5-0.8b | 0.85 | 0.63 | 1.29 | 1.06 (0.79) | 0.77 (0.0010) | 0.75 (0.0735) | -1.00 (1.0000) |
-| days | circle | qwen3.5-0.8b__random | 0.20 | 0.07 | 1.01 | 1.04 (0.93) | 0.40 (0.3758) | 0.93 (0.0095) | -0.75 (0.1728) |
-| days | circle | qwen2.5-1.5b | 0.77 | 0.66 | 1.22 | 0.99 (0.73) | 0.69 (0.0020) | 0.54 (0.2219) | 0.68 (0.0664) |
-| days | circle | qwen2.5-1.5b__random | 0.10 | -0.11 | 1.02 | 1.01 (0.93) | 0.43 (0.2259) | 0.54 (0.2324) | -0.82 (0.4950) |
-| days | circle | qwen2.5-math-1.5b | 0.73 | 0.58 | 1.18 | 1.01 (0.76) | 0.71 (0.0010) | 0.54 (0.2219) | 0.36 (0.1229) |
-| days | circle | qwen2.5-math-1.5b__random | 0.16 | -0.14 | 1.02 | 1.01 (0.94) | 0.37 (0.3973) | 0.46 (0.2889) | -0.93 (0.7708) |
-| months | circle | qwen3.5-0.8b | 0.79 | 0.70 | 1.23 | 0.97 (0.77) | 0.67 (0.0005) | 0.64 (0.0345) | -0.20 (0.0033) |
-| months | circle | qwen3.5-0.8b__random | 0.06 | -0.03 | 1.02 | 1.02 (0.94) | 0.38 (0.2274) | 0.30 (0.3483) | -0.86 (0.9169) |
-| months | circle | qwen2.5-1.5b | 0.71 | 0.56 | 1.25 | 1.07 (0.75) | 0.64 (0.0005) | 0.85 (0.0010) | 0.80 (0.0100) |
-| months | circle | qwen2.5-1.5b__random | 0.07 | -0.02 | 1.02 | 0.97 (0.92) | 0.35 (0.4218) | 0.10 (0.7381) | -0.62 (0.7176) |
-| months | circle | qwen2.5-math-1.5b | 0.71 | 0.53 | 1.21 | 0.99 (0.75) | 0.70 (0.0005) | 0.92 (0.0005) | 0.82 (0.0066) |
-| months | circle | qwen2.5-math-1.5b__random | 0.04 | -0.01 | 1.02 | 0.97 (0.91) | 0.32 (0.5827) | 0.03 (0.9370) | -0.60 (0.7243) |
-| ring_chain | line | qwen3.5-0.8b | 0.46 | 0.36 | 1.70 | 1.00 (0.58) | 0.50 (0.0170) | 0.45 (0.1764) | -0.09 (0.0764) |
-| ring_chain | line | qwen3.5-0.8b__random | 0.18 | 0.11 | 1.29 | 1.36 (0.74) | 0.42 (0.1134) | 0.04 (0.9295) | 0.36 (0.0565) |
-| ring_chain | line | qwen2.5-1.5b | 0.54 | 0.36 | 1.74 | 1.11 (0.56) | 0.54 (0.0025) | 0.21 (0.5517) | 0.87 (0.0033) |
-| ring_chain | line | qwen2.5-1.5b__random | 0.30 | 0.31 | 1.06 | 1.03 (0.85) | 0.35 (0.4318) | 0.03 (0.9405) | 0.23 (0.0731) |
-| ring_chain | line | qwen2.5-math-1.5b | 0.54 | 0.39 | 1.67 | 1.05 (0.62) | 0.56 (0.0030) | 0.41 (0.2189) | 0.89 (0.0033) |
-| ring_chain | line | qwen2.5-math-1.5b__random | 0.34 | 0.30 | 1.09 | 1.05 (0.85) | 0.41 (0.1529) | 0.05 (0.8786) | 0.25 (0.0698) |
-| space_chain | line | qwen3.5-0.8b | 0.65 | 0.33 | 1.72 | 1.67 (0.59) | 0.64 (0.0005) | 0.95 (0.0005) | 0.63 (0.0033) |
-| space_chain | line | qwen3.5-0.8b__random | -0.04 | 0.04 | 0.91 | 1.06 (0.72) | 0.36 (0.3703) | 0.36 (0.2659) | 0.29 (0.0432) |
-| space_chain | line | qwen2.5-1.5b | 0.69 | 0.38 | 1.83 | 1.68 (0.60) | 0.71 (0.0005) | 0.95 (0.0005) | 0.90 (0.0033) |
-| space_chain | line | qwen2.5-1.5b__random | -0.12 | -0.06 | 0.95 | 1.10 (0.80) | 0.34 (0.4888) | 0.67 (0.0315) | 0.21 (0.1229) |
-| space_chain | line | qwen2.5-math-1.5b | 0.67 | 0.40 | 1.71 | 1.51 (0.61) | 0.68 (0.0005) | 0.85 (0.0010) | 0.91 (0.0033) |
-| space_chain | line | qwen2.5-math-1.5b__random | -0.10 | -0.07 | 0.97 | 1.08 (0.80) | 0.36 (0.3988) | 0.73 (0.0185) | 0.18 (0.1329) |
-| number_systems | line | qwen3.5-0.8b | 0.81 | 0.40 | 1.73 | 1.72 (0.57) | 0.77 (0.0030) | 0.93 (0.0065) | 0.29 (0.0033) |
-| number_systems | line | qwen3.5-0.8b__random | 0.31 | 0.14 | 1.10 | 1.25 (0.77) | 0.29 (0.6892) | 0.29 (0.5542) | -0.25 (0.1960) |
-| number_systems | line | qwen2.5-1.5b | 0.66 | 0.33 | 1.42 | 1.57 (0.60) | 0.66 (0.0165) | 0.82 (0.0295) | 0.79 (0.0166) |
-| number_systems | line | qwen2.5-1.5b__random | 0.34 | 0.14 | 1.13 | 1.37 (0.73) | 0.34 (0.4718) | 0.54 (0.2219) | -0.21 (0.2359) |
-| number_systems | line | qwen2.5-math-1.5b | 0.71 | 0.33 | 1.42 | 1.55 (0.61) | 0.66 (0.0145) | 0.82 (0.0295) | 0.71 (0.0266) |
-| number_systems | line | qwen2.5-math-1.5b__random | 0.36 | 0.24 | 1.13 | 1.38 (0.72) | 0.40 (0.2344) | 0.57 (0.1839) | -0.43 (0.3056) |
-| ngons | number_reference | qwen3.5-0.8b | 0.54 | 0.30 | 1.88 | 1.05 (0.51) | 0.63 (0.0015) | 0.87 (0.0030) | 0.60 (0.0033) |
-| ngons | number_reference | qwen3.5-0.8b__random | 0.36 | 0.07 | 1.36 | 1.17 (0.77) | 0.47 (0.0555) | 0.73 (0.0140) | -0.42 (0.3256) |
-| ngons | number_reference | qwen2.5-1.5b | 0.54 | 0.27 | 1.81 | 1.01 (0.55) | 0.67 (0.0010) | 0.88 (0.0015) | 0.96 (0.0033) |
-| ngons | number_reference | qwen2.5-1.5b__random | 0.33 | 0.10 | 1.20 | 1.12 (0.80) | 0.44 (0.0940) | 0.50 (0.1454) | -0.39 (0.3522) |
-| ngons | number_reference | qwen2.5-math-1.5b | 0.53 | 0.23 | 1.71 | 1.05 (0.58) | 0.66 (0.0010) | 0.88 (0.0015) | 0.90 (0.0066) |
-| ngons | number_reference | qwen2.5-math-1.5b__random | 0.35 | 0.11 | 1.22 | 1.12 (0.79) | 0.49 (0.0295) | 0.49 (0.1709) | -0.21 (0.2027) |
-| dimensions | number_reference | qwen3.5-0.8b | 0.62 | 0.37 | 2.29 | 0.98 (0.27) | 0.63 (0.0010) | 0.93 (0.0005) | -0.71 (0.0066) |
-| dimensions | number_reference | qwen3.5-0.8b__random | -0.17 | -0.03 | 0.97 | 0.93 (0.92) | 0.27 (0.8621) | 0.30 (0.3828) | -0.71 (0.6645) |
-| dimensions | number_reference | qwen2.5-1.5b | 0.62 | 0.44 | 1.84 | 0.97 (0.31) | 0.59 (0.0005) | 0.82 (0.0030) | 0.80 (0.0100) |
-| dimensions | number_reference | qwen2.5-1.5b__random | -0.21 | -0.07 | 0.81 | 0.82 (0.87) | 0.25 (0.8151) | 0.23 (0.4758) | -0.84 (0.9535) |
-| dimensions | number_reference | qwen2.5-math-1.5b | 0.68 | 0.39 | 2.16 | 1.05 (0.32) | 0.83 (0.0005) | 0.96 (0.0005) | 0.87 (0.0033) |
-| dimensions | number_reference | qwen2.5-math-1.5b__random | -0.21 | -0.07 | 0.80 | 0.81 (0.86) | 0.25 (0.8416) | 0.21 (0.5317) | -0.90 (0.9934) |
-| angles | circle | qwen3.5-0.8b | 0.62 | 0.31 | 2.59 | 1.19 (0.33) | 0.73 (0.0005) | 0.93 (0.0005) | 0.56 (0.0033) |
-| angles | circle | qwen3.5-0.8b__random | 0.10 | 0.15 | 1.01 | 1.13 (0.83) | 0.28 (0.7626) | 0.00 (1.0000) | -0.42 (0.4219) |
-| angles | circle | qwen2.5-1.5b | 0.60 | 0.29 | 2.15 | 1.06 (0.42) | 0.72 (0.0005) | 0.94 (0.0005) | 0.90 (0.0033) |
-| angles | circle | qwen2.5-1.5b__random | 0.15 | 0.31 | 1.16 | 1.17 (0.64) | 0.33 (0.5277) | 0.05 (0.8866) | 0.34 (0.1163) |
-| angles | circle | qwen2.5-math-1.5b | 0.62 | 0.31 | 1.84 | 1.01 (0.44) | 0.71 (0.0005) | 0.94 (0.0005) | 0.92 (0.0033) |
-| angles | circle | qwen2.5-math-1.5b__random | 0.17 | 0.34 | 1.16 | 1.16 (0.64) | 0.31 (0.6197) | 0.05 (0.8866) | 0.27 (0.1628) |
+| days | circle | qwen3.5-0.8b__random | 0.20 | 0.07 | 1.01 | 1.04 (0.93) | 0.40 (0.3758) | 0.93 (0.0095) | -0.75 (0.1349) |
+| days | circle | qwen2.5-1.5b | 0.77 | 0.66 | 1.22 | 0.99 (0.73) | 0.69 (0.0020) | 0.54 (0.2219) | 0.68 (0.0566) |
+| days | circle | qwen2.5-1.5b__random | 0.10 | -0.11 | 1.02 | 1.01 (0.93) | 0.43 (0.2259) | 0.54 (0.2324) | -0.82 (0.5377) |
+| days | circle | qwen2.5-math-1.5b | 0.73 | 0.58 | 1.18 | 1.01 (0.76) | 0.71 (0.0010) | 0.54 (0.2219) | 0.36 (0.1158) |
+| days | circle | qwen2.5-math-1.5b__random | 0.16 | -0.14 | 1.02 | 1.01 (0.94) | 0.37 (0.3973) | 0.46 (0.2889) | -0.93 (0.7668) |
+| months | circle | qwen3.5-0.8b | 0.79 | 0.70 | 1.23 | 0.97 (0.77) | 0.67 (0.0005) | 0.64 (0.0345) | -0.20 (0.0003) |
+| months | circle | qwen3.5-0.8b__random | 0.06 | -0.03 | 1.02 | 1.02 (0.94) | 0.38 (0.2274) | 0.30 (0.3483) | -0.86 (0.9039) |
+| months | circle | qwen2.5-1.5b | 0.71 | 0.56 | 1.25 | 1.07 (0.75) | 0.64 (0.0005) | 0.85 (0.0010) | 0.80 (0.0033) |
+| months | circle | qwen2.5-1.5b__random | 0.07 | -0.02 | 1.02 | 0.97 (0.92) | 0.35 (0.4218) | 0.10 (0.7381) | -0.62 (0.7031) |
+| months | circle | qwen2.5-math-1.5b | 0.71 | 0.53 | 1.21 | 0.99 (0.75) | 0.70 (0.0005) | 0.92 (0.0005) | 0.82 (0.0013) |
+| months | circle | qwen2.5-math-1.5b__random | 0.04 | -0.01 | 1.02 | 0.97 (0.91) | 0.32 (0.5827) | 0.03 (0.9370) | -0.60 (0.7005) |
+| ring_chain | line | qwen3.5-0.8b | 0.46 | 0.36 | 1.70 | 1.00 (0.58) | 0.50 (0.0170) | 0.45 (0.1764) | -0.09 (0.0739) |
+| ring_chain | line | qwen3.5-0.8b__random | 0.18 | 0.11 | 1.29 | 1.36 (0.74) | 0.42 (0.1134) | 0.04 (0.9295) | 0.36 (0.0465) |
+| ring_chain | line | qwen2.5-1.5b | 0.54 | 0.36 | 1.74 | 1.11 (0.56) | 0.54 (0.0025) | 0.21 (0.5517) | 0.87 (0.0020) |
+| ring_chain | line | qwen2.5-1.5b__random | 0.30 | 0.31 | 1.06 | 1.03 (0.85) | 0.35 (0.4318) | 0.03 (0.9405) | 0.23 (0.0815) |
+| ring_chain | line | qwen2.5-math-1.5b | 0.54 | 0.39 | 1.67 | 1.05 (0.62) | 0.56 (0.0030) | 0.41 (0.2189) | 0.89 (0.0012) |
+| ring_chain | line | qwen2.5-math-1.5b__random | 0.34 | 0.30 | 1.09 | 1.05 (0.85) | 0.41 (0.1529) | 0.05 (0.8786) | 0.25 (0.0760) |
+| space_chain | line | qwen3.5-0.8b | 0.65 | 0.33 | 1.72 | 1.67 (0.59) | 0.64 (0.0005) | 0.95 (0.0005) | 0.63 (0.0001) |
+| space_chain | line | qwen3.5-0.8b__random | -0.04 | 0.04 | 0.91 | 1.06 (0.72) | 0.36 (0.3703) | 0.36 (0.2659) | 0.29 (0.0353) |
+| space_chain | line | qwen2.5-1.5b | 0.69 | 0.38 | 1.83 | 1.68 (0.60) | 0.71 (0.0005) | 0.95 (0.0005) | 0.90 (0.0005) |
+| space_chain | line | qwen2.5-1.5b__random | -0.12 | -0.06 | 0.95 | 1.10 (0.80) | 0.34 (0.4888) | 0.67 (0.0315) | 0.21 (0.0969) |
+| space_chain | line | qwen2.5-math-1.5b | 0.67 | 0.40 | 1.71 | 1.51 (0.61) | 0.68 (0.0005) | 0.85 (0.0010) | 0.91 (0.0003) |
+| space_chain | line | qwen2.5-math-1.5b__random | -0.10 | -0.07 | 0.97 | 1.08 (0.80) | 0.36 (0.3988) | 0.73 (0.0185) | 0.18 (0.1163) |
+| number_systems | line | qwen3.5-0.8b | 0.81 | 0.40 | 1.73 | 1.72 (0.57) | 0.77 (0.0030) | 0.93 (0.0065) | 0.29 (0.0022) |
+| number_systems | line | qwen3.5-0.8b__random | 0.31 | 0.14 | 1.10 | 1.25 (0.77) | 0.29 (0.6892) | 0.29 (0.5542) | -0.25 (0.2158) |
+| number_systems | line | qwen2.5-1.5b | 0.66 | 0.33 | 1.42 | 1.57 (0.60) | 0.66 (0.0165) | 0.82 (0.0295) | 0.79 (0.0129) |
+| number_systems | line | qwen2.5-1.5b__random | 0.34 | 0.14 | 1.13 | 1.37 (0.73) | 0.34 (0.4718) | 0.54 (0.2219) | -0.21 (0.2270) |
+| number_systems | line | qwen2.5-math-1.5b | 0.71 | 0.33 | 1.42 | 1.55 (0.61) | 0.66 (0.0145) | 0.82 (0.0295) | 0.71 (0.0163) |
+| number_systems | line | qwen2.5-math-1.5b__random | 0.36 | 0.24 | 1.13 | 1.38 (0.72) | 0.40 (0.2344) | 0.57 (0.1839) | -0.43 (0.3102) |
+| ngons | number_reference | qwen3.5-0.8b | 0.54 | 0.30 | 1.88 | 1.05 (0.51) | 0.63 (0.0015) | 0.87 (0.0030) | 0.60 (0.0006) |
+| ngons | number_reference | qwen3.5-0.8b__random | 0.36 | 0.07 | 1.36 | 1.17 (0.77) | 0.47 (0.0555) | 0.73 (0.0140) | -0.42 (0.3267) |
+| ngons | number_reference | qwen2.5-1.5b | 0.54 | 0.27 | 1.81 | 1.01 (0.55) | 0.67 (0.0010) | 0.88 (0.0015) | 0.96 (0.0001) |
+| ngons | number_reference | qwen2.5-1.5b__random | 0.33 | 0.10 | 1.20 | 1.12 (0.80) | 0.44 (0.0940) | 0.50 (0.1454) | -0.39 (0.3516) |
+| ngons | number_reference | qwen2.5-math-1.5b | 0.53 | 0.23 | 1.71 | 1.05 (0.58) | 0.66 (0.0010) | 0.88 (0.0015) | 0.90 (0.0016) |
+| ngons | number_reference | qwen2.5-math-1.5b__random | 0.35 | 0.11 | 1.22 | 1.12 (0.79) | 0.49 (0.0295) | 0.49 (0.1709) | -0.21 (0.2316) |
+| dimensions | number_reference | qwen3.5-0.8b | 0.62 | 0.37 | 2.29 | 0.98 (0.27) | 0.63 (0.0010) | 0.93 (0.0005) | -0.71 (0.0030) |
+| dimensions | number_reference | qwen3.5-0.8b__random | -0.17 | -0.03 | 0.97 | 0.93 (0.92) | 0.27 (0.8621) | 0.30 (0.3828) | -0.71 (0.6733) |
+| dimensions | number_reference | qwen2.5-1.5b | 0.62 | 0.44 | 1.84 | 0.97 (0.31) | 0.59 (0.0005) | 0.82 (0.0030) | 0.80 (0.0038) |
+| dimensions | number_reference | qwen2.5-1.5b__random | -0.21 | -0.07 | 0.81 | 0.82 (0.87) | 0.25 (0.8151) | 0.23 (0.4758) | -0.84 (0.9356) |
+| dimensions | number_reference | qwen2.5-math-1.5b | 0.68 | 0.39 | 2.16 | 1.05 (0.32) | 0.83 (0.0005) | 0.96 (0.0005) | 0.87 (0.0012) |
+| dimensions | number_reference | qwen2.5-math-1.5b__random | -0.21 | -0.07 | 0.80 | 0.81 (0.86) | 0.25 (0.8416) | 0.21 (0.5317) | -0.90 (0.9837) |
+| angles | circle | qwen3.5-0.8b | 0.62 | 0.31 | 2.59 | 1.19 (0.33) | 0.73 (0.0005) | 0.93 (0.0005) | 0.56 (0.0002) |
+| angles | circle | qwen3.5-0.8b__random | 0.10 | 0.15 | 1.01 | 1.13 (0.83) | 0.28 (0.7626) | 0.00 (1.0000) | -0.42 (0.4584) |
+| angles | circle | qwen2.5-1.5b | 0.60 | 0.29 | 2.15 | 1.06 (0.42) | 0.72 (0.0005) | 0.94 (0.0005) | 0.90 (0.0002) |
+| angles | circle | qwen2.5-1.5b__random | 0.15 | 0.31 | 1.16 | 1.17 (0.64) | 0.33 (0.5277) | 0.05 (0.8866) | 0.34 (0.1309) |
+| angles | circle | qwen2.5-math-1.5b | 0.62 | 0.31 | 1.84 | 1.01 (0.44) | 0.71 (0.0005) | 0.94 (0.0005) | 0.92 (0.0004) |
+| angles | circle | qwen2.5-math-1.5b__random | 0.17 | 0.34 | 1.16 | 1.16 (0.64) | 0.31 (0.6197) | 0.05 (0.8866) | 0.27 (0.1645) |
 
 | Family | qwen3.5-0.8b | qwen3.5-0.8b__random | qwen2.5-1.5b | qwen2.5-1.5b__random | qwen2.5-math-1.5b | qwen2.5-math-1.5b__random |
 |---|---|---|---|---|---|---|
@@ -801,22 +990,22 @@ Code, data, preregistration and every number: <https://github.com/BurnyCoder/geo
 
 | Family | Expected | Model | line ρ | circle ρ | closure (d first-last / adjacent) | closure_far† (null 5%) | Robinson (p) | PCA order \|ρ\| (p) | LOO order ρ (p) |
 |---|---|---|---|---|---|---|---|---|---|
-| days | circle | gemma-4-e2b | 0.72 | 0.58 | 1.65 | 1.02 (0.37) | 0.71 (0.0055) | 0.64 (0.1334) | 0.75 (0.0332) |
-| days | circle | gemma-4-e2b__random | -0.23 | 0.00 | 0.96 | 0.96 (0.94) | 0.23 (0.8446) | 0.61 (0.1789) | -0.96 (0.9302) |
-| months | circle | gemma-4-e2b | 0.61 | 0.36 | 1.99 | 0.97 (0.53) | 0.69 (0.0005) | 0.66 (0.0240) | 0.86 (0.0033) |
-| months | circle | gemma-4-e2b__random | 0.27 | 0.05 | 1.02 | 1.05 (0.96) | 0.45 (0.0230) | 0.13 (0.6927) | -0.51 (0.2292) |
-| ring_chain | line | gemma-4-e2b | 0.27 | 0.08 | 1.86 | 1.15 (0.53) | 0.50 (0.0100) | 0.42 (0.1999) | 0.43 (0.1030) |
-| ring_chain | line | gemma-4-e2b__random | 0.37 | 0.40 | 1.45 | 0.98 (0.45) | 0.28 (0.7816) | 0.05 (0.8821) | 0.50 (0.0332) |
-| space_chain | line | gemma-4-e2b | 0.55 | 0.27 | 1.39 | 1.21 (0.64) | 0.57 (0.0005) | 0.95 (0.0005) | 0.82 (0.0133) |
-| space_chain | line | gemma-4-e2b__random | -0.06 | -0.00 | 1.00 | 0.97 (0.81) | 0.27 (0.7916) | 0.16 (0.6307) | -0.22 (0.2890) |
-| number_systems | line | gemma-4-e2b | 0.92 | 0.54 | 1.94 | 1.56 (0.52) | 0.91 (0.0010) | 1.00 (0.0010) | 0.89 (0.0033) |
-| number_systems | line | gemma-4-e2b__random | 0.24 | -0.09 | 1.36 | 2.39 (0.41) | 0.60 (0.0080) | 0.71 (0.0815) | 0.32 (0.1196) |
-| ngons | number_reference | gemma-4-e2b | 0.50 | 0.21 | 1.90 | 1.00 (0.49) | 0.64 (0.0015) | 0.87 (0.0025) | 0.89 (0.0033) |
-| ngons | number_reference | gemma-4-e2b__random | 0.19 | 0.05 | 1.23 | 1.01 (0.47) | 0.51 (0.0120) | 0.52 (0.1349) | 0.42 (0.0432) |
-| dimensions | number_reference | gemma-4-e2b | 0.62 | 0.42 | 2.37 | 1.09 (0.24) | 0.65 (0.0010) | 0.91 (0.0010) | 0.86 (0.0033) |
-| dimensions | number_reference | gemma-4-e2b__random | -0.25 | -0.02 | 0.79 | 0.69 (0.74) | 0.23 (0.9040) | 0.12 (0.7451) | -0.57 (0.6013) |
-| angles | circle | gemma-4-e2b | 0.43 | 0.23 | 2.03 | 1.03 (0.37) | 0.54 (0.0010) | 0.48 (0.1184) | 0.87 (0.0033) |
-| angles | circle | gemma-4-e2b__random | 0.25 | 0.46 | 1.14 | 0.94 (0.77) | 0.39 (0.1914) | 0.36 (0.2599) | 0.73 (0.0066) |
+| days | circle | gemma-4-e2b | 0.72 | 0.58 | 1.65 | 1.02 (0.37) | 0.71 (0.0055) | 0.64 (0.1334) | 0.75 (0.0311) |
+| days | circle | gemma-4-e2b__random | -0.23 | 0.00 | 0.96 | 0.96 (0.94) | 0.23 (0.8446) | 0.61 (0.1789) | -0.96 (0.9336) |
+| months | circle | gemma-4-e2b | 0.61 | 0.36 | 1.99 | 0.97 (0.53) | 0.69 (0.0005) | 0.66 (0.0240) | 0.86 (0.0011) |
+| months | circle | gemma-4-e2b__random | 0.27 | 0.05 | 1.02 | 1.05 (0.96) | 0.45 (0.0230) | 0.13 (0.6927) | -0.51 (0.2315) |
+| ring_chain | line | gemma-4-e2b | 0.27 | 0.08 | 1.86 | 1.15 (0.53) | 0.50 (0.0100) | 0.42 (0.1999) | 0.43 (0.1051) |
+| ring_chain | line | gemma-4-e2b__random | 0.37 | 0.40 | 1.45 | 0.98 (0.45) | 0.28 (0.7816) | 0.05 (0.8821) | 0.50 (0.0427) |
+| space_chain | line | gemma-4-e2b | 0.55 | 0.27 | 1.39 | 1.21 (0.64) | 0.57 (0.0005) | 0.95 (0.0005) | 0.82 (0.0050) |
+| space_chain | line | gemma-4-e2b__random | -0.06 | -0.00 | 1.00 | 0.97 (0.81) | 0.27 (0.7916) | 0.16 (0.6307) | -0.22 (0.2665) |
+| number_systems | line | gemma-4-e2b | 0.92 | 0.54 | 1.94 | 1.56 (0.52) | 0.91 (0.0010) | 1.00 (0.0010) | 0.89 (0.0054) |
+| number_systems | line | gemma-4-e2b__random | 0.24 | -0.09 | 1.36 | 2.39 (0.41) | 0.60 (0.0080) | 0.71 (0.0815) | 0.32 (0.1197) |
+| ngons | number_reference | gemma-4-e2b | 0.50 | 0.21 | 1.90 | 1.00 (0.49) | 0.64 (0.0015) | 0.87 (0.0025) | 0.89 (0.0010) |
+| ngons | number_reference | gemma-4-e2b__random | 0.19 | 0.05 | 1.23 | 1.01 (0.47) | 0.51 (0.0120) | 0.52 (0.1349) | 0.42 (0.0195) |
+| dimensions | number_reference | gemma-4-e2b | 0.62 | 0.42 | 2.37 | 1.09 (0.24) | 0.65 (0.0010) | 0.91 (0.0010) | 0.86 (0.0005) |
+| dimensions | number_reference | gemma-4-e2b__random | -0.25 | -0.02 | 0.79 | 0.69 (0.74) | 0.23 (0.9040) | 0.12 (0.7451) | -0.57 (0.5497) |
+| angles | circle | gemma-4-e2b | 0.43 | 0.23 | 2.03 | 1.03 (0.37) | 0.54 (0.0010) | 0.48 (0.1184) | 0.87 (0.0008) |
+| angles | circle | gemma-4-e2b__random | 0.25 | 0.46 | 1.14 | 0.94 (0.77) | 0.39 (0.1914) | 0.36 (0.2599) | 0.73 (0.0042) |
 
 | Family | gemma-4-e2b | gemma-4-e2b__random |
 |---|---|---|
@@ -838,13 +1027,125 @@ Code, data, preregistration and every number: <https://github.com/BurnyCoder/geo
 | number_systems | gemma-4-e2b | -0.57 | +0.67 | +0.96 (0.89, 0.0266) |
 | number_systems | gemma-4-e2b__random | -0.57 | +0.67 | -0.61 (0.88, 0.7907) |
 
+**Word-form baselines on the ordered families** (audit; the token-embedding bag uses Qwen3.5-2B's embeddings):
+
+| Family | Baseline | line ρ | circle ρ | closure | Robinson (p) | PCA order \|ρ\| (p) | LOO order ρ (p) |
+|---|---|---|---|---|---|---|---|
+| days | char-3-grams | -0.10 | 0.25 | 0.79 | 0.34 (0.8816) | 0.36 (0.4363) | -0.89 (0.4219) |
+| days | layer-0 token bag | 0.82 | 0.59 | 1.20 | 0.83 (0.0010) | 0.75 (0.0735) | -1.00 (1.0000) |
+| months | char-3-grams | 0.60 | 0.26 | 1.24 | 0.63 (0.0010) | 0.78 (0.0070) | 0.71 (0.0033) |
+| months | layer-0 token bag | 0.09 | 0.35 | 0.84 | 0.43 (0.0585) | 0.47 (0.1264) | -1.00 (1.0000) |
+| ring_chain | char-3-grams | 0.09 | 0.18 | 1.21 | 0.32 (0.6432) | 0.01 (0.9880) | 0.28 (0.0831) |
+| ring_chain | layer-0 token bag | -0.01 | 0.13 | 1.10 | 0.26 (0.8371) | 0.27 (0.4118) | -0.90 (0.4485) |
+| space_chain | char-3-grams | -0.18 | 0.01 | 0.85 | 0.33 (0.8076) | 0.10 (0.7756) | -0.78 (0.6777) |
+| space_chain | layer-0 token bag | 0.15 | 0.04 | 1.16 | 0.37 (0.3358) | 0.43 (0.1954) | -0.25 (0.0299) |
+| number_systems | char-3-grams | 0.30 | 0.06 | 1.22 | 0.37 (0.5122) | 0.75 (0.0580) | 0.00 (0.1262) |
+| number_systems | layer-0 token bag | 0.42 | 0.12 | 1.42 | 0.46 (0.1264) | 0.54 (0.2359) | -0.82 (0.0399) |
+| ngons | char-3-grams | 0.50 | 0.24 | 1.33 | 0.68 (0.0020) | 0.78 (0.0110) | 0.59 (0.0100) |
+| ngons | layer-0 token bag | 0.41 | 0.09 | 1.52 | 0.55 (0.0065) | 0.73 (0.0190) | -0.89 (0.0199) |
+| dimensions | char-3-grams | -0.12 | -0.02 | 0.96 | 0.38 (0.8036) | 0.28 (0.4063) | -0.73 (0.4053) |
+| dimensions | layer-0 token bag | 0.63 | 0.30 | 1.60 | 0.79 (0.0005) | 0.76 (0.0075) | -1.00 (1.0000) |
+| angles | char-3-grams | -0.36 | -0.04 | 0.88 | 0.36 (0.9905) | 0.17 (0.5777) | -0.99 (0.9867) |
+| angles | layer-0 token bag | 0.60 | 0.46 | 2.38 | 0.46 (0.0450) | 0.45 (0.1424) | 0.20 (0.0066) |
+
+**Leave-one-out order with 10,000 permutations: the preregistered α = 10 and a scale-relative α** (audit, sensitivity):
+
+| Family | Model | LOO order ρ, α = 10 (p) | LOO order ρ, α = mean ‖x‖² (p) |
+|---|---|---|---|
+| days | qwen3.5-2b | -0.14 (0.0812) | +0.29 (0.0632) |
+| days | qwen3.5-2b__random | -0.93 (0.2202) | -1.00 (1.0000) |
+| months | qwen3.5-2b | +0.77 (0.0015) | +0.80 (0.0011) |
+| months | qwen3.5-2b__random | -0.78 (0.6252) | -0.93 (0.7179) |
+| ring_chain | qwen3.5-2b | +0.65 (0.0085) | +0.66 (0.0072) |
+| ring_chain | qwen3.5-2b__random | -0.45 (0.2381) | -0.78 (0.1675) |
+| space_chain | qwen3.5-2b | +0.87 (0.0001) | +0.87 (0.0002) |
+| space_chain | qwen3.5-2b__random | -0.41 (0.2562) | -0.81 (0.3194) |
+| number_systems | qwen3.5-2b | +0.71 (0.0069) | +0.79 (0.0031) |
+| number_systems | qwen3.5-2b__random | -0.82 (0.3742) | -0.89 (0.2922) |
+| ngons | qwen3.5-2b | +0.90 (0.0001) | +0.90 (0.0001) |
+| ngons | qwen3.5-2b__random | -0.89 (0.9457) | -0.93 (0.7830) |
+| dimensions | qwen3.5-2b | +0.72 (0.0002) | +0.83 (0.0004) |
+| dimensions | qwen3.5-2b__random | -0.75 (0.6614) | -0.95 (0.9105) |
+| angles | qwen3.5-2b | +0.76 (0.0010) | +0.82 (0.0009) |
+| angles | qwen3.5-2b__random | -0.49 (0.4139) | -0.90 (0.6928) |
+
+| Family | Model | LOO order ρ, α = 10 (p) | LOO order ρ, α = mean ‖x‖² (p) |
+|---|---|---|---|
+| days | qwen3.5-0.8b | -1.00 (1.0000) | +0.68 (0.0143) |
+| days | qwen3.5-0.8b__random | -0.75 (0.1349) | -0.96 (0.6903) |
+| days | qwen2.5-1.5b | +0.68 (0.0566) | +0.46 (0.0510) |
+| days | qwen2.5-1.5b__random | -0.82 (0.5377) | -0.93 (0.4886) |
+| days | qwen2.5-math-1.5b | +0.36 (0.1158) | +0.18 (0.0758) |
+| days | qwen2.5-math-1.5b__random | -0.93 (0.7668) | -0.96 (0.6962) |
+| months | qwen3.5-0.8b | -0.20 (0.0003) | +0.83 (0.0008) |
+| months | qwen3.5-0.8b__random | -0.86 (0.9039) | -0.93 (0.9028) |
+| months | qwen2.5-1.5b | +0.80 (0.0033) | +0.77 (0.0022) |
+| months | qwen2.5-1.5b__random | -0.62 (0.7031) | -0.84 (0.8083) |
+| months | qwen2.5-math-1.5b | +0.82 (0.0013) | +0.80 (0.0012) |
+| months | qwen2.5-math-1.5b__random | -0.60 (0.7005) | -0.86 (0.8652) |
+| ring_chain | qwen3.5-0.8b | -0.09 (0.0739) | +0.69 (0.0041) |
+| ring_chain | qwen3.5-0.8b__random | +0.36 (0.0465) | -0.05 (0.0987) |
+| ring_chain | qwen2.5-1.5b | +0.87 (0.0020) | +0.75 (0.0021) |
+| ring_chain | qwen2.5-1.5b__random | +0.23 (0.0815) | -0.10 (0.1282) |
+| ring_chain | qwen2.5-math-1.5b | +0.89 (0.0012) | +0.83 (0.0003) |
+| ring_chain | qwen2.5-math-1.5b__random | +0.25 (0.0760) | +0.07 (0.0714) |
+| space_chain | qwen3.5-0.8b | +0.63 (0.0001) | +0.86 (0.0005) |
+| space_chain | qwen3.5-0.8b__random | +0.29 (0.0353) | +0.14 (0.0090) |
+| space_chain | qwen2.5-1.5b | +0.90 (0.0005) | +0.90 (0.0002) |
+| space_chain | qwen2.5-1.5b__random | +0.21 (0.0969) | -0.30 (0.1682) |
+| space_chain | qwen2.5-math-1.5b | +0.91 (0.0003) | +0.91 (0.0001) |
+| space_chain | qwen2.5-math-1.5b__random | +0.18 (0.1163) | -0.32 (0.1906) |
+| number_systems | qwen3.5-0.8b | +0.29 (0.0022) | +0.79 (0.0053) |
+| number_systems | qwen3.5-0.8b__random | -0.25 (0.2158) | -0.57 (0.2497) |
+| number_systems | qwen2.5-1.5b | +0.79 (0.0129) | +0.64 (0.0129) |
+| number_systems | qwen2.5-1.5b__random | -0.21 (0.2270) | -0.43 (0.1861) |
+| number_systems | qwen2.5-math-1.5b | +0.71 (0.0163) | +0.61 (0.0105) |
+| number_systems | qwen2.5-math-1.5b__random | -0.43 (0.3102) | -0.57 (0.2698) |
+| ngons | qwen3.5-0.8b | +0.60 (0.0006) | +0.85 (0.0007) |
+| ngons | qwen3.5-0.8b__random | -0.42 (0.3267) | -0.71 (0.3523) |
+| ngons | qwen2.5-1.5b | +0.96 (0.0001) | +0.92 (0.0001) |
+| ngons | qwen2.5-1.5b__random | -0.39 (0.3516) | -0.59 (0.2853) |
+| ngons | qwen2.5-math-1.5b | +0.90 (0.0016) | +0.88 (0.0001) |
+| ngons | qwen2.5-math-1.5b__random | -0.21 (0.2316) | -0.45 (0.1983) |
+| dimensions | qwen3.5-0.8b | -0.71 (0.0030) | +0.75 (0.0007) |
+| dimensions | qwen3.5-0.8b__random | -0.71 (0.6733) | -0.84 (0.6018) |
+| dimensions | qwen2.5-1.5b | +0.80 (0.0038) | +0.71 (0.0022) |
+| dimensions | qwen2.5-1.5b__random | -0.84 (0.9356) | -0.94 (0.9623) |
+| dimensions | qwen2.5-math-1.5b | +0.87 (0.0012) | +0.87 (0.0001) |
+| dimensions | qwen2.5-math-1.5b__random | -0.90 (0.9837) | -0.95 (0.9716) |
+| angles | qwen3.5-0.8b | +0.56 (0.0002) | +0.90 (0.0001) |
+| angles | qwen3.5-0.8b__random | -0.42 (0.4584) | -0.66 (0.4261) |
+| angles | qwen2.5-1.5b | +0.90 (0.0002) | +0.94 (0.0001) |
+| angles | qwen2.5-1.5b__random | +0.34 (0.1309) | +0.27 (0.1037) |
+| angles | qwen2.5-math-1.5b | +0.92 (0.0004) | +0.95 (0.0001) |
+| angles | qwen2.5-math-1.5b__random | +0.27 (0.1645) | +0.25 (0.1078) |
+
+| Family | Model | LOO order ρ, α = 10 (p) | LOO order ρ, α = mean ‖x‖² (p) |
+|---|---|---|---|
+| days | gemma-4-e2b | +0.75 (0.0311) | +0.61 (0.0642) |
+| days | gemma-4-e2b__random | -0.96 (0.9336) | -0.96 (0.6713) |
+| months | gemma-4-e2b | +0.86 (0.0011) | +0.86 (0.0007) |
+| months | gemma-4-e2b__random | -0.51 (0.2315) | -0.92 (0.7344) |
+| ring_chain | gemma-4-e2b | +0.43 (0.1051) | +0.01 (0.2564) |
+| ring_chain | gemma-4-e2b__random | +0.50 (0.0427) | +0.45 (0.0179) |
+| space_chain | gemma-4-e2b | +0.82 (0.0050) | +0.82 (0.0015) |
+| space_chain | gemma-4-e2b__random | -0.22 (0.2665) | -0.49 (0.2072) |
+| number_systems | gemma-4-e2b | +0.89 (0.0054) | +0.89 (0.0019) |
+| number_systems | gemma-4-e2b__random | +0.32 (0.1197) | +0.11 (0.1740) |
+| ngons | gemma-4-e2b | +0.89 (0.0010) | +0.78 (0.0015) |
+| ngons | gemma-4-e2b__random | +0.42 (0.0195) | +0.15 (0.0708) |
+| dimensions | gemma-4-e2b | +0.86 (0.0005) | +0.77 (0.0003) |
+| dimensions | gemma-4-e2b__random | -0.57 (0.5497) | -0.76 (0.4272) |
+| angles | gemma-4-e2b | +0.87 (0.0008) | +0.80 (0.0012) |
+| angles | gemma-4-e2b__random | +0.73 (0.0042) | +0.63 (0.0050) |
+
 Matched 4-field clustering in Gemma-4-E2B:
 - math subsets: mean 0.663;
 - control fields: 0.866.
 
 # Appendix B: Deviations from the preregistration
 
-See `docs/deviations.md`. Every post-hoc statistic in this paper is labelled post-hoc.
+See `docs/deviations.md`. Every post-hoc statistic in this paper is labelled post-hoc. The two post-hoc addenda, each committed before its analyses ran, are `reports/prereg_addendum_3d.md` (cycles beyond PC1–2) and `reports/prereg_addendum_lexical.md` (the independent audit).
 
 # AI statement
 
