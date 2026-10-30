@@ -101,7 +101,10 @@ def permutation_null(
 
 
 def perm_p(observed: float, null: np.ndarray) -> float:
-    """One-sided permutation p-value with the +1 correction (Phipson & Smyth 2010)."""
+    """One-sided permutation p-value with the +1 correction (Phipson & Smyth 2010). An undefined statistic
+    (NaN, e.g. a rank correlation on a constant RDM) has an undefined p, not 1/(n+1)."""
+    if np.isnan(observed):
+        return float("nan")
     return float((1 + (null >= observed).sum()) / (1 + len(null)))
 
 

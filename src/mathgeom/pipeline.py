@@ -18,6 +18,9 @@ from mathgeom.config import Config, load_yaml
 log = logging.getLogger(__name__)
 
 
+AUDIT_FAMILIES = ("nonce_modifier",)  # appended by the independent audit; kept out of every earlier pool so earlier results are unchanged
+
+
 # ---------------------------------------------------------------- data phases
 def phase_concepts(cfg: Config) -> None:
     from mathgeom.data.concepts import build_concepts
@@ -251,7 +254,7 @@ def phase_shapes(cfg: Config) -> None:
             res = {"primary_layer": Lp}
             for name, f in fams["chains"].items():
                 X = acts[rows(name)]
-                r = family_stats(X[:, Lp], n_perm=2000, seed=cfg.seed)
+                r = family_stats(X[:, Lp], n_perm=2000, seed=cfg.seed, n_perm_loo=10_000)  # 10k LOO permutations: audit D9
                 r["layer_curve"] = [{k: v for k, v in family_stats(X[:, l], n_perm=200, seed=cfg.seed).items() if not k.endswith("null95")} for l in range(1, L1, max(1, (L1 - 1) // 12))]
                 if "reference" in f:
                     kind = "circle" if f["expected"] == "circle" else "line"
@@ -359,7 +362,8 @@ def _lattice_audit2(cfg: Config, fams: dict, pos: dict, key: str, Lp: int) -> di
     gnames = list(g["items"])
     gi = [pos[("group_like", c)] for c in gnames]
     bits = np.array([g["items"][c] for c in gnames])
-    w = length_direction(acts["last"][:, Lp].astype(np.float64), acts["n_tokens"].astype(np.float64))
+    allr = sorted(i for (f, _), i in pos.items() if f not in AUDIT_FAMILIES)  # family items as of this analysis (later appends excluded)
+    w = length_direction(acts["last"][allr, Lp].astype(np.float64), acts["n_tokens"][allr].astype(np.float64))
     Xg = acts["last"][gi, Lp].astype(np.float64)
     out["group_like_offsets"] = {
         "pool": lattice_stats(acts["pool"][gi, Lp], gnames, bits, g["axioms"], seed=cfg.seed)["offsets"],
@@ -494,7 +498,7 @@ def phase_structures(cfg: Config) -> None:
     fam = json.loads((cfg.artifacts / "acts" / "family_index.json").read_text())
     pos = {(f, c): i for i, (f, c, _) in enumerate(fam)}
     # pool of the first analysis; items appended by the second audit stay out so earlier nulls/ranks are unchanged
-    pool = np.array([i for i, (f, _, _) in enumerate(fam) if f not in ("analogy_control", "number_words_3_12", "number_words_0_10", "digits_0_330", "partial_operation", "lattice_transfer")])
+    pool = np.array([i for i, (f, _, _) in enumerate(fam) if f not in ("analogy_control", "number_words_3_12", "number_words_0_10", "digits_0_330", "partial_operation", "lattice_transfer", *AUDIT_FAMILIES)])
     lat = fams["lattices"]["group_like"]
     gl = list(lat["items"])
     bits = np.array([lat["items"][c] for c in gl])
@@ -834,6 +838,175 @@ def phase_posthoc(cfg: Config) -> None:
             log.info("[posthoc %s] closed cycle in best top-5 PC plane at layer %d: %s", key, Lp,
                      {n: (round(v[Lp - 1]["score"], 2), "PC%d-PC%d" % tuple(np.array(v[Lp - 1]["plane"]) + 1), round(v[Lp - 1]["p"], 3)) for n, v in res.items()})
     _save(cfg, "posthoc.json", out)
+
+
+def phase_lexical(cfg: Config) -> None:
+    """Independent audit (reports/prereg_addendum_lexical.md), post-hoc: word-form baselines for H-A1, H-B2, the
+    group objects and H-B (D1–D6), the nonce-modifier calibration (D13), the block-only simulation of the chain test
+    (D7; mvp only), and the bootstrap bias / BCa check of H-A1 and H-A3 (D11), which needs no new extraction either.
+    The random-init twin was meant to measure form-only similarity but scrambles even exact word composition, so
+    each test is rerun on representations that encode the names' spelling and nothing else (analyses/lexical.py)."""
+    from mathgeom.analyses import lexical as lx
+    from mathgeom.analyses.lattice import axiom_pairs, lattice_stats, parallelogram_test
+    from mathgeom.analyses.map_fields import bca_summary, field_centroids, field_rsa, loo_centroid_correct, mantel_field_perm, paired_bootstrap
+    from mathgeom.analyses.shapes import family_stats
+    from mathgeom.geometry.manifold import perm_p
+    from mathgeom.geometry.offsets import offset_consistency, random_pair_null
+    from mathgeom.geometry.preprocess import center, cosine_rdm
+    from mathgeom.stats.rdm_regression import upper
+
+    fams = load_yaml("families.yaml")
+    fam = json.loads((cfg.artifacts / "acts" / "family_index.json").read_text())
+    pos = {(f, c): i for i, (f, c, _) in enumerate(fam)}
+    concepts = pd.read_csv(cfg.data_dir / "concepts.csv")
+    fd = json.loads((cfg.data_dir / "field_distance.json").read_text())
+    fidx = np.flatnonzero(((concepts.kind == "math") & concepts.primary & (concepts.split == cfg.raw.get("analysis_split", "confirmatory"))).values)
+    lab, cnames = concepts.field.values[fidx], [concepts.concept.values[i] for i in fidx]
+    fnames = [n for n in fd["names"] if n in set(lab)]
+    sel = [fd["names"].index(n) for n in fnames]
+    target = np.array(fd["distance"])[np.ix_(sel, sel)]
+    g = fams["lattices"]["group_like"]
+    gl, axioms = list(g["items"]), g["axioms"]
+    bits = np.array([g["items"][c] for c in gl])
+    sub = [c for c in gl if not c.startswith("commutative")]  # the 8 names without the word "commutative"
+    sbits = np.array([g["items"][c] for c in sub])
+    excl = ("analogy_control", "number_words_3_12", "number_words_0_10", "digits_0_330", "partial_operation", "lattice_transfer", *AUDIT_FAMILIES)
+    pool = [i for i, (f, _, _) in enumerate(fam) if f not in excl]  # the pool of phase_structures
+    quads = [tuple(pos[("group_objects", c)] for c in q) for q in fams["group_objects"]["parallelograms"]]
+    sc = fams["chains"]["space_chain"]["items"]
+    space_blocks = {"T0_to_normal": sc[: sc.index("normal space") + 1], "metrizable_to_Hilbert": sc[sc.index("metrizable space"):]}
+    nm = fams["extra"]["nonce_modifier"]
+    BASE = ("char3", "word_bag", "layer0_bag")
+    out = {}
+    for m in cfg.models:
+        key = m["key"]
+        acts = {"trained": load_acts(cfg, key, "family"), "twin": load_acts(cfg, key + "__random", "family")}
+        Lp = _primary_layer(acts["trained"]["last"].shape[1], cfg.primary_rel_depth)
+
+        def rep(kind, rows):  # representation of family rows: model states at the pre-registered layer, or a baseline
+            if kind in acts:
+                return acts[kind]["last"][rows, Lp].astype(np.float64)
+            if kind == "layer0_bag":
+                return lx.layer0_bag(acts["trained"], rows)
+            return {"char3": lx.char3_vectors, "word_bag": lx.word_bag}[kind]([fam[i][1] for i in rows])
+
+        res = {"primary_layer": Lp}
+        # D1: field map on the baselines, and the paired bootstrap of trained − baseline
+        fa = load_acts(cfg, key, "field_neutral")
+        reps = {"trained": fa["last"][fidx, Lp], "char3": lx.char3_vectors(cnames), "word_bag": lx.word_bag(cnames), "layer0_bag": lx.layer0_bag(fa, fidx)}
+        rng = np.random.default_rng(cfg.seed)
+        res["field_map"] = {"rsa": {k: field_rsa(v, lab, fnames, target) for k, v in reps.items()},
+                            "mantel_p": {k: perm_p(field_rsa(reps[k], lab, fnames, target), mantel_field_perm(upper(cosine_rdm(field_centroids(reps[k], lab, fnames))), target, cfg.n_perm, rng))
+                                         for k in BASE},
+                            "boot": paired_bootstrap(reps, lab, fnames, target, cfg.n_boot // 2, cfg.seed),
+                            "loo_acc": {k: float(loo_centroid_correct(v, lab).mean()) for k, v in reps.items()}}
+        # D2–D3: group-like axiom offsets on the baselines, the duplicate/disjoint split, the sub-lattice, the held-out pair
+        gr, sr = [pos[("group_like", c)] for c in gl], [pos[("group_like", c)] for c in sub]
+        base_stats = {b: lattice_stats(rep(b, gr), gl, bits, axioms, n_perm=200, seed=cfg.seed) for b in BASE}
+        res["group_like"] = {
+            "offsets": {b: s["offsets"] for b, s in base_stats.items()},
+            "analogy_top1": {b: s["analogy"]["top1"] for b, s in base_stats.items()},
+            "decomposition": {k: {ax: lx.disjoint_offset_test(rep(k, gr), gl, axiom_pairs(bits, i), seed=cfg.seed + i) for i, ax in enumerate(axioms)} for k in acts},
+            "sublattice": {k: lx.offsets_vs_null(rep(k, sr), sbits, axioms, n_perm=5000, seed=cfg.seed) for k in (*acts, *BASE)},
+            "abelian_heldout": {k: lx.heldout_commutative_test(rep(k, gr), gl, bits) for k in (*acts, *BASE)},
+        }
+        # D4: group-object parallelograms on the baselines (same pool, quadruples and seed as phase_structures)
+        rows_all = sorted(set(pool) | {r for q in quads for r in q})
+        at = {r: j for j, r in enumerate(rows_all)}
+        res["group_objects"] = {b: parallelogram_test(rep(b, rows_all), [tuple(at[r] for r in q) for q in quads], np.array([at[r] for r in pool]), seed=cfg.seed) for b in BASE}
+        # D5–D6: chains on the baselines (a word bag of one-word items is degenerate, so it is left out) and within-block order
+        keep = ("line_rho", "circle_rho", "closure", "robinson", "robinson_p", "pca_order", "pca_order_p", "loo_order", "loo_order_p")
+        res["chains"] = {name: {b: {k: v for k, v in family_stats(rep(b, [pos[(name, c)] for c in f["items"]]), n_perm=2000, seed=cfg.seed).items() if k in keep}
+                                for b in ("char3", "layer0_bag")} for name, f in fams["chains"].items()}
+        drows = [pos[("ring_chain", c)] for c in fams["chains"]["ring_chain"]["items"] if c.endswith("domain")]
+        res["ring_within_domain"] = {k: lx.exact_order_test(rep(k, drows)) for k in (*acts, "char3", "layer0_bag")}
+        res["space_blocks"] = {bn: {k: lx.exact_order_test(rep(k, [pos[("space_chain", c)] for c in items])) for k in (*acts, "char3", "layer0_bag")}
+                               for bn, items in space_blocks.items()}
+        # D13: nonce modifiers (only where the appended items have been extracted)
+        last = pos[("nonce_modifier", f"{nm['modifiers'][-1]} {nm['heads'][-1]}")]
+        if all(len(a["n_tokens"]) > last for a in acts.values()):
+            res["nonce_modifier"] = {}
+            for mod in nm["modifiers"]:
+                rows = [pos[("nonce_modifier", h)] for h in nm["heads"]] + [pos[("nonce_modifier", f"{mod} {h}")] for h in nm["heads"]]
+                pairs = [(i, i + len(nm["heads"])) for i in range(len(nm["heads"]))]
+                res["nonce_modifier"][mod] = {}
+                for k in (*acts, "char3", "layer0_bag"):
+                    X = center(rep(k, rows))
+                    obs, null = offset_consistency(X, pairs), random_pair_null(X, np.arange(len(rows)), len(pairs), 2000, cfg.seed)
+                    res["nonce_modifier"][mod][k] = {"consistency": obs, "null95": float(np.percentile(null, 95)), "p": perm_p(obs, null)}
+        # D11: bootstrap bias and BCa of the H-A1 field map vs the twin (the same resamples as phase_map)
+        twin_field = load_acts(cfg, key + "__random", "field_neutral")["last"][fidx, Lp]
+        res["bootstrap"] = bca_summary({"trained": reps["trained"], "random_init": twin_field}, lab, fnames, target, cfg.n_boot, cfg.seed)
+        out[key] = res
+        log.info("[lexical %s] field rho %s | char3 offsets %s | abelian %s | group objects %s | ring within-domain p %.4f | nonce %s", key,
+                 {k: round(v, 3) for k, v in res["field_map"]["rsa"].items()}, {a: round(o["consistency"], 2) for a, o in res["group_like"]["offsets"]["char3"].items()},
+                 {k: round(v["cos"], 2) for k, v in res["group_like"]["abelian_heldout"].items()}, {b: round(v["cos"], 3) for b, v in res["group_objects"].items()},
+                 res["ring_within_domain"]["trained"]["robinson_p"], {md: round(v["trained"]["consistency"], 2) for md, v in res.get("nonce_modifier", {}).items()})
+    for a, b in cfg.raw.get("comparisons", []):  # D11 for H-A3 (paired contrast of two trained models)
+        reps = {}
+        for k in (a, b):
+            X = load_acts(cfg, k, "field_neutral")["last"]
+            reps[k] = X[fidx, _primary_layer(X.shape[1], cfg.primary_rel_depth)]
+        out.setdefault("compare_bootstrap", {})[f"{a}_vs_{b}"] = bca_summary(reps, lab, fnames, target, cfg.n_boot, cfg.seed)
+    if cfg.name == "mvp":  # D7: how diagnostic is the chain test? Head-noun clusters only, at the confirmatory model's scale
+        m0 = cfg.models[0]["key"]
+        A = load_acts(cfg, m0, "family")["last"]
+        X = center(A[[pos[("ring_chain", c)] for c in fams["chains"]["ring_chain"]["items"]], out[m0]["primary_layer"]].astype(np.float64))
+        out["block_only_simulation"] = [lx.block_only_simulation(snr, n_sims=40, seed=100, scale=float(np.linalg.norm(X, axis=1).mean())) for snr in (0.5, 1.0, 2.0)]
+        log.info("[lexical] block-only simulation: %s", out["block_only_simulation"])
+    _save(cfg, "lexical.json", out)
+
+
+def phase_twins(cfg: Config) -> None:
+    """Independent audit D12 (post-hoc): how much do the twin statistics depend on the random draw? For the trained
+    model and each random-init seed (seed `cfg.seed` is the twin of every other analysis): field ρ and LOO field
+    accuracy (primary concepts), the group-like offsets, and the ring/space chain statistics; plus the H-A1 paired
+    bootstrap Δ (trained − twin) per seed."""
+    from mathgeom.analyses.lattice import lattice_stats
+    from mathgeom.analyses.map_fields import field_rsa, loo_centroid_correct, paired_bootstrap
+    from mathgeom.analyses.shapes import family_stats
+
+    fams = load_yaml("families.yaml")
+    fam = json.loads((cfg.artifacts / "acts" / "family_index.json").read_text())
+    pos = {(f, c): i for i, (f, c, _) in enumerate(fam)}
+    concepts = pd.read_csv(cfg.data_dir / "concepts.csv")
+    fd = json.loads((cfg.data_dir / "field_distance.json").read_text())
+    fidx = np.flatnonzero(((concepts.kind == "math") & concepts.primary & (concepts.split == cfg.raw.get("analysis_split", "confirmatory"))).values)
+    lab = concepts.field.values[fidx]
+    fnames = [n for n in fd["names"] if n in set(lab)]
+    sel = [fd["names"].index(n) for n in fnames]
+    target = np.array(fd["distance"])[np.ix_(sel, sel)]
+    g = fams["lattices"]["group_like"]
+    gl = list(g["items"])
+    gbits = np.array([g["items"][c] for c in gl])
+    out = {}
+    if not any(m.get("twin_seeds") for m in cfg.models):  # e.g. `run.py all` on a config without extra seeds
+        log.info("[twins] no `twin_seeds` in %s; nothing to do", cfg.name)
+        return
+    for m in [m for m in cfg.models if m.get("twin_seeds")]:
+        tags ={"trained": m["key"], f"seed{cfg.seed}": m["key"] + "__random", **{f"seed{s}": f"{m['key']}__random_s{s}" for s in m.get("twin_seeds", [])}}
+        res, field = {}, {}
+        for tag, key in tags.items():
+            fa, A = load_acts(cfg, key, "field_neutral")["last"], load_acts(cfg, key, "family")["last"]
+            Lp = _primary_layer(A.shape[1], cfg.primary_rel_depth)
+            field[tag] = fa[fidx, Lp]
+            ls = lattice_stats(A[[pos[("group_like", c)] for c in gl], Lp], gl, gbits, g["axioms"], n_perm=200, seed=cfg.seed)
+            chains = {c: {k: v for k, v in family_stats(A[[pos[(c, x)] for x in fams["chains"][c]["items"]], Lp], n_perm=2000, seed=cfg.seed, n_perm_loo=2000).items()
+                          if k in ("robinson", "robinson_p", "loo_order", "loo_order_p")} for c in ("ring_chain", "space_chain")}
+            res[tag] = {"model": key, "field_rho": field_rsa(field[tag], lab, fnames, target), "field_loo_acc": float(loo_centroid_correct(field[tag], lab).mean()),
+                        "offsets": {a: {k: o[k] for k in ("consistency", "p")} for a, o in ls["offsets"].items()}, "chains": chains}
+            log.info("[twins %s] field rho %.3f, offsets %s, ring/space robinson %.2f/%.2f", tag, res[tag]["field_rho"], {a: round(o["consistency"], 2) for a, o in res[tag]["offsets"].items()},
+                     chains["ring_chain"]["robinson"], chains["space_chain"]["robinson"])
+        res["field_boot"] = paired_bootstrap(field, lab, fnames, target, cfg.n_boot // 2, cfg.seed)  # Δ trained − each seed
+        seeds = [t for t in tags if t != "trained"]
+        stat = {"field_rho": lambda e: e["field_rho"], "field_loo_acc": lambda e: e["field_loo_acc"],
+                **{f"offset_{a}": (lambda e, a=a: e["offsets"][a]["consistency"]) for a in res["trained"]["offsets"]},
+                **{f"robinson_{c}": (lambda e, c=c: e["chains"][c]["robinson"]) for c in ("ring_chain", "space_chain")}}
+        res["summary"] = {"twin_range": {n: [min(f(res[t]) for t in seeds), max(f(res[t]) for t in seeds)] for n, f in stat.items()},
+                          "trained_exceeds_every_twin": {n: bool(f(res["trained"]) > max(f(res[t]) for t in seeds)) for n, f in stat.items()},
+                          "field_delta_ci_lowest_lower": min(res["field_boot"][f"delta_vs_{t}"]["ci"][0] for t in seeds), "n_seeds": len(seeds)}
+        out[m["key"]] = res
+    _save(cfg, "twins.json", out)
 
 
 def phase_calibration(cfg: Config) -> None:

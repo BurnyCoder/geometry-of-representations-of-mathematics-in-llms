@@ -144,3 +144,12 @@ def test_holm_family_has_eight_tests_with_angles_as_p1_when_falsified():
                                    "angles": {"closure": 2.1, "circle_rho": 0.3, "line_rho": 0.6}}},
                             {"k": {"group_like": {"offsets": {a: {"p": 0.04} for a in ("associative", "identity", "divisible", "commutative")}}}}, "k")
     assert len(rows) == 8 and rows[-1][1] == 1.0 and rows[-1][0].startswith("H-B angles")
+
+
+def test_perm_p_of_an_undefined_statistic_is_undefined():
+    """A one-hot word bag of single-word items makes every distance equal, so template ρ is NaN; its p must
+    not become 1/(n+1)."""
+    from mathgeom.geometry.manifold import perm_p
+
+    assert np.isnan(perm_p(float("nan"), np.array([0.1, 0.2])))
+    assert perm_p(0.15, np.array([0.1, 0.2])) == pytest.approx(2 / 3)

@@ -75,23 +75,53 @@ def loo_centroid_correct(X: np.ndarray, labels: np.ndarray) -> np.ndarray:
     return correct
 
 
+def bootstrap_draws(reps: dict[str, np.ndarray], labels: np.ndarray, names: list[str], target: np.ndarray, n_boot: int, seed: int) -> dict[str, np.ndarray]:
+    """Field-RSA of every representation on the same stratified concept resamples (one resample per draw,
+    shared by all keys, so a given seed gives the same draws for a key whatever the other keys are)."""
+    rng = np.random.default_rng(seed)
+    draws = {k: np.empty(n_boot) for k in reps}
+    strata = [np.flatnonzero(labels == f) for f in names]
+    for b in range(n_boot):
+        idx = np.concatenate([rng.choice(s, len(s)) for s in strata])  # same indices for every model
+        for k in reps:
+            draws[k][b] = field_rsa(reps[k][idx], labels[idx], names, target)
+    return draws
+
+
 def paired_bootstrap(reps: dict[str, np.ndarray], labels: np.ndarray, names: list[str], target: np.ndarray, n_boot: int, seed: int) -> dict:
     """Stratified concept bootstrap of field-RSA for several representations of the SAME concepts.
 
     Returns per-representation CIs and CIs of differences vs the first key ("trained").
     """
-    rng = np.random.default_rng(seed)
     keys = list(reps)
-    draws = {k: np.empty(n_boot) for k in keys}
-    strata = [np.flatnonzero(labels == f) for f in names]
-    for b in range(n_boot):
-        idx = np.concatenate([rng.choice(s, len(s)) for s in strata])  # same indices for every model
-        for k in keys:
-            draws[k][b] = field_rsa(reps[k][idx], labels[idx], names, target)
+    draws = bootstrap_draws(reps, labels, names, target, n_boot, seed)
     ci = lambda v: [float(np.percentile(v, 2.5)), float(np.percentile(v, 97.5))]  # noqa: E731
     out = {k: {"ci": ci(v)} for k, v in draws.items()}
     for k in keys[1:]:
         out[f"delta_vs_{k}"] = {"ci": ci(draws[keys[0]] - draws[k]), "p_le_0": float(np.mean(draws[keys[0]] - draws[k] <= 0))}
+    return out
+
+
+def bca_summary(reps: dict[str, np.ndarray], labels: np.ndarray, names: list[str], target: np.ndarray, n_boot: int, seed: int) -> dict:
+    """Independent audit D11: bootstrap bias (bootstrap mean − point estimate) and BCa 95% intervals of field-RSA
+    per representation and of its difference from the first key, from the same resamples as paired_bootstrap
+    (same seed) and a leave-one-concept-out jackknife. Duplicated concepts make resampled centroids noisier, so
+    resampled ρ is pulled toward 0 and the percentile interval sits below the point estimate."""
+    from mathgeom.stats.bootstrap import bca_interval
+
+    keys = list(reps)
+    draws = bootstrap_draws(reps, labels, names, target, n_boot, seed)
+    point = {k: field_rsa(v, labels, names, target) for k, v in reps.items()}
+    loo = [np.arange(len(labels)) != i for i in range(len(labels))]
+    jack = {k: np.array([field_rsa(v[m], labels[m], names, target) for m in loo]) for k, v in reps.items()}
+
+    def summ(th, bt, jk):
+        return {"point": th, "boot_mean": float(bt.mean()), "bias": float(bt.mean() - th), "bca": list(bca_interval(th, bt, jk)),
+                "percentile": [float(np.percentile(bt, 2.5)), float(np.percentile(bt, 97.5))]}
+
+    out = {k: summ(point[k], draws[k], jack[k]) for k in keys}
+    for k in keys[1:]:
+        out[f"delta_vs_{k}"] = summ(point[keys[0]] - point[k], draws[keys[0]] - draws[k], jack[keys[0]] - jack[k])
     return out
 
 
