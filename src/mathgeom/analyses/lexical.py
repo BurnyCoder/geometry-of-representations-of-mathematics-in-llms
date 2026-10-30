@@ -20,7 +20,7 @@ from itertools import combinations, permutations
 import numpy as np
 
 from mathgeom.analyses.lattice import axiom_pairs
-from mathgeom.geometry.manifold import loo_order_rho, perm_p, permutation_null, robinson_score
+from mathgeom.geometry.manifold import loo_order_rho, pca_order_rho, perm_p, permutation_null, robinson_score
 from mathgeom.geometry.offsets import _unit, offset_consistency, random_pair_null
 from mathgeom.geometry.preprocess import center, char_ngrams, euclid_rdm
 
@@ -114,21 +114,15 @@ def heldout_commutative_test(X: np.ndarray, names: list[str], bits: np.ndarray, 
 # ------------------------------------------------------------------ chains
 def exact_order_test(X: np.ndarray) -> dict:
     """Addendum D5/D6: for a short block whose rows are in true order, the Robinson score and the PC1 |Spearman ρ|
-    with exact p-values over all n! orders (fraction of orders scoring at least the observed value)."""
+    (manifold.robinson_score, manifold.pca_order_rho) with exact p-values over all n! orders: the fraction of
+    orders scoring at least the observed value (the identity order included)."""
     X = center(X.astype(np.float64))
-    n = len(X)
     D = euclid_rdm(X)
-    orders = np.array(list(permutations(range(n))))
-    trip = np.array(list(combinations(range(n), 3)))
-    i, j, k = orders[:, trip[:, 0]], orders[:, trip[:, 1]], orders[:, trip[:, 2]]
-    rob = (D[i, k] >= np.maximum(D[i, j], D[j, k])).mean(1)
-    _, _, Vt = np.linalg.svd(X, full_matrices=False)
-    r = np.argsort(np.argsort(X @ Vt[0])).astype(float)  # ranks of the PC1 scores (continuous: no ties)
-    pos = np.argsort(orders, axis=1).astype(float)  # pos[item] = position of each item in each order
-    rc, pc = r - r.mean(), pos - pos.mean(1, keepdims=True)
-    pc1 = np.abs(pc @ rc) / (np.linalg.norm(pc, axis=1) * np.linalg.norm(rc))  # |Spearman| = |Pearson of ranks|
+    orders = [np.array(p) for p in permutations(range(len(X)))]  # orders[0] is the true order
+    rob = np.array([robinson_score(D, o) for o in orders])
+    pc1 = np.array([pca_order_rho(X, o) for o in orders])
     eps = 1e-12
-    return {"n": n, "robinson": float(rob[0]), "robinson_p": float(np.mean(rob >= rob[0] - eps)),
+    return {"n": len(X), "robinson": float(rob[0]), "robinson_p": float(np.mean(rob >= rob[0] - eps)),
             "pc1": float(pc1[0]), "pc1_p": float(np.mean(pc1 >= pc1[0] - eps))}
 
 

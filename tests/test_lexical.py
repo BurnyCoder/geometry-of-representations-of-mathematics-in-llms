@@ -153,3 +153,12 @@ def test_perm_p_of_an_undefined_statistic_is_undefined():
 
     assert np.isnan(perm_p(float("nan"), np.array([0.1, 0.2])))
     assert perm_p(0.15, np.array([0.1, 0.2])) == pytest.approx(2 / 3)
+
+
+def test_exact_order_test_averages_tied_pc1_scores():
+    """Regression (plan check): two items with the same representation tie on PC1; the PC1-order statistic must
+    use average ranks, as manifold.pca_order_rho (scipy Spearman) does, not an arbitrary tie-break."""
+    from scipy.stats import spearmanr
+
+    X = np.outer([0.0, 1.0, 1.0, 2.0, 3.0], np.random.default_rng(7).normal(size=20))
+    assert lexical.exact_order_test(X)["pc1"] == pytest.approx(abs(spearmanr([0, 1, 1, 2, 3], np.arange(5))[0]))
