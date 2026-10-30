@@ -228,7 +228,7 @@ def draw_group_objects(r: dict):
 
 
 def build(r: dict, cfg_conf, outdir) -> list[str]:
-    from mathgeom.report.figures.families import short
+    from mathgeom.report.figures.families import save_turntable, short
 
     conf = cfg_conf.models[0]["key"]  # the pre-registered confirmatory model
     Lp = r["map_fields"][conf]["primary_layer"]
@@ -238,4 +238,5 @@ def build(r: dict, cfg_conf, outdir) -> list[str]:
     fmap = {"lay": figdata.field_layouts(figdata.field_rdms(cfg_conf, conf, setup, Lp)), "names": setup["names"], "pa": setup["pa"],
             "edges": figdata.neighbour_edges(setup["arxiv"])}
     return [S.save(draw_hero(r, planes, fmap, conf), outdir, "hero"), S.save(draw_depth(r), outdir, "depth_curves"), S.save(draw_forest(r), outdir, "forest"),
-            S.save(draw_group_objects(r), outdir, "group_objects"), S.save(draw_partial_operation(r, conf), outdir, "partial_operation")]
+            S.save(draw_group_objects(r), outdir, "group_objects"), S.save(draw_partial_operation(r, conf), outdir, "partial_operation"),
+            save_turntable(cfg_conf, conf, Lp, outdir)]  # README 3-D turntable, confirmatory model only (≈1.5 MB per GIF)

@@ -91,6 +91,26 @@ def test_remaining_draw_functions_render(tmp_path):
     assert {"facets.png", "plane.png", "abstraction.png"} <= {p.name for p in tmp_path.iterdir()}
 
 
+def test_3d_draw_functions_render(tmp_path):
+    """3-D panels (mplot3d): a family in its top-3 PCs and the per-axiom 3-D lattice facets."""
+    import matplotlib.pyplot as plt
+
+    from mathgeom.report.figures import families, lattice
+
+    rng = np.random.default_rng(8)
+    var = np.array([0.3, 0.2, 0.1, 0.05, 0.05])
+    fig = plt.figure()
+    families.draw_plane3d(fig.add_subplot(projection="3d"), rng.normal(size=(7, 3)), [f"d{i}" for i in range(7)], True, var, highlight=((6, 0),))
+    style.save(fig, tmp_path, "plane3d")
+    bits = np.array([[a, i, d, c] for a in (0, 1) for i in (0, 1) for d in (0, 1) for c in (0, 1)])[:13]
+    ax_names = ["associative", "identity", "divisible", "commutative"]
+    Vs = {k: (rng.normal(size=(13, 3)), var) for k in ("trained", "random_init")}
+    notes = {k: {a: "n" for a in ax_names} for k in Vs}
+    style.save(lattice.draw_facets3d(Vs, [f"s{i}" for i in range(13)], bits, ax_names, notes), tmp_path, "lattice3d")
+    assert families.planes_note({}, "m", "days", 3) == ""  # no post-hoc 4 results yet: no note
+    assert {"plane3d.png", "lattice3d.png"} <= {p.name for p in tmp_path.iterdir()}
+
+
 def test_cross_model_extra_figures_render(tmp_path):
     from mathgeom.config import ROOT
     from mathgeom.report import figdata as fd

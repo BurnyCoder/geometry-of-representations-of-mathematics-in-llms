@@ -133,6 +133,93 @@ def save_gif(cfg, key: str, ph: dict, L: int, Lp: int, outdir) -> str:
     return path.name
 
 
+def views3d(cfg, key: str, fams: list[str], Lp: int) -> dict:
+    """{(model key, family): (top-3 PC view, explained variance of PC1–5)} at the preregistered layer; each
+    axis is that model's own PC (the twin's signs aligned to the trained view), as on the site."""
+    out = {}
+    for f in fams:
+        Xt, Xw = (figdata.family_acts(cfg, k, f)[:, [0, Lp]] for k in (key, f"{key}__random"))
+        Vt = figdata.pcs_by_layer(Xt, 1, k=3)[0]
+        out[(key, f)] = (Vt, figdata.pca_var(Xt[:, 1], 5))
+        out[(f"{key}__random", f)] = (figdata.pcs_by_layer(Xw, 1, onto=Vt, k=3)[0], figdata.pca_var(Xw[:, 1], 5))
+    return out
+
+
+def draw_plane3d(ax, P: np.ndarray, labels: list[str], closed: bool, var, highlight: tuple = (), size: float = 5.6):
+    """One family in its top-3 PCs: the path in true order, a grey shadow of it on the floor (depth cue),
+    ordinal colour, labels; true proportions and the fixed camera (style.bare3d)."""
+    seq = np.r_[np.arange(len(P)), 0] if closed else np.arange(len(P))
+    ax.plot(P[seq, 0], P[seq, 1], np.full(len(seq), P[:, 2].min()), color=S.GRID, lw=0.8)
+    ax.plot(P[seq, 0], P[seq, 1], P[seq, 2], color=S.AXIS, lw=1.0)
+    for i, j in highlight:  # e.g. the predicted 330°→0° closing edge
+        ax.plot(*P[[i, j]].T, color=S.ORANGE, lw=1.6)
+    ax.scatter(P[:, 0], P[:, 1], P[:, 2], c=S.ordinal(len(P)), s=24, edgecolors=S.SURFACE, linewidths=0.7, depthshade=False)
+    for (x, y, z), t in zip(P, labels):
+        ax.text(x, y, z, " " + t, fontsize=size, color=S.INK2)
+    S.bare3d(ax, P, var)
+
+
+def planes_note(ph: dict, k: str, f: str, Lp: int) -> str:
+    """The post-hoc closed-cycle result (reports/prereg_addendum_3d.md) for a cyclic family, if computed."""
+    e = ph.get(k, {}).get("pc_planes_cycle", {}).get(f)
+    if not e:
+        return ""
+    e = e[Lp - 1]
+    return f"\nclosed cycle, best plane PC{e['plane'][0] + 1}–PC{e['plane'][1] + 1}: {e['score']:.2f} ({S.fmt_p(e['p'])})"
+
+
+def draw_grid3d(cfg, key: str, fams: list[str], Lp: int, closed_of, extra=lambda k, f: ""):
+    """2 rows (trained, twin) × families, each in its top-3 PCs at the pre-registered layer."""
+    import matplotlib.pyplot as plt
+
+    V = views3d(cfg, key, fams, Lp)
+    fig = plt.figure(figsize=(2.9 * len(fams), 6.6))
+    for row, k in enumerate((key, f"{key}__random")):
+        for col, f in enumerate(fams):
+            ax = fig.add_subplot(2, len(fams), row * len(fams) + col + 1, projection="3d")
+            P, var = V[(k, f)]
+            items = figdata.family_items(cfg, f)
+            draw_plane3d(ax, P, [short(f, c) for c in items], closed_of(f), var, highlight=((len(items) - 1, 0),) if f == "angles" else ())
+            S.note3d(ax, f"PC1–3 hold {100 * var[:3].sum():.0f}% of the variance" + extra(k, f))
+            if row == 0:
+                ax.set_title(S.FAMILY.get(f, f), fontsize=8.5)
+            if col == 0:
+                ax.text2D(-0.06, 0.5, "trained" if row == 0 else "random-init twin", rotation=90, transform=ax.transAxes, ha="center", va="center", fontsize=8.5, color=S.INK2)
+    fig.subplots_adjust(left=0.03, right=0.99, top=0.93, bottom=0.07, wspace=0.05, hspace=0.28)
+    return fig
+
+
+def save_turntable(cfg, key: str, Lp: int, outdir, frames: int = 36) -> str:
+    """README turntable: days, months and angles in their top-3 PCs (trained top, twin bottom) at the
+    preregistered layer, rotating once about the vertical axis (matplotlib FuncAnimation + PillowWriter)."""
+    import matplotlib.pyplot as plt
+    from matplotlib.animation import FuncAnimation, PillowWriter
+
+    V = views3d(cfg, key, CYCLIC, Lp)
+    fig = plt.figure(figsize=(7.2, 5.0), dpi=100)
+    axes = []
+    for row, k in enumerate((key, f"{key}__random")):
+        for col, f in enumerate(CYCLIC):
+            ax = fig.add_subplot(2, 3, row * 3 + col + 1, projection="3d")
+            P, var = V[(k, f)]
+            items = figdata.family_items(cfg, f)
+            draw_plane3d(ax, P, [short(f, c) for c in items], True, var, highlight=((len(items) - 1, 0),) if f == "angles" else (), size=5.0)
+            ax.set_title(f"{S.FAMILY[f].split(chr(10))[0]} · {S.pretty(key) if k == key else 'twin'}", fontsize=7.5, color=S.INK if k == key else S.INK2)
+            axes.append(ax)
+    fig.suptitle(f"top-3 principal components at layer {Lp} (preregistered) · trained (top) vs random-init twin (bottom)", fontsize=7.5, color=S.INK2)
+    fig.subplots_adjust(left=0.0, right=1.0, top=0.9, bottom=0.02, wspace=0.0, hspace=0.12)
+
+    def frame(i):
+        for ax in axes:
+            ax.view_init(S.VIEW3D[0], S.VIEW3D[1] + 360 * i / frames)
+
+    anim = FuncAnimation(fig, frame, frames=frames, interval=80)
+    path = outdir / f"turntable_{key}.gif"
+    anim.save(path, writer=PillowWriter(fps=12))
+    plt.close(fig)
+    return path.name
+
+
 def draw_angles(cfg, key: str, sh: dict, Lp: int):
     """Pre-registered prediction (a circle where 330° neighbours 0°) next to what the model shows."""
     import matplotlib.pyplot as plt
@@ -182,6 +269,8 @@ def build(cfg, sh: dict, ph: dict, cf: dict, outdir, gif: bool = True) -> list[s
         out.append(S.save(draw_grid(cfg, key, CHAINS, Lp, chain_stat, lambda f: fams_cfg[f]["expected"] == "circle"), outdir, f"chains_{key}"))
         out.append(S.save(draw_filmstrip(cfg, key, ph, L, Lp), outdir, f"circle_depth_{key}"))
         out.append(S.save(draw_angles(cfg, key, sh, Lp), outdir, f"angles_{key}"))
+        out.append(S.save(draw_grid3d(cfg, key, CYCLIC, Lp, lambda f: True, lambda k, f: planes_note(ph, k, f, Lp)), outdir, f"families3d_{key}"))
+        out.append(S.save(draw_grid3d(cfg, key, CHAINS, Lp, lambda f: fams_cfg[f]["expected"] == "circle"), outdir, f"chains3d_{key}"))
         if gif:
             out.append(save_gif(cfg, key, ph, L, Lp, outdir))
     return out
