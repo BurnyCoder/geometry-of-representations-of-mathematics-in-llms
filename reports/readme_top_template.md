@@ -33,6 +33,7 @@
 - **Field clustering is not special to mathematics.** Biology, chemistry, geology and astronomy topics cluster by field more strongly than most random sets of four math fields, in {{fact:control_beats_most_math_subsets}}. This is a post-hoc clustering test; the control fields have no arXiv map.
 - **The causal test was inconclusive.** The ring chain failed the accuracy gate. For the space chain, noise in the chain subspace hurt accuracy only slightly more than random-subspace noise, and only at the larger noise scales.
 - **The positive control (days and months as circles) failed our preregistered full-space criterion, and replicates only partly with post-hoc tests.**
+  - The full-space criterion fails because line ρ exceeds circle ρ for days in {{fact:line_beats_circle.days}} and for months in {{fact:line_beats_circle.months}}.
   - In the top-2 principal-component plane, where [Engels et al.](https://arxiv.org/abs/2405.14860) show their raw-activation circles, days go round in perfect order in {{fact:top2_cycle_perfect.days}} and months in {{fact:top2_cycle_perfect.months}}. But that score also rewards an open arc.
   - Counting only loops that close in their plane (the same addendum), days close in the top-2 plane in {{fact:closes_top2.days}}. Months close in a lower plane (PC2–PC3 or PC4–PC5; p < .05 each, unadjusted) in {{fact:closes_lower_plane.months}}.
   - A closed months loop also appears in {{fact:twin_closes.months}}, so this test is not fully specific. All outcomes are reported.

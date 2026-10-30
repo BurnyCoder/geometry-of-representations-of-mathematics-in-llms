@@ -1,5 +1,5 @@
 // Explorable article: renders every figure from data/index.json + data/<model>.json (written by
-// src/mathgeom/report/site.py). No number is typed into the page: prose numbers are <span data-num>
+// src/mathgeom/report/site.py). No statistic is typed into the page (only structural counts such as "13 structures"): prose numbers are <span data-num>
 // elements resolved against index.json, chart values come from the same files.
 "use strict";
 
@@ -466,7 +466,7 @@ function pick(i) {
 const FAM_TAKE = {
   days: "Positive control: in the trained models the days keep their cyclic order at most depths; the twins mostly do not (one reaches it at a single layer by chance). Whether the loop also closes is the line under the variance chart.",
   months: "Positive control: the months keep their cyclic order at most depths in some models, not all; in the top-2 plane their loop can stay open, and it closes in a lower plane in some models.",
-  angles: "Falsified prediction: angles follow the number line (line ρ > circle ρ in every model), so 330° is farther from 0° than neighbouring angles are (orange edge).",
+  angles: "Falsified prediction: angles follow the number line (line ρ > circle ρ in every model), so 330° is farther from 0° than neighbouring angles are (orange edge). Every twin meets the preregistered circle rule by chance (a structureless cloud passes it), so the evidence is the trained models' line-like order, not the failed rule.",
   ring_chain: "Pre-registered: ordered if the Robinson score and the leave-one-out order beat their nulls (Holm) and the twin; the scorecard shows which models pass. In the confirmatory model the chain runs as a path and the twin is a tangle.",
   space_chain: "Pre-registered: ordered if the Robinson score and the leave-one-out order beat their nulls (Holm) and the twin; the scorecard shows which models pass. In the confirmatory model the chain runs as a path and the twin is a tangle.",
   number_systems: "Exploratory (7 items): ordered, but in most models not beyond word frequency and token count (the frequency control under the panel).",

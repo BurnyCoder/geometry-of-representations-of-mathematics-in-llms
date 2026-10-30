@@ -7,7 +7,7 @@ neighbours, exact (n−1)-D lattice coordinates (an analogy playground computes 
 browser) and the difference-vector cosine matrix. Layout:
   site/data/index.json   models, fields, scorecard, forest rows, a pruned copy of the results JSON
   site/data/<model>.json per-model geometry (lazy-loaded when the reader picks that model)
-All numbers on the page are read from these files; none are typed into the HTML.
+All statistics on the page are read from these files; only structural counts (e.g. 13 structures, 8 templates) and summary sentences are typed into the HTML.
 """
 
 from __future__ import annotations

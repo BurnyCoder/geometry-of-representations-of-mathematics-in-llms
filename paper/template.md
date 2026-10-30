@@ -45,7 +45,7 @@ Mathematics is an unusually good test bed for these ideas, because its concepts 
 
 **Science concepts.** [Lei & Cooper (2025)](https://arxiv.org/abs/2502.10871) found a periodic-table spiral. Mathematical "world models" in LLMs have been reported as local and not robust ([Kvinge et al., 2025](https://icml.cc/virtual/2025/49128), *Probing the Limits of Mathematical World Models in LLMs*, ICML 2025 workshop poster).
 
-**Statistics.** Partial Mantel tests are known to be anticonservative ([Guillot & Rousset, 2013](https://doi.org/10.1111/2041-210X.12018)). We test Freedman–Lane permutation ([Anderson & Legendre, 1999](https://doi.org/10.1080/00949659908811936)) in our setting (Section 3.5).
+**Statistics.** Partial Mantel tests are known to be anticonservative ([Guillot & Rousset, 2013](https://doi.org/10.1111/2041-210X.12018)). We test Freedman–Lane permutation ([Freedman & Lane, 1983](https://doi.org/10.1080/07350015.1983.10509354); compared with alternatives by [Anderson & Legendre, 1999](https://doi.org/10.1080/00949659908811936)) in our setting (Section 3.5).
 
 # 3 Methods
 
@@ -63,7 +63,7 @@ Mathematics is an unusually good test bed for these ideas, because its concepts 
 
 ## 3.2 Ground-truth field distance
 
-MSC2020 is flat above its two-digit codes, so we measure field relatedness from practice instead. For fields A and B, with S_A the set of arXiv papers listing any of A's categories, the distance is 1 − |S_A∩S_B|/√(|S_A||S_B|), i.e. one minus the Ochiai similarity. This is computed over the CC0 arXiv metadata snapshot (3,224,635 papers, pinned commit).
+The Mathematics Subject Classification ([MSC2020](https://msc2020.org/)) is flat above its two-digit codes, so we measure field relatedness from practice instead. For fields A and B, with S_A the set of arXiv papers listing any of A's categories, the distance is 1 − |S_A∩S_B|/√(|S_A||S_B|), i.e. one minus the Ochiai similarity. This is computed over the CC0 arXiv metadata snapshot (3,224,635 papers, pinned commit).
 
 ## 3.3 Concept families
 
@@ -91,7 +91,7 @@ Every family lists its ground truth and source in `configs/families.yaml`.
 Each model has a random-init twin with weights redrawn using seed 0.
 
 - **Read point.** Each item is embedded in 8 templates ending with the concept, e.g. "In mathematics, the notion of *X*". Field-map templates name the domain ("mathematics" or "science") but never a sub-field. Family templates use one fixed domain per family, which can be a sub-field ("In abstract algebra, consider *X*"), so the domain is constant across the items being compared. The representation is the residual stream at the concept's last token, averaged over templates.
-- **Preprocessing.** Mean-centering, with no whitening.
+- **Preprocessing.** Mean-centering, with no whitening. Centering removes the shared offset that otherwise dominates cosine similarity in residual streams ([Timkey & van Schijndel, 2021](https://arxiv.org/abs/2109.04404)).
 - **Distances.** Cosine distance for the field map. Euclidean distance for families: cosine distance on a small, centered, collinear family is degenerate, which our synthetic tests showed.
 - **Layer.** The primary layer is fixed in advance at relative depth 0.5.
 
@@ -105,7 +105,7 @@ The test is calibrated when the nuisance distance matrix *is* the confounder. It
 
 - **Field map.** We use field-level RSA, i.e. the Spearman ρ between the centroid RDM and the arXiv distance, with a Mantel permutation over field labels (10,000 permutations) and a max-over-layers null for layer curves.
 - **Families.** Every statistic is unsupervised or leave-one-out, and is tested against an order-permutation null. With n ≤ 13 items in more than 1,000 dimensions, a supervised fit can impose any order. As a negative control, 100 random 11-item lists of math concepts must be rejected at about 5%.
-- **Figures, including 3-D views.** Every picture is an unsupervised projection: PCA, or metric MDS for field maps. 3-D views show each layer's own top principal components with true proportions, and state the share of variance on each axis (PCA) or the stress-1 of the layout (MDS). Alignment between panels and layers is display-only: rotation, or only sign flips for 3-D PCA axes. No statistic is computed from a picture. The single test that looks beyond PC1–2, the closed-cycle test over the top-5 planes, is post-hoc and was pre-specified in an addendum before it ran (§4.4).
+- **Figures, including 3-D views.** Every picture is an unsupervised projection: PCA, or metric MDS for field maps. 3-D views show each layer's own top principal components with true proportions, and state the share of variance on each axis (PCA) or the stress-1 of the layout (MDS; [Kruskal, 1964](https://doi.org/10.1007/BF02289565)). Alignment between panels and layers is display-only: rotation, or only sign flips for 3-D PCA axes. No statistic is computed from a picture. The single test that looks beyond PC1–2, the closed-cycle test over the top-5 planes, is post-hoc and was pre-specified in an addendum before it ran (§4.4).
 
 # 4 Results
 
@@ -209,7 +209,7 @@ In this model's random-init twin, all four consistencies are ≈ 0.
 
 ![**The same matrices, ranked.** Colour is the rank of each distance within its matrix (Spearman RSA compares ranks), with rows in one fixed order grouped by the five super-tree branches. The trained matrix partly reproduces the arXiv block structure; the twin's does not. Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-rdm>.]({{fig:field_rdms_qwen3.5-2b}}){width=100%}
 
-**Not a rogue-dimension artifact (post-hoc).** The preregistered all-but-the-top variant removes the top d/100 = 20 principal components, and it reverses the correlation (ρ = {{num:mvp.posthoc.qwen3.5-2b.abtt_sweep.20:.2f}}). A post-hoc sweep explains why:
+**Not a rogue-dimension artifact (post-hoc).** The preregistered all-but-the-top variant ([Mu & Viswanath, 2018](https://arxiv.org/abs/1702.01417)) removes the top d/100 = 20 principal components, and it reverses the correlation (ρ = {{num:mvp.posthoc.qwen3.5-2b.abtt_sweep.20:.2f}}). A post-hoc sweep explains why:
 
 {{table:posthoc:mvp}}
 
@@ -219,7 +219,7 @@ In this model's random-init twin, all four consistencies are ≈ 0.
 
 So the map lives in the dominant semantic subspace, and removing 20 components removes the map itself.
 
-**H-A2: hierarchy is not supported as preregistered.** The preregistered measure is the cophenetic correlation between an average-linkage (UPGMA) dendrogram of the field centroids and the five-branch super-tree.
+**H-A2: hierarchy is not supported as preregistered.** The preregistered measure is the cophenetic correlation ([Sokal & Rohlf, 1962](https://doi.org/10.2307/1217208)) between an average-linkage (UPGMA) dendrogram of the field centroids and the five-branch super-tree.
 
 {{table:hierarchy:mvp}}
 
@@ -230,7 +230,7 @@ So the map lives in the dominant semantic subspace, and removing 20 components r
 - **Against shuffled trees:** the trained model's dendrogram matches the super-tree better (ρ = {{num:mvp.hierarchy.qwen3.5-2b.coph_match.trained:.3f}}, p = {{num:mvp.hierarchy.qwen3.5-2b.coph_match_p_shuffled_tree:.3f}}).
 - **Against the twin:** the paired difference CI includes zero ([{{num:mvp.hierarchy.qwen3.5-2b.coph_match_delta_vs_random_ci.0:.3f}}, {{num:mvp.hierarchy.qwen3.5-2b.coph_match_delta_vs_random_ci.1:.3f}}]), and the same holds in every replication model. The preregistered criterion requires beating both, so it fails.
 - **Intrinsic tree-likeness:** the cophenetic correlation of the representation with its own dendrogram is no higher than for a spectrum-matched Gaussian cloud.
-- **Gromov δ:** relative δ is lower than the Gaussian cloud's, but higher than the twin's.
+- **Gromov δ** (relative δ = 2δ/diameter, as in [Khrulkov et al., 2019](https://arxiv.org/abs/1904.02239)): relative δ is lower than the Gaussian cloud's, but higher than the twin's.
 
 A tree-distance RSA we first reported, the Spearman correlation of the centroid RDM with the super-tree distance, did beat the twin (trained {{num:mvp.map_fields.qwen3.5-2b.math_primary.hierarchy.rho.trained:.3f}} vs twin {{num:mvp.map_fields.qwen3.5-2b.math_primary.hierarchy.rho.random_init:.3f}}). It is *not* the preregistered measure, so it is post-hoc. It largely restates H-A1: fields that mathematicians relate are close.
 
@@ -286,7 +286,7 @@ Full tables: `reports/mvp_variants_results.md`.
 
 ![**The cycles are present at almost every depth.** Days (top) and months (bottom) at fixed relative depths, each plane rotated onto the preregistered layer's plane for display, plus the cycle score at every layer for the trained model and the twin (right). Post-hoc and unadjusted. Animated version: `reports/figures/circle_depth_qwen3.5-2b.gif`; interactive: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families>.]({{fig:circle_depth_qwen3.5-2b}}){width=100%}
 
-**Positive control.** With our preregistered full-space statistics, days and months show significant circle-template correlation and closure ratios near 1. They nevertheless fail "circle ρ > line ρ" at layer {{num:mvp.shapes.qwen3.5-2b.primary_layer}}. Following the prereg, we debugged before interpreting further. In the top-2 principal-component plane, where [Engels et al. (2024)](https://arxiv.org/abs/2405.14860) show their raw-activation circles (their Figs. 4 and 9; their SAE-cluster circles are in PCs 2–3, and their circular probe uses the top 5 PCs), days and months are in *perfect* cyclic order in the trained model and in none in the twin:
+**Positive control.** With our preregistered full-space statistics, days and months show significant circle-template correlation and closure ratios near 1. They nevertheless fail "circle ρ > line ρ" at layer {{num:mvp.shapes.qwen3.5-2b.primary_layer}}; across models, line ρ exceeds circle ρ for days in {{fact:line_beats_circle.days}} and for months in {{fact:line_beats_circle.months}}. Following the prereg, we debugged before interpreting further. In the top-2 principal-component plane, where [Engels et al. (2024)](https://arxiv.org/abs/2405.14860) show their raw-activation circles (their Figs. 4 and 9; their SAE-cluster circles are in PCs 2–3, and their circular probe uses the top 5 PCs), days and months are in *perfect* cyclic order in the trained model and in none in the twin:
 
 {{table:cycles:mvp}}
 
@@ -346,7 +346,7 @@ This agrees with the unsupervised statistics, including the conclusion that angl
 
 **Ratings.** Three judge LLMs rated every math concept's abstraction from 1 to 7: IBM Granite-4.0-micro, SmolLM3-3B and Phi-4-mini-instruct, none from a model family we probe. We read each rating as the expectation over next-token digit probabilities.
 - Rank agreement is moderate (mean pairwise Spearman {{num:mvp.judges.mean_pairwise_spearman:.2f}}).
-- Absolute agreement is low (ICC(2,1) = {{num:mvp.judges.icc2_1:.2f}}; ICC(2,k) = {{num:mvp.judges.icc2_k:.2f}}), because the judges use the scale with different offsets.
+- Absolute agreement is low ([Shrout & Fleiss, 1979](https://doi.org/10.1037/0033-2909.86.2.420); ICC(2,1) = {{num:mvp.judges.icc2_1:.2f}}; ICC(2,k) = {{num:mvp.judges.icc2_k:.2f}}), because the judges use the scale with different offsets.
 - The ratings have face validity. The least abstract concepts include "trivial group", "bar chart" and "dot plot"; the most abstract include étale cohomology, Artin stacks and generalized cohomology theories.
 
 **Validation against Mathlib (plan; specified before computing, `docs/deviations.md`).** As an external, non-LLM measure, we matched concepts to declarations in [Mathlib4](https://github.com/leanprover-community/mathlib4) (commit `{{num:mvp.mathlib.mathlib_rev}}`).
@@ -359,13 +359,13 @@ This agrees with the unsupervised statistics, including the conclusion that angl
 
 ![**Concrete ↔ abstract is the top axis of the math-concept cloud.** Left and middle: PC1 × PC2 of the {{num:mvp.map_fields.qwen3.5-2b.math_primary.n}} primary concepts, both residualized on frequency and token count exactly as in the statistic. Left is coloured by judge abstraction, with the most and least abstract concepts labelled; middle is coloured pure/applied. The PC signs are flipped for display so that abstract and applied point right and up. Right: mean judge rating vs Mathlib import depth for the matched concepts. Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-abstraction>.]({{fig:abstraction_qwen3.5-2b}}){width=100%}
 
-**Axes.** We take the principal components of the centred math-concept cloud and residualize both the PC scores and the labels on word frequency and token count. The top principal component then correlates with abstraction (ρ = {{num:mvp.axes.qwen3.5-2b.pcs.0.rho_abstraction:.2f}}), and the second with the pure/applied label (ρ = {{num:mvp.axes.qwen3.5-2b.pcs.1.rho_applied:.2f}}). In the twin these correlations are {{num:mvp.axes.qwen3.5-2b__random.pcs.0.rho_abstraction:.2f}} and {{num:mvp.axes.qwen3.5-2b__random.pcs.1.rho_applied:.2f}}. A 5-fold cross-validated linear readout predicts abstraction with ρ = {{num:mvp.axes.qwen3.5-2b.cv_ridge_rho_abstraction:.2f}}, against {{num:mvp.axes.qwen3.5-2b__random.cv_ridge_rho_abstraction:.2f}} in the twin. We also partialled out pretraining-scale frequency: infini-gram counts in Dolma v1.7, which correlate ρ = {{num:mvp.baselines.infinigram.rho_zipf_vs_log_count:.2f}} with wordfreq. The axes are essentially unchanged: PC1 ↔ abstraction ρ = {{num:mvp.axes.qwen3.5-2b.pcs_with_infinigram.0.rho_abstraction:.2f}}, PC2 ↔ applied ρ = {{num:mvp.axes.qwen3.5-2b.pcs_with_infinigram.1.rho_applied:.2f}}.
+**Axes.** We take the principal components of the centred math-concept cloud and residualize both the PC scores and the labels on word frequency and token count. The top principal component then correlates with abstraction (ρ = {{num:mvp.axes.qwen3.5-2b.pcs.0.rho_abstraction:.2f}}), and the second with the pure/applied label (ρ = {{num:mvp.axes.qwen3.5-2b.pcs.1.rho_applied:.2f}}). In the twin these correlations are {{num:mvp.axes.qwen3.5-2b__random.pcs.0.rho_abstraction:.2f}} and {{num:mvp.axes.qwen3.5-2b__random.pcs.1.rho_applied:.2f}}. A 5-fold cross-validated linear readout predicts abstraction with ρ = {{num:mvp.axes.qwen3.5-2b.cv_ridge_rho_abstraction:.2f}}, against {{num:mvp.axes.qwen3.5-2b__random.cv_ridge_rho_abstraction:.2f}} in the twin. We also partialled out pretraining-scale frequency: [infini-gram](https://infini-gram.io/api_doc) counts in Dolma v1.7 ([Liu et al., 2024](https://arxiv.org/abs/2401.17377)), which correlate ρ = {{num:mvp.baselines.infinigram.rho_zipf_vs_log_count:.2f}} with wordfreq. The axes are essentially unchanged: PC1 ↔ abstraction ρ = {{num:mvp.axes.qwen3.5-2b.pcs_with_infinigram.0.rho_abstraction:.2f}}, PC2 ↔ applied ρ = {{num:mvp.axes.qwen3.5-2b.pcs_with_infinigram.1.rho_applied:.2f}}.
 
 **Interpretation.** In this model, concrete ↔ abstract is the single largest axis of variation among mathematical concepts. That is a correlational, model-rated finding: abstraction ratings come from LLM judges, not humans.
 
 ### Causal test of chain geometry: inconclusive
 
-The preregistered gate requires baseline accuracy ≥ 0.70 on "which is more general, a A or a B?".
+The preregistered gate requires baseline accuracy ≥ 0.70 on "which is more general, a A or a B?". The noise subspace is fitted on the other chain items, not on the tested pair, and compared with random subspaces of the same size, because a subspace can look causally relevant by accident ([Makelov et al., 2023](https://arxiv.org/abs/2311.17030)).
 - **Ring chain:** it failed the gate (accuracy {{num:mvp.causal.qwen3.5-2b.ring_chain.baseline_acc:.3f}}), so no intervention was run.
 - **Space chain:** it passed ({{num:mvp.causal.qwen3.5-2b.space_chain.baseline_acc:.3f}}).
 
@@ -382,7 +382,7 @@ At block {{num:mvp.sae.qwen3.5-2b.sae_block}}, we encoded the template-averaged 
 
 # 5 Discussion
 
-**Axioms as directions.** Axioms of group-like structures behave like the man→woman offset. The geometry follows definitions stated in the names, not consequences that must be derived: "associative quasigroup" stays with the quasigroups, although a non-empty one is a group. Whether the model uses these directions in reasoning, for example to decide that a monoid with inverses is a group, needs causal tests. We have none for the axioms; our only intervention, on the chains (§4.5), was inconclusive (see also §6).
+**Axioms as directions.** Axioms of group-like structures behave like the man→woman offset of word embeddings ([Mikolov, Yih & Zweig, 2013](https://aclanthology.org/N13-1090/)). The geometry follows definitions stated in the names, not consequences that must be derived: "associative quasigroup" stays with the quasigroups, although a non-empty one is a group. Whether the model uses these directions in reasoning, for example to decide that a monoid with inverses is a group, needs causal tests. We have none for the axioms; our only intervention, on the chains (§4.5), was inconclusive (see also §6).
 
 **The field map.** Relatedness between fields is encoded at the level of field centroids, in the dominant principal components, from the first few layers onward in the Qwen models (Gemma's map is at or below the max-over-layers null in {{fact:below_null_runs.gemma-4-e2b}}). It is similarly strong (ρ ≈ 0.4) in models with very different pretraining mixtures. Combined with the null effect of math continued pretraining, this suggests the map is learned from general co-occurrence statistics, as [Karkada et al. (2026)](https://arxiv.org/abs/2602.15029) predict. It does not seem to require math-specific training. The control fields cluster more strongly than most matched math subsets once the number of fields is matched. That supports this reading: the "map of mathematics" is one instance of a general topical map.
 
@@ -417,21 +417,31 @@ Every source cited in the text, with the identifier we checked (arXiv API or Cro
 - Deng, B. et al. (2026). Qwen-Scope: Turning Sparse Features into Development Tools for Large Language Models. [arXiv:2605.11887](https://arxiv.org/abs/2605.11887)
 - Diaconis, P., Goel, S. & Holmes, S. (2008). Horseshoes in multidimensional scaling and local kernel methods. *Ann. Appl. Stat.* 2(3). [arXiv:0811.1477](https://arxiv.org/abs/0811.1477)
 - Engels, J. et al. (2024). Not All Language Model Features Are (One-Dimensionally) Linear. [arXiv:2405.14860](https://arxiv.org/abs/2405.14860)
+- Freedman, D. & Lane, D. (1983). A nonstochastic interpretation of reported significance levels. *J. Bus. Econ. Stat.* 1:292–298. [doi:10.1080/07350015.1983.10509354](https://doi.org/10.1080/07350015.1983.10509354)
 - Golechha, S., Bushnaq, L., Ong, E., Kayal, N. & Schoots, N. (2025). Intricacies of Feature Geometry in Large Language Models. ICLR 2025 blog track. [iclr.cc/virtual/2025/poster/31349](https://iclr.cc/virtual/2025/poster/31349)
 - Guillot, G. & Rousset, F. (2013). Dismantling the Mantel tests. *Methods Ecol. Evol.* 4. [doi:10.1111/2041-210X.12018](https://doi.org/10.1111/2041-210X.12018)
 - Gurnee, W. & Tegmark, M. (2023). Language Models Represent Space and Time. [arXiv:2310.02207](https://arxiv.org/abs/2310.02207)
 - Kantamneni, S. & Tegmark, M. (2025). Language Models Use Trigonometry to Do Addition. [arXiv:2502.00873](https://arxiv.org/abs/2502.00873)
 - Karkada, D., Korchinski, D. J., Nava, A., Wyart, M. & Bahri, Y. (2026). Symmetry in language statistics shapes the geometry of model representations. [arXiv:2602.15029](https://arxiv.org/abs/2602.15029)
+- Khrulkov, V., Mirvakhabova, L., Ustinova, E., Oseledets, I. & Lempitsky, V. (2019). Hyperbolic Image Embeddings (relative Gromov δ). [arXiv:1904.02239](https://arxiv.org/abs/1904.02239)
+- Kruskal, J. B. (1964). Multidimensional scaling by optimizing goodness of fit to a nonmetric hypothesis. *Psychometrika* 29:1–27 (stress-1). [doi:10.1007/BF02289565](https://doi.org/10.1007/BF02289565)
 - Kvinge, H. et al. (2025). Probing the Limits of Mathematical World Models in LLMs. ICML 2025 workshop *Assessing World Models*. [icml.cc/virtual/2025/49128](https://icml.cc/virtual/2025/49128)
 - Lei, G. & Cooper, S. J. (2025). Layerwise Recall and the Geometry of Interwoven Knowledge in LLMs. [arXiv:2502.10871](https://arxiv.org/abs/2502.10871)
 - Li, Y., Michaud, E. J., Baek, D. D., Engels, J., Sun, X. & Tegmark, M. (2024). The Geometry of Concepts: Sparse Autoencoder Feature Structure. [arXiv:2410.19750](https://arxiv.org/abs/2410.19750)
+- Liu, J., Min, S., Zettlemoyer, L., Choi, Y. & Hajishirzi, H. (2024). Infini-gram: Scaling Unbounded n-gram Language Models to a Trillion Tokens. [arXiv:2401.17377](https://arxiv.org/abs/2401.17377)
+- Makelov, A., Lange, G. & Nanda, N. (2023). Is This the Subspace You Are Looking for? An Interpretability Illusion for Subspace Activation Patching. [arXiv:2311.17030](https://arxiv.org/abs/2311.17030)
+- Mathematics Subject Classification 2020 (MSC2020). <https://msc2020.org/>
+- Mikolov, T., Yih, W. & Zweig, G. (2013). Linguistic Regularities in Continuous Space Word Representations. NAACL-HLT 2013. [aclanthology.org/N13-1090](https://aclanthology.org/N13-1090/)
 - Mikolov, T., Grave, E., Bojanowski, P., Puhrsch, C. & Joulin, A. (2018). Advances in Pre-Training Distributed Word Representations (fastText vectors). [arXiv:1712.09405](https://arxiv.org/abs/1712.09405)
 - Modell, A., Rubin-Delanchy, P. & Whiteley, N. (2025). The Origins of Representation Manifolds in Large Language Models. [arXiv:2505.18235](https://arxiv.org/abs/2505.18235)
 - Mu, J. & Viswanath, P. (2018). All-but-the-Top: Simple and Effective Postprocessing for Word Representations. [arXiv:1702.01417](https://arxiv.org/abs/1702.01417)
 - Munkres, J. R. (2000). *Topology*, 2nd ed., §31–32 (regular and normal spaces assume one-point sets closed).
 - Park, K., Choe, Y. J., Jiang, Y. & Veitch, V. (2024). The Geometry of Categorical and Hierarchical Concepts in Large Language Models. [arXiv:2406.01506](https://arxiv.org/abs/2406.01506)
+- Shrout, P. E. & Fleiss, J. L. (1979). Intraclass correlations: uses in assessing rater reliability. *Psychol. Bull.* 86:420–428. [doi:10.1037/0033-2909.86.2.420](https://doi.org/10.1037/0033-2909.86.2.420)
 - Snoek, L., Miletić, S. & Scholte, H. S. (2019). How to control for confounds in decoding analyses of neuroimaging data. *NeuroImage* 184. [doi:10.1016/j.neuroimage.2018.09.074](https://doi.org/10.1016/j.neuroimage.2018.09.074)
+- Sokal, R. R. & Rohlf, F. J. (1962). The comparison of dendrograms by objective methods. *Taxon* 11. [doi:10.2307/1217208](https://doi.org/10.2307/1217208)
 - Tiblias, F., Bigoulaeva, I., Niu, J., Balloccu, S. & Gurevych, I. (2025). Hypothesis-Driven Feature Manifold Analysis in LLMs via Supervised Multi-Dimensional Scaling (v1: "Shape Happens"). [arXiv:2510.01025](https://arxiv.org/abs/2510.01025)
+- Timkey, W. & van Schijndel, M. (2021). All Bark and No Bite: Rogue Dimensions in Transformer Language Models Obscure Representational Quality. [arXiv:2109.04404](https://arxiv.org/abs/2109.04404)
 - Yang, A. et al. (2024). Qwen2.5-Math Technical Report. [arXiv:2409.12122](https://arxiv.org/abs/2409.12122)
 - Models and data: [Qwen3.5-2B-Base](https://huggingface.co/Qwen/Qwen3.5-2B-Base), [Qwen3.5-0.8B-Base](https://huggingface.co/Qwen/Qwen3.5-0.8B-Base), [Qwen2.5-1.5B](https://huggingface.co/Qwen/Qwen2.5-1.5B), [Qwen2.5-Math-1.5B](https://huggingface.co/Qwen/Qwen2.5-Math-1.5B), [Gemma-4-E2B](https://huggingface.co/google/gemma-4-E2B), [Qwen3-Embedding-0.6B](https://huggingface.co/Qwen/Qwen3-Embedding-0.6B), the judges [granite-4.0-micro](https://huggingface.co/ibm-granite/granite-4.0-micro), [SmolLM3-3B](https://huggingface.co/HuggingFaceTB/SmolLM3-3B) and [Phi-4-mini-instruct](https://huggingface.co/microsoft/Phi-4-mini-instruct); the arXiv metadata mirror [`librarian-bots/arxiv-metadata-snapshot`](https://huggingface.co/datasets/librarian-bots/arxiv-metadata-snapshot) (CC0); [Mathlib4](https://github.com/leanprover-community/mathlib4).
 

@@ -85,6 +85,7 @@ The order is a presentation choice: the field map (H-A1) was the primary preregi
 - **Field clustering is not special to mathematics.** Biology, chemistry, geology and astronomy topics cluster by field more strongly than most random sets of four math fields, in all 5 models. This is a post-hoc clustering test; the control fields have no arXiv map.
 - **The causal test was inconclusive.** The ring chain failed the accuracy gate. For the space chain, noise in the chain subspace hurt accuracy only slightly more than random-subspace noise, and only at the larger noise scales.
 - **The positive control (days and months as circles) failed our preregistered full-space criterion, and replicates only partly with post-hoc tests.**
+  - The full-space criterion fails because line ρ exceeds circle ρ for days in all 5 models and for months in all 5 models.
   - In the top-2 principal-component plane, where [Engels et al.](https://arxiv.org/abs/2405.14860) show their raw-activation circles, days go round in perfect order in all 5 models and months in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B). But that score also rewards an open arc.
   - Counting only loops that close in their plane (the same addendum), days close in the top-2 plane in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B). Months close in a lower plane (PC2–PC3 or PC4–PC5; p < .05 each, unadjusted) in 3 of 5 models (all but Qwen3.5-0.8B and Qwen2.5-1.5B).
   - A closed months loop also appears in 1 of 5 twins (those of Qwen2.5-1.5B), so this test is not fully specific. All outcomes are reported.
@@ -434,6 +435,7 @@ PyTorch 2.14 (CUDA 13), Hugging Face `transformers` 5.x, `accelerate` and `huggi
 - Qwen-Scope SAEs ([SAE-Res-Qwen3.5-2B-Base-W32K-L0_50](https://huggingface.co/Qwen/SAE-Res-Qwen3.5-2B-Base-W32K-L0_50)): the card's metadata says `license: other` ("qwen"), and the repository's LICENSE file is the Apache-2.0 text.
 - Judge models: Apache-2.0 ([granite-4.0-micro](https://huggingface.co/ibm-granite/granite-4.0-micro), [SmolLM3-3B](https://huggingface.co/HuggingFaceTB/SmolLM3-3B)) and MIT ([Phi-4-mini-instruct](https://huggingface.co/microsoft/Phi-4-mini-instruct)).
 - Baselines: [Qwen3-Embedding-0.6B](https://huggingface.co/Qwen/Qwen3-Embedding-0.6B), Apache-2.0; [fastText wiki-news-300d-1M](https://fasttext.cc/docs/en/english-vectors.html), CC BY-SA 3.0; word counts from the [infini-gram API](https://infini-gram.io/api_doc) (Dolma v1.7 index).
+- [`smds`](https://github.com/UKPLab/supervised-multidimensional-scaling) (supervised MDS): Apache-2.0.
 - Mathlib4 (judge validation; only names, docs maps and import headers are read): [Apache-2.0](https://github.com/leanprover-community/mathlib4/blob/master/LICENSE).
 
 The dataset card is in [`docs/data_card.md`](docs/data_card.md).
