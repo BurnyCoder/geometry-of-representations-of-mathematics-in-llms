@@ -91,7 +91,7 @@ def bare(ax) -> None:
 VIEW3D = (22, -55)  # one fixed camera (elevation, azimuth) for every static 3-D panel, never chosen per model
 
 
-def bare3d(ax, P: np.ndarray, var=None, axes=(0, 1, 2)) -> None:
+def bare3d(ax, P: np.ndarray, var=None, axes=(0, 1, 2), zoom: float = 0.92) -> None:
     """3-D projection panels (mpl_toolkits.mplot3d): true proportions (box aspect = data ranges, so a small
     PC3 looks small), transparent panes, no ticks, each axis labelled with its PC's share of variance, and
     the fixed camera VIEW3D (https://matplotlib.org/stable/api/toolkits/mplot3d.html)."""
@@ -100,14 +100,14 @@ def bare3d(ax, P: np.ndarray, var=None, axes=(0, 1, 2)) -> None:
         a.line.set_color(GRID)
     ax.set_xticks([]), ax.set_yticks([]), ax.set_zticks([])
     ax.grid(False)
-    ax.set_box_aspect(np.ptp(P, axis=0) + 1e-9, zoom=0.92)
+    ax.set_box_aspect(np.ptp(P, axis=0) + 1e-9, zoom=zoom)
     if var is not None:
         for setter, k in zip((ax.set_xlabel, ax.set_ylabel, ax.set_zlabel), axes):
             setter(f"PC{k + 1} · {100 * var[k]:.0f}%", fontsize=6.3, color=MUTED, labelpad=-12)
     ax.view_init(*VIEW3D)
 
 
-def arrow3d(ax, tail, tip, color: str, size: float, lw: float = 1.4, width: float = 0.55) -> np.ndarray:
+def arrow3d(ax, tail, tip, color: str, size: float, lw: float = 1.4, width: float = 0.55, view: tuple = VIEW3D) -> np.ndarray:
     """A 3-D arrow whose direction reads at a glance: a line plus a *filled* triangular head of fixed size
     (data units; clamped to 60% of the arrow so it never overshoots the tail) lying in the plane that faces
     the fixed camera VIEW3D. ax.quiver heads scale with the arrow and are two thin lines, so short arrows
@@ -120,7 +120,7 @@ def arrow3d(ax, tail, tip, color: str, size: float, lw: float = 1.4, width: floa
     if n == 0:
         return np.repeat(tip[None], 3, 0)
     u = (tip - tail) / n
-    e, a = np.radians(VIEW3D)
+    e, a = np.radians(view)  # the camera (elevation, azimuth) the head should face
     side = np.cross(u, [np.cos(e) * np.cos(a), np.cos(e) * np.sin(a), np.sin(e)])  # ⟂ to the arrow and the view
     if np.linalg.norm(side) < 1e-9:  # arrow points at the camera: any perpendicular will do
         side = np.cross(u, [0.0, 0.0, 1.0]) if abs(u[2]) < 0.9 else np.cross(u, [1.0, 0.0, 0.0])

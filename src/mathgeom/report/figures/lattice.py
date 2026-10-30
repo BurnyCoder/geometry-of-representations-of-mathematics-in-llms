@@ -102,6 +102,142 @@ def draw_facets3d(Vs: dict, names: list[str], bits: np.ndarray, axioms: list[str
     return fig
 
 
+def _views3d(X: dict) -> dict:
+    """{side: (top-3 PC view, explained variance of PC1–5)} for one layer; the twin's signs aligned to the trained view."""
+    Vt = figdata.pcs_by_layer(np.stack([X["trained"]] * 2, 1), 1, k=3)[0]
+    return {"trained": (Vt, figdata.pca_var(X["trained"], 5)),
+            "random_init": (figdata.pcs_by_layer(np.stack([X["random_init"]] * 2, 1), 1, onto=Vt, k=3)[0], figdata.pca_var(X["random_init"], 5))}
+
+
+def _short(n: str) -> str:
+    return n.replace("commutative ", "comm. ")
+
+
+def _arrows_at_origin(ax, V: np.ndarray, pairs: list, color: str, lim: float, view: tuple = S.VIEW3D) -> None:
+    """Step 3 of the explainer: every same-axiom difference vector drawn from one common origin."""
+    for p, q in pairs:
+        S.arrow3d(ax, np.zeros(3), V[q] - V[p], color, size=0.16 * lim, lw=1.6, view=view)
+    ax.scatter([0], [0], [0], s=14, color=S.INK2, depthshade=False)
+    S.bare3d(ax, np.array([[-lim] * 3, [lim] * 3]), zoom=1.3)
+    ax.set_xlim(-lim, lim), ax.set_ylim(-lim, lim), ax.set_zlim(-lim, lim)
+    ax.view_init(*view)
+
+
+def draw_explainer(X: dict, names: list[str], bits: np.ndarray, axioms: list[str], off: dict, show: str, model: str):
+    """How the axiom test works, in four steps, on real data (except the ground-truth schematic):
+    1 the lattice of structures; 2 one axiom's pairs as arrows in the 3-D view (top-3 PCs) of the model;
+    3 the same arrows from one common origin, model vs random-init twin; 4 a compass of full-space angles
+    (figdata.axiom_angles) for every axiom, with the reported offset consistency (off[side][axiom])."""
+    import matplotlib.pyplot as plt
+
+    V = _views3d(X)
+    a_i = axioms.index(show)
+    pairs = axiom_pairs(bits, a_i)
+    fig = plt.figure(figsize=(17, 6.0))
+    gs = fig.add_gridspec(2, 5, width_ratios=[1.0, 1.7, 1.15, 0.8, 0.8], hspace=0.45, wspace=0.18)
+    # 1 · the ground truth
+    draw_schematic(fig.add_subplot(gs[:, 0]), names, bits, axioms)
+    fig.axes[-1].set_title("1 · Structures are sets of axioms", fontsize=9.5)
+    # 2 · arrows in the model's 3-D view
+    ax = fig.add_subplot(gs[:, 1], projection="3d")
+    P, var = V["trained"]
+    for b in range(len(axioms)):
+        for p, q in axiom_pairs(bits, b):
+            if b != a_i:
+                ax.plot(*P[[p, q]].T, color=S.GRID, lw=0.7)
+    for p, q in pairs:
+        S.arrow3d(ax, P[p], P[q], S.BLUE, size=0.09 * np.ptp(P, axis=0).max(), lw=1.6)
+    ax.scatter(*P.T, s=12, color=S.INK2, depthshade=False)
+    for (x, y, z), t in zip(P, names):
+        ax.text(x, y, z, " " + _short(t), fontsize=5.2, color=S.INK2)
+    S.bare3d(ax, P, var, zoom=1.35)
+    ax.set_title(f"2 · Adding an axiom is an arrow\n{AX_LABEL[show]} in {model} (top-3 PCs)", fontsize=9.5)
+    # 3 · line them up: one common origin, model vs twin
+    for row, side in enumerate(("trained", "random_init")):
+        Pv = V[side][0]
+        lim = max(np.linalg.norm(Pv[q] - Pv[p]) for p, q in pairs) * 1.05
+        ax = fig.add_subplot(gs[row, 2], projection="3d")
+        _arrows_at_origin(ax, Pv, pairs, S.BLUE if side == "trained" else S.TWIN, lim)
+        o = off[side][show]
+        ax.set_title(("3 · Line the arrows up\n" if row == 0 else "") + ("model" if side == "trained" else "random-init twin"), fontsize=9.5 if row == 0 else 8.5)
+        S.note3d(ax, f"consistency {o['consistency']:.2f}")
+    # 4 · the compass: full-space angle of each arrow to the others' mean direction, for every axiom
+    ang = {side: figdata.axiom_angles(X[side], bits, axioms) for side in ("trained", "random_init")}
+    for k, name in enumerate(axioms):
+        ax = fig.add_subplot(gs[k // 2, 3 + k % 2])
+        t = np.linspace(0, np.pi, 60)
+        ax.plot(np.cos(t), np.sin(t), color=S.GRID, lw=0.6), ax.plot(np.cos(t), -np.sin(t), color=S.GRID, lw=0.6)
+        ax.axhline(0, color=S.AXIS, lw=0.6, ls=(0, (2, 2)))
+        for side, sgn, col in (("trained", 1, S.BLUE), ("random_init", -1, S.TWIN)):
+            for d in ang[side][name]["deg"]:
+                r = np.radians(d)
+                ax.annotate("", (np.cos(r), sgn * np.sin(r)), (0, 0), arrowprops=dict(arrowstyle=HEAD, color=col, lw=1.3, mutation_scale=9, shrinkA=0, shrinkB=0))
+        ax.text(1.05, 0.04, "0°", fontsize=6.3, color=S.MUTED, va="bottom")
+        ax.text(0.02, 1.0, "90°", fontsize=6.3, color=S.MUTED, va="bottom")
+        ax.set_xlim(-0.45, 1.25), ax.set_ylim(-1.12, 1.12), ax.set_aspect("equal")
+        ax.set_xticks([]), ax.set_yticks([])
+        for s in ax.spines.values():
+            s.set_visible(False)
+        o, w = off["trained"][name], off["random_init"][name]
+        ax.set_title(f"{AX_LABEL[name]}", fontsize=8)
+        ax.set_xlabel(f"consistency {o['consistency']:.2f} ({S.fmt_p(o['p'])})\ntwin {w['consistency']:.2f}", fontsize=6.6, color=S.INK2)
+    fig.text(0.70, 0.97, "4 · Measure in the full space: angle of each arrow to the others' mean", fontsize=9.5, weight="bold", ha="left")
+    fig.text(0.70, 0.935, "model above the dashed line (blue), twin below (grey); 0° = same direction, 90° = unrelated", fontsize=7, color=S.INK2, ha="left")
+    return fig
+
+
+def save_axiom_gif(cfg, key: str, la: dict, Lp: int, outdir, frames_per_axiom: int = 24, axioms_shown: list | None = None) -> str:
+    """README animation, in 3-D: for each axiom, its pairs appear as arrows in the model's top-3-PC view,
+    then slide to one common origin (do they point the same way?), model left, random-init twin right,
+    while the camera turns a little (±15°, so the camera-facing arrowheads stay readable)."""
+    import matplotlib.pyplot as plt
+    from matplotlib.animation import FuncAnimation, PillowWriter
+
+    lat = load_yaml("families.yaml")["lattices"]["group_like"]
+    names, axioms = list(lat["items"]), lat["axioms"]
+    bits = np.array([lat["items"][c] for c in names])
+    X = {"trained": figdata.family_acts(cfg, key, "group_like", names)[:, Lp], "random_init": figdata.family_acts(cfg, f"{key}__random", "group_like", names)[:, Lp]}
+    V = {s: v[0] for s, v in _views3d(X).items()}
+    shown = axioms_shown or axioms
+    lims = {s: np.abs(V[s]).max() * 1.15 for s in V}  # the box that holds every structure (frames in place)
+    F = frames_per_axiom
+    fig = plt.figure(figsize=(7.6, 4.2), dpi=100)
+    axs = {s: fig.add_subplot(1, 2, i + 1, projection="3d") for i, s in enumerate(("trained", "random_init"))}
+
+    def frame(n):
+        a = shown[n // F]
+        f = n % F
+        u = 0.0 if F == 1 else min(1.0, max(0.0, (f / (F - 1) - 0.25) / 0.5))  # hold, slide, hold
+        t = u * u * (3 - 2 * u)  # smoothstep
+        view = (S.VIEW3D[0], S.VIEW3D[1] - 15 + 30 * n / max(1, len(shown) * F - 1))
+        pairs = axiom_pairs(bits, axioms.index(a))
+        for s, ax in axs.items():
+            ax.clear()
+            # zoom from the box that holds all points to one that this axiom's arrows fill, as they reach the origin
+            P = V[s]
+            lim = (1 - t) * lims[s] + t * 1.15 * max(np.linalg.norm(P[q] - P[p]) for p, q in pairs)
+            ax.scatter(*P.T, s=10, color=S.INK2, alpha=1 - 0.7 * t, depthshade=False)
+            if t < 0.15:
+                for (x, y, z), nm in zip(P, names):
+                    ax.text(x, y, z, " " + _short(nm), fontsize=5, color=S.INK2)
+            for p, q in pairs:
+                tail = (1 - t) * P[p]
+                S.arrow3d(ax, tail, tail + P[q] - P[p], S.BLUE if s == "trained" else S.TWIN, size=0.14 * lim, lw=1.8, view=view)
+            S.bare3d(ax, np.array([[-lim] * 3, [lim] * 3]), zoom=1.15)
+            ax.set_xlim(-lim, lim), ax.set_ylim(-lim, lim), ax.set_zlim(-lim, lim)
+            ax.view_init(*view)
+            c = la[key if s == "trained" else f"{key}__random"]["group_like"]["offsets"][a]["consistency"]
+            ax.set_title(f"{S.pretty(key) if s == 'trained' else 'random-init twin'} · consistency {c:.2f}", fontsize=8.5, color=S.INK if s == "trained" else S.INK2)
+        fig.suptitle(f"{AX_LABEL[a]}: each arrow is a pair of structures that differ only in this axiom" + ("" if t < 0.5 else " — moved to one origin (zoomed)"), fontsize=8.5, color=S.INK2)
+
+    fig.subplots_adjust(left=0.0, right=1.0, top=0.86, bottom=0.0, wspace=0.0)
+    anim = FuncAnimation(fig, frame, frames=len(shown) * F, interval=110)
+    path = outdir / f"axiom_arrows_{key}.gif"
+    anim.save(path, writer=PillowWriter(fps=9))
+    plt.close(fig)
+    return path.name
+
+
 def draw_cosines(oms: dict, axioms: list[str], la_key: dict, la_twin: dict, titles: dict):
     """Cosine matrices of single-axiom difference vectors (trained, twin) + per-axiom dot plot."""
     import matplotlib.pyplot as plt
@@ -167,6 +303,9 @@ def build(cfg, la: dict, outdir) -> list[str]:
         Vs = {"trained": (Vt, figdata.pca_var(X["trained"], 5)),
               "random_init": (figdata.pcs_by_layer(np.stack([X["random_init"]] * 2, 1), 1, onto=Vt, k=3)[0], figdata.pca_var(X["random_init"], 5))}
         out.append(S.save(draw_facets3d(Vs, names, bits, axioms, notes), outdir, f"lattice3d_{key}"))
+        # "how the test works": commutativity in steps 2-3 for every model (a fixed choice, not picked per model)
+        off = {"trained": la[key]["group_like"]["offsets"], "random_init": la[f"{key}__random"]["group_like"]["offsets"]}
+        out.append(S.save(draw_explainer(X, names, bits, axioms, off, "commutative", S.pretty(key)), outdir, f"axioms_explainer_{key}"))
         oms = {k: figdata.offset_matrix(v, bits, axioms) for k, v in X.items()}
         titles = {"trained": f"{S.pretty(key)} · layer {Lp}", "random_init": "random-init twin"}
         out.append(S.save(draw_cosines(oms, axioms, la[key], la[f"{key}__random"], titles), outdir, f"lattice_cosines_{key}"))

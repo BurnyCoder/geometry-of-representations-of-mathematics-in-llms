@@ -237,7 +237,9 @@ def scorecard_rows(r: dict) -> dict:
 
     conf_, pre, added = "pre-registered, confirmatory", "pre-registered", "added by plan audit"
     planes = planes_decision(ph, {k: mp[k]["primary_layer"] for k in keys}) if all("pc_planes_cycle" in ph.get(k, {}) for k in keys) else {}
-    rows = [
+    rows = [  # axioms as directions first (the lead result), then the other results in their earlier order
+        *[(f"Axiom direction: {a} (offset consistency; Holm)", conf_, lambda k, a=a: axiom(k, a)) for a in la[keys[0]]["group_like"]["offsets"]],
+        ("Lie / topological / algebraic groups as parallelograms", "pre-registered, exploratory", lambda k: f"{'●' if st[k]['group_objects']['parallelograms']['p'] < 0.05 else '○'} {st[k]['group_objects']['parallelograms']['cos']:.2f}"),
         ("Field map tracks arXiv beyond the twin (H-A1; Δρ CI)", conf_, lambda k: f"{'●' if ex(mp[k]['math_primary']['rsa_boot']['delta_vs_random_init']['ci']) else '○'} {mp[k]['math_primary']['rsa']['trained']:.2f}"),
         ("Field map is a hierarchy beyond the twin (H-A2; cophenetic Δ CI)", pre, lambda k: f"{'●' if ex(hi[k]['coph_match_delta_vs_random_ci']) else '○'} {hi[k]['coph_match']['trained']:.2f}"),
         ("Days form a cycle (positive control; PC plane)", "positive control; post-hoc statistic", cyc),
@@ -249,8 +251,6 @@ def scorecard_rows(r: dict) -> dict:
            ("Days / months: a loop that closes in some top-5 PC plane (p < .05, unadjusted)", "post-hoc, descriptive",
             lambda k: " / ".join(("●" if e["p"] < 0.05 else "○") + f" {e['score']:.2f}" for e in (ph[k]["pc_planes_cycle"][f][mp[k]["primary_layer"] - 1] for f in ("days", "months"))))]
           if planes else []),
-        *[(f"Axiom direction: {a} (offset consistency; Holm)", conf_, lambda k, a=a: axiom(k, a)) for a in la[keys[0]]["group_like"]["offsets"]],
-        ("Lie / topological / algebraic groups as parallelograms", "pre-registered, exploratory", lambda k: f"{'●' if st[k]['group_objects']['parallelograms']['p'] < 0.05 else '○'} {st[k]['group_objects']['parallelograms']['cos']:.2f}"),
     ]
     return {"models": [MODEL[k] for k in keys], "rows": [{"test": name, "status": status, "cells": [fn(k) for k in keys]} for name, status, fn in rows], "legend": SCORE_LEGEND}
 
