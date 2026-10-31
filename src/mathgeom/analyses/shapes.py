@@ -3,7 +3,7 @@
 Global context: for each family (configs/families.yaml) we compute unsupervised shape
 statistics — line vs circle template ρ, Robinson score, closure ratio, PCA order |ρ| — plus
 leave-one-out order ρ, each with a label-permutation null computed by the identical procedure
-(manifold.py). For families with a number reference (n-gons, dimensions, angles) we also
+(manifold.py) — except the closure ratio, which the pre-registered rules use as a fixed threshold (< 2). For families with a number reference (n-gons, dimensions, angles) we also
 regress the family RDM on the reference family's RDM to see what structure remains beyond the
 underlying number code (Kantamneni & Tegmark 2025, arXiv:2502.00873).
 """

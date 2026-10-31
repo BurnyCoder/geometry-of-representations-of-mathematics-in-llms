@@ -99,7 +99,7 @@ def draw_hero(r: dict, fam3d: dict, lat3d: dict, fmap: dict, conf: str):
     for col, (k, title, note) in enumerate((("arxiv", "B · arXiv cross-listing (ground truth)", "grey edges: each field's 2 nearest arXiv neighbours"),
                                              ("trained", f"{S.MODEL[conf]} ★: related fields sit together", f"ρ with arXiv = {m['trained']:.2f}"),
                                              ("random_init", "Its random-init twin: no map", f"ρ with arXiv = {m['random_init']:.2f}")), start=1):
-        map_panel3d(fig.add_subplot(gs[0, col], projection="3d"), fmap["lay3"][k], fmap, title, note)
+        map_panel3d(fig.add_subplot(gs[0, col], projection="3d"), fmap["lay3"][k], fmap, title, f"{note}\n3-D MDS stress-1 = {fmap['stress'][k]:.2f}")
     fig.legend(handles=[Line2D([], [], marker="o", ls="", color=S.BLUE, label="pure field"), Line2D([], [], marker="o", ls="", color=S.ORANGE, label="applied field")],
                loc="upper center", bbox_to_anchor=(0.62, 0.655), ncol=2, fontsize=6.5)
     # row 2 . axiom offsets
@@ -112,7 +112,8 @@ def draw_hero(r: dict, fam3d: dict, lat3d: dict, fmap: dict, conf: str):
         c = la[k]["group_like"]["offsets"]["commutative"]["consistency"]
         ax.set_title(("C · '+ commutativity' arrows from one origin\n" if col == 0 else "\n") + (f"{S.MODEL[conf]} ★" if side == "trained" else "its random-init twin"), fontsize=9)
         wooden = lx[conf]["nonce_modifier"]["wooden"]["trained"]["consistency"]
-        S.note3d(ax, f"consistency {c:.2f}" + (f"; X → wooden X: {wooden:.2f}" if side == "trained" else ""))
+        S.note3d(ax, f"consistency {c:.2f}" + (f"; X → wooden X: {wooden:.2f}" if side == "trained" else "")
+                 + f"\nPC1–3 hold {100 * lat3d['var'][side][:3].sum():.0f}% of the 13 structures' variance")
     ax = fig.add_subplot(gs[1, 2:])
     axes_names = list(la[conf]["group_like"]["offsets"])
     lp = la[conf].get("audit2", {}).get("group_like_offsets", {}).get("length_projected", {})
@@ -293,9 +294,12 @@ def build(r: dict, cfg_conf, outdir) -> list[str]:
     names = list(lat["items"])
     bits = np.array([lat["items"][c] for c in names])
     X = {"trained": figdata.family_acts(cfg_conf, conf, "group_like", names)[:, Lp], "random_init": figdata.family_acts(cfg_conf, f"{conf}__random", "group_like", names)[:, Lp]}
-    lat3d = {s: v[0] for s, v in _views3d(X).items()} | {"pairs": axiom_pairs(bits, lat["axioms"].index("commutative"))}
+    v3l = _views3d(X)
+    lat3d = {s: v[0] for s, v in v3l.items()} | {"var": {s: v[1] for s, v in v3l.items()}, "pairs": axiom_pairs(bits, lat["axioms"].index("commutative"))}
     setup = figdata.field_setup(cfg_conf, r["map_fields"][conf])
-    fmap = {"lay3": figdata.field_layouts(figdata.field_rdms(cfg_conf, conf, setup, Lp), k=3), "names": setup["names"], "pa": setup["pa"],
+    rdms = figdata.field_rdms(cfg_conf, conf, setup, Lp)
+    lay3 = figdata.field_layouts(rdms, k=3)
+    fmap = {"lay3": lay3, "stress": {k: figdata.stress1(P, rdms[k]) for k, P in lay3.items()}, "names": setup["names"], "pa": setup["pa"],
             "edges": figdata.neighbour_edges(setup["arxiv"])}
     return [S.save(draw_hero(r, fam3d, lat3d, fmap, conf), outdir, "hero"), S.save(draw_depth(r), outdir, "depth_curves"), S.save(draw_forest(r), outdir, "forest"),
             S.save(draw_group_objects(r), outdir, "group_objects"), S.save(draw_partial_operation(r, conf), outdir, "partial_operation"),

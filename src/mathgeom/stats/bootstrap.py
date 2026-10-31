@@ -2,7 +2,7 @@
 
 Global context: the field-map ρ is computed from field centroids, and a concept bootstrap duplicates
 concepts, which makes the centroids noisier and pulls every resampled ρ toward 0. The percentile
-interval then sits below the point estimate (Qwen3.5-2B: ρ = 0.387, bootstrap mean 0.342). BCa corrects
+interval then sits below the point estimate (Qwen3.5-2B: ρ = 0.387, bootstrap mean 0.341). BCa corrects
 for that median bias (z0) and for skew (acceleration a, from a leave-one-out jackknife).
 Efron 1987, "Better bootstrap confidence intervals", JASA 82:171 (doi:10.1080/01621459.1987.10478410);
 the same formulas as scipy.stats.bootstrap(method="BCa")

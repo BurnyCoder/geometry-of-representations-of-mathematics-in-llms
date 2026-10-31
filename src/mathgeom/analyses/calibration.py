@@ -9,7 +9,7 @@ tests are paired trained-vs-random-init contrasts. Scenarios:
 
   concept_linear_null     model RDM = nuisance RDM + pair noise              (correct spec.)
   concept_itemnoise_null  model = |z_i+e_i − z_j−e_j|, nuisance = |z_i − z_j|   (misspecified)
-  field_pure_null         representations unrelated to fields               (field-level Mantel)
+  field_pure_null         representations unrelated to fields               (field-level FL)
   field_confounded_null   representation & target share a latent confounder; nuisance is a
                           noisy proxy of it                                  (field-level FL)
   field_alternative       representation encodes target geometry beyond the confounder

@@ -5,9 +5,9 @@
 # ground-truth field distance from cross-listing statistics (librarian-bots/arxiv-metadata-snapshot,
 # CC0 mirror of the Kaggle arXiv metadata). `root_words` are substrings that, if present in a
 # concept name, reveal its field ("leak" flag → excluded from the primary set).
-# `kind`: math | control (non-math control domain). `pa`: pure | applied (pre-specified split,
-# following the MSC2020 convention that 60 probability, 62 statistics, 65 numerical analysis,
-# 91 game theory/economics are applied areas).
+# `kind`: math | control (non-math control domain). `pa`: pure | applied (our pre-specified split:
+# fields matching MSC2020 classes 60 probability, 62 statistics, 65 numerical analysis and
+# 91 game theory/economics are treated as applied; MSC2020 itself has no pure/applied grouping).
 
 math:
   - id: general_topology

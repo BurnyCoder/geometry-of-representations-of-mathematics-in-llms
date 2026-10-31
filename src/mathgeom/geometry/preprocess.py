@@ -1,9 +1,10 @@
 """Activation preprocessing and RDM construction.
 
-Global context: residual streams are anisotropic — a few "rogue"/massive dimensions
-dominate cosine similarity (Timkey & van Schijndel 2021, arXiv:2109.04404; Sun et al.
-2024, arXiv:2402.17762). We therefore mean-center per (model, layer) over the concept
-set, and offer all-but-the-top (Mu & Viswanath 2018, arXiv:1702.01417) as a variant.
+Global context: residual streams are anisotropic — a few "rogue" dimensions with large mean and
+variance dominate cosine similarity (Timkey & van Schijndel 2021, arXiv:2109.04404, who recommend
+standardization; see also the massive activations of Sun et al. 2024, arXiv:2402.17762). We mean-center
+per (model, layer) over the concept set, which removes their shared mean but not their variance, and
+offer all-but-the-top (Mu, Bhat & Viswanath 2018, arXiv:1702.01417) as a variant.
 We deliberately do NOT whiten: Golechha et al., "Intricacies of Feature Geometry in Large Language
 Models" (ICLR 2025 blog track, https://iclr.cc/virtual/2025/poster/31349), showed whitening makes
 random concepts look orthogonal/polytope-structured.
@@ -23,7 +24,7 @@ def center(X: np.ndarray) -> np.ndarray:
 
 
 def all_but_the_top(X: np.ndarray, n_remove: int | None = None) -> np.ndarray:
-    """Center, then project out the top principal directions (Mu & Viswanath 2018, Alg. 1).
+    """Center, then project out the top principal directions (Mu, Bhat & Viswanath 2018, Alg. 1).
 
     n_remove defaults to d/100 as recommended in the paper, but never more than n-2.
     """

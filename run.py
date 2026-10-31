@@ -1,7 +1,9 @@
 """Single entry point: `uv run python run.py <phase|all> --config configs/mvp.yaml`.
 
-Phases (in order): concepts → arxiv → extract → map → shapes → lattice → report.
-Each phase reads the previous phase's outputs, so any phase can be re-run on its own.
+Phases: the keys of PHASES below, in order (calibration, concepts, arxiv, extract, map, …, lexical, twins),
+then `report` (per config) and `paper` (cross-config). `all` runs every phase of PHASES plus report; the
+README lists which phases each config actually ran. Each phase reads earlier phases' outputs, so any
+phase can be re-run on its own.
 """
 
 import argparse

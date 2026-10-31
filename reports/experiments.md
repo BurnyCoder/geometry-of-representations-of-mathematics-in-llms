@@ -28,7 +28,7 @@ Experiments are listed in the order they were run.
 - A cubic basis of the nuisance ranks did not fix it. We tried this interactively before writing the phase.
 
 **Decision.** Every primary test became a **paired contrast against a random-init twin**: the same architecture and tokenizer, with weights redrawn at random.
-- The twin measures form-only similarity (shared sub-word tokens, word length, morphology) *on the same concepts*.
+- The twin was meant to measure form-only similarity (shared sub-word tokens, word length, morphology) *on the same concepts*. (Corrected 2026-10-30, E12: it does not; random weights can scramble even exact word composition.)
 - So it does not depend on how well a nuisance RDM approximates the confounder.
 - Uncertainty comes from a stratified concept bootstrap with identical resamples for both models.
 - Partial-regression coefficients are kept, but only as *secondary/descriptive* numbers.
@@ -56,7 +56,7 @@ A second test failure was a bug in the test itself: the synthetic shape was smal
 | Sentence-initial capitals were lowercased, which hid eponyms ("Plücker", "Kuranishi") | A capital is kept when the page never uses the word in lowercase mid-sentence |
 | Sentence-case glossaries made "Homeomorphism" look like a name | The same mid-sentence check fixes this |
 | Fragments and junk: "dom", "adic", "say", "such that", "pseudo-", "faithfully", "player i's strategy space" | Drop single words of ≤ 4 characters, single-letter tokens, prefixes ending in "-", and adverbs ending in "-ly" |
-| Two differential-geometry glossaries use `<p><b>term</b>` markup instead of `<dt>` | Added a fallback parser |
+| The Riemannian-geometry glossary uses `<p><b>term</b>` markup instead of `<dt>` | Added a fallback parser. (Corrected 2026-10-31: the second differential-geometry glossary, of differential geometry and topology, uses `<li><b>` markup and still yields no terms; differential geometry draws only on the Riemannian glossary.) |
 | Everyday polysemous words ("mean", "walk", "state") | Flagged `polysemous` (single word, wordfreq Zipf ≥ 4) and kept out of the primary set |
 
 **Field-leak and eponym flags** follow the plan's design review: concepts whose name contains their own field's root word, or a proper name, are excluded from the primary set. Flagged concepts are kept for the "math_all" sensitivity analysis.
@@ -73,7 +73,7 @@ A second test failure was a bug in the test itself: the synthetic shape was smal
 
 **What ran.**
 - 815 concepts and 171 family items, 8 templates each, through the trained model and its twin.
-- All 25 hidden states were stored. Extraction took about 1 s per item, because Qwen3.5's hybrid linear-attention layers fall back to the PyTorch implementation.
+- All 25 hidden states were stored. Extraction took about 1 s per item, because Qwen3.5's hybrid linear-attention layers run transformers' PyTorch `torch_chunk_gated_delta_rule` (neither `fla` nor `kernels` is installed).
 
 **Field map.** It is clearly present and absent in the twin. Results: [`mvp_results.md`](mvp_results.md).
 
@@ -93,7 +93,7 @@ A second test failure was a bug in the test itself: the synthetic shape was smal
 **Problem 3: the specificity comparison was confounded.**
 - 17 math fields were being compared with 4 control fields, so chance levels differ.
 - We added a post-hoc matched comparison over random 4-field subsets of the math fields.
-- Math fields cluster about as strongly as science topics, not more.
+- Science topics cluster more strongly than most matched math subsets. (Corrected 2026-10-31: this line first said "about as strongly"; `posthoc.json` → `matched_clustering.frac_math_subsets_ge_control` is 0.12, 0.16, 0.04, 0.45 and 0.00 in the five models, see E11.)
 
 **Bug.** Activations are stored as float16, which LAPACK rejects. A regression test now covers this.
 
@@ -115,7 +115,7 @@ A second test failure was a bug in the test itself: the synthetic shape was smal
 - Rank agreement is moderate and absolute agreement low, because the judges use different scale offsets. Only rank-based statistics use the ratings.
 
 **Causal test.**
-- The preregistered accuracy gate (≥ 0.70 on "which is more general?") was set *before* running it. The ring chain missed it narrowly, so it was not intervened on.
+- The accuracy gate (≥ 0.70 on "which is more general?") was set *before* running it, in `docs/deviations.md`; the causal test is a plan item and not part of `docs/prereg.md`. The ring chain missed it narrowly, so it was not intervened on.
 - The space chain passed. Chain-subspace noise hurt only marginally more than random-subspace noise, so we call this inconclusive.
 - With five random subspaces, the smallest attainable rank p-value is about 0.17. A stronger test needs more random draws and more questions; this is future work.
 
@@ -133,7 +133,7 @@ Asked to double-check completeness, we compared every commitment in the approved
 
 **Missing baselines (fastText, a sentence embedder).**
 - The LLM's field map beats static fastText vectors.
-- It does not beat Qwen3-Embedding. The map is a property of contextual text representations in general, not of generative LLMs specifically.
+- It does not beat Qwen3-Embedding. So one contrastive embedder built on an LLM matches it: the map does not need the generative objective (one comparison, one model).
 
 **Missing items, now run:**
 - **Infini-gram covariate:** the H-A4 axes survive it.
@@ -234,7 +234,7 @@ The new items were appended after the existing ones. Extraction runs at batch si
   - clicking a lattice node shows its axioms;
   - the concept card now lists 10 neighbours (it had 8) and the concept's flag status;
   - the families table view now includes the per-layer cycle scores.
-- *A finding the new twin panel exposed.* All five random-init twins *meet* the preregistered angles rule (closure < 2 and circle ρ > line ρ), while all five trained models fail it. A structureless point cloud has closure ≈ 1 and near-zero template correlations, so it passes by chance. The rule is not specific, and the informative result is the trained models' line-like order. Reported in the paper and README; this is the second preregistered shape criterion (after the days/months full-space criterion) that turned out to be insensitive or non-specific.
+- *A finding the new twin panel exposed.* All five random-init twins *meet* the preregistered angles rule (closure < 2 and circle ρ > line ρ), while all five trained models fail it. A structureless point cloud has closure ≈ 1 and near-zero template correlations, so it passes by chance. (Corrected 2026-10-31: the twins' circle-template ρ is not near zero but 0.15–0.46, p ≤ .008, possibly from shared digit tokens; with no line order, that is enough to pass.) The rule is not specific, and the informative result is the trained models' line-like order. Reported in the paper and README; this is the second preregistered shape criterion (after the days/months full-space criterion) that turned out to be insensitive or non-specific.
 - *Summary.* It carried only five of the figures; it now has all of them with plain-language captions. Writing them surfaced two loose phrasings, both fixed: "the map appears and stays" (Gemma dips twice) and an example concept that is not labelled in the figure.
 
 **A third audit pass, line by line against the plan, closed the remaining gaps:**
@@ -250,7 +250,7 @@ The new items were appended after the existing ones. Extraction runs at batch si
 - The user asked for 3-D visualizations where possible (the top 3 principal components), as interactive as possible, and for the scientific results to change if the 3-D views changed them.
 - Motivation from the literature:
   - numbers lie on a generalized helix: the top PC is nearly linear in the number, and the periodic parts (periods 2, 5, 10, 100) are found with Fourier features ([Kantamneni & Tegmark 2025](https://arxiv.org/abs/2502.00873));
-  - Engels et al. show raw-activation circles in the top two PCs, but their SAE-cluster circles in PCs 2–3, and fit their circular probe on the top five PCs ([arXiv:2405.14860](https://arxiv.org/abs/2405.14860), Figs. 1, 4, 15);
+  - Engels et al. show raw-activation circles in the top two PCs (arXiv v3, Figs. 4 and 9), but their SAE-cluster circles usually in PCs 2–3 (§4, Figs. 1, 2, 15), and fit their circular probe on the top five PCs (§5.1) ([arXiv:2405.14860](https://arxiv.org/abs/2405.14860));
   - Gurnee et al. and Goodfire present manifolds as rotatable or animated 3-D views.
 
 **What was built.**
@@ -292,7 +292,7 @@ The new items were appended after the existing ones. Extraction runs at batch si
   - **Twin:** one twin also shows a closed months loop (p = 0.004). Word form alone can occasionally produce one, so the test is not fully specific.
   - **Existing results:** every existing post-hoc number is unchanged. This was checked by diffing all three results files before and after the rerun; the new test uses its own random stream.
 - *What changed in the write-up.*
-  - Updated: the README highlights, the paper (abstract, §4.3 at the time, now §4.4, limitations), the summary, and the site's "what failed" list and sidenote.
+  - Updated: the README highlights, the paper (abstract, §4.3, limitations), the summary, and the site's "what failed" list and sidenote.
   - The positive control is now described as replicating partly, not "with a post-hoc 2-D test", and the scorecard has two new post-hoc rows.
 
 **A plan audit of E9 closed these gaps:**
@@ -342,7 +342,7 @@ The new items were appended after the existing ones. Extraction runs at batch si
 **Integrity choices in the new captions.**
 - *The picture is not the statistic.* The explainer's steps 2–3 and the GIF are 3-D projections. Every caption says that offset consistency is computed in the full residual stream.
 - *The compass is a visual aid, not a test.* It shows each difference vector's angle to the leave-one-out mean of the others, which is not the same quantity as the mean pairwise cosine that is tested. Its numbers are therefore not quoted in the text; only the reported consistencies, null percentiles and p-values are.
-- *Holm per model.* While reordering, two hand-written statements turned out to be wrong. The paper abstract said divisibility does not survive Holm correction, and the summary said divisibility and identity are significant only before correction. Both hold for the confirmatory model, but not for every replication model: the scorecard shows divisibility surviving Holm correction in two models and identity in one. The abstract now says "in the confirmatory model neither survives Holm correction", and the summary gives the counts.
+- *Holm per model.* While reordering, two hand-written statements turned out to be wrong. The paper abstract said divisibility does not survive Holm correction, and the summary said divisibility and identity are significant only before correction. Both hold for the confirmatory model, but not for every replication model: the scorecard then showed divisibility surviving Holm correction in two models and identity in one (before the audit's 8-test Holm family and 10,000 LOO permutations, E12; now in none). The abstract now says "in the confirmatory model neither survives Holm correction", and the summary gives the counts.
 
 **Issues found while doing it.**
 - *Renumbered sections.* Renumbering the paper's Results sections changed the anchors the site uses to link figures to paper sections (`data-paper`); the new anchors were handed to the site session. In the paper, one `§` reference pointed at an old number (the closed-cycle test, §4.3 → §4.4). Two vague ones ("see §6 and the causal results", "all tests except §4.5") now name the test they mean.
@@ -362,7 +362,7 @@ The new items were appended after the existing ones. Extraction runs at batch si
 **What was wrong, and why it slipped through.**
 - *A rule that was not the preregistered one.* The preregistration calls a chain ordered only if Robinson p < .05 **and** leave-one-out order p < .05, and the trained Robinson score beats the twin's. The report code tested Robinson p only. Every later summary inherited that, so "chains replicate in all five models" was repeated everywhere.
   - The fix tests the conjunction with its intersection-union p, max(Robinson p, LOO p), inside the Holm family ([Berger 1982](https://doi.org/10.1080/00401706.1982.10487790)). The user chose this strict version over adding a separate LOO check.
-  - Under it, the ring chain fails in two models. In Gemma, the space chain and the divisibility offset lose Holm significance, because the step-down adjustment depends on every p in the family.
+  - Under it, the ring chain fails in two models. In Gemma, the space chain and the divisibility offset lose Holm significance, because the step-down adjustment depends on every p in the family. (Later, E12: with 10,000 LOO permutations and the 8-test family, Gemma's space chain is Holm-significant again.)
   - **Lesson:** decision rules should live in one function with a test that quotes the preregistration (`tests/test_report_rules.py`).
 - *Hand-typed counts.* Placeholders resolved every statistic, but counts such as "three of five", "two stretches" and "all five models" were typed by hand. Several were wrong from the start (Gemma's depth curve dips in three stretches, not two) or went stale after a rule change.
   - The fix is `{{fact:…}}` placeholders (`render.fact`), which compute these counts and name the exceptions.
@@ -377,8 +377,8 @@ The new items were appended after the existing ones. Extraction runs at batch si
 - *A flagger miss.* Five primary concepts are eponyms ("tate curve", "fourier", …) that the eponym flag missed, because glossary cleaning lowercases a term's first word when it is also a common word. The frozen primary set is unchanged; the miss is listed in `docs/deviations.md`.
 - *A PDF text-layer bug.* Cambria Math's fi/fl ligatures have no Unicode mapping, so "first" became "irst" in search and copy. The fix turns off common ligatures (`mainfontoptions=Ligatures=NoCommon`). A first diagnosis also blamed lost minus signs and ρ, but that was the Windows console code page; `pdftotext -enc UTF-8` into a file showed them intact.
 - *Measured, not remembered.*
-  - Extraction times were re-read from `logs/*_extract.log`; Qwen2.5 takes about 20 minutes, not 15.
-  - The disk estimate was re-measured: about 50 GB, mostly model weights.
+  - Extraction times were re-read from `logs/*_extract.log`; Qwen2.5 takes about 20 minutes, not 15. (Corrected 2026-10-31: 17 and 16 minutes from first model load to last save; the 20 included the model download.)
+  - The disk estimate was re-measured: about 50 GB, mostly model weights. (2026-10-31: activations grew to 5.7 GB with the audit's twin seeds.)
 
 **Result.** The list of every change is in `docs/deviations.md` (rows dated 2026-10-30, audit). No results file changed; only report code, prose, captions, citations and the card.
 
@@ -389,13 +389,13 @@ The new items were appended after the existing ones. Extraction runs at batch si
 **How the problem was found.** The audit read the code of each statistic and asked, for each result, what the simplest non-semantic explanation would be.
 - Most group-like names literally contain their axioms ("commutative monoid"). Several pairs of same-axiom pairs repeat one head-noun change with and without "commutative". Most associativity and divisibility targets end in "-group" while their sources do not.
 - So we recomputed the offset test on character-3-gram count vectors of the names, read-only, with the repo's own functions. They passed it for all four axioms.
-- We then looked at why the twin had not caught this. In the Qwen3.5 twins, two pairs that differ only by the word "commutative" are not parallel at all. A random network scrambles even exact word composition, so "beats the twin" never ruled out spelling.
+- We then looked at why the twin had not caught this. In the Qwen3.5 twins, two pairs that differ only by the word "commutative" are barely parallel (cosine 0.04–0.07 in Qwen3.5-2B's twin, 0.12–0.20 in Qwen3.5-0.8B's; the Qwen2.5 twins keep 0.30–0.41 and Gemma's 0.77–0.81). A random network can scramble even exact word composition, so "beats the twin" never ruled out spelling.
 - The same reasoning flagged the ring chain, whose names end in contiguous blocks of head nouns (rng | ring | … domain | field).
 
 **What we did.**
 - We wrote the addendum `prereg_addendum_lexical.md` and committed it before running anything new. It lists what the read-only exploration had already seen.
 - New phase `lexical`:
-  - three word-form baselines run through every test with the same statistic and null;
+  - three word-form baselines run through every test with the same statistic and type of null (their LOO order null has 300 permutations, their field-map Δ bootstrap 1,000 resamples, and the chain tests skip the word bag);
   - the duplicate/disjoint split of each axiom's cosines;
   - the 8 names without "commutative" and a held-out abelian-group test;
   - a nonce-modifier lattice ("wooden", "zorbic"), appended to the family items;
@@ -405,7 +405,7 @@ The new items were appended after the existing ones. Extraction runs at batch si
 
 **Issues and how they were fixed.**
 - *A null that contained the effect.* The pre-specified null for the abelian test still contained pairs that change commutativity together with another axiom. A unit test with a planted commutativity vector failed (p = .23 for a perfect effect). The null was restricted to pairs with equal commutativity bits and recorded as amendment 1, committed before any real-data run.
-- *A test that could not tell scales apart.* The first version of the α-sensitivity unit test compared X with 1000·X and found the same LOO ρ for α = 10. Both scales were large relative to α. On tiny activations (0.01·X), α = 10 shrinks every fold to the training mean, and the LOO ρ is exactly −1. That artifact is the origin of the strongly negative LOO ρ values of the Qwen3.5 models and their twins.
+- *A test that could not tell scales apart.* The first version of the α-sensitivity unit test compared X with 1000·X and found the same LOO ρ for α = 10. Both scales were large relative to α. On tiny activations (0.01·X), α = 10 shrinks every fold to the training mean, and the LOO ρ is exactly −1. That artifact explains the strongly negative LOO ρ values of the trained Qwen3.5 models (their activations are tiny). (Corrected 2026-10-31: it does not explain the twins' negative values, whose activations are large and which stay negative under the scale-relative α; with no order to recover, their held-out prediction stays near the training mean.)
 - *NaN p-values.* A word bag of one-word items has a constant RDM, so its template ρ is NaN, and `perm_p` returned 1/(n+1) for it. `perm_p` now returns NaN.
 - *Appended items must not move earlier results.* The `structures` pool and the `lattice` token-count direction used "all family items", so they would have changed when the nonce items were appended. Both now exclude the audit's families (`pipeline.AUDIT_FAMILIES`). Rerunning both phases gives byte-identical JSON, and the first 181 cached rows are byte-identical to a backup.
 - *Bash heredocs on Windows.* Two multi-line Python edits containing curly quotes failed to parse in the Bash tool ("unexpected EOF"). Writing the edit script to a file first worked.
@@ -424,7 +424,7 @@ The new items were appended after the existing ones. Extraction runs at batch si
 ## Tooling learnings (continued)
 
 - **Line endings.** On Windows, `Path.write_text` translates `\n` to `\r\n`. Python heredoc scripts that search-and-replace code containing `"\n"` literals therefore corrupted files three times. The fix was to make code edits with the editor tool.
-- **Timing.** The shape-statistic negative control (100 random lists, each with a leave-one-out permutation null) dominates analysis time.
+- **Timing.** Before the audit, the shape-statistic negative control (100 random lists, each with a leave-one-out permutation null) dominated analysis time. (Corrected 2026-10-31: with the 10,000-permutation LOO nulls, the families themselves take most of the ≈ 23 minutes per model and twin in `logs/*_shapes.log`.)
 
 ## Infrastructure learnings
 

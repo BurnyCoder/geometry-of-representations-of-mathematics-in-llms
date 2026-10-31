@@ -1,6 +1,6 @@
 # Figures and the explorable article
 
-Every figure and every number on the website is generated from `results/<config>/*.json` and the cached activations. Nothing is drawn or typed by hand.
+Every figure and every number on the website is generated from `results/<config>/*.json` and the cached activations; no number is drawn or typed by hand. A few figure titles and site captions state a verdict in words (for example "Angles: not a circle"); they were checked against the results and must be re-checked if a result changes.
 
 To regenerate the per-model figures, report tables and site data for one config:
 
@@ -23,7 +23,7 @@ uv run python run.py paper --config configs/mvp.yaml
   - A 7-step ramp (days) passes the ordinal check.
   - A 12-step ramp (months, angles) cannot keep every adjacent lightness gap above the validator's threshold. Order is therefore never carried by colour alone: every point is labelled and joined to its neighbours by the ordered path.
   - On the site's dark theme the ramp runs from step 600 to step 100 (dark → light), because the light-theme ramp's darkest step has only 1.5:1 contrast on the dark surface. The 7-step dark ramp passes the ordinal check.
-- **Roles.** Trained models are always blue and random-init twins always grey; nulls are grey bands or lines; signed similarity uses a blue ↔ red scale with a grey midpoint.
+- **Roles.** Where colour encodes the model, trained models are blue and random-init twins grey (family planes use the ordinal ramp and field maps the pure/applied colours in both); nulls are grey bands or lines; signed similarity uses a blue ↔ red scale with a grey midpoint.
 - **Output.** PNG files have an opaque background so they read correctly in GitHub's dark mode. PDFs embed TrueType fonts (`pdf.fonttype=42`) and carry no timestamps, so regenerating them doesn't change the files.
 - **Direct labels** are de-overlapped with [adjustText](https://github.com/Phlya/adjustText) (MIT) under a fixed iteration limit (`style.label_points`, `iter_lim=1000`).
   - Its default stops after 1 second of wall-clock time, which made label positions, and so the figures, depend on machine load.
@@ -37,7 +37,7 @@ uv run python run.py paper --config configs/mvp.yaml
 - **Fixed matrix order.** Distance matrices use one fixed order: super-tree branch, then field.
 - **Hatched cells in the difference-vector cosine matrix.** Cells comparing two difference vectors that share a structure are hatched, because isotropic noise alone puts them near ±½.
 - **Exact browser-side geometry.** The site's analogy playground uses (n − 1)-dimensional coordinates of the centred vectors. These preserve every distance and cosine exactly, which `tests/test_figdata.py` checks against the Python statistics.
-- **Consistency test.** `tests/test_figdata.py` recomputes, from the figure data of every config, the reported field ρ, the offset consistencies and the cycle scores.
+- **Consistency test.** `tests/test_figdata.py` recomputes, from the figure data of the first model of every config, the reported field ρ, the offset consistencies and the cycle scores.
 
 ### 3-D views (top principal components, 3-D MDS)
 
@@ -46,7 +46,7 @@ uv run python run.py paper --config configs/mvp.yaml
   - So the share of variance printed on each axis is exact (`figdata.pca_var`, checked against `sklearn.decomposition.PCA`).
   - Field maps use 3-D metric MDS, aligned like the 2-D maps.
 - **True proportions.** Plotly scenes use `aspectmode: "data"` and matplotlib panels use `set_box_aspect` set to the data ranges, so a small PC3 looks small.
-- **Every 3-D view says how much it shows:**
+- **Every 3-D view says how much it shows** (in the static figures, on the hero's 3-D field maps and arrow panels since 2026-10-31):
   - PCA views give the variance on each axis, and in total in the title.
   - MDS views give Kruskal's stress-1 with optimal scaling (`figdata.stress1`; 0 = distances kept exactly) for the 2-D and 3-D layout.
   - Rank-correlation "fidelity" was tried first and dropped. The arXiv distances are skewed, so it reported the 3-D layout as *less* faithful than the 2-D one, although 3-D cuts the stress from 0.35 to 0.25.
@@ -68,7 +68,7 @@ Rows are grouped by figure type; the README, summary and paper present the resul
 | `hero` | Three-row overview: (1) field-map ρ in all models vs twins and two word-form baselines (× character 3-grams, + layer-0 token bag), and the arXiv / trained / twin maps; (2) the commutativity arrows at one common origin in 3-D, trained vs twin, and the offset consistency of every axiom in every model and twin with the names' character 3-grams (×); (3) days, angles, ring chain (with its within-“domain” p) and space chain (with its within-block p) | `figures/overview.py: draw_hero` | `map_fields`, `posthoc`, `shapes`, `lattice`, `lexical` + activations |
 | `axioms_explainer_<model>` | How the axiom test works, in four steps: (1) the lattice of structures (ground truth); (2) one axiom's pairs as arrows in the model's top-3 PCs; (3) the same arrows at one common origin in 3-D, trained vs twin, with their offset consistency; (4) a compass per axiom of full-space angles between each same-axiom difference vector and the leave-one-out mean of the others (`figdata.axiom_angles`), trained above the dashed line and twin below | `figures/lattice.py: draw_explainer` | activations, `lattice` |
 | `axiom_arrows_qwen3.5-2b.gif` | README animation: one axiom at a time, its pairs appear as 3-D arrows in the top-3 PCs and slide to one common origin, trained (left) vs twin (right), with each panel's offset consistency; the camera turns ±15° | `lattice.py: save_axiom_gif` | activations, `lattice` |
-| `lattice3d_<model>` | Per-axiom 3-D facets: that axiom's pairs as blue 3-D arrows with filled, camera-facing heads of fixed size (`style.arrow3d`), trained and twin | `lattice.py: draw_facets3d` | activations, `lattice` |
+| `lattice3d_<model>` | Per-axiom 3-D facets: that axiom's pairs as 3-D arrows (blue; grey in the twin) with filled, camera-facing heads of fixed size (`style.arrow3d`), trained and twin | `lattice.py: draw_facets3d` | activations, `lattice` |
 | `lattice_axes_<model>` | Ideal axiom lattice and per-axiom PCA facets (2-D), trained and twin | `figures/lattice.py` | activations, `lattice` |
 | `lattice_cosines_<model>` | Difference-vector cosine matrices and per-axiom offset consistency, with the names' character 3-grams (×; audit) | `lattice.py` | activations, `lattice`, `lexical` |
 | `group_objects` | Group-object parallelograms (with the names' character 3-grams, ×; audit) and the parent ranks of "Lie group", all models | `overview.py: draw_group_objects` | `structures`, `lexical` |
@@ -125,7 +125,7 @@ The twin's family and lattice planes are rotated onto the trained model's plane 
 - the lattice draws the analogy point of the playground;
 - the layer slider, play and trained ↔ twin morph glide in 3-D too. Frames are interpolated on wall-clock time, because Plotly transitions only scatter traces ("only scatter traces may be smoothly transitioned", <https://plotly.com/javascript/animations/>).
 
-**Interactions.** Model menu; layer slider with play button and a depth inset; the global trained ↔ twin morph; linked hover between field maps, distance matrices and the concept cloud; concept search and a card with 10 nearest neighbours in the model and its twin; family picker with an ideal-shape overlay; axiom chips, a lattice click that shows axiom bits, and the analogy playground; scorecard and forest filters by hypothesis; a table view under every chart; light and dark themes. Every chart with two or more series has a legend.
+**Interactions.** Model menu; layer slider with play button and a depth inset; the global trained ↔ twin morph; linked hover between field maps, distance matrices and the concept cloud; concept search and a card with 10 nearest neighbours in the model and its twin; family picker with an ideal-shape overlay; axiom chips, a lattice click that shows axiom bits, and the analogy playground; scorecard and forest filters by hypothesis; a table view under every chart; light and dark themes. Every chart with two or more series has a legend, except the scree bars and the cosine heatmap's × overlay, which are explained in their captions.
 
 Prose numbers are `data-num` elements resolved against `index.json`. `tests/test_site.py` checks the data schema, that every `data-num` path resolves, that the page text contains no hand-typed decimals, and that every link from the README, summary or paper into the site points to an existing anchor.
 

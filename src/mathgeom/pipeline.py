@@ -1,4 +1,5 @@
-"""Named pipeline phases called by run.py: concepts → arxiv → extract → map → shapes → lattice.
+"""Named pipeline phases called by run.py (the full ordered list is run.PHASES: calibration, concepts, arxiv,
+extract, map, … , lexical, twins; plus report and paper).
 
 Global context: each phase reads the previous phase's files and writes its own, so phases can
 be re-run independently. Small outputs (CSV/JSON) live in data/ and results/<config>/;
@@ -203,7 +204,7 @@ def phase_map(cfg: Config) -> None:
             maxnull = np.max(np.stack([mantel_field_perm(v, target, 2000, np.random.default_rng(cfg.seed + 7)) for v in vecs]), 0)
             r["layer_curve"] = {"trained": curve_tr, "random_init": curve_rnd, "max_null95": float(np.percentile(maxnull, 95)),
                                 "best_layer": int(np.argmax(curve_tr) + 1), "best_p_maxstat": float((1 + (maxnull >= max(curve_tr)).sum()) / (1 + len(maxnull)))}
-            if subset == "math_primary":  # H-A2: tree-likeness w.r.t. the pre-registered super-tree
+            if subset == "math_primary":  # POST-HOC tree-distance RSA w.r.t. the super-tree (the pre-registered H-A2 measure is the cophenetic test, phase_hierarchy)
                 branch = {f["id"]: f["branch"] for f in load_yaml("fields.yaml")["math"]}
                 tree = _tree_distance(names, branch)
                 hnull = np.array([field_rsa(reps["trained"], lab, names, _tree_distance(names, dict(zip(names, rng.permutation([branch[n] for n in names]))))) for _ in range(2000)])
