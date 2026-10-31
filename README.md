@@ -7,7 +7,7 @@
 - a 3D spiral for the periodic table ([Lei & Cooper 2025](https://arxiv.org/abs/2502.10871));
 - a helix for numbers ([Kantamneni & Tegmark 2025](https://arxiv.org/abs/2502.00873)).
 
-As far as our literature search found, nobody had asked this of **abstract mathematics itself**. This repo does, with a preregistered study of five open base models.
+As far as our literature search found, nobody had asked this of **abstract mathematics itself** in LLM residual streams (the closest earlier work embedded arXiv math terms with static word embeddings: [Berlioz 2021](https://arxiv.org/abs/2109.02801)). This repo does, with a preregistered study of five open base models.
 
 **Links:**
 - 📄 Paper: [`paper/paper.pdf`](paper/paper.pdf)
@@ -19,17 +19,17 @@ As far as our literature search found, nobody had asked this of **abstract mathe
 
 ![At a glance](reports/figures/hero.png)
 
-**At a glance.** Blue is a trained model; grey is its random-init twin (same architecture and tokenizer, no learning); orange × and black + are word-form baselines built only from the spelling of the names (character 3-grams; the model's own input embeddings summed over each name's tokens). ★ marks the preregistered confirmatory model.
+**At a glance.** Blue is a trained model; grey is its random-init twin (same architecture and tokenizer, no learning); orange × and dark-grey + are word-form baselines built from the names alone, without context (× the names' character 3-grams, i.e. spelling; + the model's own input embeddings summed over each name's tokens, i.e. learned token meanings). ★ marks the preregistered confirmatory model.
 - **Top row, the map of mathematics:**
-  - *Left:* in all five models, field centroids track how often mathematicians cross-list papers between fields (ρ with arXiv); the twins and both word-form baselines do not.
+  - *Left:* in all five models, field centroids track how often mathematicians cross-list papers between fields (ρ with arXiv); the twins and the character 3-grams do not, and the token embeddings (+) track it only weakly.
   - *Right:* the map itself in 3-D (metric MDS), for arXiv (ground truth), the confirmatory model and its twin. Grey edges join each field to its two nearest arXiv neighbours. They mostly stay short in the trained model and cross the twin's map.
 - **Middle row, axiom offsets:**
-  - *Left:* every pair of structures that differs only in commutativity (e.g. monoid → commutative monoid, group → abelian group) is drawn as an arrow from one common origin, in the top-3 principal components. The trained model's arrows point roughly one way; the twin's point every way. The note compares X → wooden X, a meaningless modifier.
+  - *Left:* every pair of structures that differs only in commutativity (e.g. monoid → commutative monoid, group → abelian group) is drawn as an arrow from one common origin, in the top-3 principal components. The trained model's arrows point roughly one way; the twin's point every way. The note compares X → wooden X, a real word that is irrelevant to algebra.
   - *Right:* offset consistency (how parallel the same-axiom arrows are in the full space) for all four axioms in every model and twin, against the random-pair null; diamonds remove the token-count direction. The orange × is the names' spelling alone, with no model, and it is about as parallel: most of the offset geometry is word form ([audit](reports/audit_lexical.md)).
 - **Bottom row, shapes** (the confirmatory model in its top-3 principal components; the twin's value in brackets):
   - *Days of the week* close into a circle (the positive control; in this model, not in every model).
   - *The space chain* lies along an ordered path, also within its blocks; *the ring chain* is grouped by its head nouns (rng | ring | … domain | field), and its six "… domain" items are not ordered among themselves.
-  - *Angles* do not form a circle, falsifying our preregistered prediction: 330° sits far from 0° and the angles follow the number line. The twin's closure ratio is small only because its points have no order at all, which is why the preregistered "closure < 2" rule turned out not to be specific (see [the angles results](#shapes-circles-for-days-and-months-lines-for-chains-no-circle-for-angles)).
+  - *Angles* do not form a circle, falsifying our preregistered prediction: 330° sits far from 0° and the angles follow the number line. The twin's closure ratio is small because its points have no order, and that is enough to pass the preregistered "closure < 2" rule, which turned out not to be specific (see [the angles results](#shapes-circles-for-days-and-months-lines-for-chains-no-circle-for-angles)).
 
 The results are ordered by how well they survive the independent audit's word-form controls; the field map (H-A1) was also the primary preregistered hypothesis, and every test keeps its preregistered status.
 
@@ -42,14 +42,14 @@ The results are ordered by how well they survive the independent audit's word-fo
 
 - **What you see:** the 13 group-like structures (magma, unital magma, quasigroup, loop, semigroup, monoid, group, and the commutative versions of all but the unital magma) in the top-3 principal components of Qwen3.5-2B (left) and of its random-init twin (right), at the preregistered layer. One axiom at a time, every pair of structures that differ only in that axiom becomes an arrow, for example monoid → commutative monoid and group → abelian group for commutativity. The arrows then slide to one common origin, so you can see whether they point the same way.
 - **What to notice:** in the trained model the commutativity arrows form one bundle. Their offset consistency, the mean cosine between the 6 difference vectors in the full residual stream, is 0.53. The twin's is 0.01, and random pairs of the same structures exceed 0.20 only 5% of the time. Associativity behaves the same way (0.43, twin 0.02). Identity (0.24) and divisibility (0.29) form looser bundles.
-- **But mostly word form (audit):** five of the six arrows add the literal word "commutative", and the same six heads with a meaningless modifier, X → zorbic X, give 0.68. Character 3-grams of the names, with no model, give 0.62 for commutativity and 0.32 for associativity. What survives the word-form controls is an associativity direction (all 5 models) and a "commutative" direction that also predicts abelian group − group, which shares no word with it (all 5 models).
+- **But mostly word form (audit):** five of the six arrows add the literal word "commutative", and the same six heads with a made-up modifier, X → zorbic X, give 0.68. Character 3-grams of the names, with no model, give 0.62 for commutativity and 0.32 for associativity. What survives the word-form controls is an associativity direction (all 5 models) and a "commutative" direction that also predicts abelian group − group, which shares no word with it (all 5 models).
 - **Caveat:** three principal components can hide or exaggerate parallelism, so the statistic is computed in the full space, never from this picture. In Qwen3.5-2B only associativity and commutativity survive Holm correction; identity and divisibility are significant before correction only (the scorecard below has every model). Step-by-step static explainer: [`axioms_explainer_qwen3.5-2b.png`](reports/figures/axioms_explainer_qwen3.5-2b.png). [Interactive: how the test works](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-axiom-how), and [the lattice in 3-D](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-lattice).
 
 ### Scorecard: every test in every model
 
 | Test | Status | Qwen3.5-2B | Qwen3.5-0.8B | Qwen2.5-1.5B | Qwen2.5-Math-1.5B | Gemma-4-E2B |
 |---|---|---|---|---|---|---|
-| Field map tracks arXiv beyond the twin (H-A1; Δρ CI) | pre-registered, confirmatory | ● 0.39 | ● 0.37 | ● 0.41 | ● 0.39 | ● 0.44 |
+| Field map tracks arXiv beyond the twin (H-A1; Mantel p and Δρ CI) | pre-registered, confirmatory | ● 0.39 | ● 0.37 | ● 0.41 | ● 0.39 | ● 0.44 |
 | Field map beyond word form (Δρ vs char-3-grams, word bag, layer-0 token bag; CIs > 0) | post-hoc, audit addendum | ● +0.14 | ● +0.07 | ● +0.15 | ● +0.12 | ● +0.14 |
 | Field map is a hierarchy beyond the twin (H-A2; cophenetic Δ CI) | pre-registered | ○ 0.24 | ○ 0.25 | ○ 0.24 | ○ 0.11 | ○ 0.23 |
 | Space chain ordered (Robinson and LOO order; Holm; > twin) | pre-registered, confirmatory | ● 0.65 | ● 0.64 | ● 0.71 | ● 0.68 | ● 0.57 |
@@ -71,7 +71,7 @@ The results are ordered by how well they survive the independent audit's word-fo
 | Angles: closed cycle in any top-5 PC plane (addendum rule) | post-hoc, pre-specified addendum | ○ 0.33 | ○ 0.33 | ○ 0.17 | ○ 0.25 | ○ 0.42 |
 | Days / months: a loop that closes in some top-5 PC plane (p < .05, unadjusted) | post-hoc, descriptive | ● 1.00 / ● 0.50 | ○ 0.57 / ○ 0.33 | ● 1.00 / ○ 0.33 | ● 1.00 / ● 0.58 | ○ 0.43 / ● 0.50 |
 
-● significant (Holm-adjusted over the 8 pre-registered confirmatory tests for the axiom and chain rows, the falsified angles rule counted with p = 1; 95% CI excludes 0 for Δ tests) · ◐ raw p < .05 only · ○ not significant · ✗ pre-registered prediction falsified (every random-init twin meets the angles rule, so it is not specific). Chains: p = max(Robinson p, LOO order p), the pre-registered conjunction, and trained Robinson > twin. Numbers: the statistic for the trained model. Audit rows (post-hoc, reports/prereg_addendum_lexical.md): field map = lowest lower CI bound of Δρ against the three lexical baselines; ring chain = Robinson score within the “… domain” items; held-out pair = cosine of abelian group − group with the “commutative” direction; modifier and group-object rows = trained value vs the highest control; ● = the addendum's decision rule is met.
+● significant: Holm-adjusted over the 8 pre-registered confirmatory tests for the axiom and chain rows (the falsified angles rule counted with p = 1), with the trained value above the twin's; for Δ tests the 95% CI lies entirely above 0 (H-A1 also needs Mantel p < .05); for every other row p < .05, unadjusted · ◐ raw p < .05 but not Holm-significant (axiom and chain rows) · ○ not significant · ✗ pre-registered prediction falsified (the angles rule is met by all 5 twins, so it is not specific). Chains: p = max(Robinson p, LOO order p), the pre-registered conjunction. Numbers: the statistic for the trained model. Audit rows (post-hoc, reports/prereg_addendum_lexical.md): field map = lowest lower CI bound of Δρ against the three lexical baselines; ring chain = Robinson score within the “… domain” items; held-out pair = cosine of abelian group − group with the “commutative” direction; modifier and group-object rows = trained value vs the highest control; ● = the addendum's decision rule is met.
 
 *Interactive version, with hover details and filters: [scorecard](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-scorecard).*
 
@@ -79,19 +79,19 @@ The results are ordered by how well they survive the independent audit's word-fo
 
 *Every "n of 5" count below is computed from the results files (fact placeholders in `reports/readme_top_template.md`).*
 
-**Positive results.** Each model is compared with its random-init twin (same architecture and tokenizer, no learning) and, since the [independent audit](reports/audit_lexical.md), with three word-form baselines that encode only the spelling of the names.
-- **Math fields form a map.** Field centroids from 17 fields correlate with how often mathematicians cross-list papers between those fields on arXiv. This was the primary preregistered hypothesis (H-A1). It holds beyond the twin in all 5 models (Qwen3.5-2B/0.8B, Qwen2.5-1.5B, Qwen2.5-Math-1.5B, Gemma-4-E2B), every random-init twin is near zero or below, and it exceeds all three word-form baselines in all 5 models (Qwen3.5-2B: ρ = 0.39; the names' character 3-grams: 0.10). In Qwen3.5-2B, the only model run against the fastText and text-embedding baselines, the map is stronger than in fastText word vectors and about as strong as in a dedicated text-embedding model ([Qwen3-Embedding-0.6B](https://huggingface.co/Qwen/Qwen3-Embedding-0.6B)).
+**Positive results.** Each model is compared with its random-init twin (same architecture and tokenizer, no learning) and, since the [independent audit](reports/audit_lexical.md), with three baselines built from the names alone, without context: their spelling (character 3-grams, a bag of words) and the model's own context-free token embeddings.
+- **Math fields form a map.** Field centroids from 17 fields correlate with how often mathematicians cross-list papers between those fields on arXiv. This was the primary preregistered hypothesis (H-A1). It holds beyond the twin in all 5 models, every random-init twin is near zero or below, and it exceeds all three name-only baselines in all 5 models (Qwen3.5-2B: ρ = 0.39; the names' character 3-grams: 0.10, not significant; the context-free token embeddings: 0.16 to 0.22, a weak map significant in all 5 models). In Qwen3.5-2B, the only model run against the fastText and text-embedding baselines, the map is stronger than in fastText word vectors and about as strong as in a dedicated text-embedding model ([Qwen3-Embedding-0.6B](https://huggingface.co/Qwen/Qwen3-Embedding-0.6B)).
 - **The space chain is ordered**: T0 ⊃ T1 ⊃ Hausdorff ⊃ … ⊃ Banach ⊃ Hilbert space. The full preregistered test (Robinson score and leave-one-out order, Holm-corrected, above the twin) holds in all 5 models; spelling baselines do not order it, and it stays ordered within its metric block (metrizable … Hilbert) in all 5 models.
 - **Axiom offsets beyond word form, suggestive only.** An associativity direction exceeds every word-form baseline in all 5 models, and the "commutative" direction predicts abelian group − group in all 5 models.
   - *How the test works:* for each axiom, take every pair of structures that differ only in that axiom, subtract their representations, and measure how parallel these difference vectors are (mean pairwise cosine in the full residual stream) against random pairs of the same structures. Step-by-step figure: [`axioms_explainer_qwen3.5-2b.png`](reports/figures/axioms_explainer_qwen3.5-2b.png).
 - **Concrete ↔ abstract is the top principal axis** of math-concept space in Qwen3.5-2B; pure ↔ applied is the second. Abstraction is rated by three LLM judges from other model families.
 
 **Negative and null results:**
-- **Most of the axiom geometry is word form (audit).** Difference vectors between structures that differ in one axiom are more parallel than random pairs (Holm-significant for associativity in all 5 models and commutativity in all 5 models), but the names' character 3-grams alone pass the same test for all four axioms, and X → wooden X or X → zorbic X is about as consistent as X → commutative X; "commutative" is the most consistent of the three in 1 of 5 models (Gemma-4-E2B). Identity's offset comes from two pairs that repeat the same head-noun change with and without "commutative".
+- **Most of the axiom geometry is word form (audit).** Difference vectors between structures that differ in one axiom are more parallel than random pairs (Holm-significant for associativity in all 5 models and commutativity in all 5 models), but the names' character 3-grams alone pass the same test for all four axioms, and adding an irrelevant real word (X → wooden X) or a made-up one (X → zorbic X) is about as consistent as X → commutative X; "commutative" is the most consistent of the three in 1 of 5 models (Gemma-4-E2B). Identity's offset comes from two pairs of pairs that repeat the same head-noun change with and without "commutative".
 - **The ring chain's order is not established beyond its head nouns (audit).** It passes the preregistered test in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B), but its names end in contiguous blocks of head nouns (rng | ring | … domain | field), clusters of head nouns without any order pass the same test in up to 55% of simulations, and the six "… domain" items are ordered among themselves in 1 of 5 models (Qwen2.5-Math-1.5B).
 - **Lie groups and other group objects: word form (audit).** The analogies topological group − group ≈ topological space − set and Lie group − topological group ≈ smooth manifold − topological space clear their null in all 5 models, but the names' character 3-grams are more parallel than the models (models above every word-form baseline: none of the 5 models).
-- **Angles are not a circle.** In every trained model, "330 degrees" is farther from "0 degrees" than neighbouring angles are from each other (closure ratio 1.84–2.59), and the angles' geometry tracks the bare numerals. This falsifies one of our preregistered predictions. Numbers lie on a generalized helix whose periodic parts need not show in the first two principal components ([Kantamneni & Tegmark 2025](https://arxiv.org/abs/2502.00873)), so we also looked in all 10 planes of the top 5 components. That test was post-hoc, but specified in writing and committed before it ran ([addendum](reports/prereg_addendum_3d.md)). No model has a significant closed cycle there either.
-- **The map is not a clean hierarchy (H-A2).** Under the preregistered measure (cophenetic correlation with a five-branch super-tree), the trained models beat shuffled trees in 4 of 5 models (all but Qwen2.5-Math-1.5B), but beat their random-init twins in none. By cophenetic correlation, no model is more tree-like than a Gaussian cloud with the same spectrum; relative Gromov δ, a second tree measure, does call 4 of 5 models (all but Gemma-4-E2B) more tree-like than that cloud.
+- **Angles are not a circle.** In all 5 models, "330 degrees" is farther from "0 degrees" than neighbouring angles are from each other (closure ratio 1.84–2.59), and the angles are ordered like a line (line ρ 0.43 to 0.62; twins -0.01 to 0.25). This falsifies one of our preregistered predictions. Numbers lie on a generalized helix whose periodic parts need not show in the first two principal components ([Kantamneni & Tegmark 2025](https://arxiv.org/abs/2502.00873)), so we also looked in all 10 planes of the top 5 components. That test was post-hoc, but specified in writing and committed before it ran ([addendum](reports/prereg_addendum_3d.md)). Models with a significant closed cycle of angles there: none of the 5 models.
+- **The map is not a clean hierarchy (H-A2).** Under the preregistered measure (cophenetic correlation with a five-branch super-tree), the trained models beat shuffled trees in 4 of 5 models (all but Qwen2.5-Math-1.5B), but beat their random-init twins in none of the 5 models. By cophenetic correlation, a model is more tree-like than a Gaussian cloud with the same spectrum in none of the 5 models; relative Gromov δ, a second tree measure, does call 4 of 5 models (all but Gemma-4-E2B) more tree-like than that cloud, but by δ, all 5 twins are more tree-like still (0.06 to 0.09 vs 0.23 to 0.29), so δ gives no support beyond the twin.
 - **Over a trillion tokens of math pretraining did not sharpen the map.** Qwen2.5-Math vs its base ([Qwen2.5-Math report](https://arxiv.org/abs/2409.12122)) shows no detectable difference (H-A3).
 - **Specificity to mathematics is untested.** Biology, chemistry, geology and astronomy topics cluster by field more strongly than most random sets of four math fields, in all 5 models. But these controls are whole sciences, not sub-fields, so the comparison confounds domain with granularity and cannot show that the map is unspecific to mathematics (audit).
 - **The causal test was inconclusive.** The ring chain failed the accuracy gate. For the space chain, noise in the chain subspace hurt accuracy only slightly more than random-subspace noise, and only at the larger noise scales.
@@ -99,9 +99,9 @@ The results are ordered by how well they survive the independent audit's word-fo
   - The full-space criterion fails because line ρ exceeds circle ρ for days in all 5 models and for months in all 5 models.
   - In the top-2 principal-component plane, where [Engels et al.](https://arxiv.org/abs/2405.14860) show their raw-activation circles, days go round in perfect order in all 5 models and months in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B). But that score also rewards an open arc.
   - Counting only loops that close in their plane (the same addendum), days close in the top-2 plane in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B). Months close in a lower plane (PC2–PC3 or PC4–PC5; p < .05 each, unadjusted) in 3 of 5 models (all but Qwen3.5-0.8B and Qwen2.5-1.5B).
-  - A closed months loop also appears in 1 of 5 twins (those of Qwen2.5-1.5B), so this test is not fully specific. All outcomes are reported.
+  - A closed months loop also appears in 1 of 5 twins (that of Qwen2.5-1.5B), so this test is not fully specific. All outcomes are reported.
 
-**Methods findings.** Before touching LLM data, we simulated partial regression on distance matrices. When the nuisance matrix is only a proxy of a confounder, it rejects true nulls far too often. That is why the field-map tests (H-A1 to H-A3) are paired contrasts against the random-init twin with concept-bootstrap CIs. The audit then showed that a random-init twin does not control for word form, because it scrambles even exact word composition: studies of concept geometry need spelling-only baselines too.
+**Methods findings.** Before touching LLM data, we simulated partial regression on distance matrices. When the nuisance matrix is only a proxy of a confounder, it rejects true nulls far too often. That is why the field-map tests are paired contrasts with concept-bootstrap CIs: H-A1 and H-A2 against the random-init twin, H-A3 between Qwen2.5-Math and its base model. The audit then showed that a random-init twin does not control for word form, because it can scramble even exact word composition (strongly in the Qwen3.5 twins): studies of concept geometry need name-only baselines too.
 
 <!-- TOP:END -->
 
@@ -115,10 +115,10 @@ The scorecard of every test in every model is [at the top of this README](#score
 **Headline: every model vs its random-init twin, at the preregistered layer (relative depth 0.5).**
 
 The columns are:
-- **Axiom offsets:** the mean cosine of same-axiom difference vectors in the group-like lattice (the random-pair null's 95th percentile is about 0.2; the scorecard has the significance).
+- **Axiom offsets:** the mean cosine of same-axiom difference vectors in the group-like lattice (the random-pair null's 95th percentile is 0.19 to 0.26 across axioms and models; the scorecard has the significance).
 - **Field ρ:** Spearman correlation between the field-centroid RDM and arXiv cross-listing distance.
-- **Field ρ, word form:** the same statistic on the names' character 3-grams / on the model's own input embeddings summed over each name's tokens (audit; no context).
-- **LOO acc:** leave-one-out field accuracy over 17 fields (chance ≈ 0.06).
+- **Field ρ, word form:** the same statistic on the names' character 3-grams / on the model's own input embeddings summed over each name's tokens (audit; no context; the second carries token meaning).
+- **LOO acc:** leave-one-out field accuracy over 17 fields (chance 0.06).
 
 | Model | Assoc. / identity / divisible / commutative offsets (twin: commutative) | Field ρ trained | Field ρ twin | Field ρ, word form | Δ 95% CI | LOO acc trained / twin | Ring-chain Robinson (twin) | Angles closure (circle < 2) |
 |---|---|---|---|---|---|---|---|---|
@@ -137,13 +137,13 @@ The columns are:
 
 **Methods check.** In 200 simulations, partial RDM regression rejected a true null 52.5% of the time when the nuisance was a noisy proxy of a confounder. That is why the field-map tests are paired contrasts with the twin.
 
-**Independent audit (post-hoc; [report](reports/audit_lexical.md), [addendum](reports/prereg_addendum_lexical.md) committed before it ran).** The random-init twin was meant to measure what the spelling of a name alone produces, but it scrambles even exact word composition: in the Qwen3.5-2B twin, magma → semigroup and commutative magma → commutative semigroup have difference vectors with cosine 0.04 (trained 0.86; a bag of words gives 1). So every test was rerun on three word-form baselines, with exactly the same statistic and null:
-- **Field map: holds.** It exceeds all three word-form baselines in all 5 models.
+**Independent audit (post-hoc; [report](reports/audit_lexical.md), [addendum](reports/prereg_addendum_lexical.md) committed before it ran).** The random-init twin was meant to measure what the spelling of a name alone produces, but it can scramble even exact word composition: in the Qwen3.5-2B twin, magma → semigroup and commutative magma → commutative semigroup have difference vectors with cosine 0.04 (trained 0.86; a bag of words gives 1; how much each twin keeps: Qwen3.5-2B 0.04 to 0.07; Qwen3.5-0.8B 0.12 to 0.20; Qwen2.5-1.5B 0.31 to 0.41; Qwen2.5-Math-1.5B 0.30 to 0.39; Gemma-4-E2B 0.77 to 0.81). So every test was rerun on three baselines built from the names alone (character 3-grams, a bag of words, the model's context-free token embeddings), with the same statistic and type of null (the baselines' leave-one-out null has 300 permutations; chain tests skip the bag of words):
+- **Field map: holds.** It exceeds all three baselines in all 5 models. Spelling alone gives no significant map; the context-free token embeddings give a weak one (ρ 0.16 to 0.22).
 - **Space chain: holds.** Spelling does not order it, and it is ordered within its metric block (metrizable … Hilbert space) in all 5 models and within its separation-axiom block in 1 of 5 models (Qwen3.5-2B).
 - **Ring chain: not established beyond its head nouns.** Clusters of head nouns (rng | ring | … domain | field) with no order pass the preregistered chain test in up to 55% of simulations; the six "… domain" items are ordered among themselves in 1 of 5 models (Qwen2.5-Math-1.5B).
 - **Axiom offsets: mostly word form.** The names' character 3-grams alone pass the same test for all four axioms, and "X → wooden X" or "X → zorbic X" is about as consistent as "X → commutative X"; "commutative" is the most consistent of the three in 1 of 5 models (Gemma-4-E2B). Beyond word form: associativity in all 5 models; the "commutative" direction predicts abelian group − group, which shares no word with it, in all 5 models.
 - **Group objects: word form.** The parallelograms clear their null in all 5 models, but they share "topological" or "algebraic" on both sides; models above every word-form baseline: none of the 5 models.
-- **Precision:** Holm now covers all 8 preregistered tests, the leave-one-out order nulls have 10,000 permutations, BCa intervals correct the downward bootstrap bias of the field ρ, and four extra random seeds show the spread of the confirmatory model's twin.
+- **Precision:** Holm now covers all 8 preregistered tests, the trained models' and twins' leave-one-out order nulls have 10,000 permutations, BCa intervals correct the downward bootstrap bias of the field ρ, and four extra random seeds show the spread of the confirmatory model's twin.
 
 ### Figures
 
@@ -155,7 +155,7 @@ Each figure states what it shows, what to notice, and its main caveat. Pictures 
 
 - **What you see:** each line is a 95% bootstrap CI, one per model or comparison. Blue means the CI excludes 0.
 - **What to notice:**
-  - The field map beats the random-init twin and the names' character 3-grams (audit) in all five models.
+  - The field map beats the random-init twin in all 5 models and the names' character 3-grams (audit) in all 5 models.
   - In Qwen3.5-2B, the only model run against baselines, it beats fastText but not Qwen3-Embedding.
   - Math pretraining (H-A3) and the hierarchy test (H-A2) are nulls.
 - **Caveat:** these CIs are unadjusted; the Holm decisions are in the scorecard. The Judges-vs-Mathlib line is a plain bootstrap of one correlation, not a paired contrast. [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-forest).
@@ -175,7 +175,7 @@ Each figure states what it shows, what to notice, and its main caveat. Pictures 
 
 ![distance matrices](reports/figures/field_rdms_qwen3.5-2b.png)
 
-- **What you see:** the same three distance matrices, colour = rank of each distance within its matrix (Spearman compares ranks). Rows are in one fixed order, grouped by the five super-tree branches (geometry & topology, algebra & number theory, foundations, analysis, applied).
+- **What you see:** the same three distance matrices, colour = rank of each distance within its matrix (Spearman compares ranks). Rows are in one fixed order, grouped by the five super-tree branches (geometry & topology, algebra & number theory, foundations & discrete, analysis, applied).
 - **What to notice:** the trained matrix partly reproduces the arXiv matrix's light algebra block and dark applied rows; the twin's matrix has no such structure.
 - **Caveat:** a fixed row order is essential; re-clustering each matrix separately would create blocks out of noise. [Interactive, with linked hover](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-rdm).
 
@@ -226,8 +226,8 @@ For days and months, every model:
 | digits_0_330 | 0.33 · PC2–PC3 · p=0.3287 (twin 0.33) | 0.17 · PC2–PC3 · p=0.9950 (twin 0.25) | 0.25 · PC2–PC3 · p=0.7912 (twin 0.25) | 0.17 · PC2–PC4 · p=0.9910 (twin 0.25) | 0.33 · PC2–PC5 · p=0.3287 (twin 0.25) |
 
 - **Days:** close in the top-2 plane in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B).
-- **Months:** close in a lower plane (PC2–PC3, PC4–PC5) in 3 of 5 models (all but Qwen3.5-0.8B and Qwen2.5-1.5B).
-- **Twin:** a closed months loop also appears in 1 of 5 twins (those of Qwen2.5-1.5B). Word form alone can occasionally produce one, so these p-values (unadjusted, one per cell) are descriptive.
+- **Months:** close in a lower plane (PC2–PC3 or PC4–PC5) in 3 of 5 models (all but Qwen3.5-0.8B and Qwen2.5-1.5B).
+- **Twin:** a closed months loop also appears in 1 of 5 twins (that of Qwen2.5-1.5B). A model without learning can occasionally produce one, so these p-values (unadjusted, one per cell) are descriptive.
 - **Power:** with the closure rule the test is conservative ([amendment 2 of the addendum](reports/prereg_addendum_3d.md)), so it can miss weak cycles.
 
 ![ordered chains in 3-D](reports/figures/chains3d_qwen3.5-2b.png)
@@ -256,9 +256,9 @@ For days and months, every model:
 ![angles: predicted vs found](reports/figures/angles_qwen3.5-2b.png)
 
 - **What you see:** the preregistered prediction, what the model does, the bare numbers 0–330, and the random-init twin as a control.
-- **What to notice:** the angles' geometry matches the numbers' (ρ = 0.84). The model encodes "330 degrees" by its numeral, not by its angle, which falsifies our prediction.
+- **What to notice:** the angles are ordered like the numbers (line ρ 0.56 vs circle ρ 0.29; twin line ρ -0.01), so "330 degrees" sits by its numeral, far from "0 degrees", which falsifies our prediction. The angles' distances also match the bare numbers' (ρ = 0.84), but the twins match them too (0.22 to 0.85), because the prompts contain the numerals.
 - **Caveat:**
-  - The preregistered circle rule is *met* by all 5 twins (Qwen3.5-2B twin: closure 0.80), because a structureless cloud passes it by chance. The informative result is the trained models' line-like order, not the failed rule.
+  - The preregistered circle rule is *met* by all 5 twins (Qwen3.5-2B twin: closure 0.80): without line order their closure ratio is near 1, and their circle-template ρ (0.15 to 0.46, p ≤ 0.0085) beats a near-zero line ρ. The informative result is the trained models' line-like order, not the failed rule.
   - This is one prompt format at this model scale. [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
 
 ![ordered chains](reports/figures/chains_qwen3.5-2b.png)
@@ -294,19 +294,19 @@ For days and months, every model:
 ![offset cosine matrices](reports/figures/lattice_cosines_qwen3.5-2b.png)
 
 - **What you see:** the cosine between every pair of single-axiom difference vectors, grouped by axiom.
-- **What to notice:** bright red diagonal blocks mean "adding this axiom" is a consistent direction. They are clear for associativity and commutativity, and weaker for identity and divisibility. The dot plot on the right shows that the offsets survive removing the token-count direction, and that the names' character 3-grams (×), with no model at all, are about as parallel: associativity exceeds every word-form baseline with its lexically disjoint pairs passing the null in all 5 models (divisibility in 1 of 5 models (Gemma-4-E2B), identity in none of the 5 models, commutativity in none of the 5 models). Identity's bundle comes from two pairs that repeat the same head-noun change with and without "commutative" (cosine 0.83 to 0.91); its other cosines average 0.03 to 0.13.
+- **What to notice:** bright red diagonal blocks mean "adding this axiom" is a consistent direction. They are clear for associativity and commutativity, and weaker for identity and divisibility. The dot plot on the right shows that the offsets survive removing the token-count direction, and that the names' character 3-grams (×), with no model at all, are about as parallel: associativity exceeds every word-form baseline with its lexically disjoint pairs passing the null in all 5 models (divisibility in 1 of 5 models (Gemma-4-E2B), identity in none of the 5 models, commutativity in none of the 5 models). Identity's bundle comes from two pairs of pairs that repeat the same head-noun change with and without "commutative" (cosine 0.83 to 0.91); its other cosines average 0.03 to 0.13.
 - **Caveat:** hatched cells are cross-axiom pairs that share a structure; their cosine is about ±0.5 even for random vectors, so they carry no evidence. [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-cosines).
 
 ![group objects](reports/figures/group_objects.png)
 
 - **What you see:** left, how parallel the three parallelograms are (for example, Lie group − topological group vs smooth manifold − topological space) in every model and twin. Right, where "group" and "smooth manifold" rank among the neighbours of "Lie group".
-- **What to notice:** the parallelograms clear the null in all 5 models (Qwen3.5-2B: 0.40), but the names' character 3-grams (×) are more parallel (0.61): every parallelogram shares "topological" or "algebraic" on both sides. Trained models place "Lie group" near both parents. The twins rank "group" first or second and, except for Gemma's twin, put "smooth manifold" far away.
-- **Caveat:** exploratory. Each row marks the trained model's null (dark tick) and the twin's own null (small grey tick); the twins of Qwen2.5-1.5B and Qwen2.5-Math also clear theirs (p = 0.035 and 0.041). The twins' closeness to "group" is lexical (shared token). [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-groups).
+- **What to notice:** the parallelograms clear the null in all 5 models (Qwen3.5-2B: 0.40), but the names' character 3-grams (×) are more parallel (0.61): every parallelogram shares "topological" or "algebraic" on both sides. Trained models place "Lie group" near both parents ("smooth manifold" ranks 6–10). The twins rank "group" 1–2 and "smooth manifold" 6–65; Gemma is the exception, whose twin ranks "smooth manifold" 6, closer than its trained model (10).
+- **Caveat:** exploratory. Each row marks the trained model's null (dark tick) and the twin's own null (small grey tick); 2 of 5 twins (those of Qwen2.5-1.5B and Qwen2.5-Math-1.5B) also clear theirs, with p = 0.035 and 0.041. The twins' closeness to "group" is lexical (shared token). [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-groups).
 
 ![partial-operation lattice](reports/figures/partial_operation.png)
 
 - **What you see:** a negative result. Offset consistency for the partial-operation lattice (semigroupoid, small category, groupoid vs semigroup, monoid, group) in all models and twins, against the random-pair null.
-- **What to notice:** no axis clears the null in Qwen3.5-2B ("total" operation: 0.29, null 95th percentile 0.54).
+- **What to notice:** models with an axis that clears the null: none of the 5 models (Qwen3.5-2B, "total" operation: 0.29, null 95th percentile 0.54).
 - **Caveat:** with 6 items and 2–3 pairs per axis, this test has little power; "no evidence" is not evidence of absence. [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-partial).
 
 #### Concrete ↔ abstract
@@ -353,7 +353,7 @@ flowchart LR
 | `baselines`, `smds` | fastText / Qwen3-Embedding / infini-gram baselines for the field map; supervised-MDS fits of the families (confirmatory model only) | `results/mvp/{baselines,smds}.json` |
 | `judges`, `mathlib`, `axes` | LLM-judge abstraction ratings; their validation against Mathlib import depth; principal axes vs abstraction and pure/applied | `data/judge_ratings.csv`, `data/mathlib_depth.csv`, `results/<cfg>/{judges,mathlib,axes}.json` |
 | `causal`, `sae`, `compare` | Gated noise-injection test; Qwen-Scope SAE codes; paired model contrast (H-A3) | `results/<cfg>/*.json` |
-| `lexical` | Independent audit (post-hoc, [addendum](reports/prereg_addendum_lexical.md)): every field-map, chain and lattice test rerun on word-form baselines (character 3-grams, word bag, layer-0 token bag); duplicated vs disjoint axiom pairs; a held-out abelian-group test; nonce modifiers; exact within-block chain order; a block-only simulation; BCa intervals | `results/<cfg>/lexical.json` |
+| `lexical` | Independent audit (post-hoc, [addendum](reports/prereg_addendum_lexical.md)): every field-map, chain and lattice test rerun on word-form baselines (character 3-grams, word bag, layer-0 token bag; the word bag is skipped for chains, whose one-word items give it a constant RDM); duplicated vs disjoint axiom pairs; a held-out abelian-group test; nonce modifiers; exact within-block chain order; a block-only simulation; BCa intervals | `results/<cfg>/lexical.json` |
 | `twins` | Independent audit: the confirmatory model's twin statistics over 5 random-init seeds (`configs/twin_seeds.yaml`) | `results/twin_seeds/twins.json` |
 | `report` | Tables, per-model figures and explorer data for one config | `reports/<cfg>_results.md`, `reports/figures/`, `site/data/{index,<model>}.json` |
 | `paper` | Cross-model figures (hero, depth curves, forest), the README blocks (axiom GIF, scorecard, highlights, results), `reports/summary.md`, `reports/audit_lexical.md`, `paper/paper.md` and PDF, with every number and count resolved from the results JSON | `README.md`, `reports/summary.md`, `reports/audit_lexical.md`, `paper/` |
@@ -367,7 +367,7 @@ flowchart LR
 
 ## Install and run
 
-Requirements: Python 3.12 through [uv](https://docs.astral.sh/uv/); an NVIDIA GPU with ≥ 8 GB, using CUDA 13 wheels per the [uv PyTorch guide](https://docs.astral.sh/uv/guides/integration/pytorch/); about 50 GB of disk (measured: 43 GB of model weights, of which the three judge models are 19 GB, plus 4 GB of activations); pandoc with xelatex for the PDF.
+Requirements: Python 3.12 through [uv](https://docs.astral.sh/uv/); an NVIDIA GPU with ≥ 8 GB, using CUDA 13 wheels per the [uv PyTorch guide](https://docs.astral.sh/uv/guides/integration/pytorch/); about 50 GB of disk (measured: 43 GB of model weights, of which the three judge models are 19 GB, plus 6 GB of activations); pandoc with xelatex for the PDF.
 
 ```bash
 git clone https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms
@@ -391,7 +391,25 @@ uv run pytest
 uv run python run.py all --config configs/mvp.yaml
 ```
 
-Repeat with `configs/robustness.yaml`, `configs/gemma.yaml` and (optionally) `configs/mvp_variants.yaml`; for the audit's twin seeds run `extract` and `twins` with `configs/twin_seeds.yaml`. Then build the generated README blocks (axiom GIF, scorecard and highlights at the top, results below), summary and paper:
+`all` runs every phase, including the judges, causal test, SAE, baselines (which need the fastText `wiki-news-300d-1M` vectors) and SMDS, which only the confirmatory config uses. For the other configs, run only the phases they use, in this order (these are the phases behind the shipped `results/`):
+
+```bash
+for p in extract map hierarchy shapes chainfreq lattice structures posthoc compare lexical report; do uv run python run.py $p --config configs/robustness.yaml; done
+```
+
+```bash
+for p in extract map hierarchy shapes chainfreq lattice structures posthoc lexical report; do uv run python run.py $p --config configs/gemma.yaml; done
+```
+
+```bash
+for p in extract map shapes chainfreq lattice structures posthoc lexical report; do uv run python run.py $p --config configs/mvp_variants.yaml; done
+```
+
+```bash
+for p in extract twins; do uv run python run.py $p --config configs/twin_seeds.yaml; done
+```
+
+The `mvp_variants` config is optional. Then build the generated README blocks (axiom GIF, scorecard and highlights at the top, results below), summary and paper:
 
 ```bash
 uv run python run.py paper --config configs/mvp.yaml
@@ -403,37 +421,37 @@ To preview the explorable article locally (it fetches `site/data/*.json`, so it 
 uv run python -m http.server 8791 --directory site
 ```
 
-**Runtime** on an RTX 5070 Laptop (8 GB):
-- Extraction of a model and its twin (timestamps in `logs/*_extract.log`): about 35 minutes for Qwen3.5-0.8B and 38 minutes for Qwen3.5-2B with its four template conditions (hybrid linear attention falls back to the PyTorch implementation), about 20 minutes for each Qwen2.5 model, about 35 minutes for Gemma.
-- Analysis: about 1 hour per config, dominated by the shape negative control.
+**Runtime** on an RTX 5070 Laptop (8 GB), measured from the timestamps in `logs/`:
+- Extraction of a model and its twin, field-neutral and family conditions (`logs/*_extract.log`, first model load to last save): about 38 minutes for Qwen3.5-2B (its two exploratory template conditions took another 46 minutes) and 35 minutes for Qwen3.5-0.8B, both slowed because Qwen3.5's hybrid linear-attention layers run transformers' PyTorch `torch_chunk_gated_delta_rule` (neither the `fla` nor the `kernels` package is installed, so no fused kernel is used); about 17 minutes for each Qwen2.5 model; about 35 minutes for Gemma.
+- Analysis: the `shapes` phase, with its 10,000-permutation leave-one-out nulls, is the longest, about 23 minutes per model and its twin (`logs/*_shapes.log`); every other phase takes minutes.
 
 ## Repository layout
 
 | Path | Contents |
 |---|---|
 | `run.py` | Single entry point that calls named phases |
-| `src/mathgeom/data/` | Glossary fetching/parsing, arXiv field distances, leakage flags, concept table, LLM judges |
+| `src/mathgeom/data/` | Glossary fetching/parsing, arXiv field distances, leakage flags, concept table, LLM judges, Mathlib import depth |
 | `src/mathgeom/prompts/templates.py` | Field-neutral, field-revealing, family and no-domain templates |
 | `src/mathgeom/models/load.py` | Trained and random-init loading (transformers 5.x), Gemma PLE-on-CPU placement |
 | `src/mathgeom/extract.py` | Residual-stream extraction with prompt logging |
 | `src/mathgeom/geometry/` | Centering, all-but-the-top, RDMs; shape statistics; offset/analogy statistics |
-| `src/mathgeom/stats/` | Freedman–Lane RDM regression and bootstrap |
-| `src/mathgeom/analyses/` | Field map, shapes, lattices, causal test, SAE, calibration simulations |
-| `src/mathgeom/report/` | Tables (`render.py`), the visual system (`style.py`: palette checked for colour-vision deficiency), shared figure data (`figdata.py`: unsupervised projections, exact low-dimensional lattice coordinates), static figures (`figures/`), the explorer export (`site.py`), and the paper/summary/README builder (`paper.py`; placeholders resolved from results) |
+| `src/mathgeom/stats/` | Freedman–Lane RDM regression and BCa intervals (the stratified paired concept bootstrap is in `analyses/map_fields.py`) |
+| `src/mathgeom/analyses/` | Field map, hierarchy, shapes, lattices, text baselines, SMDS fits, causal test, SAE, calibration simulations, the audit's word-form baselines (`lexical.py`) |
+| `src/mathgeom/report/` | Tables (`render.py`), the visual system (`style.py`: palette checked for colour-vision deficiency), shared figure data (`figdata.py`: unsupervised projections, exact low-dimensional lattice coordinates), static figures (`figures/`), the explorer export (`site.py`), the audit's tables and decision rules (`audit.py`), and the paper/summary/README builder (`paper.py`; placeholders resolved from results) |
 | `configs/` | `fields.yaml` (field ↔ glossary ↔ arXiv ↔ branch), `families.yaml` (ground truth with sources), run configs |
 | `docs/` | `prereg.md`, `deviations.md` (every post-hoc change), `data_card.md`, `figures.md` (figure catalogue, visual system, integrity rules, site data) |
-| `reports/` | Per-config results (generated), `summary.md` (generated), `experiments.md` (learnings: what was tried and why) |
+| `reports/` | Per-config results (generated), `summary.md` and `audit_lexical.md` (generated), the two post-hoc addenda (`prereg_addendum_*.md`), `experiments.md` (learnings: what was tried and why) |
 | `paper/` | `template.md`, the generated `paper.md` and `paper.pdf` |
 | `site/` | Explorable article (`index.html`, `app.js`, `style.css`) reading `site/data/*.json`, with interactive 3-D views; deployed to GitHub Pages |
 | `tests/` | Synthetic shape recovery, type-I calibration, leakage, extraction equivalence, report decision rules (pre-registered chain and Holm rules), the audit's word-form baselines and checks (kernel ridge = sklearn `Ridge`, exact block-order p, held-out-pair null, BCa), generated-docs and site consistency |
 
 ## Technologies
 
-PyTorch 2.14 (CUDA 13), Hugging Face `transformers` 5.x, `accelerate` and `huggingface_hub`, NumPy/SciPy/scikit-learn/statsmodels, pandas/pyarrow, [`smds`](https://github.com/UKPLab/supervised-multidimensional-scaling) (supervised MDS), BeautifulSoup with the MediaWiki API, wordfreq, the [infini-gram API](https://infini-gram.io/api_doc), matplotlib with adjustText (label placement), Plotly.js 2.35 (explorable article), pandoc and xelatex (paper), uv, GitHub Actions/Pages. Exact versions are pinned in `uv.lock`.
+PyTorch 2.14 (CUDA 13), Hugging Face `transformers` 5.x, `accelerate` and `huggingface_hub`, NumPy/SciPy/scikit-learn/statsmodels, pandas/pyarrow, [`smds`](https://github.com/UKPLab/supervised-multidimensional-scaling) (supervised MDS), BeautifulSoup with the MediaWiki API, wordfreq, the [infini-gram API](https://infini-gram.readthedocs.io/en/latest/api.html), matplotlib with adjustText (label placement), Plotly.js 2.35 (explorable article), pandoc and xelatex (paper), uv, GitHub Actions/Pages. Exact versions are pinned in `uv.lock`.
 
 ## Related work this builds on
 
-- Engels et al. 2024, *Not All Language Model Features Are (One-Dimensionally) Linear*, [arXiv:2405.14860](https://arxiv.org/abs/2405.14860).
+- Engels et al. 2024, *Not All Language Model Features Are One-Dimensionally Linear* (ICLR 2025), [arXiv:2405.14860](https://arxiv.org/abs/2405.14860).
 - Li et al. 2024, *The Geometry of Concepts*, [arXiv:2410.19750](https://arxiv.org/abs/2410.19750).
 - Karkada et al. 2026, *Symmetry in language statistics shapes the geometry of model representations*, [arXiv:2602.15029](https://arxiv.org/abs/2602.15029).
 - Park et al. 2024, *The Geometry of Categorical and Hierarchical Concepts in Large Language Models*, [arXiv:2406.01506](https://arxiv.org/abs/2406.01506), and the critique by Golechha et al., *Intricacies of Feature Geometry in Large Language Models* (ICLR 2025 blog track, [iclr.cc/virtual/2025/poster/31349](https://iclr.cc/virtual/2025/poster/31349)), which motivates the random-init twin.
@@ -442,7 +460,9 @@ PyTorch 2.14 (CUDA 13), Hugging Face `transformers` 5.x, `accelerate` and `huggi
 - Kantamneni & Tegmark 2025, *Language Models Use Trigonometry to Do Addition*, [arXiv:2502.00873](https://arxiv.org/abs/2502.00873).
 - Gurnee & Tegmark 2023, *Language Models Represent Space and Time*, [arXiv:2310.02207](https://arxiv.org/abs/2310.02207); Modell et al. 2025, *The Origins of Representation Manifolds in Large Language Models*, [arXiv:2505.18235](https://arxiv.org/abs/2505.18235).
 - Kvinge et al. 2025, *Probing the Limits of Mathematical World Models in LLMs* (ICML 2025 workshop poster, [icml.cc/virtual/2025/49128](https://icml.cc/virtual/2025/49128)).
-- Mu & Viswanath 2018, *All-but-the-Top*, [arXiv:1702.01417](https://arxiv.org/abs/1702.01417).
+- Berlioz 2021, *ArGoT: A Glossary of Terms extracted from the arXiv*, [arXiv:2109.02801](https://arxiv.org/abs/2109.02801): static word embeddings of arXiv math terms, the closest earlier work on the geometry of mathematical concepts.
+- Mu, Bhat & Viswanath 2018, *All-but-the-Top* (ICLR 2018), [arXiv:1702.01417](https://arxiv.org/abs/1702.01417).
+- Statistics used throughout: the Mantel test (Mantel 1967, [PMID 6018555](https://pubmed.ncbi.nlm.nih.gov/6018555/)), representational similarity analysis (Kriegeskorte et al. 2008, [doi:10.3389/neuro.06.004.2008](https://doi.org/10.3389/neuro.06.004.2008)), the Robinson order score (Robinson 1951, [doi:10.2307/276978](https://doi.org/10.2307/276978)), the Ochiai coefficient (Ochiai 1957, [doi:10.2331/suisan.22.526](https://doi.org/10.2331/suisan.22.526)), Holm correction (Holm 1979, [JSTOR 4615733](https://www.jstor.org/stable/4615733)) and BCa intervals (Efron 1987, [doi:10.1080/01621459.1987.10478410](https://doi.org/10.1080/01621459.1987.10478410)).
 - Guillot & Rousset 2013, *Dismantling the Mantel tests*, [doi:10.1111/2041-210X.12018](https://doi.org/10.1111/2041-210X.12018).
 - Anderson & Legendre 1999, *An empirical comparison of permutation methods for tests of partial regression coefficients in a linear model*, [doi:10.1080/00949659908811936](https://doi.org/10.1080/00949659908811936).
 - Berger 1982, *Multiparameter Hypothesis Testing and Acceptance Sampling* (the intersection-union test used for the chain conjunction), [doi:10.1080/00401706.1982.10487790](https://doi.org/10.1080/00401706.1982.10487790).
@@ -450,7 +470,8 @@ PyTorch 2.14 (CUDA 13), Hugging Face `transformers` 5.x, `accelerate` and `huggi
 - Snoek, Miletić & Scholte 2019, *How to control for confounds in decoding analyses of neuroimaging data*, [doi:10.1016/j.neuroimage.2018.09.074](https://doi.org/10.1016/j.neuroimage.2018.09.074).
 - Qwen2.5-Math report (Math Corpus v2, over 1T tokens), [arXiv:2409.12122](https://arxiv.org/abs/2409.12122).
 - Qwen-Scope (Deng et al. 2026), [arXiv:2605.11887](https://arxiv.org/abs/2605.11887).
-- fastText English vectors (Mikolov et al. 2018), [arXiv:1712.09405](https://arxiv.org/abs/1712.09405); infini-gram (Liu et al. 2024), [arXiv:2401.17377](https://arxiv.org/abs/2401.17377).
+- fastText English vectors (Mikolov et al. 2018), [arXiv:1712.09405](https://arxiv.org/abs/1712.09405); infini-gram (Liu et al. 2024), [arXiv:2401.17377](https://arxiv.org/abs/2401.17377), over Dolma v1.7 (Soldaini et al. 2024, [arXiv:2402.00159](https://arxiv.org/abs/2402.00159)).
+- Model reports: Qwen3.5 ([blog](https://qwen.ai/blog?id=qwen3.5)), Qwen2.5 ([arXiv:2412.15115](https://arxiv.org/abs/2412.15115)), Gemma 4 ([arXiv:2607.02770](https://arxiv.org/abs/2607.02770)), Qwen3-Embedding ([arXiv:2506.05176](https://arxiv.org/abs/2506.05176)), Phi-4-mini ([arXiv:2503.01743](https://arxiv.org/abs/2503.01743)).
 
 ## Data and licences
 
@@ -459,7 +480,7 @@ PyTorch 2.14 (CUDA 13), Hugging Face `transformers` 5.x, `accelerate` and `huggi
 - Probed models: Apache-2.0 ([Qwen3.5-2B-Base](https://huggingface.co/Qwen/Qwen3.5-2B-Base), [Qwen3.5-0.8B-Base](https://huggingface.co/Qwen/Qwen3.5-0.8B-Base), [Qwen2.5-1.5B](https://huggingface.co/Qwen/Qwen2.5-1.5B), [Qwen2.5-Math-1.5B](https://huggingface.co/Qwen/Qwen2.5-Math-1.5B), [Gemma-4-E2B](https://huggingface.co/google/gemma-4-E2B)).
 - Qwen-Scope SAEs ([SAE-Res-Qwen3.5-2B-Base-W32K-L0_50](https://huggingface.co/Qwen/SAE-Res-Qwen3.5-2B-Base-W32K-L0_50)): the card's metadata says `license: other` ("qwen"), and the repository's LICENSE file is the Apache-2.0 text.
 - Judge models: Apache-2.0 ([granite-4.0-micro](https://huggingface.co/ibm-granite/granite-4.0-micro), [SmolLM3-3B](https://huggingface.co/HuggingFaceTB/SmolLM3-3B)) and MIT ([Phi-4-mini-instruct](https://huggingface.co/microsoft/Phi-4-mini-instruct)).
-- Baselines: [Qwen3-Embedding-0.6B](https://huggingface.co/Qwen/Qwen3-Embedding-0.6B), Apache-2.0; [fastText wiki-news-300d-1M](https://fasttext.cc/docs/en/english-vectors.html), CC BY-SA 3.0; word counts from the [infini-gram API](https://infini-gram.io/api_doc) (Dolma v1.7 index).
+- Baselines: [Qwen3-Embedding-0.6B](https://huggingface.co/Qwen/Qwen3-Embedding-0.6B), Apache-2.0; [fastText wiki-news-300d-1M](https://fasttext.cc/docs/en/english-vectors.html), CC BY-SA 3.0; word counts from the [infini-gram API](https://infini-gram.readthedocs.io/en/latest/api.html) (index `v4_dolma-v1_7_llama`, i.e. Dolma v1.7).
 - [`smds`](https://github.com/UKPLab/supervised-multidimensional-scaling) (supervised MDS): Apache-2.0.
 - Mathlib4 (judge validation; only names, docs maps and import headers are read): [Apache-2.0](https://github.com/leanprover-community/mathlib4/blob/master/LICENSE).
 
