@@ -4,11 +4,11 @@
 
 ## Why an audit was needed
 
-The preregistration uses a random-init twin (same architecture and tokenizer, random weights) as the measure of "form-only similarity". It is not one. In the Qwen3.5-2B twin, the pairs magma → semigroup and commutative magma → commutative semigroup differ only by the literal word "commutative", yet their difference vectors have cosine 0.04. The trained model gives 0.86, and a bag of words gives 1. A random network scrambles even exact word composition, so "beats the twin" never ruled out that a result follows from the spelling of the names. Mathematical names often spell out their own structure ("commutative monoid", "topological group", "… domain"), so this matters here more than for days or months.
+The preregistration uses a random-init twin (same architecture and tokenizer, random weights) as the measure of "form-only similarity". It is not one. In the Qwen3.5-2B twin, the pairs magma → semigroup and commutative magma → commutative semigroup differ only by the literal word "commutative", yet their difference vectors have cosine 0.04. The trained model gives 0.86, and a bag of words gives 1. A random network can scramble even exact word composition (cosine of such duplicated pairs, range over three axioms: Qwen3.5-2B 0.04 to 0.07; Qwen3.5-0.8B 0.12 to 0.20; Qwen2.5-1.5B 0.31 to 0.41; Qwen2.5-Math-1.5B 0.30 to 0.39; Gemma-4-E2B 0.77 to 0.81), so "beats the twin" never ruled out that a result follows from the names alone. Mathematical names often spell out their own structure ("commutative monoid", "topological group", "… domain"), so this matters here more than for days or months.
 
 ## Method
 
-Every test is rerun, with the same statistic, centring, null and seed as for the trained model, on three **word-form baselines**:
+Every test is rerun, with the same statistic, centring, type of null and seed as for the trained model, on three **word-form baselines** built from the names alone, without context. Two nulls are smaller for the baselines: their leave-one-out order null has 300 permutations (trained models and twins: 10,000), and their field-map Δ bootstrap 1,000 resamples (2,000). The chain, within-block and nonce tests use only the character 3-grams and the layer-0 token bag, because one-word items give the word bag a constant RDM.
 
 | Baseline | What it encodes |
 |---|---|
@@ -32,7 +32,7 @@ The audit also adds:
 | H-B2 associativity offset (confirmatory) | Holm-significant in all 5 models | above every baseline, disjoint pairs pass, in all 5 models | **suggestive beyond word form** |
 | H-B2 commutativity offset (confirmatory) | Holm-significant in all 5 models | beyond word form in none of the 5 models; "commutative" beats "wooden" and "zorbic" in 1 of 5 models (Gemma-4-E2B); the direction predicts abelian group − group in all 5 models | **mostly composition with a word; one held-out pair carries meaning** |
 | H-B2 identity offset (confirmatory) | Holm-significant in none of the 5 models | beyond word form in none of the 5 models; disjoint cosines 0.03 to 0.13 | **lexical duplication** |
-| H-B2 divisibility offset (confirmatory) | Holm-significant in none of the 5 models | beyond word form in 1 of 5 models (Gemma-4-E2B) | **not beyond word form** |
+| H-B2 divisibility offset (confirmatory) | Holm-significant in none of the 5 models | beyond word form in 1 of 5 models (Gemma-4-E2B) | **mostly not beyond word form** |
 | Group objects (exploratory) | parallelograms clear their null in all 5 models | above every baseline in none of the 5 models | **word form** |
 
 ## D1: field map
@@ -45,9 +45,11 @@ The audit also adds:
 | qwen2.5-math-1.5b | 0.390 | 0.105 (0.1353) | -0.017 (0.5205) | 0.201 (0.0112) | +0.285 [0.140, 0.396] | +0.407 [0.223, 0.506] | +0.189 [0.117, 0.317] | 0.588 / 0.261 / 0.249 / 0.372 |
 | gemma-4-e2b | 0.436 | 0.105 (0.1353) | -0.017 (0.5205) | 0.209 (0.0136) | +0.332 [0.190, 0.441] | +0.453 [0.272, 0.566] | +0.227 [0.137, 0.355] | 0.417 / 0.261 / 0.249 / 0.322 |
 
+Spelling alone gives no significant field map (character 3-grams: Mantel p = 0.14; the same in every model, since it needs no model). The layer-0 token bag, which carries the model's learned token meanings without context, gives a weak map: ρ = 0.16 to 0.22, Mantel p = 0.0071 to 0.0303 (unadjusted), significant in all 5 models.
+
 ## D11: bootstrap bias and BCa intervals
 
-Concept resampling duplicates concepts, which pulls resampled ρ toward 0, so the preregistered percentile intervals sit below the point estimates. BCa corrects this; every interval moves up, and no conclusion changes.
+Concept resampling duplicates concepts, which pulls resampled ρ toward 0, so the preregistered percentile intervals of positive ρ sit below the point estimates. BCa corrects this: the trained and Δ intervals move up, and the twins' intervals (negative ρ) move down; the twin's BCa interval lies entirely below 0 in 2 of 5 twins (those of Qwen3.5-2B and Qwen3.5-0.8B). No hypothesis decision changes.
 
 | Model | Statistic | point | bootstrap mean (bias) | percentile 95% CI (pre-registered) | BCa 95% CI |
 |---|---|---|---|---|---|
@@ -221,7 +223,7 @@ Together with the 10,000-permutation LOO p-values (D9), this changes three decis
 | H-B2 identity offset consistency | qwen3.5-2b | 0.0425 | 0.0850 | no |
 | H-B2 divisible offset consistency | qwen3.5-2b | 0.0275 | 0.0825 | no |
 | H-B2 commutative offset consistency | qwen3.5-2b | 0.0010 | 0.0060 | yes |
-| H-B angles circle prediction (decision rule: closure 2.11 < 2 and circle ρ 0.29 > line ρ 0.56; counted with p = 1) | qwen3.5-2b | — | — | not met (prediction falsified) |
+| H-B angles circle prediction (decision rule: closure < 2 and circle ρ > line ρ; observed closure 2.11, circle ρ 0.29, line ρ 0.56; counted with p = 1) | qwen3.5-2b | — | — | not met (prediction falsified) |
 
 ## D9–D10: leave-one-out order, 10,000 permutations, two ridge penalties
 
@@ -335,10 +337,10 @@ Together with the 10,000-permutation LOO p-values (D9), this changes three decis
 - "Group objects combine their parents" is withdrawn as evidence of mathematical knowledge: the parallelograms follow shared words.
 - The ring chain's order is reported as not established beyond its head nouns.
 - "The field map is not specific to mathematics" is withdrawn. The control fields are whole sciences, so the comparison confounds domain with granularity, and specificity is untested.
-- "The twin measures form-only similarity" is corrected everywhere except in the frozen preregistration.
+- "The twin measures form-only similarity" is corrected everywhere except in the frozen preregistration. How much a twin keeps exact word composition depends on the architecture: little in the Qwen3.5 twins, most in Gemma's.
 
 ## Limitations of the audit
 
 - **Post-hoc.** It was prompted by the results. Its tests were fixed in writing before they ran, but the audit's read-only exploration had already seen several of their values (listed in the addendum).
-- **Baselines are lower bounds on word form.** Character 3-grams, bags of words and context-free token embeddings do not exhaust what spelling can carry. Learned morphology, for example, could still contribute to the field map and the space chain.
+- **Baselines are lower bounds on word form.** Character 3-grams, bags of words and context-free token embeddings do not exhaust what the names alone can carry. Learned morphology, for example, could still contribute to the field map and the space chain.
 - **Granularity.** A granularity-matched specificity control, sub-fields of another science, was not run.
