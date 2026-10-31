@@ -40,9 +40,9 @@ def test_freedman_lane_calibrated_when_nuisance_is_correctly_specified():
     """Model RDM = nuisance RDM + pair noise; nuisance correlated with field labels.
 
     With a correctly specified nuisance the Freedman–Lane test should hold ≈5% type-I error.
-    (With a MISspecified nuisance — item-level noise, nonlinear link — our simulations showed
-    15–22% rejections; that is why H-A1's primary test is a paired trained-vs-random-init
-    contrast, not this regression. See reports/.)
+    (With a MISspecified nuisance — item-level noise, nonlinear link — the simulations in
+    analyses/calibration.py showed 22% rejections (results/mvp/calibration.json); that is why H-A1's
+    primary test is a paired trained-vs-random-init contrast, not this regression.)
     """
     rng = np.random.default_rng(2)
     n = 40

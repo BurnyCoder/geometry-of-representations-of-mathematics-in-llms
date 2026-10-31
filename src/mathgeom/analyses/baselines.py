@@ -10,7 +10,7 @@ stronger than what static distributional vectors or a contrastively trained text
   * Qwen3-Embedding-0.6B (Jun 2025, Apache-2.0): last-token pooling with left padding and L2
     normalization, as in the model card https://huggingface.co/Qwen/Qwen3-Embedding-0.6B; the bare
     concept name is embedded (documents need no instruction per the card).
-  * infini-gram counts (Liu et al. 2024, arXiv:2401.17377; API https://infini-gram.io/api_doc):
+  * infini-gram counts (Liu et al. 2024, arXiv:2401.17377; API https://infini-gram.readthedocs.io/en/latest/api.html, index v4_dolma-v1_7_llama):
     n-gram count of each concept name in Dolma v1.7, as a pretraining-scale frequency covariate.
 """
 

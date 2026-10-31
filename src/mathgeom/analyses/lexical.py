@@ -1,11 +1,13 @@
 """Independent audit: word-form (lexical) baselines for the geometric tests (reports/prereg_addendum_lexical.md).
 
 Global context: the pre-registration used the random-init twin as the measure of "form-only similarity",
-but a random network scrambles even exact word-level composition (in the Qwen3.5-2B twin, magma → semigroup
-and commutative magma → commutative semigroup have a difference cosine of 0.04, a bag of words gives 1).
-So "beats the twin" does not rule out that a result follows from the spelling of the names. The baselines
-here encode word form only and are analysed with exactly the statistic, centring, null and seed of the
-trained model's test:
+but a random network can scramble even exact word-level composition (in the Qwen3.5-2B twin, magma → semigroup
+and commutative magma → commutative semigroup have a difference cosine of 0.04, a bag of words gives 1; the
+Qwen2.5 twins keep 0.30–0.41 and Gemma's twin 0.77–0.81). So "beats the twin" does not rule out that a result
+follows from the names alone. The baselines here encode the names without context — spelling (char3, word_bag)
+or context-free token meaning (layer0_bag) — and are analysed with the statistic, centring, null type and seed
+of the trained model's test (permutation counts are smaller where noted: the chains' leave-one-out null has
+300 permutations, the field-map Δ bootstrap 1,000 resamples):
   char3       counts of character 3-grams (preprocess.char_ngrams)
   word_bag    counts of lower-cased words
   layer0_bag  the sum of the model's trained input embeddings over the name's tokens (no context)

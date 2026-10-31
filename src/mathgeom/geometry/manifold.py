@@ -74,7 +74,7 @@ def loo_order_rho(X: np.ndarray, order: np.ndarray, alpha: float | str = 10.0) -
     ȳ + kc·a, where kc is the held-out row of the kernel centred with the training means.
     `alpha="rel"` (D10, sensitivity only) sets α to the mean diagonal of Kc, i.e. the mean squared norm of
     the centred training items, which makes the fit invariant to the scale of X; the pre-registered
-    α = 10 is not (mean ‖x‖² differs by ~1000× between models).
+    α = 10 is not (mean squared norm of the centred ring-chain items ranges from ≈1.4 in Qwen3.5-0.8B to ≈20,000 in Gemma's twin).
     """
     n = len(order)
     rank = np.empty(n)

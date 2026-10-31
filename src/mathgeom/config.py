@@ -1,8 +1,8 @@
 """Configuration: .env (paths, tokens) + YAML run configs (models, layers, seeds).
 
-Global context: every phase in run.py receives one `Config`; artifacts (activations,
-results) go under `artifacts/` (a junction to D:\\AI on the author's machine, because C: is
-nearly full) and small text outputs under `results/` and `reports/` inside the repo.
+Global context: every phase in run.py receives one `Config`; activations go under `artifacts/`
+(a junction to D:\\AI on the author's machine, because C: is nearly full), and the results JSON and
+text outputs under `results/<config>/` and `reports/` inside the repo.
 """
 
 from __future__ import annotations
@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[2]  # repo root (src/mathgeom/config.py 
 @dataclass
 class Config:
     name: str
-    models: list[dict]  # [{id: hf repo, key: short name, random_init: bool, ...}]
+    models: list[dict]  # [{id: hf repo, key: short name, random_control: bool (default true), device_map, twin_seeds}]
     n_perm: int = 10_000
     n_boot: int = 2_000
     seed: int = 0

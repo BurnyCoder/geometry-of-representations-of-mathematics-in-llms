@@ -5,15 +5,16 @@ Global context — two estimands, both compared against controls by PAIRED conce
 1. Graded map (primary): field-level RSA. Field centroids of mean-centered concept
    representations → k×k cosine RDM → Spearman ρ with the arXiv cross-listing distance
    (data/arxiv_fields.py). Inference unit = field: Mantel permutation of field labels
-   (calibrated under the pure null: 4.7% at α=.05 in the 150 simulations of
+   (calibrated under the pure null: rejection rate < 10% at α=.05 is asserted over 150 simulations in
    tests/test_rdm_regression.py::test_field_level_mantel_is_calibrated_under_pure_null) and a max-over-layers
    null for the layer curve.
 2. Clustering: leave-one-out nearest-centroid field accuracy at the concept level.
 
-Why paired controls rather than partial regression: our simulations (tests/ + reports)
-showed that partialling a nuisance RDM that only noisily measures a confounder (lexical form,
-frequency) leaves residual confounding (53% false positives at the field level, 15–22% at the
-concept level). So the falsification test is Δ = statistic(trained) − statistic(control) for
+Why paired controls rather than partial regression: our simulations (analyses/calibration.py →
+results/mvp/calibration.json, 200 runs per scenario) showed that partialling a nuisance RDM that only
+noisily measures a confounder (lexical form, frequency) leaves residual confounding (52.5% false positives
+at the field level; 22% at the concept level with a misspecified nuisance, 6.5% with a correct one).
+So the falsification test is Δ = statistic(trained) − statistic(control) for
 the random-init twin (same tokenizer/architecture, no learning) and the layer-0 embedding,
 with a stratified concept bootstrap where both models see the same resampled concepts.
 Partial-regression coefficients (Freedman–Lane) are reported as secondary/descriptive.
