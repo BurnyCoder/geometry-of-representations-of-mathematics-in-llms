@@ -39,7 +39,7 @@ The full pipeline is `run.py`:
 1. Fetch glossaries at pinned revisions.
 2. Clean the terms and flag leakage.
 3. Sample at most 30 primary concepts per field.
-4. Split the concepts 20% pilot / 80% confirmatory.
+4. Draw a random pilot split (each concept with probability 0.2, 19.6% of the table); the rest is confirmatory.
 5. Compute arXiv field distances.
 6. Run 8 templates per item through each model and its random-init twin.
 
