@@ -205,6 +205,21 @@ def holm_decisions(mp: dict, sh: dict, la: dict, key: str) -> list[dict]:
     return [{"name": n, "p": p, "p_holm": float(pa), "reject": bool(r)} for (n, p), pa, r in zip(rows, padj, rej)]
 
 
+AX_NOUN = {"associative": "associativity", "identity": "identity", "divisible": "divisibility", "commutative": "commutativity"}
+
+
+def axiom_holm_ok(mp: dict, sh: dict, la: dict, key: str, ax: str) -> bool:
+    """docs/prereg.md H-B2 for one axiom: (a) above the random-pair null, here Holm-adjusted over the 8 confirmatory
+    tests, AND (b) consistency greater in the trained model than in its random-init twin."""
+    d = next(x for x in holm_decisions(mp, sh, la, key) if x["name"] == f"H-B2 {ax} offset consistency")
+    return d["reject"] and la[key]["group_like"]["offsets"][ax]["consistency"] > la[key + "__random"]["group_like"]["offsets"][ax]["consistency"]
+
+
+def _and(xs: list[str]) -> str:
+    """'none' / 'a' / 'a and b' / 'a, b and c'."""
+    return "none" if not xs else xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
+
+
 def table_holm(mp: dict, sh: dict, la: dict) -> str:
     """Holm over the 8 confirmatory tests; the angles prediction is a pre-registered decision rule
     (closure < 2 AND circle ρ > line ρ) whose row shows the rule instead of a p-value."""
@@ -213,16 +228,18 @@ def table_holm(mp: dict, sh: dict, la: dict) -> str:
         for d in holm_decisions(mp, sh, la, key):
             if d["name"] == ANGLES_ROW:
                 a = sh[key]["angles"]
-                out.append(f"| H-B angles circle prediction (decision rule: closure {a['closure']:.2f} < 2 and circle ρ {a['circle_rho']:.2f} > line ρ {a['line_rho']:.2f}; "
-                           f"counted with p = {d['p']:.0f}) | {key} | — | — | {'met' if angles_met(a) else 'not met (prediction falsified)'} |")
+                out.append(f"| H-B angles circle prediction (decision rule: closure < 2 and circle ρ > line ρ; observed closure {a['closure']:.2f}, "
+                           f"circle ρ {a['circle_rho']:.2f}, line ρ {a['line_rho']:.2f}; counted with p = {d['p']:.0f}) | {key} | — | — | {'met' if angles_met(a) else 'not met (prediction falsified)'} |")
             else:
                 out.append(f"| {d['name']} | {key} | {_p(d['p'])} | {_p(d['p_holm'])} | {'yes' if d['reject'] else 'no'} |")
     return "\n".join(out)
 
 
-SCORE_LEGEND = ("● significant (Holm-adjusted over the 8 pre-registered confirmatory tests for the axiom and chain rows, the falsified angles rule counted with p = 1; 95% CI excludes 0 for Δ tests) · ◐ raw p < .05 only · ○ not significant · "
-                "✗ pre-registered prediction falsified (every random-init twin meets the angles rule, so it is not specific). "
-                "Chains: p = max(Robinson p, LOO order p), the pre-registered conjunction, and trained Robinson > twin. "
+SCORE_LEGEND = ("● significant: Holm-adjusted over the 8 pre-registered confirmatory tests for the axiom and chain rows (the falsified angles rule counted with p = 1), "
+                "with the trained value above the twin's; for Δ tests the 95% CI lies entirely above 0 (H-A1 also needs Mantel p < .05); for every other row p < .05, unadjusted · "
+                "◐ raw p < .05 but not Holm-significant (axiom and chain rows) · ○ not significant · "
+                "✗ pre-registered prediction falsified (the angles rule is met by {twins}, so it is not specific). "
+                "Chains: p = max(Robinson p, LOO order p), the pre-registered conjunction. "
                 "Numbers: the statistic for the trained model. Audit rows (post-hoc, reports/prereg_addendum_lexical.md): field map = lowest lower CI bound of "
                 "Δρ against the three lexical baselines; ring chain = Robinson score within the “… domain” items; held-out pair = cosine of abelian group − group "
                 "with the “commutative” direction; modifier and group-object rows = trained value vs the highest control; ● = the addendum's decision rule is met.")
@@ -233,7 +250,7 @@ def table_scorecard(r: dict) -> str:
     sc = scorecard_rows(r)
     out = ["| Test | Status | " + " | ".join(sc["models"]) + " |", "|---" * (len(sc["models"]) + 2) + "|"]
     out += [f"| {row['test']} | {row['status']} | " + " | ".join(row["cells"]) + " |" for row in sc["rows"]]
-    return "\n".join(out + ["\n" + SCORE_LEGEND])
+    return "\n".join(out + ["\n" + sc["legend"]])
 
 
 def scorecard_rows(r: dict) -> dict:
@@ -245,10 +262,9 @@ def scorecard_rows(r: dict) -> dict:
     keys = [k for k in MODEL if k in mp]
     ex = lambda ci: ci[0] > 0  # noqa: E731  (CI entirely above 0)
 
-    def axiom(key, name):
-        d = next(x for x in holm_decisions(mp, sh, la, key) if x["name"] == f"H-B2 {name} offset consistency")
-        c = la[key]["group_like"]["offsets"][name]["consistency"]
-        return f"{'●' if d['reject'] else '◐' if d['p'] < 0.05 else '○'} {c:.2f}"
+    def axiom(key, name):  # ● pre-registered H-B2 (axiom_holm_ok); ◐ raw p < .05 with trained > twin
+        o, tw = la[key]["group_like"]["offsets"][name], la[key + "__random"]["group_like"]["offsets"][name]
+        return f"{'●' if axiom_holm_ok(mp, sh, la, key, name) else '◐' if o['p'] < 0.05 and o['consistency'] > tw['consistency'] else '○'} {o['consistency']:.2f}"
 
     def cyc(key):
         e = ph[key]["pc_plane_cycle"]["days"][mp[key]["primary_layer"] - 1]
@@ -262,6 +278,9 @@ def scorecard_rows(r: dict) -> dict:
     def angles(key):
         return f"{'●' if angles_met(sh[key]['angles']) else '✗'} {sh[key]['angles']['closure']:.2f}"
 
+    def h_a1(key):  # pre-registered H-A1: (a) Mantel p < .05 AND (b) the Δρ CI vs the twin excludes 0
+        return ha1_supported(mp, key)
+
     conf_, pre, added = "pre-registered, confirmatory", "pre-registered", "added by plan audit"
     planes = planes_decision(ph, {k: mp[k]["primary_layer"] for k in keys}) if all("pc_planes_cycle" in ph.get(k, {}) for k in keys) else {}
     audit = {}
@@ -271,7 +290,7 @@ def scorecard_rows(r: dict) -> dict:
         audit = scorecard_audit_rows(r, keys)
     a_row = lambda *ids: [audit[i] for i in ids if i in audit]  # noqa: E731
     rows = [  # the results that survive the audit's word-form controls first, each followed by its audit row
-        ("Field map tracks arXiv beyond the twin (H-A1; Δρ CI)", conf_, lambda k: f"{'●' if ex(mp[k]['math_primary']['rsa_boot']['delta_vs_random_init']['ci']) else '○'} {mp[k]['math_primary']['rsa']['trained']:.2f}"),
+        ("Field map tracks arXiv beyond the twin (H-A1; Mantel p and Δρ CI)", conf_, lambda k: f"{'●' if h_a1(k) else '○'} {mp[k]['math_primary']['rsa']['trained']:.2f}"),
         *a_row("field"),
         ("Field map is a hierarchy beyond the twin (H-A2; cophenetic Δ CI)", pre, lambda k: f"{'●' if ex(hi[k]['coph_match_delta_vs_random_ci']) else '○'} {hi[k]['coph_match']['trained']:.2f}"),
         ("Space chain ordered (Robinson and LOO order; Holm; > twin)", conf_, lambda k: chain(k, "space_chain")),
@@ -290,7 +309,14 @@ def scorecard_rows(r: dict) -> dict:
             lambda k: " / ".join(("●" if e["p"] < 0.05 else "○") + f" {e['score']:.2f}" for e in (ph[k]["pc_planes_cycle"][f][mp[k]["primary_layer"] - 1] for f in ("days", "months"))))]
           if planes else []),
     ]
-    return {"models": [MODEL[k] for k in keys], "rows": [{"test": name, "status": status, "cells": [fn(k) for k in keys]} for name, status, fn in rows], "legend": SCORE_LEGEND}
+    return {"models": [MODEL[k] for k in keys], "rows": [{"test": name, "status": status, "cells": [fn(k) for k in keys]} for name, status, fn in rows],
+            "legend": SCORE_LEGEND.format(twins=fact(r, "twins_meet_angles_rule"))}
+
+
+def ha1_supported(mp: dict, key: str) -> bool:
+    """docs/prereg.md H-A1: (a) Mantel p < .05 AND (b) the 95% bootstrap CI of Δ = ρ(trained) − ρ(twin) lies above 0."""
+    m = mp[key]["math_primary"]
+    return m["rsa_perm_p"] < 0.05 and m["rsa_boot"]["delta_vs_random_init"]["ci"][0] > 0
 
 
 # ------------------------------------------------------------------ facts: counts in hand-written prose
@@ -299,7 +325,7 @@ def _n_of(keys: list[str], ok, noun: str = "models") -> str:
     from mathgeom.report.style import MODEL
 
     yes, no = [MODEL[k] for k in keys if ok(k)], [MODEL[k] for k in keys if not ok(k)]
-    join = lambda xs: ("those of " if noun == "twins" else "") + (xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1])  # noqa: E731
+    join = lambda xs: (("that of " if len(xs) == 1 else "those of ") if noun == "twins" else "") + (xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1])  # noqa: E731
     if not no:
         return f"all {len(keys)} {noun}"
     if not yes:
@@ -338,18 +364,44 @@ def fact(r: dict, spec: str) -> str:
     L = lambda k: mp[k.replace("__random", "")]["primary_layer"] - 1  # noqa: E731  (list index of the pre-registered layer)
     holm = lambda k, prefix: next(d for d in holm_decisions(mp, sh, la, k) if d["name"].startswith(prefix))  # noqa: E731
     closed = lambda k, f: ph[k]["pc_planes_cycle"][f][L(k)]  # noqa: E731
+    ang = lambda k, s: sh[k]["angles"]["beyond_reference"][s] if s == "rho_fam_ref" else sh[k]["angles"][s]  # noqa: E731
     fn = {
         # chains: the pre-registered conjunction (Holm on max(Robinson p, LOO p)) and trained > twin
         "chain_ordered": lambda: _n_of(keys, lambda k: holm(k, f"H-B {arg.replace('_', ' ')}")["reject"] and sh[k][arg]["robinson"] > sh[k + "__random"][arg]["robinson"]),
         "chain_beyond_frequency": lambda: _n_of(keys, lambda k: cf[k][arg]["p"] < 0.05),
         "twin_chain_beyond_frequency": lambda: _n_of(keys, lambda k: cf[k + "__random"][arg]["p"] < 0.05, "twins"),
         # axioms: Holm decision, raw p, and the token-count-projected variant
-        "axiom_holm": lambda: _n_of(keys, lambda k: holm(k, f"H-B2 {arg} ")["reject"]),
+        "axiom_holm": lambda: _n_of(keys, lambda k: axiom_holm_ok(mp, sh, la, k, arg)),
         "axiom_raw": lambda: _n_of(keys, lambda k: la[k]["group_like"]["offsets"][arg]["p"] < 0.05),
         "axiom_length_projected": lambda: _n_of(keys, lambda k: la[k]["audit2"]["group_like_offsets"]["length_projected"][arg]["p"] < 0.05),
         "twins_any_offset": lambda: _n_of(keys, lambda k: any(o["p"] < 0.05 for o in la[k + "__random"]["group_like"]["offsets"].values()), "twins"),
         "parallelograms": lambda: _n_of(keys, lambda k: st[k]["group_objects"]["parallelograms"]["p"] < 0.05),
-        "field_map_beats_twin": lambda: _n_of(keys, lambda k: mp[k]["math_primary"]["rsa_boot"]["delta_vs_random_init"]["ci"][0] > 0),
+        "twin_parallelograms": lambda: _n_of(keys, lambda k: st[k + "__random"]["group_objects"]["parallelograms"]["p"] < 0.05, "twins"),
+        # parent ranks of "Lie group" (arg: trained|random_init . 0 = "group" | 1 = "smooth manifold"), as "a–b" over models
+        "parent_rank_range": lambda: (lambda who, i: (lambda v: f"{min(v)}–{max(v)}")([st[k + ("__random" if who == "random_init" else "")]["group_objects"]["parent_ranks"]["Lie group"][int(i)] for k in keys]))(*arg.split(".")),
+        "axiom_positive": lambda: _n_of(keys, lambda k: la[k]["group_like"]["offsets"][arg]["consistency"] > 0),
+        "twin_axiom_raw": lambda: _n_of(keys, lambda k: la[k + "__random"]["group_like"]["offsets"][arg]["p"] < 0.05, "twins"),
+        "twin_offset_range": lambda: _span([o["consistency"] for o in la[arg + "__random"]["group_like"]["offsets"].values()]),
+        "offset_null95_range": lambda: _span([o["null95"] for k in keys for o in la[k]["group_like"]["offsets"].values()]),
+        # axioms that pass (or fail) the Holm-corrected H-B2 test with trained > twin, in one model (arg = model key)
+        "holm_axioms": lambda: _and([AX_NOUN[a] for a in la[arg]["group_like"]["offsets"] if axiom_holm_ok(mp, sh, la, arg, a)]),
+        "holm_axioms_not": lambda: _and([AX_NOUN[a] for a in la[arg]["group_like"]["offsets"] if not axiom_holm_ok(mp, sh, la, arg, a)]),
+        "aq_collapse": lambda: _n_of(keys, lambda k: la[k]["audit2"]["associative_quasigroup"]["ratio"] < 1),
+        "partial_any": lambda: _n_of(keys, lambda k: any(o["p"] < 0.05 for o in la[k]["audit2"]["partial_operation"]["offsets"].values())),
+        "identity_lattice_transfer": lambda: _n_of(keys, lambda k: st[k]["transfer"]["identity_lattice"]["p"] < 0.05),
+        "field_map_beats_twin": lambda: _n_of(keys, lambda k: ha1_supported(mp, k)),
+        "hierarchy_beats_twin": lambda: _n_of(keys, lambda k: hi[k]["coph_match_delta_vs_random_ci"][0] > 0),
+        "delta_rel_range": lambda: _span([hi[k]["delta_rel"][arg] for k in keys]),
+        "twin_delta_rel_lower": lambda: _n_of(keys, lambda k: hi[k]["delta_rel"]["random_init"] < hi[k]["delta_rel"]["trained"], "twins"),
+        "loo_fails": lambda: _n_of(keys, lambda k: sh[k][arg]["loo_order_p"] >= 0.05),
+        # angles (arg: line_rho | circle_rho | rho_fam_ref): ranges over trained models / twins, and why the twins meet the rule
+        "angles_range": lambda: _span([ang(k, arg) for k in keys]),
+        "twin_angles_range": lambda: _span([ang(k + "__random", arg) for k in keys]),
+        "twin_circle_significant": lambda: _n_of(keys, lambda k: sh[k + "__random"]["angles"]["circle_rho_p"] < 0.05, "twins"),
+        "twin_circle_p_max": lambda: _p(max(sh[k + "__random"]["angles"]["circle_rho_p"] for k in keys)),
+        "angles_far": lambda: _n_of(keys, lambda k: sh[k]["angles"]["closure"] > 1),
+        "angles_closed_plane": lambda: _n_of(keys, lambda k: planes_decision(ph, {m: mp[m]["primary_layer"] for m in keys})[k]["accepted"]),
+        "lower_planes": lambda: " or ".join(sorted({_plane(closed(k, arg)) for k in keys if closed(k, arg)["p"] < 0.05 and closed(k, arg)["plane"] != [0, 1]})),
         "angles_closure_range": lambda: (lambda c: f"{min(c):.2f}–{max(c):.2f}")([sh[k]["angles"]["closure"] for k in keys]),
         # field map across depth: layers (1-based) at or below the max-over-layers null
         "below_null_runs": lambda: (lambda c: (lambda runs: f"{len(runs)} stretch{'es' if len(runs) != 1 else ''} (layers " + ", ".join(f"{a + 1}–{b + 1}" if b > a else f"{a + 1}" for a, b in runs)
@@ -370,6 +422,14 @@ def fact(r: dict, spec: str) -> str:
         "twins_meet_angles_rule": lambda: _n_of(keys, lambda k: angles_met(sh[k + "__random"]["angles"]), "twins"),
         # independent audit (reports/prereg_addendum_lexical.md): decision rules D1–D6, D13 and ranges over models
         "field_beyond_lexical": lambda: _n_of(keys, lambda k: au.field_beyond_ok(lx, k)),
+        "field_beats_baseline": lambda: _n_of(keys, lambda k: lx[k]["field_map"]["boot"][f"delta_vs_{arg}"]["ci"][0] > 0),
+        # a baseline's own field map (arg: char3 | word_bag | layer0_bag): Mantel p < .05 and its ρ / p ranges
+        "lexical_field_significant": lambda: _n_of(keys, lambda k: lx[k]["field_map"]["mantel_p"][arg] < 0.05),
+        "lexical_field_range": lambda: _span([lx[k]["field_map"]["rsa"][arg] for k in keys]),
+        "lexical_field_p_range": lambda: (lambda v: f"{_p(min(v))} to {_p(max(v))}")([lx[k]["field_map"]["mantel_p"][arg] for k in keys]),
+        # how well each random-init twin keeps exact word composition: cosine of lexically duplicated pairs (range over axioms)
+        "twin_dup_by_model": lambda: "; ".join(f"{MODEL[k]} {_span([d['dup_mean'] for d in lx[k]['group_like']['decomposition']['twin'].values() if d.get('dup_mean') is not None])}" for k in keys),
+        "bca_twin_below_zero": lambda: _n_of(keys, lambda k: lx[k]["bootstrap"]["random_init"]["bca"][1] < 0, "twins"),
         "axiom_beyond_lexical": lambda: _n_of(keys, lambda k: au.axiom_beyond_ok(lx, la, k, arg)),
         "abelian_transfer": lambda: _n_of(keys, lambda k: au.abelian_ok(lx, k)),
         "nonce_above": lambda: _n_of(keys, lambda k: au.nonce_above_ok(lx, k)),
