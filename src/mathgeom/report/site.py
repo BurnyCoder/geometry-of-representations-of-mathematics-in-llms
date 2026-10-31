@@ -108,10 +108,14 @@ def export_site(cfg: Config, mp: dict) -> None:
     write_index(cfg)
 
 
+SITE_FACTS = ("space_block.0", "space_block.1", "top2_cycle_perfect.days", "top2_cycle_perfect.months", "twin_parallelograms",
+              "field_map_beats_twin")  # render.fact specs used by <span data-num="facts.…"> in site/index.html
+
+
 def write_index(cfg: Config) -> None:
     from mathgeom.report.figures.overview import forest_rows
     from mathgeom.report.paper import _results
-    from mathgeom.report.render import scorecard_rows
+    from mathgeom.report.render import fact, scorecard_rows
 
     r = _results("all")
     keys = [k for k in S.MODEL if k in r.get("map_fields", {}) and (SITE / f"{k}.json").exists()]
@@ -137,6 +141,8 @@ def write_index(cfg: Config) -> None:
                                                   for c, row in ml.dropna(subset=["depth"]).iterrows()],  # all matched concepts (the set the ρ is computed on)
         "family_labels": S.FAMILY,
         "scorecard": scorecard_rows(r),
+        # counts quoted in the page's prose ("n of 5 models"), computed like the README's {{fact:…}} placeholders
+        "facts": {s: fact(r, s) for s in SITE_FACTS},
         "forest": [{"title": t, "rows": rows} for t, rows in forest_rows(r)],
         "results": {k: _prune(v, ("layer_curve", "negative_control") if k in ("shapes", "lattice") else ("concept_level_regression",))
                     for k, v in r.items() if k not in ("numbers", "manifest", "sae", "smds", "calibration")},

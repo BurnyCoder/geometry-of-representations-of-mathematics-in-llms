@@ -23,7 +23,7 @@
     <h2>TL;DR</h2>
     <ul>
       <li><b>Fields form a map.</b> Distances between field centroids correlate with arXiv cross-listing: ρ = <span data-num="results.map_fields.qwen3.5-2b.math_primary.rsa.trained" data-fmt=".2f"></span> in the confirmatory model, against <span data-num="results.map_fields.qwen3.5-2b.math_primary.rsa.random_init" data-fmt=".2f"></span> for its twin and <span data-num="results.lexical.qwen3.5-2b.field_map.rsa.char3" data-fmt=".2f"></span> for the names' spelling alone, and in every model we tested.</li>
-      <li><b>The space chain is ordered</b> (T0 ⊃ … ⊃ Hilbert space), also within its metric block (metrizable … Hilbert) in every model; within its separation-axiom block only in Qwen3.5-2B. The ring chain passes the preregistered test too, but its order follows the last word of its names (ring, domain, field). Days go round in order in every model, months in most (the positive control, post-hoc). Angles are <i>not</i> circles, which falsified one of our preregistered predictions.</li>
+      <li><b>The space chain is ordered</b> (T0 ⊃ … ⊃ Hilbert space), also within its metric block (metrizable … Hilbert) in <span data-num="facts.space_block.1"></span>, and within its separation-axiom block in <span data-num="facts.space_block.0"></span>. The ring chain passes the preregistered test too, but its order follows the last word of its names (ring, domain, field). Days go round in order in <span data-num="facts.top2_cycle_perfect.days"></span>, months in <span data-num="facts.top2_cycle_perfect.months"></span> (the positive control, post-hoc). Angles are <i>not</i> circles, which falsified one of our preregistered predictions.</li>
       <li><b>Axiom offsets are mostly word form.</b> “Add commutativity” is a consistent arrow (offset consistency <span data-num="results.lattice.qwen3.5-2b.group_like.offsets.commutative.consistency" data-fmt=".2f"></span>, twin <span data-num="results.lattice.qwen3.5-2b__random.group_like.offsets.commutative.consistency" data-fmt=".2f"></span>), but so is adding a made-up word (“zorbic monoid”: <span data-num="results.lexical.qwen3.5-2b.nonce_modifier.zorbic.trained.consistency" data-fmt=".2f"></span>), and the names' letter triples alone pass the same test. Associativity, and a “commutative” direction that also points from group to abelian group, go beyond spelling.</li>
       <li><b>Not special to generative LLMs.</b> A text-embedding model built on an LLM reaches a similar map in the one comparison we ran (Qwen3.5-2B; ρ = <span data-num="results.baselines.qwen3.5-2b.all_primary.rsa.qwen3_embedding" data-fmt=".2f"></span>), and over a trillion tokens of math pretraining did not sharpen it. Whether the map is special to mathematics is untested: our control topics are whole sciences, not sub-fields.</li>
     </ul>
@@ -100,7 +100,7 @@
   <div id="forest"></div>
   <div class="table-view" id="forest-table"></div>
   <figcaption>
-    <span><b>The map beats the untrained twin in every model; in Qwen3.5-2B it beats fastText, but not a dedicated text embedder.</b> Math pretraining and the hierarchy test are nulls.</span>
+    <span><b>The map beats the untrained twin in <span data-num="facts.field_map_beats_twin"></span>; in Qwen3.5-2B it beats fastText, but not a dedicated text embedder.</b> Math pretraining and the hierarchy test are nulls.</span>
     <span class="read">Each line is a bootstrap 95% CI, paired wherever it compares two representations (the judges-vs-Mathlib line is a plain bootstrap of one correlation); blue means it excludes zero. Hover for details.</span>
     <span class="caveat">CIs are unadjusted for multiplicity; the Holm decisions are in the scorecard. Rows marked “added” come from the plan audits, not the preregistration.</span>
   </figcaption>
@@ -169,7 +169,7 @@
   <div class="panels two"><div class="panel short" id="groups-par"></div><div class="panel short" id="groups-rank"></div></div>
   <figcaption>
     <span class="read">Left: mean cosine of three parallelograms, such as Lie group − topological group vs smooth manifold − topological space, for every model and its twin, against a random-quadruple null. Right: where “group” (circle) and “smooth manifold” (diamond) rank among the nearest neighbours of “Lie group”.</span>
-    <span class="caveat">Exploratory. The twins rank “group” first or second among the neighbours of “Lie group”, likely because the two names share a token, and two twins (Qwen2.5) also pass their own parallelogram null.</span>
+    <span class="caveat">Exploratory. The twins rank “group” first or second among the neighbours of “Lie group”, likely because the two names share a token, and the parallelograms also pass their own null in <span data-num="facts.twin_parallelograms"></span>.</span>
   </figcaption>
 </figure>
 
