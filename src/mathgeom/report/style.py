@@ -4,8 +4,8 @@ Global context: colours come from a palette validated for colour-vision deficien
 all-pairs ΔE in OKLab, contrast vs the surface; dataviz skill validator). Scatter-type panels use at
 most three categorical colours (the validated all-pairs limit); more identities are shown with small
 multiples or emphasis (one highlighted, the rest grey). Order uses a one-hue sequential blue ramp,
-signed similarity a blue↔red diverging scale with a grey midpoint. The trained model is always blue,
-its random-init twin always grey.
+signed similarity a blue↔red diverging scale with a grey midpoint. Where colour encodes the model,
+the trained model is blue and its random-init twin grey.
 """
 
 from __future__ import annotations

@@ -21,7 +21,7 @@ from mathgeom.config import load_yaml
 from mathgeom.report import figdata
 from mathgeom.report import style as S
 
-AX_LABEL = {"associative": "+ associativity", "identity": "+ identity", "divisible": "+ divisibility (inverses)", "commutative": "+ commutativity"}
+AX_LABEL = {"associative": "+ associativity", "identity": "+ identity", "divisible": "+ divisibility", "commutative": "+ commutativity"}
 HEAD = "-|>,head_length=0.8,head_width=0.45"  # filled arrowhead, about twice the default length so direction reads at a glance
 
 
@@ -165,7 +165,7 @@ def draw_explainer(X: dict, names: list[str], bits: np.ndarray, axioms: list[str
         _arrows_at_origin(ax, Pv, pairs, S.BLUE if side == "trained" else S.TWIN, lim)
         o = off[side][show]
         ax.set_title(("3 · Line the arrows up\n" if row == 0 else "") + ("model" if side == "trained" else "random-init twin"), fontsize=9.5 if row == 0 else 8.5)
-        S.note3d(ax, f"consistency {o['consistency']:.2f}")
+        S.note3d(ax, f"consistency {o['consistency']:.2f}; PC1–3 hold {100 * V[side][1][:3].sum():.0f}% of the variance")
     # 4 · the compass: full-space angle of each arrow to the others' mean direction, for every axiom
     ang = {side: figdata.axiom_angles(X[side], bits, axioms) for side in ("trained", "random_init")}
     for k, name in enumerate(axioms):
@@ -202,7 +202,8 @@ def save_axiom_gif(cfg, key: str, la: dict, Lp: int, outdir, frames_per_axiom: i
     names, axioms = list(lat["items"]), lat["axioms"]
     bits = np.array([lat["items"][c] for c in names])
     X = {"trained": figdata.family_acts(cfg, key, "group_like", names)[:, Lp], "random_init": figdata.family_acts(cfg, f"{key}__random", "group_like", names)[:, Lp]}
-    V = {s: v[0] for s, v in _views3d(X).items()}
+    views = _views3d(X)
+    V, var3 = {s: v[0] for s, v in views.items()}, {s: 100 * v[1][:3].sum() for s, v in views.items()}
     shown = axioms_shown or axioms
     lims = {s: np.abs(V[s]).max() * 1.15 for s in V}  # the box that holds every structure (frames in place)
     F = frames_per_axiom
@@ -232,7 +233,7 @@ def save_axiom_gif(cfg, key: str, la: dict, Lp: int, outdir, frames_per_axiom: i
             ax.set_xlim(-lim, lim), ax.set_ylim(-lim, lim), ax.set_zlim(-lim, lim)
             ax.view_init(*view)
             c = la[key if s == "trained" else f"{key}__random"]["group_like"]["offsets"][a]["consistency"]
-            ax.set_title(f"{S.pretty(key) if s == 'trained' else 'random-init twin'} · consistency {c:.2f}", fontsize=8.5, color=S.INK if s == "trained" else S.INK2)
+            ax.set_title(f"{S.pretty(key) if s == 'trained' else 'random-init twin'} · consistency {c:.2f}\n(top-3 PCs: {var3[s]:.0f}% of the variance)", fontsize=8.5, color=S.INK if s == "trained" else S.INK2)
         fig.suptitle(f"{AX_LABEL[a]}: each arrow is a pair of structures that differ only in this axiom" + ("" if t < 0.5 else " — moved to one origin (zoomed)"), fontsize=8.5, color=S.INK2)
 
     fig.subplots_adjust(left=0.0, right=1.0, top=0.86, bottom=0.0, wspace=0.0)

@@ -126,10 +126,10 @@ def test_cross_model_extra_figures_render(tmp_path):
     D = (D + D.T) / 2
     np.fill_diagonal(D, 0)
     fmap = {"lay3": {k: rng.normal(size=(n, 3)) for k in ("arxiv", "trained", "random_init")}, "names": [f"f{i}" for i in range(n)], "pa": ["pure"] * n,
-            "edges": fd.neighbour_edges(D)}
+            "edges": fd.neighbour_edges(D), "stress": {k: 0.2 for k in ("arxiv", "trained", "random_init")}}
     var = np.array([0.3, 0.2, 0.1, 0.05, 0.05])
     fam3d = {f: (rng.normal(size=(m, 3)), var, [f"{f[0]}{i}" for i in range(m)]) for f, m in (("days", 7), ("angles", 12), ("ring_chain", 11), ("space_chain", 11))}
-    lat3d = {"trained": rng.normal(size=(13, 3)), "random_init": rng.normal(size=(13, 3)), "pairs": [(0, 1), (2, 3), (4, 5)]}
+    lat3d = {"trained": rng.normal(size=(13, 3)), "random_init": rng.normal(size=(13, 3)), "var": {"trained": var, "random_init": var}, "pairs": [(0, 1), (2, 3), (4, 5)]}
     style.save(overview.draw_hero(r, fam3d, lat3d, fmap, conf), tmp_path, "hero")
     style.save(overview.draw_group_objects(r), tmp_path, "groups")
     style.save(overview.draw_partial_operation(r, conf), tmp_path, "partial")
