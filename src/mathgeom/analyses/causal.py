@@ -4,8 +4,8 @@ arXiv:2510.01025): perturb the chain's low-dimensional subspace and measure task
 Global context: correlational order in activations does not show the model USES that
 geometry. Task: two-alternative "which is more general, a A or a B?" for every ordered
 pair of a chain, both answer orders (counterbalanced), scored by comparing the
-log-likelihood of the two continuations. Gate (pre-registered, docs/deviations.md): only if
-baseline accuracy ≥ 0.70 do we intervene. Intervention: at the pre-registered layer, at the
+log-likelihood of the two continuations. Gate (fixed before the test ran, docs/deviations.md; the causal
+test is a plan item, not part of docs/prereg.md): only if baseline accuracy ≥ 0.70 do we intervene. Intervention: at the pre-registered layer, at the
 last token of each concept mention, add Gaussian noise inside the top-k PCA subspace of the
 chain — fitted on the OTHER chain items (held-out fit, avoiding the subspace illusion of
 Makelov et al. 2023, arXiv:2311.17030) — versus inside random k-dim subspaces with the same
@@ -25,13 +25,19 @@ from mathgeom.logio import log_llm
 TEMPLATE = "Question: In {D}, which is more general, a {A} or a {B}?\nAnswer: The more general one is a"
 
 
+def _mention_starts(prompt: str, a: str, b: str) -> list[int]:
+    """Index of the space before each concept mention. Each mention is found after its anchor in TEMPLATE
+    ("general, a" for A, " or a" for B), because a bare search for " ring" also matches inside "commutative ring"."""
+    sa = prompt.index("general, a") + len("general, a")
+    sb = prompt.index(" or a", sa + 1 + len(a)) + len(" or a")
+    for s, c in ((sa, a), (sb, b)):
+        assert prompt.startswith(f" {c}", s), (prompt, c)
+    return [sa, sb]
+
+
 def _spans(tok, prompt: str, a: str, b: str) -> list[int]:
     """Last-token positions of both concept mentions inside the question."""
-    pos = []
-    for c in (a, b):
-        start = prompt.index(f" {c}")
-        pos.append(concept_token_span(tok, prompt[: start + 1 + len(c)], prompt[:start])[-1])
-    return pos
+    return [concept_token_span(tok, prompt[: s + 1 + len(c)], prompt[:s])[-1] for s, c in zip(_mention_starts(prompt, a, b), (a, b))]
 
 
 @torch.inference_mode()

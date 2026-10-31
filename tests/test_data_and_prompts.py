@@ -45,3 +45,13 @@ def test_family_config_integrity():
         assert bits.shape[1] == len(lat["axioms"])
         assert len({tuple(b) for b in bits}) == len(bits)  # every structure has a distinct axiom vector
     assert len(family_items(fams)) > 100
+
+
+def test_causal_mentions_are_located_after_their_anchors():
+    """A bare search for " ring" would hit the "ring" inside "commutative ring" (the first mention)."""
+    from mathgeom.analyses.causal import TEMPLATE, _mention_starts
+
+    for a, b in (("commutative ring", "ring"), ("algebraically closed field", "field"), ("ring", "commutative ring")):
+        prompt = TEMPLATE.format(D="abstract algebra", A=a, B=b)
+        sa, sb = _mention_starts(prompt, a, b)
+        assert prompt[sa + 1: sa + 1 + len(a)] == a and prompt[sb + 1: sb + 1 + len(b)] == b and sb > sa + len(a)
