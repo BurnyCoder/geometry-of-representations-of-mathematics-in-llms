@@ -344,7 +344,7 @@ flowchart LR
 | Phase | What it does | Output |
 |---|---|---|
 | `calibration` | Simulates the type-I error and power of distance-matrix tests (why we use twin contrasts) | `results/<cfg>/calibration.json` |
-| `concepts` | Fetches each Wikipedia glossary at a pinned revision, cleans the terms, flags field leaks, eponyms and polysemous words, keeps ≤ 30 primary concepts per field, and makes a 20/80 pilot/confirmatory split | `data/concepts.csv` |
+| `concepts` | Fetches each Wikipedia glossary at a pinned revision, cleans the terms, flags field leaks, eponyms and polysemous words, keeps ≤ 30 primary concepts per field, and draws a random ≈ 20% pilot split (each concept with probability 0.2); the rest is confirmatory | `data/concepts.csv` |
 | `arxiv` | Streams the `categories` column of the arXiv metadata and computes field-to-field cross-listing distances | `data/field_distance.json` |
 | `extract` | Runs every item through 8 templates for the trained model and its random-init twin. Stores the residual stream at the concept's last token (and the token mean) for every layer, and logs every prompt plus the greedy next token | `artifacts/acts/<model>/*.npz`, `logs/*_prompts.jsonl` |
 | `map`, `shapes`, `lattice` | Preregistered statistics at relative depth 0.5, plus layer curves | `results/<cfg>/*.json` |

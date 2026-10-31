@@ -339,6 +339,23 @@ def _span(v: list[float]) -> str:
     return f"{f(min(v))} to {f(max(v))}"
 
 
+def _nearest_fields(key: str | None, field: str, n: int = 1) -> list[str]:
+    """The n fields nearest to `field`: in a trained model's field-centroid RDM at the preregistered layer
+    (site/data/<key>.json, written by the report phase), or on arXiv (key None, data/field_distance.json).
+    Rows of both matrices follow data/field_distance.json["names"]."""
+    import numpy as np
+
+    fd = json.loads((ROOT / "data" / "field_distance.json").read_text())
+    names = fd["names"]
+    if key is None:
+        D = np.array(fd["distance"])
+    else:
+        s = json.loads((ROOT / "site" / "data" / f"{key}.json").read_text())
+        D = np.array(s["fields"]["trained"]["rank"][s["primary_layer"] - 1])  # list index = layer − 1
+    i = names.index(field)
+    return [names[j] for j in sorted((j for j in range(len(names)) if j != i), key=lambda j: D[i, j])[:n]]
+
+
 def _runs(idx: list[int]) -> list[tuple[int, int]]:
     """Contiguous runs of sorted integers: [1,2,3,7,8] → [(1,3),(7,8)]."""
     runs: list[list[int]] = []
@@ -353,7 +370,7 @@ def _runs(idx: list[int]) -> list[tuple[int, int]]:
 def fact(r: dict, spec: str) -> str:
     """Resolve a {{fact:<name>[.<arg>]}} placeholder from the merged results r (paper._results("all")), so that
     counts such as "3 of 5 models" in hand-written prose are computed, not typed. Criteria mirror scorecard_rows."""
-    from mathgeom.report.style import MODEL
+    from mathgeom.report.style import FIELD, MODEL
 
     name, _, arg = spec.partition(".")
     from mathgeom.report import audit as au
@@ -390,6 +407,9 @@ def fact(r: dict, spec: str) -> str:
         "partial_any": lambda: _n_of(keys, lambda k: any(o["p"] < 0.05 for o in la[k]["audit2"]["partial_operation"]["offsets"].values())),
         "identity_lattice_transfer": lambda: _n_of(keys, lambda k: st[k]["transfer"]["identity_lattice"]["p"] < 0.05),
         "field_map_beats_twin": lambda: _n_of(keys, lambda k: ha1_supported(mp, k)),
+        # nearest fields (arg "<field>.<target>": models whose nearest field is target; arg "<field>.<n>": arXiv's n nearest)
+        "nearest_field": lambda: (lambda f, t: _n_of(keys, lambda k: _nearest_fields(k, f)[0] == t))(*arg.split(".")),
+        "arxiv_neighbours": lambda: (lambda f, n: _and([FIELD.get(x, x) for x in _nearest_fields(None, f, int(n))]))(*arg.split(".")),
         "hierarchy_beats_twin": lambda: _n_of(keys, lambda k: hi[k]["coph_match_delta_vs_random_ci"][0] > 0),
         "delta_rel_range": lambda: _span([hi[k]["delta_rel"][arg] for k in keys]),
         "twin_delta_rel_lower": lambda: _n_of(keys, lambda k: hi[k]["delta_rel"]["random_init"] < hi[k]["delta_rel"]["trained"], "twins"),

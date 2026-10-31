@@ -30,6 +30,7 @@ function get(obj, path) {  // dotted path; keys may contain dots (model names), 
 const minus = (s) => s.replace(/^-/, "−");
 function fmt(v, f) {
   if (v === undefined || v === null || Number.isNaN(v)) return "—";
+  if (typeof v === "string") return v;  // computed prose counts from index.json "facts" (site.py SITE_FACTS)
   if (f === "d") return String(Math.round(v));
   if (f === "M") return (v / 1e6).toFixed(1) + "M";
   const m = /^\.(\d)f$/.exec(f || ".2f");

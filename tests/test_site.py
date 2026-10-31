@@ -57,8 +57,9 @@ def test_site_data_schema_and_page_numbers():
             np.testing.assert_allclose(E[:, :5] @ M, V, atol=2e-3)  # 3-decimal rounding of the exported view
     assert np.array(idx["fields"]["arxiv_layout3"]).shape == (n_fields, 3)
     html = (SITE / "index.html").read_text(encoding="utf-8")
-    for path in re.findall(r'data-num="([^"]+)"', html):
-        assert isinstance(_get(idx, path), (int, float)), path
+    for path in re.findall(r'data-num="([^"]+)"', html):  # numbers, or computed prose counts (site.py SITE_FACTS)
+        v = _get(idx, path)
+        assert isinstance(v, (int, float)) or (path.startswith("facts.") and isinstance(v, str) and v), path
     text = re.sub(r"<(script|style)[^>]*>.*?</\1>", "", html, flags=re.S)
     text = re.sub(r"<[^>]+>", " ", text)
     text = re.sub(r"Qwen\d\.\d", "Qwen", text)  # model names, not results

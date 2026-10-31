@@ -289,7 +289,7 @@ The new items were appended after the existing ones. Extraction runs at batch si
   - **Angles:** no model meets the pre-specified rule. The best is Gemma, at p ≈ 0.08 before Holm correction. "Angles are not a circle" stands, now for every plane of the top-5 PCs.
   - **Days:** the loop closes in the top-2 plane in 3 of 5 models. In Qwen3.5-0.8B and Gemma the top-2 view is an open arc, although the full-space closure ratio is below 2.
   - **Months:** in Qwen3.5-2B's top-2 plane the Dec → Jan step is 3× a neighbour step, an open arc. A closed loop sits in PC2–PC3 or PC4–PC5 in 3 of 5 models.
-  - **Twin:** one twin also shows a closed months loop (p = 0.004). Word form alone can occasionally produce one, so the test is not fully specific.
+  - **Twin:** one twin also shows a closed months loop (p = 0.004). A model without learning can occasionally produce one, so the test is not fully specific.
   - **Existing results:** every existing post-hoc number is unchanged. This was checked by diffing all three results files before and after the rerun; the new test uses its own random stream.
 - *What changed in the write-up.*
   - Updated: the README highlights, the paper (abstract, §4.3, limitations), the summary, and the site's "what failed" list and sidenote.
