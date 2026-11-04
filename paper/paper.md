@@ -43,11 +43,11 @@ Mathematics is an unusually good test bed for these ideas, because its concepts 
 
 **Hierarchy and categories.** [Park et al. (2024)](https://arxiv.org/abs/2406.01506) proposed orthogonality between hierarchical concepts. Golechha et al., *Intricacies of Feature Geometry in Large Language Models* ([ICLR 2025 blog track](https://iclr.cc/virtual/2025/poster/31349); [long version](https://www.greaterwrong.com/posts/eczwWrmX5XNEo7JsS/intricacies-of-feature-geometry-in-large-language-models)), showed that the same geometry appears for random concepts and random unembeddings after whitening. We therefore avoid whitening and compare every statistic with an untrained twin.
 
-**Science and mathematics concepts.** [Lei & Cooper (2025)](https://arxiv.org/abs/2502.10871) found a periodic-table spiral. Before LLMs, [Berlioz (2021)](https://arxiv.org/abs/2109.02801) embedded mathematical terms from arXiv with standard and hyperbolic word embeddings and tested whether their dependency and entailment structure shows in the vectors. Mathematical "world models" in LLMs have been reported as local and not robust ([Kvinge et al., 2025](https://icml.cc/virtual/2025/49128), *Probing the Limits of Mathematical World Models in LLMs*, ICML 2025 workshop poster).
+**Science and mathematics concepts.** [Lei & Cooper (2025)](https://arxiv.org/abs/2502.10871) found a periodic-table spiral. Before LLMs, [Berlioz (2021)](https://arxiv.org/abs/2109.02801) embedded mathematical terms from arXiv with standard and hyperbolic word embeddings and showed how their dependency and entailment structure is reflected in the vectors. Mathematical "world models" in LLMs have been reported as local and not robust ([Kvinge et al., 2025](https://openreview.net/forum?id=aMaSHy8IgK), *Probing the Limits of Mathematical World Models in LLMs*, ICML 2025 workshop poster).
 
-**Offsets and word form.** Analogies with vector offsets of word embeddings ([Mikolov, Yih & Zweig, 2013](https://aclanthology.org/N13-1090/)) are scored with a cosine criterion that mixes offset consistency with plain neighbourhood similarity, and baselines that ignore the offset solve analogies in some categories, such as plurals ([Linzen, 2016](https://aclanthology.org/W16-2503/)). With additive composition, "modifier + noun" is a fixed offset by construction ([Mitchell & Lapata, 2010](https://doi.org/10.1111/j.1551-6709.2010.01106.x)). Our audit therefore compares axiom offsets with nonce modifiers and with spelling-only baselines.
+**Offsets and word form.** Analogies with vector offsets of word embeddings ([Mikolov, Yih & Zweig, 2013](https://aclanthology.org/N13-1090/)) are scored with a cosine criterion that mixes offset consistency with plain neighbourhood similarity, and baselines that ignore the offset come close to the offset method in some categories, such as plurals ([Linzen, 2016](https://aclanthology.org/W16-2503/)). With simple additive composition (p = u + v), "modifier + noun" is a fixed offset by construction ([Mitchell & Lapata, 2010](https://doi.org/10.1111/j.1551-6709.2010.01106.x)). Our audit therefore compares axiom offsets with nonce modifiers and with spelling-only baselines.
 
-**Statistics.** Partial Mantel tests ([Mantel, 1967](https://pubmed.ncbi.nlm.nih.gov/6018555/)) are known to be invalid, with inflated false positives, when the data are autocorrelated ([Guillot & Rousset, 2013](https://doi.org/10.1111/2041-210X.12018)). We test Freedman–Lane permutation ([Freedman & Lane, 1983](https://doi.org/10.1080/07350015.1983.10509354); compared with alternatives by [Anderson & Legendre, 1999](https://doi.org/10.1080/00949659908811936)) in our setting (Section 3.5).
+**Statistics.** Partial Mantel tests ([Smouse, Long & Sokal, 1986](https://doi.org/10.2307/2413122), extending the Mantel test of [Mantel, 1967](https://pubmed.ncbi.nlm.nih.gov/6018555/)) are known to be invalid, with inflated false positives, when the data are autocorrelated ([Guillot & Rousset, 2013](https://doi.org/10.1111/2041-210X.12018)). We test Freedman–Lane permutation ([Freedman & Lane, 1983](https://doi.org/10.1080/07350015.1983.10509354); compared with alternatives by [Anderson & Legendre, 1999](https://doi.org/10.1080/00949659908811936)) in our setting (Section 3.5).
 
 # 3 Methods
 
@@ -58,14 +58,14 @@ Mathematics is an unusually good test bed for these ideas, because its concepts 
 - **Cleaning.** Terms keep 1–4 alphabetic words. Fragments, prefixes and adverbs are dropped.
 - **Flags.** These exclude a concept from the *primary* set:
   - `leak_own`: the name contains its field's root word, e.g. "topological space";
-  - `eponym`: a proper name, detected by mid-sentence capitalization on the same page (this missed five eponyms in the primary set, e.g. "tate curve"; `docs/deviations.md`);
+  - `eponym`: a proper name, detected as a capitalized word in the name; a capitalized first word counts only if it is not a common English word (wordfreq Zipf < 3) and the page never uses it in lowercase mid-sentence (this missed five eponyms in the primary set, e.g. "tate curve"; `docs/deviations.md`);
   - `polysemous`: a single everyday word with wordfreq Zipf ≥ 4.
 - **Sampling.** At most 30 primary concepts per field.
 - **Split.** A random pilot split (each concept drawn with probability 0.2) was used only for debugging. The field-map, shape and lattice statistics below use the remaining confirmatory split: 398 primary math concepts across 17 fields. The judge ratings and their Mathlib validation (§4.5) cover all 655 math concepts.
 
 ## 3.2 Ground-truth field distance
 
-The Mathematics Subject Classification ([MSC2020](https://msc2020.org/)) is flat above its two-digit codes, so we measure field relatedness from practice instead. For fields A and B, with S_A the set of arXiv papers listing any of A's categories, the distance is 1 − |S_A∩S_B|/√(|S_A||S_B|), i.e. one minus the Ochiai similarity ([Ochiai, 1957](https://doi.org/10.2331/suisan.22.526)). This is computed over the CC0 arXiv metadata snapshot (3,224,635 papers, pinned commit).
+The Mathematics Subject Classification ([MSC2020](https://msc2020.org/)) is flat above its two-digit codes, so we measure field relatedness from practice instead. For fields A and B, with S_A the set of arXiv papers listing any of A's categories, the distance is 1 − |S_A∩S_B|/√(|S_A||S_B|), i.e. one minus the Otsuka–Ochiai similarity ([Ochiai, 1957](https://doi.org/10.2331/suisan.22.526), who credits the coefficient to Otsuka). This is computed over the CC0 arXiv metadata snapshot (3,224,635 papers, pinned commit).
 
 ## 3.3 Concept families
 
@@ -79,13 +79,13 @@ Every family lists its ground truth and source in `configs/families.yaml`.
 - n-gons (3–12) and n-dimensional spaces (0–10), each with a number-word reference;
 - angles 0°–330°, with a digit reference.
 
-**Group-like axiom lattice.** Thirteen structures with bits (associative, identity, divisible, commutative): the seven total structures of the [Magma group-like table](https://en.wikipedia.org/wiki/Magma_(algebra)) (magma, quasigroup, unital magma, loop, semigroup, monoid, group), which has no commutativity column, plus our commutative versions of six of them. The self-distributive lattice (shelf, rack, spindle, quandle, kei) is exploratory.
+**Group-like axiom lattice.** Thirteen structures with bits (associative, identity, divisible, commutative): seven of the eight total structures of Wikipedia's group-like structures table ([Magma (algebra)](https://en.wikipedia.org/wiki/Magma_(algebra)); [table revision 1372036401](https://en.wikipedia.org/w/index.php?title=Template:Group-like_structures&oldid=1372036401), current at the preregistration): magma, quasigroup, unital magma, loop, semigroup, monoid and group. The eighth, the associative quasigroup, is a group when non-empty, so it is analysed separately as a probe (§4.4). The table has no commutativity column; we add commutative versions of six of the seven. The self-distributive lattice (shelf, rack, spindle, quandle, kei) is exploratory.
 
 ## 3.4 Models and representations
 
 | Model | Role |
 |---|---|
-| [`Qwen/Qwen3.5-2B-Base`](https://huggingface.co/Qwen/Qwen3.5-2B-Base) (Feb 2026; [Qwen3.5 blog](https://qwen.ai/blog?id=qwen3.5)) | **Confirmatory**; official Qwen-Scope SAEs ([Deng et al., 2026](https://arxiv.org/abs/2605.11887)) |
+| [`Qwen/Qwen3.5-2B-Base`](https://huggingface.co/Qwen/Qwen3.5-2B-Base) (Qwen3.5 series announced Feb 2026; [Qwen3.5 blog](https://qwen.ai/blog?id=qwen3.5)) | **Confirmatory**; official Qwen-Scope SAEs ([Deng et al., 2026](https://arxiv.org/abs/2605.11887)) |
 | `Qwen3.5-0.8B-Base` | Scale |
 | `Qwen2.5-1.5B` ([Qwen2.5 report](https://arxiv.org/abs/2412.15115)) vs `Qwen2.5-Math-1.5B` | Same base, + Qwen Math Corpus v2, over 1T tokens ([Qwen2.5-Math report, §1–2 and Fig. 2](https://arxiv.org/abs/2409.12122)) |
 | [`google/gemma-4-E2B`](https://huggingface.co/google/gemma-4-E2B) ([Gemma 4 report](https://arxiv.org/abs/2607.02770)) | Second model family; 2.3B effective parameters, 5.1B with embeddings |
@@ -114,7 +114,7 @@ The test is calibrated when the nuisance distance matrix *is* the confounder. It
 - **Field map.** We use field-level representational similarity analysis (RSA; [Kriegeskorte, Mur & Bandettini, 2008](https://doi.org/10.3389/neuro.06.004.2008)), i.e. the Spearman ρ between the centroid RDM and the arXiv distance, with a Mantel permutation over field labels ([Mantel, 1967](https://pubmed.ncbi.nlm.nih.gov/6018555/); 10,000 permutations) and a max-over-layers null for layer curves.
 - **Families.** Every statistic is unsupervised or leave-one-out, and every one except the closure ratio, which the preregistered rules use as a fixed threshold (< 2), is tested against an order-permutation null. The Robinson score is the fraction of item triples whose distances agree with a 1-D order, after [Robinson (1951)](https://doi.org/10.2307/276978). With n ≤ 13 items in more than 1,000 dimensions, a supervised fit can impose any order. As a negative control, 100 random 11-item lists of math concepts must be rejected at about 5%; this checks the code, since a permutation test is exact under exchangeability by construction, and it cannot detect confounds such as spelling. The leave-one-out order null has 10,000 permutations at the preregistered layer (300 before the audit).
 - **Multiplicity.** Holm correction ([Holm, 1979](https://www.jstor.org/stable/4615733)) over the 8 preregistered confirmatory tests (§4 of the preregistration); the angles prediction is a decision rule without a p-value and enters with p = 1, because it was falsified.
-- **Figures, including 3-D views.** Every picture is an unsupervised projection: PCA, or metric MDS for field maps. 3-D views show each layer's own top principal components with true proportions, and state the share of variance on each axis (PCA) or the stress-1 of the layout (MDS; [Kruskal, 1964](https://doi.org/10.1007/BF02289565)). Alignment between panels and layers is display-only: rotation, or only sign flips for 3-D PCA axes. No statistic is computed from a picture. The single test that looks beyond PC1–2, the closed-cycle test over the top-5 planes, is post-hoc and was pre-specified in an addendum before it ran (§4.3).
+- **Figures, including 3-D views.** Every picture is an unsupervised projection: PCA, or metric MDS for field maps. 3-D views show each layer's own top principal components with true proportions, and state the share of variance on each axis (PCA) or the stress of the layout (MDS; Kruskal's stress, [Kruskal, 1964](https://doi.org/10.1007/BF02289565), now usually called stress-1). Alignment between panels and layers is display-only: rotation, or only sign flips for 3-D PCA axes. No statistic is computed from a picture. The single test that looks beyond PC1–2, the closed-cycle test over the top-5 planes, is post-hoc and was pre-specified in an addendum before it ran (§4.3).
 
 ## 3.6 Independent audit: word-form controls (post-hoc)
 
@@ -183,7 +183,7 @@ The results follow how well they survive the audit's word-form controls: the fie
 
 ![**The same matrices, ranked.** Colour is the rank of each distance within its matrix (Spearman RSA compares ranks), with rows in one fixed order grouped by the five super-tree branches. The trained matrix partly reproduces the arXiv block structure; the twin's does not. Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-rdm>.](../reports/figures/field_rdms_qwen3.5-2b.pdf){width=100%}
 
-**Not a rogue-dimension artifact (post-hoc).** The preregistered all-but-the-top variant ([Mu, Bhat & Viswanath, 2018](https://arxiv.org/abs/1702.01417)) removes the top d/100 = 20 principal components, and it reverses the correlation (ρ = -0.22). A post-hoc sweep explains why:
+**Not a rogue-dimension artifact (post-hoc).** The preregistered all-but-the-top variant ([Mu & Viswanath, 2018](https://arxiv.org/abs/1702.01417)) removes the top d/100 = 20 principal components, and it reverses the correlation (ρ = -0.22). A post-hoc sweep explains why:
 
 | Model | k=0 | k=1 | k=2 | k=3 | k=5 | k=10 | k=20 | k=40 | top-5 PC explained variance | field η² on PC1–10 |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -394,7 +394,7 @@ This statistic is post-hoc. We conclude that the pipeline works, and that the fu
 
 ![**Class-inclusion chains are ordered paths; the twin's are tangles.** PC planes of the ordered families at the preregistered layer. Below each panel: the Robinson score (fraction of item triples consistent with the order; chance 1/3) with its permutation p, and for the line-type chains (ring chain, space chain, number systems) the p of the frequency control. Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families>.](../reports/figures/chains_qwen3.5-2b.pdf){width=100%}
 
-**Frequency control (plan; added in the second audit).** Could the chain order just be a frequency or word-length order? We removed wordfreq Zipf frequency and model token count from both the representation and the ranks, fitting that regression inside each leave-one-out fold to avoid leakage ([Snoek et al., 2019](https://doi.org/10.1016/j.neuroimage.2018.09.074)), then predicted the residual order.
+**Frequency control (plan; added in the second audit).** Could the chain order just be a frequency or word-length order? We removed wordfreq Zipf frequency and model token count from both the representation and the ranks, fitting that regression inside each leave-one-out fold (cross-validated confound regression, [Snoek et al., 2019](https://doi.org/10.1016/j.neuroimage.2018.09.074)), because a regression fitted on all items leaked the held-out item into the training span (below), then predicted the residual order.
 - *Result.* Both preregistered chains stay ordered: ring chain ρ = 0.94 (p = 0.003), space chain ρ = 0.81 (p = 0.017). The twin gives 0.13 and -0.04.
 - *Replication (Appendix A).* The ring chain stays ordered beyond frequency in 4 of 5 models (all but Gemma-4-E2B) and the space chain in 4 of 5 models (all but Gemma-4-E2B) (Gemma-4-E2B: ring p = 0.17, space p = 0.056).
 - *Word form carries part of the ring-chain order.* The ring chain is also ordered beyond frequency in 2 of 5 twins (those of Qwen2.5-1.5B and Gemma-4-E2B), with p = 0.037 and 0.027. A plausible lexical cue is that the middle items all end in "domain". The space chain is ordered beyond frequency in none of the 5 twins; the closest are the two Qwen2.5 twins (p = 0.053 and 0.053).
@@ -683,7 +683,7 @@ In this model's random-init twin, the four consistencies are 0.01 to 0.04.
 | qwen3.5-2b__random | group-like, token-count direction removed | associative: 0.02 / 0.16 (0.3633); identity: 0.04 / 0.16 (0.3068); divisible: 0.01 / 0.16 (0.4278); commutative: -0.02 / 0.14 (0.5487) |
 | qwen3.5-2b__random | partial-operation lattice | total: -0.03 / 0.38 (0.5272); identity: -0.08 / 0.55 (0.6872); divisible: -0.07 / 0.55 (0.6707) |
 
-- *No semantic collapse.* A non-empty associative quasigroup is a group, but the model does not place it there (models where it sits closer to "group" than to "quasigroup": none of the 5 models). It is 2.8× farther from "group" than from "quasigroup" (twin 1.1×), and its nearest neighbours are quasigroup-like. The representation follows the name's parts, not this theorem.
+- *No semantic collapse.* A non-empty associative quasigroup is a group ([Quasigroup](https://en.wikipedia.org/wiki/Quasigroup)), but the model does not place it there (models where it sits closer to "group" than to "quasigroup": none of the 5 models). It is 2.8× farther from "group" than from "quasigroup" (twin 1.1×), and its nearest neighbours are quasigroup-like. The representation follows the name's parts, not this theorem.
 - *Inverse semigroup* sits next to semigroup, commutative semigroup and monoid in the trained model, which is sensible.
 - *Not a length artifact.* Removing the token-count direction (fitted on all family items) leaves the group-like offsets intact: commutativity 0.46 (p = 0.0010), associativity 0.44 (p = 0.0035). Across the five models (Appendix A), after this projection the offsets stay significant before correction for associativity in all 5 models, commutativity in all 5 models, divisibility in all 5 models and identity in 4 of 5 models (all but Gemma-4-E2B). In Qwen3.5-2B, mean-pooling the concept's tokens gives a similar pattern, with divisibility no longer significant (table above). This is a one-direction analogue of the LDA distractor removal of [Li et al. (2024)](https://arxiv.org/abs/2410.19750).
 - *Partial-operation lattice: no evidence* (models with any axis below p = .05: none of the 5 models). The "total operation" offset (semigroupoid → semigroup, small category → monoid, groupoid → group) is 0.29, below its null's 95th percentile (0.54). With 6 items and 2–3 pairs per axis, the test is weak.
@@ -746,7 +746,7 @@ At noise scale s = 4, noise injected into the chain's 2-D subspace lowered accur
 
 ### SAE features (exploratory)
 
-At block 11, we encoded the template-averaged residuals with the official Qwen-Scope TopK SAE (k = 50; k-sparse autoencoders as in [Gao et al., 2024](https://arxiv.org/abs/2406.04093)).
+At block 11, we encoded the template-averaged residuals with the official Qwen-Scope TopK SAE (k = 50; k-sparse autoencoders as in [Gao et al., 2024](https://arxiv.org/abs/2406.04093)). We keep the top 50 pre-activations and apply a ReLU to them, as in Gao et al.'s reference code; the Qwen-Scope card's snippet keeps them without one, so the two differ only where a kept pre-activation is negative.
 - **Graded map:** the SAE code preserves the field map only weakly (ρ = 0.15, against 0.39 for the dense residual).
 - **Clustering:** field clustering is largely preserved (LOO accuracy 0.43).
 - **Field-selective features exist.** For example, a game-theory feature fires on most game-theory concepts and almost no others (`results/mvp/sae.json`).
@@ -755,7 +755,7 @@ At block 11, we encoded the template-averaged residuals with the official Qwen-S
 
 # 5 Discussion
 
-**Axiom offsets.** The offsets of group-like structures behave like the man → woman offset of word embeddings ([Mikolov, Yih & Zweig, 2013](https://aclanthology.org/N13-1090/)), and like those offsets they mix structure with word form ([Linzen, 2016](https://aclanthology.org/W16-2503/)). With additive composition, "modifier + noun" is a fixed vector by construction ([Mitchell & Lapata, 2010](https://doi.org/10.1111/j.1551-6709.2010.01106.x)), and the models compose "wooden" and "zorbic" about as consistently as "commutative". What survives the word-form controls is narrower: an associativity direction above every spelling baseline, and a commutativity direction that also points from "group" to "abelian group". The geometry follows the names more than the definitions: "associative quasigroup" stays with the quasigroups, although a non-empty one is a group. Whether the model uses these directions in reasoning, for example to decide that a monoid with inverses is a group, needs causal tests, which we did not run for the axioms (§6).
+**Axiom offsets.** The offsets of group-like structures behave like the man → woman offset of word embeddings ([Mikolov, Yih & Zweig, 2013](https://aclanthology.org/N13-1090/)), and like those offsets they mix structure with word form ([Linzen, 2016](https://aclanthology.org/W16-2503/)). With simple additive composition, "modifier + noun" is a fixed vector by construction ([Mitchell & Lapata, 2010](https://doi.org/10.1111/j.1551-6709.2010.01106.x)), and the models compose "wooden" and "zorbic" about as consistently as "commutative". What survives the word-form controls is narrower: an associativity direction above every spelling baseline, and a commutativity direction that also points from "group" to "abelian group". The geometry follows the names more than the definitions: "associative quasigroup" stays with the quasigroups, although a non-empty one is a group. Whether the model uses these directions in reasoning, for example to decide that a monoid with inverses is a group, needs causal tests, which we did not run for the axioms (§6).
 
 **The field map.** Relatedness between fields is encoded at the level of field centroids, in the dominant principal components, from the first few layers onward in the Qwen models (Gemma's map is at or below the max-over-layers null in 3 stretches (layers 1–4, 11–15, 23–25 of 35)). It is similarly strong (ρ ≈ 0.4) in models with very different pretraining mixtures. Combined with the null effect of math continued pretraining, this suggests the map is learned from general co-occurrence statistics, consistent with the co-occurrence account of [Karkada et al. (2026)](https://arxiv.org/abs/2602.15029), whose theory covers other kinds of latents. It does not seem to require math-specific training, and it does not follow from the spelling of the names; context-free token embeddings carry a weaker version of it. Whether it is specific to mathematics remains open: our control fields are whole sciences, not sub-fields, so the matched clustering comparison cannot decide it.
 
@@ -766,7 +766,7 @@ At block 11, we encoded the template-averaged residuals with the official Qwen-S
 # 6 Limitations
 
 - **Concept sample.** Glossary terms are a convenience sample, and some junk survives cleaning. Field labels come from one glossary per term. The eponym flag missed five eponyms in the primary set (`docs/deviations.md`).
-- **Ground truth.** Ochiai cross-listing is one operationalization of field relatedness. The space chain is a chain only if "regular" and "normal" include T1 (T3 and T4, as in Munkres); the prompts use the plain words.
+- **Ground truth.** Ochiai cross-listing is one operationalization of field relatedness. The space chain is a chain only if "regular" and "normal" include T1 (T3 and T4, as in Munkres, §31); the prompts use the plain words.
 - **Read point.** A single read-out: last token, averaged over templates. Template wording affects absolute values, though split-half reliability is high.
 - **Model size.** The Qwen models have at most 1.9B text parameters and Gemma-4-E2B 2.3B effective parameters, because of the 8 GB GPU.
 - **Positive control.** It passed only under post-hoc statistics. In the plane where its loop closes, it holds for days in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B) and for months in 3 of 5 models (all but Qwen3.5-0.8B and Qwen2.5-1.5B).
@@ -790,15 +790,16 @@ Field-level geometry in LLM residual streams tracks how mathematicians cross-lis
 
 # References
 
-Every source cited in the text, with the identifier we checked (arXiv, Crossref, PubMed or JSTOR, 2026-10-31):
+Every source cited in the text, with the identifier we checked (arXiv, Crossref, PubMed or JSTOR, 2026-10-31; venues and author lists rechecked 2026-11-04):
 
+- Abouelenin, A. et al. (2025). Phi-4-Mini Technical Report: Compact yet Powerful Multimodal Language Models via Mixture-of-LoRAs. [arXiv:2503.01743](https://arxiv.org/abs/2503.01743)
 - Anderson, M. J. & Legendre, P. (1999). An empirical comparison of permutation methods for tests of partial regression coefficients in a linear model. *J. Stat. Comput. Simul.* 62. [doi:10.1080/00949659908811936](https://doi.org/10.1080/00949659908811936)
-- Berlioz, L. (2021). ArGoT: A Glossary of Terms extracted from the arXiv. *EPTCS* 342:14–21. [arXiv:2109.02801](https://arxiv.org/abs/2109.02801)
 - Berger, R. L. (1982). Multiparameter hypothesis testing and acceptance sampling. *Technometrics* 24:295–300 (intersection-union test, used for the chain conjunction). [doi:10.1080/00401706.1982.10487790](https://doi.org/10.1080/00401706.1982.10487790)
+- Berlioz, L. (2021). ArGoT: A Glossary of Terms extracted from the arXiv. *EPTCS* 342:14–21. [arXiv:2109.02801](https://arxiv.org/abs/2109.02801)
 - Deng, B. et al. (2026). Qwen-Scope: Turning Sparse Features into Development Tools for Large Language Models. [arXiv:2605.11887](https://arxiv.org/abs/2605.11887)
 - Diaconis, P., Goel, S. & Holmes, S. (2008). Horseshoes in multidimensional scaling and local kernel methods. *Ann. Appl. Stat.* 2(3). [arXiv:0811.1477](https://arxiv.org/abs/0811.1477)
-- Engels, J., Michaud, E. J., Liao, I., Gurnee, W. & Tegmark, M. (2024). Not All Language Model Features Are One-Dimensionally Linear. ICLR 2025. [arXiv:2405.14860](https://arxiv.org/abs/2405.14860) (v3)
 - Efron, B. (1987). Better bootstrap confidence intervals. *J. Am. Stat. Assoc.* 82(397):171–185 (BCa intervals). [doi:10.1080/01621459.1987.10478410](https://doi.org/10.1080/01621459.1987.10478410)
+- Engels, J., Michaud, E. J., Liao, I., Gurnee, W. & Tegmark, M. (2024). Not All Language Model Features Are One-Dimensionally Linear. ICLR 2025. [arXiv:2405.14860](https://arxiv.org/abs/2405.14860) (v3)
 - Freedman, D. & Lane, D. (1983). A nonstochastic interpretation of reported significance levels. *J. Bus. Econ. Stat.* 1:292–298. [doi:10.1080/07350015.1983.10509354](https://doi.org/10.1080/07350015.1983.10509354)
 - Gao, L. et al. (2024). Scaling and evaluating sparse autoencoders. [arXiv:2406.04093](https://arxiv.org/abs/2406.04093)
 - Gemma Team (2026). Gemma 4 Technical Report. [arXiv:2607.02770](https://arxiv.org/abs/2607.02770)
@@ -807,13 +808,13 @@ Every source cited in the text, with the identifier we checked (arXiv, Crossref,
 - Gurnee, W. & Tegmark, M. (2023). Language Models Represent Space and Time. [arXiv:2310.02207](https://arxiv.org/abs/2310.02207)
 - Holm, S. (1979). A simple sequentially rejective multiple test procedure. *Scand. J. Stat.* 6(2):65–70. [JSTOR 4615733](https://www.jstor.org/stable/4615733)
 - Kantamneni, S. & Tegmark, M. (2025). Language Models Use Trigonometry to Do Addition. [arXiv:2502.00873](https://arxiv.org/abs/2502.00873)
-- Karkada, D., Korchinski, D. J., Nava, A., Wyart, M. & Bahri, Y. (2026). Symmetry in language statistics shapes the geometry of model representations. [arXiv:2602.15029](https://arxiv.org/abs/2602.15029)
+- Karkada, D., Korchinski, D. J., Nava, A., Wyart, M. & Bahri, Y. (2026). Symmetry in language statistics shapes the geometry of model representations. ICML 2026. [arXiv:2602.15029](https://arxiv.org/abs/2602.15029)
 - Khrulkov, V., Mirvakhabova, L., Ustinova, E., Oseledets, I. & Lempitsky, V. (2019). Hyperbolic Image Embeddings (relative Gromov δ). [arXiv:1904.02239](https://arxiv.org/abs/1904.02239)
 - Kriegeskorte, N., Mur, M. & Bandettini, P. (2008). Representational similarity analysis: connecting the branches of systems neuroscience. *Front. Syst. Neurosci.* 2:4. [doi:10.3389/neuro.06.004.2008](https://doi.org/10.3389/neuro.06.004.2008)
-- Kruskal, J. B. (1964). Multidimensional scaling by optimizing goodness of fit to a nonmetric hypothesis. *Psychometrika* 29:1–27 (stress-1). [doi:10.1007/BF02289565](https://doi.org/10.1007/BF02289565)
-- Kvinge, H. et al. (2025). Probing the Limits of Mathematical World Models in LLMs. ICML 2025 workshop *Assessing World Models*. [icml.cc/virtual/2025/49128](https://icml.cc/virtual/2025/49128)
+- Kruskal, J. B. (1964). Multidimensional scaling by optimizing goodness of fit to a nonmetric hypothesis. *Psychometrika* 29:1–27 (stress; now usually called stress-1). [doi:10.1007/BF02289565](https://doi.org/10.1007/BF02289565)
+- Kvinge, H. et al. (2025). Probing the Limits of Mathematical World Models in LLMs. ICML 2025 workshop *Assessing World Models*. [icml.cc/virtual/2025/49128](https://icml.cc/virtual/2025/49128); [OpenReview](https://openreview.net/forum?id=aMaSHy8IgK)
 - Lei, G. & Cooper, S. J. (2025). Layerwise Recall and the Geometry of Interwoven Knowledge in LLMs. [arXiv:2502.10871](https://arxiv.org/abs/2502.10871)
-- Li, Y., Michaud, E. J., Baek, D. D., Engels, J., Sun, X. & Tegmark, M. (2024). The Geometry of Concepts: Sparse Autoencoder Feature Structure. [arXiv:2410.19750](https://arxiv.org/abs/2410.19750)
+- Li, Y., Michaud, E. J., Baek, D. D., Engels, J., Sun, X. & Tegmark, M. (2024). The Geometry of Concepts: Sparse Autoencoder Feature Structure. *Entropy* 27(4):344 (2025), [doi:10.3390/e27040344](https://doi.org/10.3390/e27040344). [arXiv:2410.19750](https://arxiv.org/abs/2410.19750)
 - Linzen, T. (2016). Issues in evaluating semantic spaces using word analogies. *Proc. 1st Workshop on Evaluating Vector-Space Representations for NLP (RepEval)*, 13–18. [aclanthology.org/W16-2503](https://aclanthology.org/W16-2503/)
 - Liu, J., Min, S., Zettlemoyer, L., Choi, Y. & Hajishirzi, H. (2024). Infini-gram: Scaling Unbounded n-gram Language Models to a Trillion Tokens. [arXiv:2401.17377](https://arxiv.org/abs/2401.17377)
 - Makelov, A., Lange, G. & Nanda, N. (2023). Is This the Subspace You Are Looking for? An Interpretability Illusion for Subspace Activation Patching. [arXiv:2311.17030](https://arxiv.org/abs/2311.17030)
@@ -823,21 +824,22 @@ Every source cited in the text, with the identifier we checked (arXiv, Crossref,
 - Mikolov, T., Grave, E., Bojanowski, P., Puhrsch, C. & Joulin, A. (2018). Advances in Pre-Training Distributed Word Representations (fastText vectors). [arXiv:1712.09405](https://arxiv.org/abs/1712.09405)
 - Mitchell, J. & Lapata, M. (2010). Composition in distributional models of semantics. *Cognitive Science* 34(8):1388–1429. [doi:10.1111/j.1551-6709.2010.01106.x](https://doi.org/10.1111/j.1551-6709.2010.01106.x)
 - Modell, A., Rubin-Delanchy, P. & Whiteley, N. (2025). The Origins of Representation Manifolds in Large Language Models. [arXiv:2505.18235](https://arxiv.org/abs/2505.18235)
-- Mu, J., Bhat, S. & Viswanath, P. (2018). All-but-the-Top: Simple and Effective Postprocessing for Word Representations. ICLR 2018. [arXiv:1702.01417](https://arxiv.org/abs/1702.01417)
-- Munkres, J. R. (2000). *Topology*, 2nd ed., §31–32 (regular and normal spaces assume one-point sets closed).
-- Ochiai, A. (1957). Zoogeographical studies on the soleoid fishes found in Japan and its neighbouring regions-II. *Nippon Suisan Gakkaishi* 22(9):526–530. [doi:10.2331/suisan.22.526](https://doi.org/10.2331/suisan.22.526)
+- Mu, J. & Viswanath, P. (2018). All-but-the-Top: Simple and Effective Postprocessing for Word Representations. ICLR 2018 (arXiv v1 also lists S. Bhat). [arXiv:1702.01417](https://arxiv.org/abs/1702.01417)
+- Munkres, J. R. (2000). *Topology*, 2nd ed., §31 (regular and normal spaces assume one-point sets closed).
+- Ochiai, A. (1957). Zoogeographical studies on the soleoid fishes found in Japan and its neighbouring regions-II. *Nippon Suisan Gakkaishi* 22(9):526–530 (the coefficient is credited there to Otsuka). [doi:10.2331/suisan.22.526](https://doi.org/10.2331/suisan.22.526)
 - Park, K., Choe, Y. J., Jiang, Y. & Veitch, V. (2024). The Geometry of Categorical and Hierarchical Concepts in Large Language Models. [arXiv:2406.01506](https://arxiv.org/abs/2406.01506)
-- Abouelenin, A. et al. (2025). Phi-4-Mini Technical Report. [arXiv:2503.01743](https://arxiv.org/abs/2503.01743)
 - Qwen Team (2024). Qwen2.5 Technical Report. [arXiv:2412.15115](https://arxiv.org/abs/2412.15115)
 - Qwen Team (2026). Qwen3.5: Towards Native Multimodal Agents (blog). <https://qwen.ai/blog?id=qwen3.5>
 - Robinson, W. S. (1951). A method for chronologically ordering archaeological deposits. *American Antiquity* 16(4):293–301. [doi:10.2307/276978](https://doi.org/10.2307/276978)
 - Shrout, P. E. & Fleiss, J. L. (1979). Intraclass correlations: uses in assessing rater reliability. *Psychol. Bull.* 86:420–428. [doi:10.1037/0033-2909.86.2.420](https://doi.org/10.1037/0033-2909.86.2.420)
+- Smouse, P. E., Long, J. C. & Sokal, R. R. (1986). Multiple regression and correlation extensions of the Mantel test of matrix correspondence. *Systematic Zoology* 35(4):627–632 (partial Mantel test). [doi:10.2307/2413122](https://doi.org/10.2307/2413122)
 - Snoek, L., Miletić, S. & Scholte, H. S. (2019). How to control for confounds in decoding analyses of neuroimaging data. *NeuroImage* 184. [doi:10.1016/j.neuroimage.2018.09.074](https://doi.org/10.1016/j.neuroimage.2018.09.074)
-- Soldaini, L. et al. (2024). Dolma: an Open Corpus of Three Trillion Tokens for Language Model Pretraining Research. [arXiv:2402.00159](https://arxiv.org/abs/2402.00159)
 - Sokal, R. R. & Michener, C. D. (1958). A statistical method for evaluating systematic relationships. *Univ. Kansas Sci. Bull.* 38:1409–1438 (UPGMA).
 - Sokal, R. R. & Rohlf, F. J. (1962). The comparison of dendrograms by objective methods. *Taxon* 11. [doi:10.2307/1217208](https://doi.org/10.2307/1217208)
-- Tiblias, F., Bigoulaeva, I., Niu, J., Balloccu, S. & Gurevych, I. (2025). Hypothesis-Driven Feature Manifold Analysis in LLMs via Supervised Multi-Dimensional Scaling (v1: "Shape Happens"). [arXiv:2510.01025](https://arxiv.org/abs/2510.01025)
+- Soldaini, L. et al. (2024). Dolma: an Open Corpus of Three Trillion Tokens for Language Model Pretraining Research. [arXiv:2402.00159](https://arxiv.org/abs/2402.00159)
+- Tiblias, F., Bigoulaeva, I., Niu, J., Balloccu, S. & Gurevych, I. (2025). Hypothesis-Driven Feature Manifold Analysis in LLMs via Supervised Multi-Dimensional Scaling (v1: "Shape Happens"). *TMLR* 2026. [arXiv:2510.01025](https://arxiv.org/abs/2510.01025)
 - Timkey, W. & van Schijndel, M. (2021). All Bark and No Bite: Rogue Dimensions in Transformer Language Models Obscure Representational Quality. [arXiv:2109.04404](https://arxiv.org/abs/2109.04404)
+- Wikipedia contributors. *Magma (algebra)*, its group-like structures table ([Template:Group-like structures, revision 1372036401](https://en.wikipedia.org/w/index.php?title=Template:Group-like_structures&oldid=1372036401)) and *[Quasigroup](https://en.wikipedia.org/wiki/Quasigroup)* ("a nonempty associative quasigroup is a group").
 - Yang, A. et al. (2024). Qwen2.5-Math Technical Report: Toward Mathematical Expert Model via Self-Improvement. [arXiv:2409.12122](https://arxiv.org/abs/2409.12122)
 - Zhang, Y. et al. (2025). Qwen3 Embedding: Advancing Text Embedding and Reranking Through Foundation Models. [arXiv:2506.05176](https://arxiv.org/abs/2506.05176)
 - Models and data: [Qwen3.5-2B-Base](https://huggingface.co/Qwen/Qwen3.5-2B-Base), [Qwen3.5-0.8B-Base](https://huggingface.co/Qwen/Qwen3.5-0.8B-Base), [Qwen2.5-1.5B](https://huggingface.co/Qwen/Qwen2.5-1.5B), [Qwen2.5-Math-1.5B](https://huggingface.co/Qwen/Qwen2.5-Math-1.5B), [Gemma-4-E2B](https://huggingface.co/google/gemma-4-E2B), [Qwen3-Embedding-0.6B](https://huggingface.co/Qwen/Qwen3-Embedding-0.6B), the judges [granite-4.0-micro](https://huggingface.co/ibm-granite/granite-4.0-micro), [SmolLM3-3B](https://huggingface.co/HuggingFaceTB/SmolLM3-3B) and [Phi-4-mini-instruct](https://huggingface.co/microsoft/Phi-4-mini-instruct); the arXiv metadata mirror [`librarian-bots/arxiv-metadata-snapshot`](https://huggingface.co/datasets/librarian-bots/arxiv-metadata-snapshot) (CC0); [Mathlib4](https://github.com/leanprover-community/mathlib4).
@@ -1101,7 +1103,7 @@ Code, data, preregistration and every number: <https://github.com/BurnyCoder/geo
 
 **Leave-one-out order with 10,000 permutations: the preregistered α = 10 and a scale-relative α** (audit, sensitivity):
 
-| Family | Model | LOO order ρ, α = 10 (p) | LOO order ρ, α = mean ‖x‖² (p) |
+| Family | Model | LOO order ρ, α = 10 (p) | LOO order ρ, α = mean ‖x − x̄‖² (p) |
 |---|---|---|---|
 | days | qwen3.5-2b | -0.14 (0.0812) | +0.29 (0.0632) |
 | days | qwen3.5-2b__random | -0.93 (0.2202) | -1.00 (1.0000) |
@@ -1120,7 +1122,7 @@ Code, data, preregistration and every number: <https://github.com/BurnyCoder/geo
 | angles | qwen3.5-2b | +0.76 (0.0010) | +0.82 (0.0009) |
 | angles | qwen3.5-2b__random | -0.49 (0.4139) | -0.90 (0.6928) |
 
-| Family | Model | LOO order ρ, α = 10 (p) | LOO order ρ, α = mean ‖x‖² (p) |
+| Family | Model | LOO order ρ, α = 10 (p) | LOO order ρ, α = mean ‖x − x̄‖² (p) |
 |---|---|---|---|
 | days | qwen3.5-0.8b | -1.00 (1.0000) | +0.68 (0.0143) |
 | days | qwen3.5-0.8b__random | -0.75 (0.1349) | -0.96 (0.6903) |
@@ -1171,7 +1173,7 @@ Code, data, preregistration and every number: <https://github.com/BurnyCoder/geo
 | angles | qwen2.5-math-1.5b | +0.92 (0.0004) | +0.95 (0.0001) |
 | angles | qwen2.5-math-1.5b__random | +0.27 (0.1645) | +0.25 (0.1078) |
 
-| Family | Model | LOO order ρ, α = 10 (p) | LOO order ρ, α = mean ‖x‖² (p) |
+| Family | Model | LOO order ρ, α = 10 (p) | LOO order ρ, α = mean ‖x − x̄‖² (p) |
 |---|---|---|---|
 | days | gemma-4-e2b | +0.75 (0.0311) | +0.61 (0.0642) |
 | days | gemma-4-e2b__random | -0.96 (0.9336) | -0.96 (0.6713) |
