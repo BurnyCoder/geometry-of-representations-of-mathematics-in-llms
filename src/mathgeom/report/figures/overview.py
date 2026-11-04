@@ -2,8 +2,8 @@
 effect-size forest plot. Built by `run.py paper` from the merged results of all configs.
 
 Global context: the hero uses the pre-registered confirmatory model (Qwen3.5-2B) for its pictures and
-for the notes under them, and shows all five models in its summary panels (B, C), so no single model is
-cherry-picked there. Every value is read from results/<cfg>/*.json; confidence intervals are the bootstrap
+for the notes under them, and shows all five models in its two summary panels (the field-map ρ dot plot, top
+left, and the offset-consistency dot plot, middle right), so no single model is cherry-picked there. Every value is read from results/<cfg>/*.json; confidence intervals are the bootstrap
 95% intervals reported there, paired wherever two representations are compared (unadjusted for
 multiplicity; the Holm decisions are in the scorecard table).
 """

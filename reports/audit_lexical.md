@@ -227,7 +227,7 @@ Together with the 10,000-permutation LOO p-values (D9), this changes three decis
 
 ## D9–D10: leave-one-out order, 10,000 permutations, two ridge penalties
 
-| Family | Model | LOO order ρ, α = 10 (p) | LOO order ρ, α = mean ‖x‖² (p) |
+| Family | Model | LOO order ρ, α = 10 (p) | LOO order ρ, α = mean ‖x − x̄‖² (p) |
 |---|---|---|---|
 | days | qwen3.5-2b | -0.14 (0.0812) | +0.29 (0.0632) |
 | days | qwen3.5-2b__random | -0.93 (0.2202) | -1.00 (1.0000) |
@@ -246,7 +246,7 @@ Together with the 10,000-permutation LOO p-values (D9), this changes three decis
 | angles | qwen3.5-2b | +0.76 (0.0010) | +0.82 (0.0009) |
 | angles | qwen3.5-2b__random | -0.49 (0.4139) | -0.90 (0.6928) |
 
-| Family | Model | LOO order ρ, α = 10 (p) | LOO order ρ, α = mean ‖x‖² (p) |
+| Family | Model | LOO order ρ, α = 10 (p) | LOO order ρ, α = mean ‖x − x̄‖² (p) |
 |---|---|---|---|
 | days | qwen3.5-0.8b | -1.00 (1.0000) | +0.68 (0.0143) |
 | days | qwen3.5-0.8b__random | -0.75 (0.1349) | -0.96 (0.6903) |
@@ -297,7 +297,7 @@ Together with the 10,000-permutation LOO p-values (D9), this changes three decis
 | angles | qwen2.5-math-1.5b | +0.92 (0.0004) | +0.95 (0.0001) |
 | angles | qwen2.5-math-1.5b__random | +0.27 (0.1645) | +0.25 (0.1078) |
 
-| Family | Model | LOO order ρ, α = 10 (p) | LOO order ρ, α = mean ‖x‖² (p) |
+| Family | Model | LOO order ρ, α = 10 (p) | LOO order ρ, α = mean ‖x − x̄‖² (p) |
 |---|---|---|---|
 | days | gemma-4-e2b | +0.75 (0.0311) | +0.61 (0.0642) |
 | days | gemma-4-e2b__random | -0.96 (0.9336) | -0.96 (0.6713) |

@@ -7,7 +7,8 @@
 # concept name, reveal its field ("leak" flag → excluded from the primary set).
 # `kind`: math | control (non-math control domain). `pa`: pure | applied (our pre-specified split:
 # fields matching MSC2020 classes 60 probability, 62 statistics, 65 numerical analysis and
-# 91 game theory/economics are treated as applied; MSC2020 itself has no pure/applied grouping).
+# 91 game theory/economics are treated as applied; MSC2020 has no formal pure/applied grouping, though
+# https://msc2020.org/ calls classes 70–94 "applied classes" in passing, which covers 91 but not 60, 62 or 65).
 
 math:
   - id: general_topology

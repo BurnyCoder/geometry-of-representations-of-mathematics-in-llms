@@ -1,7 +1,8 @@
 """Lint: every number in the generated docs must come from results JSON (no hand edits).
 
-README's results block, reports/summary.md and paper/paper.md are re-rendered from their templates
-and the committed results; any hand-typed or stale number makes this test fail.
+README's generated blocks (TOP and RESULTS), reports/summary.md, reports/audit_lexical.md and paper/paper.md
+are re-rendered from their templates and the committed results; any hand-typed or stale number makes this
+test fail.
 """
 
 import re

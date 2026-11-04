@@ -39,7 +39,7 @@ def _results(cfg_name: str) -> dict:
 
 
 def render_template(tpl: str, fig_prefix: str = "../reports/figures/", fig_ext: str = ".png") -> str:
-    """Resolve {{num:..}}, {{table:..}} and {{fig:..}} placeholders in a Markdown template."""
+    """Resolve {{num:..}}, {{fact:..}}, {{table:..}} and {{fig:..}} placeholders in a Markdown template."""
     from mathgeom.report import audit, render
 
     cache: dict[str, dict] = {}

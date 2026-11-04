@@ -30,7 +30,7 @@ PHASES = {
     "axes": pipeline.phase_axes,  # H-A4: PCs vs pure/applied & abstraction → results/<cfg>/axes.json
     "causal": pipeline.phase_causal,  # H-B causal: chain-subspace vs random-subspace noise → results/<cfg>/causal.json
     "sae": pipeline.phase_sae,  # exploratory Qwen-Scope SAE check → results/<cfg>/sae.json
-    "posthoc": pipeline.phase_posthoc,  # POST-HOC: ABTT depth sweep + per-PC field variance → results/<cfg>/posthoc.json
+    "posthoc": pipeline.phase_posthoc,  # POST-HOC: ABTT depth sweep, per-PC field variance, matched clustering, PC-plane and closed cycles → posthoc.json
     "compare": pipeline.phase_compare,  # H-A3 paired model contrasts (config `comparisons`) → results/<cfg>/compare.json
     "lexical": pipeline.phase_lexical,  # independent audit: word-form baselines, within-block order, nonce modifiers, BCa → lexical.json
     "twins": pipeline.phase_twins,  # independent audit: twin statistics across random-init seeds (configs/twin_seeds.yaml) → twins.json

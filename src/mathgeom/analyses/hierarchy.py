@@ -10,8 +10,9 @@ cophenetic distances (Sokal & Rohlf 1962, https://doi.org/10.2307/1217208; scipy
       against a spectrum-matched Gaussian cloud (same number of points, same covariance
       eigenvalues; high-dimensional point clouds can look tree-like by default).
 We also report Gromov's four-point δ-hyperbolicity, relative to the diameter (2δ/diam; 0 = a
-tree metric), as computed in Khrulkov et al. 2019 (arXiv:1904.02239), on Euclidean centroid
-distances — exact over all quadruples (17 fields → 2,380 quadruples).
+tree metric), as defined in Khrulkov et al. 2019 (arXiv:1904.02239, §3.1, Eq. 3 and δ_rel), on Euclidean
+centroid distances — exact over all quadruples (17 fields → 2,380 quadruples), where Khrulkov et al.
+average estimates over 1,000-point subsamples of their larger datasets.
 """
 
 from __future__ import annotations

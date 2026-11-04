@@ -52,13 +52,14 @@ def family_stats(X: np.ndarray, n_perm: int = 2000, seed: int = 0, n_perm_loo: i
         out[name + "_null95"] = float(np.percentile(null, 95))
     out["closure"] = closure_ratio(D, o)
     # POST-HOC (docs/deviations.md): d(first,last)/d(first,middle) — <1 for a closed loop, >1 for an
-    # open chain; unlike `closure` it is not ≈1 for structureless (equidistant) points by default
+    # open chain. Structureless (equidistant) points give ≈1 here too, but 1 is this ratio's boundary
+    # between closed and open, whereas `closure` ≈ 1 lies inside its "circle" region (< 2)
     out["closure_far"] = float(D[0, -1] / D[0, n // 2])
     out["closure_far_null95"] = float(np.percentile(permutation_null(lambda p: D[p[0], p[-1]] / D[p[0], p[n // 2]], n, n_perm=n_perm or 1, seed=seed), 5))
     loo = loo_order_rho(X, o)
     loo_null = permutation_null(lambda p: loo_order_rho(X, p), n, n_perm=n_perm_loo or min(n_perm, 300), seed=seed)
     out["loo_order"], out["loo_order_p"] = loo, perm_p(loo, loo_null)
-    if n_perm_loo:  # D10 sensitivity: ridge penalty relative to the data scale (α = mean squared norm of the training items)
+    if n_perm_loo:  # D10 sensitivity: ridge penalty relative to the data scale (α = mean squared norm of the centred training items)
         rel = loo_order_rho(X, o, alpha="rel")
         out["loo_order_rel"], out["loo_order_rel_p"] = rel, perm_p(rel, permutation_null(lambda p: loo_order_rho(X, p, alpha="rel"), n, n_perm=n_perm_loo, seed=seed))
     return out
@@ -75,8 +76,9 @@ def order_beyond_covariates(X: np.ndarray, Z: np.ndarray, n_perm: int = 300, see
     statistic is the Spearman ρ of held-out predictions with held-out residual ranks, against an
     order-permutation null. Residualizing on all items at once leaks the held-out item into the
     training span and made the statistic ≈ 1 for any order in the random-init twin (docs/deviations.md).
-    Simulation: 5% / 2.5% rejections under a frequency-only and a large-scale-noise null; 100% power
-    when X encodes the order, also when Z is a noisy copy of the order.
+    Development simulation (40 runs each; its script was not committed, so the rates cannot be regenerated):
+    5% / 2.5% rejections under a frequency-only and a large-scale-noise null; 100% power when X encodes the
+    order, also when Z is a noisy copy of the order. tests/test_geometry.py checks the qualitative behaviour.
     """
     X = center(X.astype(np.float64))
     n = len(X)

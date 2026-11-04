@@ -1,4 +1,4 @@
-"""Configuration: .env (paths, tokens) + YAML run configs (models, layers, seeds).
+"""Configuration: .env (paths, tokens) + YAML run configs (models, relative depth of the primary layer, seeds, permutation and bootstrap counts).
 
 Global context: every phase in run.py receives one `Config`; activations go under `artifacts/`
 (a junction to D:\\AI on the author's machine, because C: is nearly full), and the results JSON and

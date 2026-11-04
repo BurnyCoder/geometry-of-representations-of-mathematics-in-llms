@@ -98,7 +98,7 @@ def test_kernel_loo_equals_sklearn_ridge(alpha):
 
 
 def test_relative_alpha_is_scale_invariant():
-    """D10: with α = mean squared norm of the training items, rescaling the data changes nothing."""
+    """D10: with α = mean squared norm of the centred training items, rescaling the data changes nothing."""
     rng = np.random.default_rng(4)
     X = rng.normal(size=(11, 200))
     o = rng.permutation(11)

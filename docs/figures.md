@@ -1,6 +1,6 @@
 # Figures and the explorable article
 
-Every figure and every number on the website is generated from `results/<config>/*.json` and the cached activations; no number is drawn or typed by hand. A few figure titles and site captions state a verdict in words (for example "Angles: not a circle"); they were checked against the results and must be re-checked if a result changes.
+Every figure and every statistic on the website is generated from `results/<config>/*.json` and the cached activations; no statistic is drawn or typed by hand. Only structural counts (such as 13 structures or 8 templates) are typed into the page's prose. A few figure titles and site captions state a verdict in words (for example "Angles: not a circle"); they were checked against the results and must be re-checked if a result changes.
 
 To regenerate the per-model figures, report tables and site data for one config:
 
