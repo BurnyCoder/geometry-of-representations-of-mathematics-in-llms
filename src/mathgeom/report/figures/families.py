@@ -1,7 +1,7 @@
 """H-B figures: cyclic families, ordered chains, the circle forming across depth (PNG + GIF), and angles.
 
-Global context: every panel is the unsupervised top-2-PC plane of one family at one layer (no labels
-used to fit it); colour runs light→dark along the ground-truth order, and the path connects consecutive
+Global context: every data panel is an unsupervised top-2-PC plane or top-3-PC view of one family at one
+layer (no labels used to fit it; the angles figure adds one schematic panel of the predicted circle); colour runs light→dark along the ground-truth order, and the path connects consecutive
 items (closed for cyclic families). Statistics are read from shapes.json / posthoc.json /
 chain_frequency.json. Days and months are the positive control (Engels et al. 2024, arXiv:2405.14860);
 the PC-plane cycle score is post-hoc (docs/deviations.md).

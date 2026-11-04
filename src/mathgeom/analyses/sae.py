@@ -3,12 +3,15 @@
 Global context: Li et al. 2024 (arXiv:2410.19750) found a "math/code lobe" among SAE
 features. Here we ask, at the pre-registered layer: (1) is the field map also visible in the
 sparse SAE code (field-RSA, LOO clustering on SAE activations); (2) are there field-selective
-features, and how many math-field features are shared across fields vs with control fields.
+features, and how many active features fire only on math concepts, only on control concepts, or on both.
 
 Local context: Qwen-Scope SAEs (https://huggingface.co/Qwen/SAE-Res-Qwen3.5-2B-Base-W32K-L0_50,
 arXiv:2605.11887) are TopK SAEs stored as `layer{n}.sae.pt` dicts {W_enc (32768×2048), b_enc,
 W_dec, b_dec}; the card's example hooks the OUTPUT of decoder block n, i.e. our
-hidden_states[n+1]. Encoding follows the card: pre = x @ W_enc.T + b_enc, keep top-k.
+hidden_states[n+1]. Encoding: pre = x @ W_enc.T + b_enc and keep the top-k, as in the card, then a ReLU
+on the kept values as in the TopK of Gao et al.'s reference code (openai/sparse_autoencoder,
+`TopK(postact_fn=nn.ReLU())`); the card's snippet keeps the raw values, so the two differ only where a
+kept pre-activation is negative.
 Caveat: we encode template-AVERAGED residuals (exploratory approximation).
 """
 

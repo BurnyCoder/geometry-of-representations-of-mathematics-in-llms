@@ -163,7 +163,8 @@ def family_items(cfg: Config, family: str) -> list[str]:
 
 
 def planes_by_layer(X: np.ndarray, ref_layer: int, onto: np.ndarray | None = None, k: int = 2) -> np.ndarray:
-    """Top-k PC view of the family at every layer (k = 2: the PC1–2 plane; 3–5: the 3-D views), each
+    """Top-k PC view of the family at every layer (used with k = 2, the PC1–2 plane; the 3-D views use
+    `pcs_by_layer`, which only sign-aligns), each
     aligned to the reference layer's view → [L, n, k]. `onto` (e.g. the trained model's view) first
     rotates the reference itself onto that layout, so the site's trained ↔ twin morph moves points as
     little as possible (display only, distances unchanged)."""

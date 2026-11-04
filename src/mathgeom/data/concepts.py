@@ -2,9 +2,9 @@
 
 Global context: one row per concept with its field, kind (math/control), pure/applied label,
 leakage flags, head noun, frequency covariate and pilot/confirmatory split. Concepts that
-appear in more than one field's pages are dropped (ambiguous field membership). Each field is
-capped at `max_per_field` concepts sampled with a fixed seed AFTER flagging, so the primary
-(unflagged) set stays balanced across fields.
+appear in more than one field's pages are dropped (ambiguous field membership). Each field keeps
+at most `max_concepts_per_field` primary concepts plus at most `max_concepts_per_field // 3` flagged
+ones, sampled with a fixed seed AFTER flagging, so the primary (unflagged) set stays balanced across fields.
 """
 
 from __future__ import annotations

@@ -1,4 +1,5 @@
-"""H-A2 statistics on planted structure: a two-level tree must give high super-tree match and low δ."""
+"""H-A2 statistics on planted structure: a two-level tree must give a high super-tree match (noise a low
+one), points on a line must give δ = 0, and the Gaussian null must match the data's spectrum."""
 
 import numpy as np
 

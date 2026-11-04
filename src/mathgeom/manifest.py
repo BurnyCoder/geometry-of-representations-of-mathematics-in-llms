@@ -1,6 +1,7 @@
 """Run manifest: which code, config, seed and library versions produced each results file.
 
-Global context: every `run.py <phase>` appends an entry to results/<cfg>/manifest.json, so any
+Global context: every `run.py <phase>` except `paper` (which only renders documents) appends an entry
+to results/<cfg>/manifest.json, so any
 number in the reports can be traced to a git commit (and whether the tree was dirty), the exact
 config contents (SHA-256), the seed, and the versions of the numerical libraries.
 """

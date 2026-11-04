@@ -140,7 +140,8 @@ def test_best_plane_cycle_rejects_an_open_arc():
 def test_best_plane_cycle_is_valid_on_structureless_data():
     """The max-over-planes null keeps the false-positive rate at or below 5% (it corrects for picking a
     plane). Addendum amendment 2: the closure rule puts mass at score 0, so the test is conservative
-    (1,000 null simulations: 1.8% at n = 12, 4.0% at n = 7); validity, not exact size, is what we check."""
+    (the addendum's 1,000 null simulations, script not committed: 1.8% at n = 12, 4.0% at n = 7; a rerun is in
+    reports/experiments.md E9); validity, not exact size, is what we check."""
     from mathgeom.geometry.manifold import best_plane_cycle
 
     rng = np.random.default_rng(6)

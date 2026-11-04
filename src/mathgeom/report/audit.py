@@ -189,7 +189,7 @@ def table_twins(tw: dict) -> str:
 
 def table_loo_alpha(sh: dict, fams: dict) -> str:
     """D9–D10: LOO order with 10,000 permutations, for the pre-registered α = 10 and the scale-relative α."""
-    rows = ["| Family | Model | LOO order ρ, α = 10 (p) | LOO order ρ, α = mean ‖x‖² (p) |", "|---" * 4 + "|"]
+    rows = ["| Family | Model | LOO order ρ, α = 10 (p) | LOO order ρ, α = mean ‖x − x̄‖² (p) |", "|---" * 4 + "|"]
     for name in fams["chains"]:
         for k, r in sh.items():
             s = r[name]

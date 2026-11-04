@@ -1,9 +1,10 @@
-"""Load trained or randomly initialized causal LMs (text-only) with HF transformers v5.
+"""Load trained or randomly initialized causal LMs (used with text inputs only) with HF transformers v5.
 
 Global context: every trained model is paired with a random-init copy of the same
-architecture and tokenizer — the control Golechha et al. (ICLR 2025 blog track,
-https://iclr.cc/virtual/2025/poster/31349) showed is necessary,
-because high-dimensional geometry can look "structured" even without training. Both see the
+architecture and tokenizer — a control motivated by Golechha et al. (ICLR 2025 blog track,
+https://iclr.cc/virtual/2025/poster/31349), who showed that random concepts and random, untrained
+unembeddings reproduce the claimed hierarchical geometry after whitening: high-dimensional geometry can
+look "structured" even without training. Both see the
 same prompts, so any effect also present in the random-init model is attributable to
 tokenization/architecture, not learned knowledge.
 
