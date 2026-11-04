@@ -65,7 +65,7 @@ A second test failure was a bug in the test itself: the synthetic shape was smal
 
 **Why not MSC2020.** Above its 2-digit codes it is flat, so a tree distance would be only same/different.
 
-**What we used.** Ochiai similarity of the paper sets in each field's arXiv categories, computed from the CC0 arXiv metadata snapshot (pinned by commit). We read only the `categories` column of the parquet files.
+**What we used.** Ochiai (Otsuka–Ochiai) similarity of the paper sets in each field's arXiv categories, computed from the CC0 arXiv metadata snapshot (pinned by commit). We read only the `categories` column of the parquet files.
 
 **Sanity check.** Nearest neighbours match how mathematicians think of the fields: algebraic geometry ↔ commutative algebra ↔ number theory, category theory ↔ algebraic topology, real ↔ functional analysis, general topology ↔ logic.
 
@@ -93,7 +93,7 @@ A second test failure was a bug in the test itself: the synthetic shape was smal
 **Problem 3: the specificity comparison was confounded.**
 - 17 math fields were being compared with 4 control fields, so chance levels differ.
 - We added a post-hoc matched comparison over random 4-field subsets of the math fields.
-- Science topics cluster more strongly than most matched math subsets. (Corrected 2026-10-31: this line first said "about as strongly"; `posthoc.json` → `matched_clustering.frac_math_subsets_ge_control` is 0.12, 0.16, 0.04, 0.45 and 0.00 in the five models, see E11.)
+- Science topics cluster more strongly than most matched math subsets. (Corrected 2026-10-31: this line first said "about as strongly"; `posthoc.json` → `matched_clustering.frac_math_subsets_ge_control` is 0.115, 0.155, 0.035, 0.45 and 0 of the 200 subsets in the five models, see E11.)
 
 **Bug.** Activations are stored as float16, which LAPACK rejects. A regression test now covers this.
 
@@ -165,6 +165,7 @@ A second line-by-line pass over the approved plan found six items still missing 
 - *First fix.* Residualize the representation as well as the ranks, then predict the residual order from the residual representation. The same simulation gave 2.5% rejections under the frequency-only null and 92.5% power even when frequency is a noisy copy of the order.
 - *Second issue, found on real data.* In the random-init twin, the first fix scored ρ = 1.0 for the true order and for every permuted one: a degenerate statistic. The residualization had used all 11 items. Residuals sum to zero, so each held-out residual is an exact linear combination of the training residuals, for both the representation and the target. The twin's large-scale activations make ridge regularization negligible, so LOO "predicted" any order. This is data leakage across the cross-validation split.
 - *Final fix.* Cross-validated confound regression ([Snoek, Miletić & Scholte 2019](https://doi.org/10.1016/j.neuroimage.2018.09.074)): fit the covariate regression on each fold's training items only and apply it to the held-out item. Simulation: 5% / 2.5% rejections under the frequency-only and large-scale-noise nulls, and 100% power. A regression test now covers the large-scale-noise case. Because this change came after seeing the confirmatory output, it is logged as post-hoc, and the leaky version's numbers are kept in `docs/deviations.md`.
+- *Provenance of the rates above (noted 2026-11-04).* The simulations that gave 42%, 2.5%, 92.5%, 5% and 100% were run interactively and their script was never committed, so these rates cannot be regenerated from the repository. What the repository does check is qualitative: `tests/test_geometry.py::test_order_beyond_covariates_credits_real_order_not_frequency` requires a real order to pass, a frequency-only representation to fail, and large-scale noise to give a non-degenerate null.
 - *Lessons.* A permutation null is valid only if it is exchangeable under the specific null hypothesis being tested. Any preprocessing fitted on data, including confound regression, belongs inside the cross-validation fold. Check a new statistic on the random-init twin's regime (large, structureless activations), not only on unit-scale synthetic data.
 
 **Lattice items from the plan that had been extracted or planned but never analysed:**
@@ -181,8 +182,8 @@ The new items were appended after the existing ones. Extraction runs at batch si
 ## E8: Article-style, interactive visualizations
 
 **Goal.** Make the figures readable and explained in the style of Anthropic's Transformer Circuits articles and Goodfire's research posts, and make the explorer interactive. Two references were studied for their visual devices:
-- [Gurnee et al. 2025, "When Models Manipulate Manifolds"](https://transformer-circuits.pub/2025/linebreaks/index.html): colour along the manifold coordinate; the same object shown as a projection and as a similarity matrix; takeaway-first captions.
-- [Goodfire, "Finding the Tree of Life in Evo 2"](https://www.goodfire.com/papers/phylogeny-manifold): a hero figure, an animated view, small multiples.
+- [Gurnee et al. 2025, "When Models Manipulate Manifolds: The Geometry of a Counting Task"](https://transformer-circuits.pub/2025/linebreaks/index.html) ([arXiv:2601.04480](https://arxiv.org/abs/2601.04480)): colour along the manifold coordinate; the same object shown as a projection and as a similarity matrix; takeaway-first captions.
+- [Pearce, Simon, Byun & Balsam (Goodfire) 2025, "Finding the Tree of Life in Evo 2"](https://www.goodfire.com/papers/phylogeny-manifold): a hero figure, an animated view, small multiples.
 
 **A bug the redesign found.** The old report code loaded activations directly instead of through the config's template mapping, so every "variant" figure duplicated the confirmatory one. The loader is now public (`pipeline.load_acts`) and used everywhere. A consistency test checks every config: the figure data must reproduce the reported field ρ, the offset consistencies and the cycle scores exactly. The loader also now reads each array on first use, which made figure building several times faster on the slow data disk.
 
@@ -283,7 +284,7 @@ The new items were appended after the existing ones. Extraction runs at batch si
   - We pre-specified a test of all 10 planes of PC1–5 in [`reports/prereg_addendum_3d.md`](prereg_addendum_3d.md) and committed it before running.
 - *Before any real data was run, unit tests forced two amendments:*
   1. *An open arc scores 1.* The angular cycle score gives a perfect 1 to an open arc: the plane of a line and one periodic coordinate is a U. PCA bends lines into such horseshoes ([Diaconis, Goel & Holmes 2008](https://arxiv.org/abs/0811.1477)). So a plane now counts only if the loop also closes in it (in-plane closure ratio < 2).
-  2. *The test is conservative.* The closure rule makes it so (1,000 null simulations: 1.8% false positives at α = 0.05 for 12 items, 4.0% for 7). The unit test now checks validity, not exact size.
+  2. *The test is conservative.* The closure rule makes it so (1,000 null simulations: 1.8% false positives at α = 0.05 for 12 items, 4.0% for 7). The unit test now checks validity, not exact size. (Noted 2026-11-04: the script of those simulations was not committed. A rerun of `manifold.best_plane_cycle` on structureless Gaussian points, 1,000 simulations with 1,000 permutations each, `default_rng(0)`, d = 64 and d = 2,048, gives 1.3% at n = 12 and 2.0–2.6% at n = 7: conservative too, but below the 4.0% quoted for n = 7.)
 - *The planted-cycle test failed at first because of a bad fixture.* The ramp was not orthogonal to sin θ, so part of the circle leaked into PC1. Rebuilding the fixture with orthogonal components fixed it; the code was right.
 - *Results* (the tables are in the README and paper, generated from `results/*/posthoc.json`):
   - **Angles:** no model meets the pre-specified rule. The best is Gemma, at p ≈ 0.08 before Holm correction. "Angles are not a circle" stands, now for every plane of the top-5 PCs.
@@ -322,6 +323,8 @@ The new items were appended after the existing ones. Extraction runs at batch si
 ## E10: Axioms first, with a picture of how the test works
 
 **Goal.** The user asked to make "axioms as directions" (H-B2) the first highlighted result everywhere, with visuals of how the test works, 3-D shown first, and the other results after it. No analysis was rerun and no number changed; this entry records a change of presentation.
+
+*Superseded (noted 2026-11-04).* After the independent audit (E12) showed that most of the axiom geometry is word form, the order was changed again: the README highlights and results, the summary and the paper now present results by how well they survive the word-form controls (field map, then shapes, then axiom offsets; paper §4.1 field map … §4.4 axiom lattices). Only the axiom GIF at the top of the README remains from this entry's ordering; the hero now has the field map in its top row and the axioms in its middle row. The section numbers below are those of the time.
 
 **What changed.**
 - *New figures* (built in a parallel session; see [`docs/figures.md`](../docs/figures.md)):
@@ -370,7 +373,7 @@ The new items were appended after the existing ones. Extraction runs at batch si
 - *Wrong examples in plain-language text.* The summary illustrated the field map with "algebraic geometry sits near commutative algebra and number theory". That is the arXiv pattern; in every model, algebraic geometry's nearest field is set theory & logic. An illustrative example needs the same check as a statistic.
 - *Prose about prompts that did not match the prompts.* The site quoted a template that does not exist, and the paper said templates never name a sub-field, which is true of the field-map templates only.
 - *Facts copied without opening the source.*
-  - The Qwen-Scope SAE licence was described as "Qwen licence, research use", but the repository's LICENSE file is Apache-2.0.
+  - The Qwen-Scope SAE licence was described as "Qwen licence, research use", but the repository's LICENSE file is Apache-2.0. (Noted 2026-11-04: the card's Caution section does prohibit using the tools for non-scientific purposes to interfere with model capabilities or to produce harmful content, so "research use" was partly right; the README now states both.)
   - A Wikipedia quote said "smooth manifold" where the article says "differentiable manifold".
   - Two citations had no authors or titles (Golechha et al.; Kvinge et al. at ICML 2025).
 - *Ground truth that depends on a convention.* The space chain T0 ⊃ T1 ⊃ Hausdorff ⊃ regular ⊃ … is a chain only if "regular" and "normal" include T1, as in Munkres. The cited Wikipedia page uses the other convention. This is documented as a limitation; renaming the items would need re-extraction and would change a preregistered family.
