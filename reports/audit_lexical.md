@@ -8,7 +8,7 @@ The preregistration uses a random-init twin (same architecture and tokenizer, ra
 
 ## Method
 
-Every test is rerun, with the same statistic, centring, type of null and seed as for the trained model, on three **word-form baselines** built from the names alone, without context. Two nulls are smaller for the baselines: their leave-one-out order null has 300 permutations (trained models and twins: 10,000), and their field-map Δ bootstrap 1,000 resamples (2,000). The chain, within-block and nonce tests use only the character 3-grams and the layer-0 token bag, because one-word items give the word bag a constant RDM.
+Every test is rerun, with the same statistic, centring, type of null and seed as for the trained model, on three **word-form baselines** built from the names alone, without context. Two nulls are smaller for the baselines: their leave-one-out order null has 300 permutations (trained models and their seed-0 twins: 10,000; the four extra-seed twins of D12: 2,000), and their field-map Δ bootstrap 1,000 resamples (2,000). The chain, within-block and nonce tests use only the character 3-grams and the layer-0 token bag, because one-word items give the word bag a constant RDM.
 
 | Baseline | What it encodes |
 |---|---|
