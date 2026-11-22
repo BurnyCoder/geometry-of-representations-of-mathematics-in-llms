@@ -367,6 +367,16 @@ def _runs(idx: list[int]) -> list[tuple[int, int]]:
     return [tuple(r) for r in runs]
 
 
+def _compound_share(rc: dict, field: str) -> str:
+    """'12 of the 22': primary confirmatory concepts of `field` whose name has the field's root word inside a compound
+    (recheck.json "compound_leaks"; second independent audit)."""
+    import pandas as pd
+
+    c = pd.read_csv(ROOT / "data" / "concepts.csv")
+    c = c[(c.field == field) & c.primary & (c.split == "confirmatory")]
+    return f"{int(c.concept.isin(rc['compound_leaks']).sum())} of the {len(c)}"
+
+
 def fact(r: dict, spec: str) -> str:
     """Resolve a {{fact:<name>[.<arg>]}} placeholder from the merged results r (paper._results("all")), so that
     counts such as "3 of 5 models" in hand-written prose are computed, not typed. Criteria mirror scorecard_rows."""
@@ -376,7 +386,7 @@ def fact(r: dict, spec: str) -> str:
     from mathgeom.report import audit as au
 
     mp, sh, la, st, hi, ph, cf = (r[k] for k in ("map_fields", "shapes", "lattice", "structures", "hierarchy", "posthoc", "chain_frequency"))
-    lx = r.get("lexical", {})
+    lx, rc = r.get("lexical", {}), r.get("recheck", {})
     keys = [k for k in MODEL if k in mp]
     L = lambda k: mp[k.replace("__random", "")]["primary_layer"] - 1  # noqa: E731  (list index of the pre-registered layer)
     holm = lambda k, prefix: next(d for d in holm_decisions(mp, sh, la, k) if d["name"].startswith(prefix))  # noqa: E731
@@ -462,6 +472,22 @@ def fact(r: dict, spec: str) -> str:
         "sublattice_range": lambda: _span([lx[k]["group_like"]["sublattice"]["trained"][arg]["consistency"] for k in keys]),
         "abelian_range": lambda: _span([lx[k]["group_like"]["abelian_heldout"]["trained"]["cos"] for k in keys]),
         "nonce_range": lambda: _span([lx[k]["nonce_modifier"][arg]["trained"]["consistency"] for k in keys]),
+        # second independent audit (recheck.json; docs/deviations.md 2026-11-22): H-A1 on stricter concept sets (arg = set name)
+        "strict_ha1": lambda: _n_of(keys, lambda k: au.strict_ha1_ok(rc, k, arg)),
+        "strict_beyond": lambda: _n_of(keys, lambda k: au.strict_beyond_ok(rc, k, arg)),
+        "strict_rho_range": lambda: _span([rc[k]["flag_sensitivity"][arg]["rsa"]["trained"] for k in keys]),
+        "strict_rho_change_range": lambda: _span([rc[k]["flag_sensitivity"][arg]["rsa"]["trained"] - rc[k]["flag_sensitivity"]["primary"]["rsa"]["trained"] for k in keys]),
+        # ... and the matched-modifier control of the held-out abelian test
+        "abelian_beats_nonce": lambda: _n_of(keys, lambda k: au.abelian_margin(rc, k) > 0),
+        "abelian_margin_range": lambda: _span([au.abelian_margin(rc, k) for k in keys]),
+        "nonce_group_range": lambda: _span([max(v for m, v in rc[k]["abelian_vs_modifiers"]["same_head"].items() if m != "commutative") for k in keys]),
+        "abelian_beaten_by_null": lambda: _n_of(keys, lambda k: rc[k]["abelian_vs_modifiers"]["n_null_ge"] > 0),
+        "abelian_null_top_pairs": lambda: _and(sorted({" → ".join(rc[k]["abelian_vs_modifiers"]["null_top"]["pair"]) for k in keys})),
+        "abelian_null_top_range": lambda: _span([rc[k]["abelian_vs_modifiers"]["null_top"]["cos"] for k in keys]),
+        # sizes of the hand-checked lists in configs/flag_audit.yaml (arg: people_and_places | adjectives | non_concepts)
+        "flag_list_n": lambda: str(len((lambda fa: fa["missed_eponyms"].get(arg) or fa.get(arg))(load_yaml("flag_audit.yaml")))),
+        # "12 of the 22": primary confirmatory concepts of one field (arg) whose name has the field's root inside a compound
+        "compound_share": lambda: _compound_share(rc, arg),
     }[name]
     return fn()
 

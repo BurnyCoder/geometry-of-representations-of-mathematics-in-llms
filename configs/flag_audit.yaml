@@ -1,0 +1,48 @@
+# Second independent audit (2026-11-22), post-hoc: primary confirmatory math concepts that the frozen cleaning and
+# flag rules (src/mathgeom/data/{wiki_glossary,flags}.py, docs/prereg.md §2) let through although the preregistration's
+# own definitions exclude them. Hand-checked against each term's entry on its pinned glossary page (data/raw/wiki/<revid>.html);
+# the evidence is the glossary entry quoted in the comment. Used only by the `recheck` phase (sensitivity analysis);
+# data/concepts.csv and every pre-registered analysis are unchanged.
+
+# `eponym` (prereg: "the name contains a proper name") missed these. Cleaning lowercases a capitalized first word when
+# it is a common English word by wordfreq (Zipf ≥ 3), which most surnames are (Hardy, Bass, King, Tate, ...), and the
+# capital-letter check in flags.is_eponym only looks at the first letter of each space-separated word, so
+# "quasi-Frobenius" passes.
+missed_eponyms:
+  people_and_places:
+    - hardy space                    # "Hardy space" (G. H. Hardy)
+    - bass number                    # "Bass number" (Hyman Bass)
+    - mori domain                    # "Mori domain" (Yoshiro Mori)
+    - clifford algebra               # "A Clifford algebra is a certain associative algebra ..."
+    - clarke generalized derivative  # "Clarke generalized derivative" (Frank Clarke)
+    - quasi-Frobenius                # "quasi-Frobenius ring"
+    - steinberg                      # "Steinberg representation"
+    - whitney                        # "The Whitney extension theorem ..."
+    - shapiro                        # "Shapiro's lemma"
+    - basel                          # "The Basel problem says ..." (a city)
+    - kan complex                    # "See Kan complex"
+    - jensen                         # "1. Ronald Jensen"
+    - fourier                        # "The Fourier transform of a function ..."
+    - tate conjecture                # John Tate
+    - tate curve                     # "... introduced by John Tate ..."
+  adjectives:  # adjectives formed from a proper name; "boolean" was already counted as an eponym by the 2026-10-30 audit
+    - boolean                        # "A boolean ring is ..." (George Boole)
+    - cartesian morphism             # René Descartes
+    - cartesian functor
+    - cartesian closed
+    - semi-abelian                   # Niels Henrik Abel
+    - non-abelian
+
+# Not mathematical concepts, or not the name the page uses: pass the 1–4-word alphabetic rule.
+non_concepts:
+  - other glossaries   # a navigation heading of "Glossary of general topology" with an empty definition
+  - quasi              # the prefix entry "quasi-" ("A quasi-excellent ring ..."): prefixes are meant to be dropped
+  - coCoA              # the software name "CoCoA" with its first letter lowercased by the common-word rule
+
+# `leak_own` (prereg: "the name contains its own field's root word") is implemented as a match at the START of a word
+# (flags.leaks_field), so compounds such as "subgroup", "submodule", "subgraph" and "subcategory" are not flagged.
+# The recheck phase flags every primary math concept whose name contains a root word of its own field anywhere
+# (flags.leaks_field_anywhere), except these, where the root is part of an unrelated word:
+compound_leak_false_positives:
+  - isoperimetric function   # "metric" (differential geometry root) inside "isoperimetric"
+  - symmetric space          # "metric" inside "symmetric"

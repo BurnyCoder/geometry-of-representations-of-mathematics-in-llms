@@ -34,6 +34,7 @@ PHASES = {
     "compare": pipeline.phase_compare,  # H-A3 paired model contrasts (config `comparisons`) → results/<cfg>/compare.json
     "lexical": pipeline.phase_lexical,  # independent audit: word-form baselines, within-block order, nonce modifiers, BCa → lexical.json
     "twins": pipeline.phase_twins,  # independent audit: twin statistics across random-init seeds (configs/twin_seeds.yaml) → twins.json
+    "recheck": pipeline.phase_recheck,  # second independent audit: H-A1 under stricter concept flags, matched-modifier abelian control → recheck.json
 }
 
 
@@ -49,12 +50,13 @@ def main() -> None:
 
         PHASES["report"] = phase_report
     if args.phase == "paper":  # needs results of all configs (mvp, robustness, gemma)
-        from mathgeom.report.paper import build_audit, build_cross_figures, build_paper, build_readme_block, build_summary
+        from mathgeom.report.paper import build_audit, build_cross_figures, build_paper, build_readme_block, build_reviews, build_summary
 
         build_cross_figures()
         build_readme_block()
         build_summary()
         build_audit()
+        build_reviews()
         build_paper()
         return
     todo = [*PHASES] if args.phase == "all" else [args.phase]

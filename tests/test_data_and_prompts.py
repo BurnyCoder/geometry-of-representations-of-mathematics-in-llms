@@ -3,7 +3,7 @@
 import numpy as np
 
 from mathgeom.config import load_yaml
-from mathgeom.data.flags import head_noun, is_eponym, leaks_field
+from mathgeom.data.flags import head_noun, is_eponym, leaks_field, leaks_field_anywhere
 from mathgeom.data.wiki_glossary import clean_term, extract_terms
 from mathgeom.pipeline import family_items
 from mathgeom.prompts.templates import FIELD_NEUTRAL, TEMPLATE_SETS, render
@@ -26,6 +26,15 @@ def test_leak_and_eponym_flags():
     assert not leaks_field("string", ["ring"])  # 'ring' must match at a word start
     assert is_eponym("Hausdorff space") and not is_eponym("compact space")
     assert head_noun("Banach spaces") == "space"
+
+
+def test_leak_own_matches_word_starts_only():
+    """The frozen `leak_own` rule misses own-field roots inside compounds (second independent audit, 2026-11-22);
+    the recheck phase's broader rule catches them, with false positives listed in configs/flag_audit.yaml."""
+    assert not leaks_field("normal subgroup", ["group"]) and leaks_field_anywhere("normal subgroup", ["group"])
+    assert not leaks_field("bimodule", ["module"]) and leaks_field_anywhere("bimodule", ["module"])
+    assert leaks_field_anywhere("symmetric space", ["metric"])  # a false positive, excluded by name in configs/flag_audit.yaml
+    assert not is_eponym("quasi-Frobenius")  # a capital after a hyphen is not seen (listed in configs/flag_audit.yaml)
 
 
 def test_clean_term_and_glossary_parsing():

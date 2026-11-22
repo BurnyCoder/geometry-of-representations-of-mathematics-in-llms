@@ -1,6 +1,6 @@
 """Lint: every number in the generated docs must come from results JSON (no hand edits).
 
-README's generated blocks (TOP and RESULTS), reports/summary.md, reports/audit_lexical.md and paper/paper.md
+README's generated blocks (TOP and RESULTS), reports/summary.md, reports/audit_lexical.md, reports/reviews/*.md and paper/paper.md
 are re-rendered from their templates and the committed results; any hand-typed or stale number makes this
 test fail.
 """
@@ -13,7 +13,7 @@ from mathgeom.config import ROOT
 
 
 def _have_results():
-    return all((ROOT / "results" / c / f).exists() for c in ("mvp", "robustness", "gemma") for f in ("map_fields.json", "lexical.json")) and (ROOT / "results" / "twin_seeds" / "twins.json").exists()
+    return all((ROOT / "results" / c / f).exists() for c in ("mvp", "robustness", "gemma") for f in ("map_fields.json", "lexical.json", "recheck.json")) and (ROOT / "results" / "twin_seeds" / "twins.json").exists()
 
 
 @pytest.mark.skipif(not _have_results(), reason="results not generated")
@@ -24,6 +24,8 @@ def test_generated_docs_match_results():
     assert summary == (ROOT / "reports" / "summary.md").read_text(encoding="utf-8")
     audit = render_template((ROOT / "reports" / "audit_template.md").read_text(encoding="utf-8"), fig_prefix="figures/")
     assert audit == (ROOT / "reports" / "audit_lexical.md").read_text(encoding="utf-8")
+    for tpl in sorted((ROOT / "reports" / "reviews").glob("*_template.md")):  # independent reviews (second audit onward)
+        assert render_template(tpl.read_text(encoding="utf-8"), fig_prefix="../figures/") == tpl.with_name(tpl.name.replace("_template.md", ".md")).read_text(encoding="utf-8"), tpl.name
     paper = render_template((ROOT / "paper" / "template.md").read_text(encoding="utf-8"), fig_ext=".pdf")
     assert paper == (ROOT / "paper" / "paper.md").read_text(encoding="utf-8")
     readme = (ROOT / "README.md").read_text(encoding="utf-8")

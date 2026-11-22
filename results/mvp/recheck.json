@@ -1,0 +1,175 @@
+{
+ "compound_leaks": [
+  "ascendant subgroup",
+  "bimodule",
+  "central subgroup",
+  "closed submodule",
+  "commutator subgroup",
+  "conjugacy-closed subgroup",
+  "conjugate subgroups",
+  "derived subgroup",
+  "lattice of subgroups",
+  "multicategory",
+  "nearring",
+  "no small subgroup",
+  "normal subgroup",
+  "poset",
+  "pseudograph",
+  "pure submodule",
+  "semianalytic",
+  "semiring",
+  "serial subgroup",
+  "subanalytic",
+  "subcategory",
+  "subgraph",
+  "subgroup series",
+  "submodule",
+  "subnormal subgroup",
+  "subrepresentation",
+  "supergraph"
+ ],
+ "n_named": 24,
+ "n_compound": 27,
+ "qwen3.5-2b": {
+  "primary_layer": 12,
+  "flag_sensitivity": {
+   "primary": {
+    "n": 398,
+    "n_fields": 17,
+    "min_per_field": 11,
+    "rsa": {
+     "trained": 0.3873479318734792,
+     "random_init": -0.11845808883163969,
+     "char3": 0.10458947569295356,
+     "layer0_bag": 0.15718238633652973
+    },
+    "mantel_p": 9.999000099990002e-05,
+    "delta_ci": {
+     "random_init": [
+      0.2765162683078097,
+      0.575721935976337
+     ],
+     "char3": [
+      0.13529936548828778,
+      0.40167692381088677
+     ],
+     "layer0_bag": [
+      0.13796443394876196,
+      0.34236009732360095
+     ]
+    },
+    "loo_acc": {
+     "trained": 0.4723618090452261,
+     "random_init": 0.09045226130653267
+    }
+   },
+   "no_missed_eponyms": {
+    "n": 374,
+    "n_fields": 17,
+    "min_per_field": 11,
+    "rsa": {
+     "trained": 0.36705309861170743,
+     "random_init": -0.08428987166642812,
+     "char3": 0.10918849291541431,
+     "layer0_bag": 0.15014550832498447
+    },
+    "mantel_p": 9.999000099990002e-05,
+    "delta_ci": {
+     "random_init": [
+      0.23217057869376462,
+      0.5493707361290014
+     ],
+     "char3": [
+      0.12406290253327612,
+      0.384501216545012
+     ],
+     "layer0_bag": [
+      0.1331745861361576,
+      0.33252743189733314
+     ]
+    },
+    "loo_acc": {
+     "trained": 0.4732620320855615,
+     "random_init": 0.08823529411764706
+    }
+   },
+   "no_compound_leaks": {
+    "n": 371,
+    "n_fields": 17,
+    "min_per_field": 10,
+    "rsa": {
+     "trained": 0.40225657172844803,
+     "random_init": -0.04110013835217785,
+     "char3": 0.19411287629406992,
+     "layer0_bag": 0.19419875005963455
+    },
+    "mantel_p": 9.999000099990002e-05,
+    "delta_ci": {
+     "random_init": [
+      0.21757907542579066,
+      0.5180142884404368
+     ],
+     "char3": [
+      0.07350078717618437,
+      0.3396214398168025
+     ],
+     "layer0_bag": [
+      0.10374958255808404,
+      0.3206939077334096
+     ]
+    },
+    "loo_acc": {
+     "trained": 0.46900269541778977,
+     "random_init": 0.07816711590296496
+    }
+   },
+   "strict": {
+    "n": 347,
+    "n_fields": 17,
+    "min_per_field": 10,
+    "rsa": {
+     "trained": 0.3806640904536997,
+     "random_init": -0.009493821859644098,
+     "char3": 0.20014789370736127,
+     "layer0_bag": 0.20540527646581744
+    },
+    "mantel_p": 9.999000099990002e-05,
+    "delta_ci": {
+     "random_init": [
+      0.18102273269405086,
+      0.47960641190782854
+     ],
+     "char3": [
+      0.06641596297886551,
+      0.32623622441677386
+     ],
+     "layer0_bag": [
+      0.08573314727350785,
+      0.29714779829206606
+     ]
+    },
+    "loo_acc": {
+     "trained": 0.4668587896253602,
+     "random_init": 0.07492795389048991
+    }
+   }
+  },
+  "abelian_vs_modifiers": {
+   "abelian": 0.6033449004245149,
+   "same_head": {
+    "commutative": 0.6982917636970472,
+    "wooden": 0.35731188076275117,
+    "zorbic": 0.46557090385218114
+   },
+   "null_top": {
+    "cos": 0.7306267195346184,
+    "pair": [
+     "magma",
+     "unital magma"
+    ]
+   },
+   "n_null_ge": 1,
+   "n_null": 72
+  }
+ }
+}

@@ -109,7 +109,7 @@ def export_site(cfg: Config, mp: dict) -> None:
 
 
 SITE_FACTS = ("space_block.0", "space_block.1", "top2_cycle_perfect.days", "top2_cycle_perfect.months", "twin_parallelograms",
-              "field_map_beats_twin")  # render.fact specs used by <span data-num="facts.…"> in site/index.html
+              "field_map_beats_twin", "abelian_range", "nonce_group_range")  # render.fact specs used by <span data-num="facts.…"> in site/index.html
 
 
 def write_index(cfg: Config) -> None:
