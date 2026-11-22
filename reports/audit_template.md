@@ -26,11 +26,11 @@ The audit also adds:
 
 | Result (pre-registered status) | Pre-registered outcome | Word-form controls | Verdict |
 |---|---|---|---|
-| H-A1 field map (primary, confirmatory) | beats the twin in {{fact:field_map_beats_twin}} | beats all three baselines in {{fact:field_beyond_lexical}} | **holds** |
+| H-A1 field map (primary, confirmatory) | beats the twin in {{fact:field_map_beats_twin}} | beats all three baselines in {{fact:field_beyond_lexical}}; without the concepts the flag rules missed, H-A1 holds in {{fact:strict_ha1.strict}} ([second independent audit](reviews/2026-11-22_independent_audit.md)) | **holds** |
 | H-B space chain (confirmatory) | ordered in {{fact:chain_ordered.space_chain}} | spelling does not order it; ordered within metrizable … Hilbert in {{fact:space_block.1}} and within T0 … normal in {{fact:space_block.0}} | **holds** |
 | H-B ring chain (confirmatory) | ordered in {{fact:chain_ordered.ring_chain}} | head-noun clusters without order pass the test in up to {{num:mvp.lexical.block_only_simulation.2.reject_rate:.0%}} of simulations; the six "… domain" items are ordered in {{fact:ring_within}} | **not established beyond head nouns** |
 | H-B2 associativity offset (confirmatory) | Holm-significant in {{fact:axiom_holm.associative}} | above every baseline, disjoint pairs pass, in {{fact:axiom_beyond_lexical.associative}} | **suggestive beyond word form** |
-| H-B2 commutativity offset (confirmatory) | Holm-significant in {{fact:axiom_holm.commutative}} | beyond word form in {{fact:axiom_beyond_lexical.commutative}}; "commutative" beats "wooden" and "zorbic" in {{fact:nonce_above}}; the direction predicts abelian group − group in {{fact:abelian_transfer}} | **mostly composition with a word; one held-out pair carries meaning** |
+| H-B2 commutativity offset (confirmatory) | Holm-significant in {{fact:axiom_holm.commutative}} | beyond word form in {{fact:axiom_beyond_lexical.commutative}}; "commutative" beats "wooden" and "zorbic" in {{fact:nonce_above}}; the direction predicts abelian group − group in {{fact:abelian_transfer}}, only {{fact:abelian_margin_range}} more than a nonce modifier on "group" ([second independent audit](reviews/2026-11-22_independent_audit.md)) | **mostly composition with a word; the held-out pair adds little beyond a modifier direction** |
 | H-B2 identity offset (confirmatory) | Holm-significant in {{fact:axiom_holm.identity}} | beyond word form in {{fact:axiom_beyond_lexical.identity}}; disjoint cosines {{fact:disjoint_range.identity}} | **lexical duplication** |
 | H-B2 divisibility offset (confirmatory) | Holm-significant in {{fact:axiom_holm.divisible}} | beyond word form in {{fact:axiom_beyond_lexical.divisible}} | **mostly not beyond word form** |
 | Group objects (exploratory) | parallelograms clear their null in {{fact:parallelograms}} | above every baseline in {{fact:group_objects_beyond}} | **word form** |
@@ -60,6 +60,8 @@ The 8 names without "commutative" (3 pairs per axiom):
 Does the direction of the five pairs that add "commutative" predict *abelian group − group*, which shares no word with it? The exact null uses the 72 ordered pairs that do not change commutativity:
 
 {{table:abelian:all}}
+
+A [second independent audit](reviews/2026-11-22_independent_audit.md) found that the one null pair beating *abelian group − group* is {{fact:abelian_null_top_pairs}} in {{fact:abelian_beaten_by_null}}, an "X → modifier X" pair, and compared the abelian pair with nonce modifiers on the same head: *zorbic/wooden group − group* reach {{fact:nonce_group_range}}, so the abelian pair's excess is {{fact:abelian_margin_range}}.
 
 How consistent is adding *any* modifier? X → m X for the same six heads:
 

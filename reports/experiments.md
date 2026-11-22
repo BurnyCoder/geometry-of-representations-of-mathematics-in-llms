@@ -424,6 +424,24 @@ The new items were appended after the existing ones. Extraction runs at batch si
 - Does not survive as stated: the axiom offsets (mostly word form, with associativity and the abelian-group transfer as suggestive exceptions), the group-object parallelograms (word form) and the ring chain's order (head nouns).
 - The "not specific to mathematics" claim was withdrawn, because its controls are whole sciences, not sub-fields.
 
+## E13: Second independent audit: reproduction, flags, and a matched-modifier control
+
+**Goal.** Check, without relying on the earlier audits, that the numbers reproduce, that the hypotheses are evaluated as preregistered, that the methods are used as their fields define them, and that every claim matches its source. No model was run; only cached activations and results files. Report: [`reviews/2026-11-22_independent_audit.md`](reviews/2026-11-22_independent_audit.md).
+
+**What was done and why.**
+- *Reproduction with independent code.* The field ρ, axiom offsets, chain Robinson scores and angle statistics were recomputed with numpy/scipy only, from the definitions in `docs/prereg.md`, for all five models and twins (`tests/test_independent_recompute.py`). Everything matched. A first version differed in the sixth decimal because it subtracted float16 activations before casting to float64; the analysis code casts first.
+- *Reading the concept table against its sources.* Printing the primary concepts per field showed names such as "other glossaries", "whitney" and "steinberg". Looking up each term's entry on its pinned glossary page gave the list in `configs/flag_audit.yaml`: 15 names of people or places and 6 adjectives formed from names that the `eponym` flag missed (the earlier audit had found 5), 3 non-concepts, and 27 concepts whose field root sits inside a compound ("subgroup"), which `leak_own` misses because its regex requires a word start. A page-text heuristic (capitalized mid-sentence, never lowercase) found only 4 of the eponyms, because most names occur only in the term itself; the list therefore had to be checked by hand.
+- *Sensitivity, not replacement.* The primary set is frozen at the preregistration tag, so the new `recheck` phase recomputes H-A1 on stricter sets with the preregistered statistics and seeds, and reports them next to the preregistered result.
+- *A control the abelian null did not contain.* In every model exactly one null pair beat *abelian group − group* (p = 2/73): *magma → unital magma*, itself "X → modifier X". The nonce lattice already had *wooden group* and *zorbic group*, extracted with the same templates, so the matched comparison needed no new extraction.
+
+**Learnings.**
+- A flag implemented as a regex is a different rule from the sentence in the preregistration that describes it. Here the regex was narrower in two ways (word starts only; first letter of each space-separated word only), and both gaps were invisible in the summary counts.
+- An "exact" null is only as good as its reference set. The D3 null mixed pairs that add a modifier to the same head with pairs that change the head, and only one of 72 null pairs was the matched kind; that one pair beat the effect.
+- Removing the compound leaks raised the word-form baselines' field ρ, so leaks can hide a lexical map as well as inflate one.
+- Profiling before waiting: one concept set of the paired bootstrap took 8 minutes under CPU contention but 2.5 minutes alone, so the scratch run was stopped and the analysis ran once, as a committed phase.
+
+**Result.** H-A1 holds on the stricter sets (numbers and per-model verdicts in the report, generated from `results/<cfg>/recheck.json`). The abelian transfer is mostly a generic modifier direction, with a small excess over nonce modifiers. "Concrete ↔ abstract is the top axis" was reworded to a correlation of PC1 with abstraction.
+
 ## Tooling learnings (continued)
 
 - **Line endings.** On Windows, `Path.write_text` translates `\n` to `\r\n`. Python heredoc scripts that search-and-replace code containing `"\n"` literals therefore corrupted files three times. The fix was to make code edits with the editor tool.

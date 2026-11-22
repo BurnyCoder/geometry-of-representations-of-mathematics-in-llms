@@ -458,7 +458,7 @@ function pick(i) {
   S.picked = i;
   const C = S.I.concepts, M = S.M[S.key].concepts, nn = (side) => M[side].nn[i].map((j) => `<li>${C.concept[j]} <span class="muted">· ${label(C.field[j])}</span></li>`).join("");
   const ml = C.mathlib[i];
-  $("concept-card").innerHTML = `<h4>${C.concept[i]}</h4><div class="muted">${label(C.field[i])} · flags: none set (primary set: the field-leak, eponym and everyday-word flags are all off; the eponym flag misses a few names, e.g. “tate curve”) · judge abstraction ${fmt(C.abstraction[i])} / 7${ml ? ` · Mathlib <code>${ml.decl}</code>, import depth ${ml.depth}` : " · no Mathlib match"}</div>
+  $("concept-card").innerHTML = `<h4>${C.concept[i]}</h4><div class="muted">${label(C.field[i])} · flags: none set (primary set: the field-leak, eponym and everyday-word flags are all off; the frozen flags miss some names, e.g. “tate curve”, and field roots inside compounds, e.g. “normal subgroup”; list in configs/flag_audit.yaml) · judge abstraction ${fmt(C.abstraction[i])} / 7${ml ? ` · Mathlib <code>${ml.decl}</code>, import depth ${ml.depth}` : " · no Mathlib match"}</div>
     <div class="nn"><div><b>Nearest in ${model().name}</b><ol>${nn("trained")}</ol></div><div><b>Nearest in the twin</b><ol>${nn("random_init")}</ol></div></div>`;
   rerender(["fig-concepts"]);
 }
