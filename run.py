@@ -50,12 +50,13 @@ def main() -> None:
 
         PHASES["report"] = phase_report
     if args.phase == "paper":  # needs results of all configs (mvp, robustness, gemma)
-        from mathgeom.report.paper import build_audit, build_cross_figures, build_paper, build_readme_block, build_summary
+        from mathgeom.report.paper import build_audit, build_cross_figures, build_paper, build_readme_block, build_reviews, build_summary
 
         build_cross_figures()
         build_readme_block()
         build_summary()
         build_audit()
+        build_reviews()
         build_paper()
         return
     todo = [*PHASES] if args.phase == "all" else [args.phase]

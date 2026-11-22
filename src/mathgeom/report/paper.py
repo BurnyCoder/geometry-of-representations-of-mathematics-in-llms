@@ -103,6 +103,9 @@ def render_template(tpl: str, fig_prefix: str = "../reports/figures/", fig_ext: 
             "bootstrap": lambda: audit.table_bootstrap(r["lexical"]),
             "loo_alpha": lambda: audit.table_loo_alpha(r["shapes"], fams),
             "twins": lambda: audit.table_twins(r["twins"]),
+            # second independent audit (recheck.json; docs/deviations.md 2026-11-22)
+            "flag_sensitivity": lambda: audit.table_flag_sensitivity(r["recheck"]),
+            "abelian_modifiers": lambda: audit.table_abelian_modifiers(r["recheck"]),
         }[name]
         return fn()
 
@@ -141,6 +144,13 @@ def build_audit() -> None:
     """reports/audit_lexical.md from reports/audit_template.md (the independent audit's report)."""
     tpl = (ROOT / "reports" / "audit_template.md").read_text(encoding="utf-8")
     (ROOT / "reports" / "audit_lexical.md").write_text(render_template(tpl, fig_prefix="figures/"), encoding="utf-8")
+
+
+def build_reviews() -> None:
+    """reports/reviews/<name>.md from every reports/reviews/<name>_template.md (independent reviews and audits whose
+    numbers, like everything else here, come from results JSON)."""
+    for tpl in sorted((ROOT / "reports" / "reviews").glob("*_template.md")):
+        tpl.with_name(tpl.name.replace("_template.md", ".md")).write_text(render_template(tpl.read_text(encoding="utf-8"), fig_prefix="../figures/"), encoding="utf-8")
 
 
 README_BLOCKS = {"TOP": "readme_top_template.md", "RESULTS": "readme_results_template.md"}  # marker → template in reports/

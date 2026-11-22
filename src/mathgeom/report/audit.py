@@ -201,3 +201,53 @@ def table_loo_alpha(sh: dict, fams: dict) -> str:
 def _models(lx: dict):
     """(model key, entry) pairs of a lexical.json, skipping the non-model blocks."""
     return [(k, v) for k, v in lx.items() if isinstance(v, dict) and "field_map" in v]
+
+
+# ------------------------------------------------------------------ second independent audit (recheck.json, 2026-11-22)
+FLAG_SETS = {"primary": "primary (pre-registered)", "no_missed_eponyms": "without missed eponyms and non-concepts",
+             "no_compound_leaks": "without own-field roots inside compounds", "strict": "without both"}
+
+
+def _recheck_models(rc: dict):
+    """(model key, entry) pairs of a recheck.json, skipping the shared lists."""
+    return [(k, v) for k, v in rc.items() if isinstance(v, dict) and "flag_sensitivity" in v]
+
+
+def strict_ha1_ok(rc: dict, k: str, s: str = "strict") -> bool:
+    """H-A1 as pre-registered (Mantel p < .05 and the Δρ CI vs the twin above 0) on a recheck concept set."""
+    f = rc[k]["flag_sensitivity"][s]
+    return f["mantel_p"] < 0.05 and f["delta_ci"]["random_init"][0] > 0
+
+
+def strict_beyond_ok(rc: dict, k: str, s: str = "strict") -> bool:
+    """The audit's D1 rule on a recheck set, for the two baselines it recomputes: Δρ CIs vs char-3-grams and the layer-0 token bag above 0."""
+    return all(rc[k]["flag_sensitivity"][s]["delta_ci"][b][0] > 0 for b in ("char3", "layer0_bag"))
+
+
+def abelian_margin(rc: dict, k: str) -> float:
+    """cos(abelian group − group, 'commutative' direction) minus the larger of wooden/zorbic group − group."""
+    a = rc[k]["abelian_vs_modifiers"]
+    return a["abelian"] - max(v for m, v in a["same_head"].items() if m != "commutative")
+
+
+def table_flag_sensitivity(rc: dict) -> str:
+    rows = ["| Model | Concept set | n concepts (smallest field) | ρ trained (Mantel p) | ρ twin | ρ char-3-grams | ρ layer-0 token bag | Δ − twin [CI] | Δ − char-3-grams [CI] | Δ − layer-0 bag [CI] | LOO acc trained / twin |",
+            "|---" * 11 + "|"]
+    for k, r in _recheck_models(rc):
+        for s, f in r["flag_sensitivity"].items():
+            rho, d = f["rsa"], f["delta_ci"]
+            rows.append(f"| {k} | {FLAG_SETS.get(s, s)} | {f['n']} ({f['min_per_field']}) | {rho['trained']:.3f} ({_p(f['mantel_p'])}) | {rho['random_init']:+.3f} | {rho['char3']:+.3f} | {rho['layer0_bag']:+.3f} | "
+                        + " | ".join(f"{rho['trained'] - rho[b]:+.3f} {_ci(d[b])}" for b in ("random_init", "char3", "layer0_bag"))
+                        + f" | {f['loo_acc']['trained']:.3f} / {f['loo_acc']['random_init']:.3f} |")
+    return "\n".join(rows)
+
+
+def table_abelian_modifiers(rc: dict) -> str:
+    mods = next(iter(_recheck_models(rc)))[1]["abelian_vs_modifiers"]["same_head"]
+    rows = ["| Model | abelian group − group | " + " | ".join(f"{m} group − group" for m in mods) + " | abelian − max(nonce) | D3 null pair closest to the direction | D3 null pairs ≥ abelian |",
+            "|---" * (5 + len(mods)) + "|"]
+    for k, r in _recheck_models(rc):
+        a = r["abelian_vs_modifiers"]
+        rows.append(f"| {k} | {a['abelian']:.3f} | " + " | ".join(f"{a['same_head'][m]:.3f}" for m in mods) + f" | {abelian_margin(rc, k):+.3f} | "
+                    f"{a['null_top']['pair'][0]} → {a['null_top']['pair'][1]} ({a['null_top']['cos']:.3f}) | {a['n_null_ge']} of {a['n_null']} |")
+    return "\n".join(rows)
