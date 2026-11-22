@@ -1010,6 +1010,80 @@ def phase_twins(cfg: Config) -> None:
     _save(cfg, "twins.json", out)
 
 
+def phase_recheck(cfg: Config) -> None:
+    """Second independent audit (2026-11-22, docs/deviations.md), post-hoc, from cached activations only.
+
+    (1) H-A1 under stricter concept sets: the frozen flag rules let through concepts that the preregistration's own
+    definitions exclude (configs/flag_audit.yaml): eponyms whose capital the cleaning removed, non-concepts, and own-field
+    root words inside compounds ("subgroup", "submodule"), which `leak_own` misses because it matches word starts only.
+    Same statistics, nulls and seeds as phase_map (Mantel over fields, paired stratified concept bootstrap), on the
+    preregistered layer, against the twin and the audit's two word-form baselines that need no context.
+    (2) A matched-modifier control for the held-out abelian test (addendum D3): the 'commutative' direction (mean unit
+    offset of the five X → commutative X pairs) is compared with abelian group − group and with X → m X for the same head
+    X = group and the nonce-lattice modifiers m (extracted with the same templates and domain), plus the null pair of D3
+    that comes closest to the direction."""
+    from mathgeom.analyses import lexical as lx
+    from mathgeom.analyses.lattice import axiom_pairs
+    from mathgeom.analyses.map_fields import field_centroids, field_rsa, loo_centroid_correct, mantel_field_perm, paired_bootstrap
+    from mathgeom.data.flags import leaks_field_anywhere
+    from mathgeom.geometry.offsets import _unit
+    from mathgeom.geometry.preprocess import cosine_rdm
+    from mathgeom.stats.rdm_regression import upper
+
+    fa, fams = load_yaml("flag_audit.yaml"), load_yaml("families.yaml")
+    concepts = pd.read_csv(cfg.data_dir / "concepts.csv")
+    fd = json.loads((cfg.data_dir / "field_distance.json").read_text())
+    fam = json.loads((cfg.artifacts / "acts" / "family_index.json").read_text())
+    pos = {(f, c): i for i, (f, c, _) in enumerate(fam)}
+    roots = {f["id"]: f["root_words"] for f in load_yaml("fields.yaml")["math"]}
+    base = ((concepts.kind == "math") & concepts.primary & (concepts.split == cfg.raw.get("analysis_split", "confirmatory"))).values
+    named = [c for v in fa["missed_eponyms"].values() for c in v] + fa["non_concepts"]
+    missing = sorted(set(named) - set(concepts.concept[base]))
+    assert not missing, f"flag_audit.yaml lists names that are not primary confirmatory math concepts: {missing}"
+    compound = np.array([k == "math" and not lo and c not in fa["compound_leak_false_positives"] and leaks_field_anywhere(c, roots[f])
+                         for c, f, k, lo in zip(concepts.concept, concepts.field, concepts.kind, concepts.leak_own)]) & base
+    is_named = concepts.concept.isin(named).values & base
+    sets = {"primary": base, "no_missed_eponyms": base & ~is_named, "no_compound_leaks": base & ~compound, "strict": base & ~is_named & ~compound}
+    g = fams["lattices"]["group_like"]
+    gl, gbits = list(g["items"]), np.array([g["items"][c] for c in g["items"]])
+    ax = g["axioms"].index("commutative")
+    out = {"compound_leaks": sorted(concepts.concept[compound]), "n_named": int(is_named.sum()), "n_compound": int(compound.sum())}
+    for m in cfg.models:
+        key = m["key"]
+        tr, tw = load_acts(cfg, key, "field_neutral"), load_acts(cfg, key + "__random", "field_neutral")
+        Lp = _primary_layer(tr["last"].shape[1], cfg.primary_rel_depth)
+        res = {"primary_layer": Lp, "flag_sensitivity": {}}
+        for sn, mask in sets.items():
+            idx = np.flatnonzero(mask)
+            lab = concepts.field.values[idx]
+            names = [n for n in fd["names"] if n in set(lab)]
+            sel = [fd["names"].index(n) for n in names]
+            target = np.array(fd["distance"])[np.ix_(sel, sel)]
+            reps = {"trained": tr["last"][idx, Lp], "random_init": tw["last"][idx, Lp], "char3": lx.char3_vectors(concepts.concept.values[idx].tolist()),
+                    "layer0_bag": lx.layer0_bag(tr, idx)}
+            rho = {k: field_rsa(v, lab, names, target) for k, v in reps.items()}
+            null = mantel_field_perm(upper(cosine_rdm(field_centroids(reps["trained"], lab, names))), target, cfg.n_perm, np.random.default_rng(cfg.seed))
+            boot = paired_bootstrap(reps, lab, names, target, cfg.n_boot, cfg.seed)
+            res["flag_sensitivity"][sn] = {"n": len(idx), "n_fields": len(names), "min_per_field": int(pd.Series(lab).value_counts().min()), "rsa": rho,
+                                           "mantel_p": float((1 + (null >= rho["trained"]).sum()) / (1 + len(null))),
+                                           "delta_ci": {k: boot[f"delta_vs_{k}"]["ci"] for k in ("random_init", "char3", "layer0_bag")},
+                                           "loo_acc": {k: float(loo_centroid_correct(reps[k], lab).mean()) for k in ("trained", "random_init")}}
+        A = load_acts(cfg, key, "family")["last"]
+        X = lambda f, c: A[pos[(f, c)], Lp].astype(np.float64)  # noqa: E731
+        train = [(gl[a], gl[b]) for a, b in axiom_pairs(gbits, ax) if gl[b] != "abelian group"]
+        d = _unit(np.mean([_unit(X("group_like", b) - X("group_like", a)) for a, b in train], 0))
+        cos = lambda f, a, b: float(_unit(X(f, b) - X(f, a)) @ d)  # noqa: E731
+        null = sorted(((cos("group_like", gl[a], gl[b]), gl[a], gl[b]) for a in range(len(gl)) for b in range(len(gl)) if a != b and gbits[a, ax] == gbits[b, ax]), reverse=True)
+        ab = cos("group_like", "group", "abelian group")
+        res["abelian_vs_modifiers"] = {"abelian": ab, "same_head": {mod: cos("nonce_modifier", "group", f"{mod} group") for mod in fams["extra"]["nonce_modifier"]["modifiers"]},
+                                       "null_top": {"cos": null[0][0], "pair": [null[0][1], null[0][2]]}, "n_null_ge": int(sum(c >= ab for c, _, _ in null)), "n_null": len(null)}
+        out[key] = res
+        log.info("[recheck %s] field rho by set %s | abelian %.3f vs same-head modifiers %s, top null pair %s %.3f", key,
+                 {s: round(v["rsa"]["trained"], 3) for s, v in res["flag_sensitivity"].items()}, ab,
+                 {k: round(v, 3) for k, v in res["abelian_vs_modifiers"]["same_head"].items()}, null[0][1:], null[0][0])
+    _save(cfg, "recheck.json", out)
+
+
 def phase_calibration(cfg: Config) -> None:
     """Simulation study of RDM-test calibration (motivates the paired-contrast design)."""
     from mathgeom.analyses.calibration import run_calibration

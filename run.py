@@ -34,6 +34,7 @@ PHASES = {
     "compare": pipeline.phase_compare,  # H-A3 paired model contrasts (config `comparisons`) → results/<cfg>/compare.json
     "lexical": pipeline.phase_lexical,  # independent audit: word-form baselines, within-block order, nonce modifiers, BCa → lexical.json
     "twins": pipeline.phase_twins,  # independent audit: twin statistics across random-init seeds (configs/twin_seeds.yaml) → twins.json
+    "recheck": pipeline.phase_recheck,  # second independent audit: H-A1 under stricter concept flags, matched-modifier abelian control → recheck.json
 }
 
 
