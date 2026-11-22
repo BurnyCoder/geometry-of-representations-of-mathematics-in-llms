@@ -26,11 +26,11 @@ The audit also adds:
 
 | Result (pre-registered status) | Pre-registered outcome | Word-form controls | Verdict |
 |---|---|---|---|
-| H-A1 field map (primary, confirmatory) | beats the twin in all 5 models | beats all three baselines in all 5 models | **holds** |
+| H-A1 field map (primary, confirmatory) | beats the twin in all 5 models | beats all three baselines in all 5 models; without the concepts the flag rules missed, H-A1 holds in all 5 models ([second independent audit](reviews/2026-11-22_independent_audit.md)) | **holds** |
 | H-B space chain (confirmatory) | ordered in all 5 models | spelling does not order it; ordered within metrizable … Hilbert in all 5 models and within T0 … normal in 1 of 5 models (Qwen3.5-2B) | **holds** |
 | H-B ring chain (confirmatory) | ordered in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B) | head-noun clusters without order pass the test in up to 55% of simulations; the six "… domain" items are ordered in 1 of 5 models (Qwen2.5-Math-1.5B) | **not established beyond head nouns** |
 | H-B2 associativity offset (confirmatory) | Holm-significant in all 5 models | above every baseline, disjoint pairs pass, in all 5 models | **suggestive beyond word form** |
-| H-B2 commutativity offset (confirmatory) | Holm-significant in all 5 models | beyond word form in none of the 5 models; "commutative" beats "wooden" and "zorbic" in 1 of 5 models (Gemma-4-E2B); the direction predicts abelian group − group in all 5 models | **mostly composition with a word; one held-out pair carries meaning** |
+| H-B2 commutativity offset (confirmatory) | Holm-significant in all 5 models | beyond word form in none of the 5 models; "commutative" beats "wooden" and "zorbic" in 1 of 5 models (Gemma-4-E2B); the direction predicts abelian group − group in all 5 models, only 0.04 to 0.24 more than a nonce modifier on "group" ([second independent audit](reviews/2026-11-22_independent_audit.md)) | **mostly composition with a word; the held-out pair adds little beyond a modifier direction** |
 | H-B2 identity offset (confirmatory) | Holm-significant in none of the 5 models | beyond word form in none of the 5 models; disjoint cosines 0.03 to 0.13 | **lexical duplication** |
 | H-B2 divisibility offset (confirmatory) | Holm-significant in none of the 5 models | beyond word form in 1 of 5 models (Gemma-4-E2B) | **mostly not beyond word form** |
 | Group objects (exploratory) | parallelograms clear their null in all 5 models | above every baseline in none of the 5 models | **word form** |
@@ -128,6 +128,8 @@ Does the direction of the five pairs that add "commutative" predict *abelian gro
 | qwen2.5-1.5b | +0.51 (0.0274) | +0.02 (0.3288) | +0.00 (0.8493) | +0.00 (0.9315) | +0.08 (0.0959) | yes |
 | qwen2.5-math-1.5b | +0.55 (0.0274) | +0.03 (0.3288) | +0.00 (0.8493) | +0.00 (0.9315) | +0.15 (0.0822) | yes |
 | gemma-4-e2b | +0.73 (0.0274) | +0.01 (0.4384) | +0.00 (0.8493) | +0.00 (0.9315) | +0.31 (0.0822) | yes |
+
+A [second independent audit](reviews/2026-11-22_independent_audit.md) found that the one null pair beating *abelian group − group* is magma → unital magma in all 5 models, an "X → modifier X" pair, and compared the abelian pair with nonce modifiers on the same head: *zorbic/wooden group − group* reach 0.40 to 0.51, so the abelian pair's excess is 0.04 to 0.24.
 
 How consistent is adding *any* modifier? X → m X for the same six heads:
 
