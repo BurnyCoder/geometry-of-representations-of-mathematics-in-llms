@@ -1,4 +1,4 @@
-"""H-B2 figures: the group-like axiom lattice (magma … abelian group, 4 axiom bits).
+"""H-B2 figures: the group-like axiom profile diagram (magma … abelian group, 4 axiom bits).
 
 Global context: "adding an axiom is a direction" predicts that the difference vectors of all pairs
 differing only in that axiom are parallel (offset consistency, lattice.json). Three views:
@@ -26,13 +26,13 @@ HEAD = "-|>,head_length=0.8,head_width=0.45"  # filled arrowhead, about twice th
 
 
 def draw_schematic(ax, names: list[str], bits: np.ndarray, axioms: list[str]):
-    """Ideal lattice on a 4×4 grid: x = 2·associative + divisible, y = 2·identity + commutative."""
+    """Four-bit profiles on a 4×4 grid: x = 2·associative + divisible, y = 2·identity + commutative."""
     a, i, d, c = (bits[:, axioms.index(k)] for k in ("associative", "identity", "divisible", "commutative"))
     P = np.c_[2 * a + d, 2 * i + c].astype(float)
     for ax_i in range(len(axioms)):
         for p, q in axiom_pairs(bits, ax_i):
             # associativity and identity are 2-unit steps on this grid: bend them so they don't run through the node in
-            # between (e.g. magma → semigroup would cross quasigroup and read as two pairs that are not in the lattice)
+            # between (e.g. magma → semigroup would cross quasigroup and read as two pairs that are outside the sample)
             bend = "arc3,rad=0.2" if np.abs(P[q] - P[p]).max() > 1 else "arc3"
             ax.annotate("", P[q], P[p], arrowprops=dict(arrowstyle=HEAD, color=S.AXIS, lw=0.9, shrinkA=6, shrinkB=6, mutation_scale=12, connectionstyle=bend))
     ax.scatter(P[:, 0], P[:, 1], s=40, color=S.INK2, zorder=3, edgecolors=S.SURFACE, linewidths=1.0)
@@ -130,7 +130,7 @@ def _arrows_at_origin(ax, V: np.ndarray, pairs: list, color: str, lim: float, vi
 
 def draw_explainer(X: dict, names: list[str], bits: np.ndarray, axioms: list[str], off: dict, show: str, model: str):
     """How the axiom test works, in four steps, on real data (except the ground-truth schematic):
-    1 the lattice of structures; 2 one axiom's pairs as arrows in the 3-D view (top-3 PCs) of the model;
+    1 the sampled partial order; 2 one axiom's pairs as arrows in the 3-D view (top-3 PCs) of the model;
     3 the same arrows from one common origin, model vs random-init twin; 4 a compass of full-space angles
     (figdata.axiom_angles) for every axiom, with the reported offset consistency (off[side][axiom])."""
     import matplotlib.pyplot as plt
@@ -142,7 +142,7 @@ def draw_explainer(X: dict, names: list[str], bits: np.ndarray, axioms: list[str
     gs = fig.add_gridspec(2, 5, width_ratios=[1.0, 1.7, 1.15, 0.8, 0.8], hspace=0.45, wspace=0.18)
     # 1 · the ground truth
     draw_schematic(fig.add_subplot(gs[:, 0]), names, bits, axioms)
-    fig.axes[-1].set_title("1 · Structures are sets of axioms", fontsize=9.5)
+    fig.axes[-1].set_title("1 · Required axioms of sampled structures", fontsize=9.5)
     # 2 · arrows in the model's 3-D view
     ax = fig.add_subplot(gs[:, 1], projection="3d")
     P, var = V["trained"]

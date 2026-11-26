@@ -52,7 +52,7 @@ def relative_delta(P: np.ndarray) -> float:
 
 
 def spectrum_matched_gaussian(C: np.ndarray, rng) -> np.ndarray:
-    """Gaussian points (same n) whose covariance has the same eigenvalues as the centered points C."""
+    """Gaussian draws with population covariance matched to the sample covariance of C. Realized spectra vary."""
     Cc = C - C.mean(0)
     _, S, Vt = np.linalg.svd(Cc, full_matrices=False)
     k = len(S)

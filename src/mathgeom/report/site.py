@@ -3,7 +3,7 @@
 Global context: the site shows the same unsupervised projections as the static figures
 (report/figdata.py) — per layer, so readers can scrub through depth — plus everything needed for
 in-browser interaction: field distance matrices (hover-linked to the map), concept nearest
-neighbours, exact (n−1)-D lattice coordinates (an analogy playground computes ranks exactly in the
+neighbours, exact (n−1)-D profile coordinates (an analogy playground computes ranks exactly in the
 browser) and the difference-vector cosine matrix. Layout:
   site/data/index.json   models, fields, scorecard, forest rows, a pruned copy of the results JSON
   site/data/<model>.json per-model geometry (lazy-loaded when the reader picks that model)
@@ -79,7 +79,7 @@ def export_model(cfg: Config, key: str, mp_key: dict) -> dict:
                               "pc5": {"trained": _r(tr5), "random_init": _r(tw5)},
                               "var": {s: [_r(figdata.pca_var(Xs[:, l], 5), 4) for l in range(1, Xs.shape[1])] for s, Xs in (("trained", Xt), ("random_init", Xw))},
                               "ideal5": {s: [_r(figdata.ideal_fit(P, closed)) for P in Ps] for s, Ps in (("trained", tr5), ("random_init", tw5))}}
-    # group-like lattice: per-layer planes and top-5 views, exact coordinates, the map from exact coordinates to the
+    # group-like profiles: per-layer planes and top-5 views, exact coordinates, the map from exact coordinates to the
     # view (places the analogy point b − a + c exactly) and the offset cosine matrix at the primary layer
     lat = load_yaml("families.yaml")["lattices"]["group_like"]
     items, axioms = list(lat["items"]), lat["axioms"]
@@ -112,7 +112,7 @@ SITE_FACTS = ("space_block.0", "space_block.1", "top2_cycle_perfect.days", "top2
               "field_map_beats_twin", "abelian_range", "nonce_group_range")  # render.fact specs used by <span data-num="facts.…"> in site/index.html
 
 
-def write_index(cfg: Config) -> None:
+def write_index(cfg: Config, *, reuse_layout: bool = False) -> None:
     from mathgeom.report.figures.overview import forest_rows
     from mathgeom.report.paper import _results
     from mathgeom.report.render import fact, scorecard_rows
@@ -126,26 +126,36 @@ def write_index(cfg: Config) -> None:
     ratings = pd.read_csv(cfg.data_dir / "judge_ratings.csv")
     judges = [c for c in ratings.columns if "/" in c]
     abstr = ratings.set_index("concept")[judges].mean(1)
-    ml = pd.read_csv(cfg.data_dir / "mathlib_depth.csv").set_index("concept") if (cfg.data_dir / "mathlib_depth.csv").exists() else None
+    from mathgeom.verification.mathlib import reviewed_frame
+    ml = reviewed_frame(r["science"]["mathlib"]["dispositions"]).set_index("concept")
+    if reuse_layout:
+        previous = json.loads((SITE / "index.json").read_text())["fields"]
+        if previous["names"] != list(setup["names"]) or previous["arxiv_rank"] != _r(figdata.rank_unit(setup["arxiv"])):
+            raise ValueError("The saved layout uses a different arXiv target or field order")
+        layout = {k: previous[k] for k in ("arxiv_layout", "arxiv_layout3", "arxiv_stress")}
+    else:
+        coords = [figdata.mds(setup["arxiv"], k=k) for k in (2, 3)]
+        layout = {"arxiv_layout": _r(figdata.unit_rms(coords[0])), "arxiv_layout3": _r(figdata.unit_rms(coords[1])),
+                  "arxiv_stress": [round(figdata.stress1(p, setup["arxiv"]), 3) for p in coords]}
     cdf = concepts[mask]
     idx = {
         "models": [{"key": k, "name": S.MODEL[k], "primary_layer": r["map_fields"][k]["primary_layer"], "n_layers": len(r["map_fields"][k]["math_primary"]["layer_curve"]["trained"])} for k in keys],
         "fields": {"names": setup["names"], "labels": [S.FIELD.get(n, n) for n in setup["names"]], "pa": setup["pa"], "branch": setup["branch"],
                    "branch_labels": S.BRANCH, "order": setup["order"], "arxiv_rank": _r(figdata.rank_unit(setup["arxiv"])),
-                   "arxiv_layout": _r(figdata.unit_rms(figdata.mds(setup["arxiv"]))), "arxiv_layout3": _r(figdata.unit_rms(figdata.mds(setup["arxiv"], k=3))),
-                   "arxiv_stress": [round(figdata.stress1(figdata.mds(setup["arxiv"], k=k), setup["arxiv"]), 3) for k in (2, 3)],
-                   "edges": figdata.neighbour_edges(setup["arxiv"]), "n_papers": setup["n_papers"]},
+                   **layout, "edges": figdata.neighbour_edges(setup["arxiv"]), "n_papers": setup["n_papers"]},
         "concepts": {"concept": cdf.concept.tolist(), "field": cdf.field.tolist(), "abstraction": _r(cdf.concept.map(abstr).values, 2),
                      "mathlib": [None if ml is None or c not in ml.index or pd.isna(ml.loc[c, "depth"]) else {"decl": ml.loc[c, "decl"], "depth": int(ml.loc[c, "depth"])} for c in cdf.concept]},
         "mathlib_points": [] if ml is None else [{"concept": c, "field": S.FIELD.get(row.field, row.field), "decl": row.decl, "depth": int(row.depth), "rating": round(float(row.mean_rating), 3)}
                                                   for c, row in ml.dropna(subset=["depth"]).iterrows()],  # all matched concepts (the set the ρ is computed on)
+        "audit": {"multiplicity": r["science"]["multiplicity"], "applied": r["science"]["checkpoints"]["qwen3.5-2b"]["applied_labels"],
+                  "original_matches": r["science"]["mathlib"]["original_n"], "retained_fields": r["science"]["mathlib"]["retained_fields"]},
         "family_labels": S.FAMILY,
         "scorecard": scorecard_rows(r),
         # counts quoted in the page's prose ("n of 5 models"), computed like the README's {{fact:…}} placeholders
         "facts": {s: fact(r, s) for s in SITE_FACTS},
         "forest": [{"title": t, "rows": rows} for t, rows in forest_rows(r)],
         "results": {k: _prune(v, ("layer_curve", "negative_control") if k in ("shapes", "lattice") else ("concept_level_regression",))
-                    for k, v in r.items() if k not in ("numbers", "manifest", "sae", "smds", "calibration")},
+                    for k, v in r.items() if k not in ("numbers", "manifest", "sae", "smds", "calibration", "science")},
     }
     for k in list(idx["results"].get("posthoc", {})):  # keep only the cycle scores the site plots
         pc, pl = idx["results"]["posthoc"][k].get("pc_plane_cycle", {}), idx["results"]["posthoc"][k].get("pc_planes_cycle", {})

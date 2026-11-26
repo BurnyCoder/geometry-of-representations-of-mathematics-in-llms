@@ -17,6 +17,9 @@ log = logging.getLogger(__name__)
 
 
 def _j(cfg: Config, name: str) -> dict:
+    if name == "mathlib.json" and cfg.name == "mvp":
+        from mathgeom.report.paper import _results
+        return _results("mvp")["mathlib"]
     p = cfg.results_dir / name
     return json.loads(p.read_text()) if p.exists() else {}
 
@@ -82,7 +85,7 @@ def table_beyond_reference(sh: dict, fams: dict) -> str:
 
 
 def table_lattice(la: dict) -> str:
-    rows = ["| Lattice | Model | axiom-RDM β (p) | lexical β | offset consistency per axiom: obs / null95 (p) | analogy top-1 (chance) | mean rank (chance) |", "|---|---|---|---|---|---|---|"]
+    rows = ["| Axiom family | Model | axiom-RDM β (p) | lexical β | offset consistency per axiom: obs / null95 (p) | analogy top-1 (chance) | mean rank (chance) |", "|---|---|---|---|---|---|---|"]
     for key, res in la.items():
         for name in ("group_like", "self_distributive"):
             r = res[name]
@@ -162,7 +165,7 @@ def table_planes_decision(ph: dict, layer_of: dict) -> str:
              for k, v in d.items()]
     met = [MODEL.get(k, k) for k, v in d.items() if v["accepted"]]
     verdict = (f"**The rule is met in {', '.join(met)}**: there, the post-hoc result is a circular component beyond PC1–2." if met else
-               "**No model meets the rule**, so \"angles are not a circle\" stands, now for every plane of the top 5 principal components too.")
+               "*No checkpoint meets the post-hoc rule in the ten coordinate planes examined. Both calendar controls failed the original full-space rule. Other angle components remain unresolved.*")
     return "\n".join(rows + ["", verdict])
 
 
@@ -178,31 +181,30 @@ def angles_met(a: dict) -> bool:
     return a["closure"] < 2 and a["circle_rho"] > a["line_rho"]
 
 
-ANGLES_ROW = "H-B angles circle prediction (decision rule; p = 1 when falsified)"
+ANGLES_ROW = "H-B angles circle prediction (descriptive rule)"
+FIELD_ROW = "H-A1 Δρ trained − random-init ≤ 0 (bootstrap)"
 
 
 def holm_rows(mp: dict, sh: dict, la: dict, key: str) -> list[tuple[str, float]]:
-    """The 8 pre-registered confirmatory tests of the MVP (docs/prereg.md §4) and their p-values.
-    The angles prediction is a decision rule without a p: it enters with p = 1 when the rule fails, so it
-    counts in the family size without being rejected (independent audit, reports/prereg_addendum_lexical.md D8;
-    a 7-test family had been used before, which is less conservative than the frozen text), and p = 0 if met.
-    The H-A1 bootstrap p is (1 + #resamples with Δ ≤ 0)/(1 + n_boot), the same +1 convention as the
-    permutation p-values, so 0 of 2,000 resamples gives 1/2001 rather than an impossible 0."""
-    n_boot = load_yaml("mvp.yaml")["n_boot"]  # every run config uses the same n_boot
-    rows = [("H-A1 Δρ trained − random-init ≤ 0 (bootstrap)", (1 + mp[key]["math_primary"]["rsa_boot"]["delta_vs_random_init"]["p_le_0"] * n_boot) / (1 + n_boot)),
-            ("H-B ring chain (Robinson and LOO order)", chain_p(sh[key]["ring_chain"])), ("H-B space chain (Robinson and LOO order)", chain_p(sh[key]["space_chain"]))]
-    rows += [(f"H-B2 {a} offset consistency", o["p"]) for a, o in la[key]["group_like"]["offsets"].items()]
-    rows.append((ANGLES_ROW, 0.0 if angles_met(sh[key]["angles"]) else 1.0))
-    return rows
+    """Replay the published family on observed data. Reserve the untested angle slot in every case."""
+    n_boot = load_yaml("mvp.yaml")["n_boot"]
+    tail = mp[key]["math_primary"]["rsa_boot"]["delta_vs_random_init"]["p_le_0"]
+    rows = [(FIELD_ROW, (1 + n_boot * tail) / (1 + n_boot))]
+    for family in ("ring_chain", "space_chain"):
+        rows.append((f"H-B {family.replace('_', ' ')} (Robinson and LOO order)", chain_p(sh[key][family])))
+    rows.extend((f"H-B2 {a} offset consistency", o["p"]) for a, o in la[key]["group_like"]["offsets"].items())
+    return rows + [(ANGLES_ROW, 1.0)]
 
 
 def holm_decisions(mp: dict, sh: dict, la: dict, key: str) -> list[dict]:
-    """Holm (statsmodels multipletests) over one model's 8 confirmatory tests."""
+    """Published adjustment and sensitivity reserving both non-permutation slots (Holm 1979)."""
     from statsmodels.stats.multitest import multipletests
 
     rows = holm_rows(mp, sh, la, key)
-    rej, padj, _, _ = multipletests([max(p, 1e-12) for _, p in rows], alpha=0.05, method="holm")
-    return [{"name": n, "p": p, "p_holm": float(pa), "reject": bool(r)} for (n, p), pa, r in zip(rows, padj, rej)]
+    published = multipletests([p for _, p in rows], method="holm")[1]
+    reserved = multipletests([1.0 if n == FIELD_ROW else p for n, p in rows], method="holm")[1]
+    return [{"name": n, "p": p, "p_holm": float(old), "reserved_holm": float(new), "reject": bool(old <= .05)}
+            for (n, p), old, new in zip(rows, published, reserved)]
 
 
 AX_NOUN = {"associative": "associativity", "identity": "identity", "divisible": "divisibility", "commutative": "commutativity"}
@@ -223,22 +225,23 @@ def _and(xs: list[str]) -> str:
 def table_holm(mp: dict, sh: dict, la: dict) -> str:
     """Holm over the 8 confirmatory tests; the angles prediction is a pre-registered decision rule
     (closure < 2 AND circle ρ > line ρ) whose row shows the rule instead of a p-value."""
-    out = ["| Test | Model | p | Holm-adjusted p | reject at α=0.05 |", "|---|---|---|---|---|"]
+    out = ["| Test | Model | Original input | Published Holm | Reserved-slot Holm |",
+           "|---|---|---:|---:|---:|"]
     for key in mp:
         for d in holm_decisions(mp, sh, la, key):
             if d["name"] == ANGLES_ROW:
-                a = sh[key]["angles"]
-                out.append(f"| H-B angles circle prediction (decision rule: closure < 2 and circle ρ > line ρ; observed closure {a['closure']:.2f}, "
-                           f"circle ρ {a['circle_rho']:.2f}, line ρ {a['line_rho']:.2f}; counted with p = {d['p']:.0f}) | {key} | — | — | {'met' if angles_met(a) else 'not met (prediction falsified)'} |")
+                status = "met" if angles_met(sh[key]["angles"]) else "failed"
+                out.append(f"| Angles rule {status}; see calendar controls | {key} | rule only | reserved | reserved |")
             else:
-                out.append(f"| {d['name']} | {key} | {_p(d['p'])} | {_p(d['p_holm'])} | {'yes' if d['reject'] else 'no'} |")
+                sensitivity = "reserved" if d["name"] == FIELD_ROW else _p(d["reserved_holm"])
+                out.append(f"| {d['name']} | {key} | {_p(d['p'])} | {_p(d['p_holm'])} | {sensitivity} |")
     return "\n".join(out)
 
 
-SCORE_LEGEND = ("● significant: Holm-adjusted over the 8 pre-registered confirmatory tests for the axiom and chain rows (the falsified angles rule counted with p = 1), "
+SCORE_LEGEND = ("† changes at .05 when the field-map bootstrap slot is reserved. Only Qwen3.5-2B is confirmatory; other checkpoints are robustness comparisons on the same items. ● significant: Holm-adjusted over the 8 pre-registered confirmatory tests for the axiom and chain rows (the angles slot always reserved), "
                 "with the trained value above the twin's; for Δ tests the 95% CI lies entirely above 0 (H-A1 also needs Mantel p < .05); for every other row p < .05, unadjusted · "
                 "◐ raw p < .05 but not Holm-significant (axiom and chain rows) · ○ not significant · "
-                "✗ pre-registered prediction falsified (the angles rule is met by {twins}, so it is not specific). "
+                "✗ observed criteria failed. Days and months also failed the full-space rule in every trained checkpoint; a circular angle component remains unresolved. The angle rule is met by {twins}. "
                 "Chains: p = max(Robinson p, LOO order p), the pre-registered conjunction. "
                 "Numbers: the statistic for the trained model. Audit rows (post-hoc, reports/prereg_addendum_lexical.md): field map = lowest lower CI bound of "
                 "Δρ against the three lexical baselines; ring chain = Robinson score within the “… domain” items; held-out pair = cosine of abelian group − group "
@@ -273,15 +276,17 @@ def scorecard_rows(r: dict) -> dict:
     def chain(key, f):  # pre-registered: Robinson p < .05 AND LOO order p < .05 (Holm on their max) AND trained > twin
         s, d = sh[key][f], next(x for x in holm_decisions(mp, sh, la, key) if x["name"].startswith(f"H-B {f.replace('_', ' ')}"))
         above = s["robinson"] > sh[key + "__random"][f]["robinson"]
-        return f"{'●' if d['reject'] and above else '◐' if d['p'] < 0.05 and above else '○'} {s['robinson']:.2f}"
+        mark = '●' if d['reject'] and above else '◐' if d['p'] < 0.05 and above else '○'
+        sensitive = '†' if above and d['reject'] != (d['reserved_holm'] <= .05) else ''
+        return f"{mark}{sensitive} {s['robinson']:.2f}"
 
     def angles(key):
-        return f"{'●' if angles_met(sh[key]['angles']) else '✗'} {sh[key]['angles']['closure']:.2f}"
+        return f"{'met' if angles_met(sh[key]['angles']) else '✗'} {sh[key]['angles']['closure']:.2f}"
 
     def h_a1(key):  # pre-registered H-A1: (a) Mantel p < .05 AND (b) the Δρ CI vs the twin excludes 0
         return ha1_supported(mp, key)
 
-    conf_, pre, added = "pre-registered, confirmatory", "pre-registered", "added by plan audit"
+    conf_, pre, added = "MVP confirmatory; others robustness", "pre-registered", "added by plan audit"
     planes = planes_decision(ph, {k: mp[k]["primary_layer"] for k in keys}) if all("pc_planes_cycle" in ph.get(k, {}) for k in keys) else {}
     audit = {}
     if all(k in r.get("lexical", {}) for k in keys):  # independent audit (reports/prereg_addendum_lexical.md)
@@ -292,7 +297,7 @@ def scorecard_rows(r: dict) -> dict:
     rows = [  # the results that survive the audit's word-form controls first, each followed by its audit row
         ("Field map tracks arXiv beyond the twin (H-A1; Mantel p and Δρ CI)", conf_, lambda k: f"{'●' if h_a1(k) else '○'} {mp[k]['math_primary']['rsa']['trained']:.2f}"),
         *a_row("field"),
-        ("Field map is a hierarchy beyond the twin (H-A2; cophenetic Δ CI)", pre, lambda k: f"{'●' if ex(hi[k]['coph_match_delta_vs_random_ci']) else '○'} {hi[k]['coph_match']['trained']:.2f}"),
+        ("Hierarchy meets shuffled-tree and positive twin CI criteria (H-A2)", pre, lambda k: f"{'●' if hi[k]['coph_match_p_shuffled_tree'] < .05 and hi[k]['coph_match_delta_vs_random_ci'][0] > 0 else '○'} {hi[k]['coph_match']['trained']:.2f}"),
         ("Space chain ordered (Robinson and LOO order; Holm; > twin)", conf_, lambda k: chain(k, "space_chain")),
         *a_row("space"),
         ("Ring chain ordered (Robinson and LOO order; Holm; > twin)", conf_, lambda k: chain(k, "ring_chain")),
@@ -302,6 +307,8 @@ def scorecard_rows(r: dict) -> dict:
         *a_row("axioms", "abelian", "nonce"),
         ("Lie / topological / algebraic groups as parallelograms", "pre-registered, exploratory", lambda k: f"{'●' if st[k]['group_objects']['parallelograms']['p'] < 0.05 else '○'} {st[k]['group_objects']['parallelograms']['cos']:.2f}"),
         *a_row("group_objects"),
+        ("Days / months pass the original full-space circle control", "pre-registered control",
+         lambda k: " / ".join("met" if angles_met(sh[k][f]) and sh[k][f]["robinson_p"] < .05 else "failed" for f in ("days", "months"))),
         ("Days form a cycle (positive control; PC plane)", "positive control; post-hoc statistic", cyc),
         ("Angles form a circle (closure < 2 and circle ρ > line ρ)", conf_, angles),
         *([("Angles: closed cycle in any top-5 PC plane (addendum rule)", "post-hoc, pre-specified addendum", lambda k: f"{'●' if planes[k]['accepted'] else '○'} {planes[k]['score']:.2f}"),
@@ -572,12 +579,12 @@ def table_lattice_probes(la: dict, st: dict) -> str:
 
 
 def table_lattice_variants(la: dict) -> str:
-    """Group-like offsets on mean-pooled tokens / with the token-count direction removed; partial-operation lattice."""
+    """Group-like offsets on mean-pooled tokens / with the token-count direction removed; partial-operation family."""
     rows = ["| Model | Variant | offset consistency per axiom: obs / null95 (p) |", "|---|---|---|"]
     for key, res in la.items():
         a = res["audit2"]
         for name, offs in (("group-like, mean-pooled tokens", a["group_like_offsets"]["pool"]), ("group-like, token-count direction removed", a["group_like_offsets"]["length_projected"]),
-                           ("partial-operation lattice", a["partial_operation"]["offsets"])):
+                           ("partial-operation family", a["partial_operation"]["offsets"])):
             rows.append(f"| {key} | {name} | " + "; ".join(f"{ax}: {o['consistency']:.2f} / {o['null95']:.2f} ({_p(o['p'])})" for ax, o in offs.items()) + " |")
     return "\n".join(rows)
 
@@ -589,7 +596,7 @@ def table_judges(j: dict) -> str:
 
 
 def table_axes(a: dict) -> str:
-    rows = ["| Model | PC | explained var | ρ with applied (p) | ρ with abstraction (p) |", "|---|---|---|---|---|"]
+    rows = ["| Model | PC | explained var | ρ with applied (historical concept-level p) | ρ with abstraction (p) |", "|---|---|---|---|---|"]
     for key, r in a.items():
         for pc, ev in zip(r["pcs"], r["explained_var"]):
             rows.append(f"| {key} | {pc['pc']} | {ev:.3f} | {pc['rho_applied']:+.3f} ({_p(pc['p_applied'])}) | {pc['rho_abstraction']:+.3f} ({_p(pc['p_abstraction'])}) |")
@@ -677,11 +684,18 @@ def audit_sections(cfg: Config, fams: dict, sh: dict, la: dict, st: dict) -> dic
     return out
 
 
-def phase_report(cfg: Config) -> None:
+def phase_report(cfg: Config, *, saved_figures: bool = False) -> None:
     sub = cfg.raw.get("figure_subdir", "")  # variant configs reuse model keys: keep their figures apart
     fams = load_yaml("families.yaml")
     mp, sh, la = _j(cfg, "map_fields.json"), _j(cfg, "shapes.json"), _j(cfg, "lattice.json")
-    figs = build_model_figures(cfg, ROOT / "reports" / "figures" / sub if sub else ROOT / "reports" / "figures")
+    if saved_figures:
+        import re
+        existing = (ROOT / "reports" / f"{cfg.name}_results.md").read_text(encoding="utf-8")
+        figs = re.findall(r"^!\[([^\]]+)\]\(figures/", existing, re.M)
+        if not figs or any(not (ROOT / "reports/figures" / sub / f).is_file() for f in figs):
+            raise ValueError(f"Incomplete saved figure set for {cfg.name}")
+    else:
+        figs = build_model_figures(cfg, ROOT / "reports" / "figures" / sub if sub else ROOT / "reports" / "figures")
     cal = _j(cfg, "calibration.json")
     sections = {
         "Method validation: calibration of partial RDM regression (Freedman–Lane), simulation study": table_calibration(cal) if cal else "*not run*",
@@ -689,19 +703,19 @@ def phase_report(cfg: Config) -> None:
         "POST-HOC: field-map ρ after removing the top-k principal components (all-but-the-top sweep)": table_posthoc(_j(cfg, "posthoc.json")) if _j(cfg, "posthoc.json") else "*not run*",
         "POST-HOC: cyclic order in the top-2-PC plane at the pre-registered layer (1 = every item's angular neighbour is its true successor; an open arc also scores 1; positive-control debug)": table_cycles(_j(cfg, "posthoc.json"), {k: v["primary_layer"] for k, v in _j(cfg, "shapes.json").items()}) if _j(cfg, "posthoc.json") else "*not run*",
         "POST-HOC 4 (reports/prereg_addendum_3d.md): closed cycle in the best plane of PC1–5 at the pre-registered layer (score · plane · max-over-planes p; twin in brackets)": table_planes_cycle(_j(cfg, "posthoc.json"), {k: v["primary_layer"] for k, v in _j(cfg, "shapes.json").items()}) if _j(cfg, "posthoc.json") else "*not run*",
-        "Multiplicity: Holm correction over the 8 pre-registered confirmatory tests; the angles prediction is a decision rule without a p and enters with p = 1 when falsified (audit D8; H-A1 bootstrap p = (1 + #resamples with Δ ≤ 0)/(1 + 2000); chain p = max(Robinson p, LOO order p))": table_holm(mp, sh, la),
+        "Multiplicity: published eight-slot Holm and reserved-slot sensitivity. H-A1 uses a CI decision and the deterministic angle slot is always reserved": table_holm(mp, sh, la),
         "H-A1c clustering specificity: math fields vs non-math control fields": table_clustering(mp),
         "H-B shape families (primary layer; permutation p-values; † = post-hoc statistic, see docs/deviations.md)": table_shapes(sh, fams),
         "H-B negative control: random 11-item lists of math concepts (should reject ≈5%)": table_negative_control(sh),
         "H-B number-coded families: structure beyond the number reference": table_beyond_reference(sh, fams),
-        "H-B2 axiom lattices (offset consistency = mean cosine of same-axiom difference vectors)": table_lattice(la),
+        "H-B2 sampled axiom profiles (offset consistency = mean cosine of same-axiom difference vectors)": table_lattice(la),
     }
     st = _j(cfg, "structures.json")
     if _j(cfg, "chain_frequency.json"):
         sections["H-B frequency control (plan; second audit): chain order beyond Zipf frequency and token count"] = table_chain_frequency(_j(cfg, "chain_frequency.json"))
     if all("audit2" in r for r in la.values()) and st:
         sections["H-B2 exploratory (second audit): flagged items and lattice-like identity transfer"] = table_lattice_probes(la, st)
-        sections["H-B2 exploratory (second audit): offset variants and the partial-operation lattice"] = table_lattice_variants(la)
+        sections["H-B2 exploratory (second audit): offset variants and the partial-operation family"] = table_lattice_variants(la)
     for title, name, fn in (("H-A2 hierarchy as pre-registered: cophenetic correlation (UPGMA) vs super-tree; spectrum-matched Gaussian and Gromov δ (plan)", "hierarchy.json", table_hierarchy),
                             ("Baselines: field map from fastText and Qwen3-Embedding vs the LLM (paired bootstrap); infini-gram covariate", "baselines.json", table_baselines),
                             ("Secondary: SMDS line vs discrete-circle fits, each vs label-shuffled refits", "smds.json", table_smds),
@@ -719,6 +733,8 @@ def phase_report(cfg: Config) -> None:
         md += f"## {title}\n\n{tab}\n\n"
     md += "## Figures\n\n" + "\n\n".join(f"![{f}](figures/{sub + '/' if sub else ''}{f})" for f in figs) + "\n"
     (ROOT / "reports" / f"{cfg.name}_results.md").write_text(md, encoding="utf-8")
+    if saved_figures:
+        return
     numbers = {"map_fields": mp, "shapes": sh, "lattice": la}
     (cfg.results_dir / "numbers.json").write_text(json.dumps(numbers, indent=1, default=float))
     # how much of each family's variance the 3-D views show (descriptive; read by captions through placeholders)

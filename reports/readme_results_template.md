@@ -5,7 +5,7 @@ The scorecard of every test in every model is [at the top of this README](#score
 **Headline: every model vs its random-init twin, at the preregistered layer (relative depth 0.5).**
 
 The columns are:
-- **Axiom offsets:** the mean cosine of same-axiom difference vectors in the group-like lattice (the random-pair null's 95th percentile is {{fact:offset_null95_range}} across axioms and models; the scorecard has the significance).
+- **Axiom offsets:** the mean cosine of same-axiom difference vectors in the group-like family (the random-pair null's 95th percentile is {{fact:offset_null95_range}} across axioms and models; the scorecard has the significance).
 - **Field ρ:** Spearman correlation between the field-centroid RDM and arXiv cross-listing distance.
 - **Field ρ, word form:** the same statistic on the names' character 3-grams / on the model's own input embeddings summed over each name's tokens (audit; no context; the second carries token meaning).
 - **LOO acc:** leave-one-out field accuracy over {{num:mvp.map_fields.qwen3.5-2b.math_primary.n_fields}} fields (chance {{num:mvp.map_fields.qwen3.5-2b.math_primary.loo_acc.chance:.2f}}).
@@ -22,16 +22,16 @@ The columns are:
 
 **Abstraction axis (H-A4, Qwen3.5-2B).** After partialling out frequency and token count:
 - PC1 correlates with LLM-judge abstraction at ρ = {{num:mvp.axes.qwen3.5-2b.pcs.0.rho_abstraction:.2f}} (twin {{num:mvp.axes.qwen3.5-2b__random.pcs.0.rho_abstraction:.2f}}).
-- PC2 correlates with pure/applied at ρ = {{num:mvp.axes.qwen3.5-2b.pcs.1.rho_applied:.2f}}.
-- The judges' ratings agree with an external, non-LLM measure, the import depth of each concept's definition in [Mathlib](https://github.com/leanprover-community/mathlib4): ρ = {{num:mvp.mathlib.rho_mean_rating_depth:.2f}}, 95% CI [{{num:mvp.mathlib.ci95.0:.2f}}, {{num:mvp.mathlib.ci95.1:.2f}}]. Only {{num:mvp.mathlib.n_matched}} of {{num:mvp.mathlib.n_math_concepts}} concepts could be matched, so this validation is weak.
+- PC2 correlates with pure/applied at ρ = {{num:mvp.axes.qwen3.5-2b.pcs.1.rho_applied:.2f}}. Treating pure/applied as a field label gives exact PC2 p = {{num:mvp.science.checkpoints.qwen3.5-2b.applied_labels.pc_specific_exact_p.1:.4f}} and p = {{num:mvp.science.checkpoints.qwen3.5-2b.applied_labels.max_five_pc_p.1:.4f}} allowing selection among five PCs.
+- The judges' ratings have a positive sample correlation with an external measure, the import depth of each retained concept's definition in [Mathlib](https://github.com/leanprover-community/mathlib4): ρ = {{num:mvp.mathlib.rho_mean_rating_depth:.2f}}, 95% CI [{{num:mvp.mathlib.ci95.0:.2f}}, {{num:mvp.mathlib.ci95.1:.2f}}]. Only {{num:mvp.mathlib.n_matched}} of {{num:mvp.mathlib.n_math_concepts}} concepts could be matched, so this validation is weak.
 
 **Methods check.** In {{num:mvp.calibration.field_confounded_null.n_sims}} simulations, partial RDM regression rejected a true null {{num:mvp.calibration.field_confounded_null.reject_rate_0.05:.1%}} of the time when the nuisance was a noisy proxy of a confounder. That is why the field-map tests are paired contrasts with the twin.
 
 **Independent audit (post-hoc; [report](reports/audit_lexical.md), [addendum](reports/prereg_addendum_lexical.md) committed before it ran).** The random-init twin was meant to measure what the spelling of a name alone produces, but it can scramble even exact word composition: in the Qwen3.5-2B twin, magma → semigroup and commutative magma → commutative semigroup have difference vectors with cosine {{num:mvp.lexical.qwen3.5-2b.group_like.decomposition.twin.associative.dup_mean:.2f}} (trained {{num:mvp.lexical.qwen3.5-2b.group_like.decomposition.trained.associative.dup_mean:.2f}}; a bag of words gives 1; how much each twin keeps: {{fact:twin_dup_by_model}}). So every test was rerun on three baselines built from the names alone (character 3-grams, a bag of words, the model's context-free token embeddings), with the same statistic and type of null (the baselines' leave-one-out null has 300 permutations; chain tests skip the bag of words):
 - **Field map: holds.** It exceeds all three baselines in {{fact:field_beyond_lexical}}. Spelling alone gives no significant map; the context-free token embeddings give a weak one (ρ {{fact:lexical_field_range.layer0_bag}}). Without the eponyms, non-concepts and field roots inside compounds that the frozen flag rules let through (second independent audit), H-A1 holds in {{fact:strict_ha1.strict}} (ρ {{fact:strict_rho_range.strict}}).
 - **Space chain: holds.** Spelling does not order it, and it is ordered within its metric block (metrizable … Hilbert space) in {{fact:space_block.1}} and within its separation-axiom block in {{fact:space_block.0}}.
-- **Ring chain: not established beyond its head nouns.** Clusters of head nouns (rng | ring | … domain | field) with no order pass the preregistered chain test in up to {{num:mvp.lexical.block_only_simulation.2.reject_rate:.0%}} of simulations; the six "… domain" items are ordered among themselves in {{fact:ring_within}}.
-- **Axiom offsets: mostly word form.** The names' character 3-grams alone pass the same test for all four axioms, and "X → wooden X" or "X → zorbic X" is about as consistent as "X → commutative X"; "commutative" is the most consistent of the three in {{fact:nonce_above}}. Beyond word form: associativity in {{fact:axiom_beyond_lexical.associative}}; the "commutative" direction predicts abelian group − group, which shares no word with it, in {{fact:abelian_transfer}}, but a nonce modifier on "group" gets most of the way ({{fact:nonce_group_range}} vs {{fact:abelian_range}}; second independent audit).
+- **Ring chain: not established beyond its head nouns.** Clusters of head nouns (rng | ring | … domain | field) with no order pass the preregistered chain test in up to {{num:mvp.lexical.block_only_simulation.2.reject_rate:.0%}} of simulations; the six "… domain" items are ordered among themselves in {{fact:ring_within}}. The confirmatory ring-chain Holm value is {{num:mvp.science.multiplicity.ring_chain.published:.4f}} in the published calculation and {{num:mvp.science.multiplicity.ring_chain.reserved:.4f}} when H-A1 keeps its slot without bootstrap rejection credit.
+- **Axiom offsets: spelling controls also pass.** The names' character 3-grams alone pass the same test for all four axioms, and "X → wooden X" or "X → zorbic X" is about as consistent as "X → commutative X"; "commutative" is the most consistent of the three in {{fact:nonce_above}}. Beyond word form: associativity in {{fact:axiom_beyond_lexical.associative}}; the "commutative" direction predicts abelian group − group, which shares no word with it, in {{fact:abelian_transfer}}, but a nonce modifier on "group" gets most of the way ({{fact:nonce_group_range}} vs {{fact:abelian_range}}; second independent audit).
 - **Group objects: word form.** The parallelograms clear their null in {{fact:parallelograms}}, but they share "topological" or "algebraic" on both sides; models above every word-form baseline: {{fact:group_objects_beyond}}.
 - **Precision:** Holm now covers all 8 preregistered tests, the trained models' and twins' leave-one-out order nulls have 10,000 permutations, BCa intervals correct the downward bootstrap bias of the field ρ, and four extra random seeds show the spread of the confirmatory model's twin.
 
@@ -78,7 +78,9 @@ Each figure states what it shows, what to notice, and its main caveat. Pictures 
   - Every twin stays near or below zero (highest twin value at any layer: {{fact:twin_curve_max}}).
 - **Caveat:** only the preregistered layer is a confirmatory test; any "best layer" is post-hoc. [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-depth).
 
-#### Shapes: circles for days and months, lines for chains, no circle for angles
+#### Shape predictions and the failed calendar controls
+
+The preregistered full-space angle rule failed in every trained checkpoint. Weekdays and months also failed their full-space positive control in every trained checkpoint. A circular angle component in another subspace remains unresolved.
 
 **In 3-D.**
 
@@ -109,7 +111,7 @@ For days and months, every model:
 
 ![ordered chains in 3-D]({{fig:chains3d_qwen3.5-2b}})
 
-- **What you see:** the class-inclusion chains and the other ordered families in their top-3 principal components, trained (top) and twin (bottom), with the path drawn in true order and its shadow on the floor as a depth cue.
+- **What you see:** the prespecified sequences of structures and the other ordered families in their top-3 principal components, trained (top) and twin (bottom), with the path drawn in true order and its shadow on the floor as a depth cue.
 - **What to notice:** the ring and space chains run as paths from general to special. PC1–3 hold {{num:mvp.views.qwen3.5-2b.ring_chain.cum3.11:.0%}} and {{num:mvp.views.qwen3.5-2b.space_chain.cum3.11:.0%}} of their variance (twin {{num:mvp.views.qwen3.5-2b__random.ring_chain.cum3.11:.0%}} and {{num:mvp.views.qwen3.5-2b__random.space_chain.cum3.11:.0%}}), so the 3-D view shows about as much of each chain in both models; the difference is the order, which the twin lacks (its Robinson scores are near chance).
 - **Caveat:** the order statistics (Robinson score, frequency control) are computed in the full space and printed under the 2-D version below. [Interactive 3-D](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
 
@@ -140,29 +142,29 @@ For days and months, every model:
 
 ![ordered chains]({{fig:chains_qwen3.5-2b}})
 
-- **What you see:** the class-inclusion chains in the PC plane, trained (top) and twin (bottom), with the Robinson score below each panel.
+- **What you see:** the prespecified sequences of structures in the PC plane, trained (top) and twin (bottom), with the Robinson score below each panel.
 - **What to notice:** in Qwen3.5-2B the ring and space chains run as ordered paths; in the twin they collapse to a tangle. Across models, the pre-registered test (Robinson and leave-one-out order, Holm, above the twin) holds for the ring chain in {{fact:chain_ordered.ring_chain}} and for the space chain in {{fact:chain_ordered.space_chain}}. The order survives removing word frequency and token count in {{fact:chain_beyond_frequency.ring_chain}} (ring) and {{fact:chain_beyond_frequency.space_chain}} (space).
 - **Caveat:** the ring chain's names end in four head nouns that form contiguous blocks of its order (rng | ring | … domain | field), and head-noun clusters with no order pass the preregistered test in up to {{num:mvp.lexical.block_only_simulation.2.reject_rate:.0%}} of simulations (audit). Within the six "… domain" items the order is significant in {{fact:ring_within}}, so the ring chain's order is not established beyond its head nouns. The space chain is ordered within its metric block in {{fact:space_block.1}}. [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
 
-#### Axiom offsets: consistent, but mostly word form
+#### Axiom offsets: consistent, but also present in name-only controls
 
 ![how the axiom test works]({{fig:axioms_explainer_qwen3.5-2b}})
 
 - **What you see:** how the test works, in four steps on real data.
-  1. Each structure is a set of axioms, so the 13 group-like structures sit on the corners of a lattice.
+  1. Each structure is a set of axioms, so the 13 group-like structures sit on the sampled vertices of a binary cube. The sampled binary profiles form a partially ordered set. Commutative magma and unital magma have two incomparable minimal upper bounds in this sample, commutative loop and commutative monoid. The pair lacks a join. One-bit directed offsets remain defined.
   2. Every pair of structures that differ only in commutativity becomes an arrow in the model's top-3 principal components.
   3. The same arrows, moved to one common origin, in the model and in its random-init twin.
   4. A compass for every axiom, measured in the full residual stream: the angle between each arrow and the mean direction of the other arrows of the same axiom. The model is drawn above the dashed line and the twin below it; 0° means "the same way" and 90° means "unrelated".
 - **What to notice:** the model's commutativity arrows point one way and the twin's do not: offset consistency {{num:mvp.lattice.qwen3.5-2b.group_like.offsets.commutative.consistency:.2f}} vs {{num:mvp.lattice.qwen3.5-2b__random.group_like.offsets.commutative.consistency:.2f}}, with the random-pair null's 95th percentile at {{num:mvp.lattice.qwen3.5-2b.group_like.offsets.commutative.null95:.2f}}. On the compass, the model's arrows sit well below 90° for associativity and commutativity, and less clearly for identity and divisibility; the twin's sit near 90° for every axiom. But the bundle is not specific to the axiom: X → wooden X gives {{num:mvp.lexical.qwen3.5-2b.nonce_modifier.wooden.trained.consistency:.2f}} and X → zorbic X {{num:mvp.lexical.qwen3.5-2b.nonce_modifier.zorbic.trained.consistency:.2f}} for the same six heads, against {{num:mvp.lexical.qwen3.5-2b.nonce_modifier.commutative.trained.consistency:.2f}} for X → commutative X.
 - **Caveat:** steps 2 and 3 are pictures in 3 dimensions; the statistic (the mean cosine between the difference vectors) and the compass come from the full space. The compass shows each arrow against the leave-one-out mean of its axiom, a visual aid that is not itself a test. [Interactive, step by step](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-axiom-how).
 
-![axiom lattice in 3-D]({{fig:lattice3d_qwen3.5-2b}})
+![axiom profile diagram in 3-D]({{fig:lattice3d_qwen3.5-2b}})
 
 - **What you see:** the 13 structures in their top-3 principal components, with true proportions and one fixed camera for every model. One facet per axiom: the 3-D arrows (blue; grey in the twin) are the pairs that differ only in that axiom.
 - **What to notice:** the trained model's arrows stay roughly parallel in 3-D, while the twin's point every way. PC1–3 hold {{num:mvp.views.qwen3.5-2b.group_like.cum3.11:.0%}} of the 13 structures' variance (twin {{num:mvp.views.qwen3.5-2b__random.group_like.cum3.11:.0%}}).
 - **Caveat:** a 3-D view can still hide or exaggerate parallelism; the cosine matrix below is the evidence. On the site you can rotate it, choose any 3 of the top-5 PCs, and see the analogy query b − a + c placed exactly. [Interactive 3-D](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-lattice).
 
-![axiom lattice facets]({{fig:lattice_axes_qwen3.5-2b}})
+![axiom profile diagram facets]({{fig:lattice_axes_qwen3.5-2b}})
 
 - **What you see:** the same facets in 2-D. Left, the ideal geometry, where each axiom is one fixed step. Each other panel is the same unsupervised PCA plane, highlighting the pairs that differ only in one axiom.
 - **What to notice:** in the trained model the highlighted arrows point roughly the same way; in the twin they point everywhere.
@@ -180,9 +182,9 @@ For days and months, every model:
 - **What to notice:** the parallelograms clear the null in {{fact:parallelograms}} (Qwen3.5-2B: {{num:mvp.structures.qwen3.5-2b.group_objects.parallelograms.cos:.2f}}), but the names' character 3-grams (×) are more parallel ({{num:mvp.lexical.qwen3.5-2b.group_objects.char3.cos:.2f}}): every parallelogram shares "topological" or "algebraic" on both sides. Trained models place "Lie group" near both parents ("smooth manifold" ranks {{fact:parent_rank_range.trained.1}}). The twins rank "group" {{fact:parent_rank_range.random_init.0}} and "smooth manifold" {{fact:parent_rank_range.random_init.1}}; Gemma is the exception, whose twin ranks "smooth manifold" {{num:gemma.structures.gemma-4-e2b__random.group_objects.parent_ranks.Lie group.1}}, closer than its trained model ({{num:gemma.structures.gemma-4-e2b.group_objects.parent_ranks.Lie group.1}}).
 - **Caveat:** exploratory. Each row marks the trained model's null (dark tick) and the twin's own null (small grey tick); {{fact:twin_parallelograms}} also clear theirs, with p = {{num:robustness.structures.qwen2.5-1.5b__random.group_objects.parallelograms.p:.3f}} and {{num:robustness.structures.qwen2.5-math-1.5b__random.group_objects.parallelograms.p:.3f}}. The twins' closeness to "group" is lexical (shared token). [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-groups).
 
-![partial-operation lattice]({{fig:partial_operation}})
+![partial-operation family]({{fig:partial_operation}})
 
-- **What you see:** a negative result. Offset consistency for the partial-operation lattice (semigroupoid, small category, groupoid vs semigroup, monoid, group) in all models and twins, against the random-pair null.
+- **What you see:** a negative result. Offset consistency for the partial-operation family (semigroupoid, small category, groupoid vs semigroup, monoid, group) in all models and twins, against the random-pair null.
 - **What to notice:** models with an axis that clears the null: {{fact:partial_any}} (Qwen3.5-2B, "total" operation: {{num:mvp.lattice.qwen3.5-2b.audit2.partial_operation.offsets.total.consistency:.2f}}, null 95th percentile {{num:mvp.lattice.qwen3.5-2b.audit2.partial_operation.offsets.total.null95:.2f}}).
 - **Caveat:** with 6 items and 2–3 pairs per axis, this test has little power; "no evidence" is not evidence of absence. [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-partial).
 
@@ -191,5 +193,5 @@ For days and months, every model:
 ![abstraction axis]({{fig:abstraction_qwen3.5-2b}})
 
 - **What you see:** the {{num:mvp.map_fields.qwen3.5-2b.math_primary.n}} primary concepts on their first two principal components (after frequency and token count are removed), coloured by judge abstraction (left) and pure/applied (middle). Right: judge ratings vs the Mathlib import depth of each concept's definition.
-- **What to notice:** PC1 runs roughly from concrete to abstract (ρ = {{num:mvp.axes.qwen3.5-2b.pcs.0.rho_abstraction:.2f}}, twin {{num:mvp.axes.qwen3.5-2b__random.pcs.0.rho_abstraction:.2f}}; abstraction explains only part of PC1, which holds {{num:mvp.axes.qwen3.5-2b.explained_var.0:.1%}} of the variance), and PC2 from pure to applied. The judges' ratings rise with Mathlib depth.
+- **What to notice:** PC1 runs roughly from concrete to abstract (ρ = {{num:mvp.axes.qwen3.5-2b.pcs.0.rho_abstraction:.2f}}, twin {{num:mvp.axes.qwen3.5-2b__random.pcs.0.rho_abstraction:.2f}}; the strength of this rank association is separate from the variance of PC1, which holds {{num:mvp.axes.qwen3.5-2b.explained_var.0:.1%}} of the variance), and PC2 from pure to applied. The judges' ratings rise with Mathlib depth.
 - **Caveat:** ratings come from LLM judges, and only {{num:mvp.mathlib.n_matched}} concepts could be matched to Mathlib. [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-abstraction).

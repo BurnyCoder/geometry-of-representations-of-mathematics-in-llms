@@ -7,9 +7,9 @@ pair of a chain, both answer orders (counterbalanced), scored by comparing the
 log-likelihood of the two continuations. Gate (fixed before the test ran, docs/deviations.md; the causal
 test is a plan item, not part of docs/prereg.md): only if baseline accuracy ≥ 0.70 do we intervene. Intervention: at the pre-registered layer, at the
 last token of each concept mention, add Gaussian noise inside the top-k PCA subspace of the
-chain — fitted on the OTHER chain items (held-out fit, avoiding the subspace illusion of
+chain — fitted on the OTHER chain items (pair-held-out fit; see the interpretive limitations in
 Makelov et al. 2023, arXiv:2311.17030) — versus inside random k-dim subspaces with the same
-noise norm. Prediction: chain-subspace noise hurts accuracy more than random-subspace noise.
+Gaussian coefficient scale and expected squared norm. Each candidate receives a fresh draw. Prediction: chain-subspace noise hurts accuracy more than random-subspace noise.
 """
 
 from __future__ import annotations
@@ -82,6 +82,8 @@ def chain_causal_test(model, tok, layer_module, items: list[str], domain: str, f
         for a, b, gen_idx in qs:
             prompt = TEMPLATE.format(D=domain, A=items[a], B=items[b])
             hook = hook_for(a, b, prompt) if hook_for else None
+            # Each continuation separately invokes the hook and advances its Gaussian generator.
+            # Both draws use the same subspace and scale for this question.
             sa = _score(model, tok, prompt, f" {items[a]}", hook, layer_module)
             sb = _score(model, tok, prompt, f" {items[b]}", hook, layer_module)
             correct.append((sa > sb) == (a == gen_idx))

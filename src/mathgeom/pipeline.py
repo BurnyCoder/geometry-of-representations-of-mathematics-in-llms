@@ -310,7 +310,7 @@ def _negative_control(cfg: Config, key: str, Lp: int, n_lists: int = 100) -> dic
 
 
 def phase_lattice(cfg: Config) -> None:
-    """H-B2: group-like and self-distributive axiom lattices, group objects, transfer, analogy control."""
+    """H-B2: group-like and self-distributive axiom profiles, group objects, transfer, analogy control."""
     from mathgeom.analyses.lattice import lattice_stats
     from mathgeom.geometry.offsets import analogy_rank, offset_consistency, random_pair_null
     from mathgeom.geometry.preprocess import center

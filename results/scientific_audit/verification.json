@@ -1,0 +1,2456 @@
+{
+  "source_revision": "43dcda70a7f6093e946fbc975c88cd65a7d12e5f",
+  "prereg_tag": "prereg-v1",
+  "arxiv": {
+    "papers": 3224635,
+    "revision": "c428226b689a0e17db2cd55265133b9eca15d97f",
+    "field_counts": [
+      6168,
+      26830,
+      20968,
+      15509,
+      10699,
+      84075,
+      16309,
+      62178,
+      51913,
+      45031,
+      38044,
+      18657,
+      62151,
+      31330,
+      94074,
+      52591,
+      15934
+    ],
+    "overlaps": [
+      [
+        6168,
+        561,
+        133,
+        64,
+        284,
+        305,
+        853,
+        73,
+        56,
+        134,
+        601,
+        271,
+        304,
+        48,
+        73,
+        6,
+        8
+      ],
+      [
+        561,
+        26830,
+        1530,
+        257,
+        311,
+        3055,
+        843,
+        1040,
+        1132,
+        195,
+        613,
+        1075,
+        1378,
+        2527,
+        611,
+        28,
+        9
+      ],
+      [
+        133,
+        1530,
+        20968,
+        1373,
+        1047,
+        1457,
+        481,
+        1300,
+        599,
+        212,
+        308,
+        383,
+        371,
+        3797,
+        137,
+        160,
+        2
+      ],
+      [
+        64,
+        257,
+        1373,
+        15509,
+        257,
+        2671,
+        218,
+        4737,
+        611,
+        250,
+        63,
+        358,
+        107,
+        848,
+        106,
+        59,
+        2
+      ],
+      [
+        284,
+        311,
+        1047,
+        257,
+        10699,
+        366,
+        801,
+        1016,
+        87,
+        25,
+        131,
+        2328,
+        287,
+        1486,
+        114,
+        10,
+        10
+      ],
+      [
+        305,
+        3055,
+        1457,
+        2671,
+        366,
+        84075,
+        1137,
+        4137,
+        5779,
+        1324,
+        510,
+        1555,
+        2687,
+        3924,
+        5604,
+        183,
+        308
+      ],
+      [
+        853,
+        843,
+        481,
+        218,
+        801,
+        1137,
+        16309,
+        474,
+        408,
+        237,
+        377,
+        131,
+        100,
+        76,
+        199,
+        11,
+        59
+      ],
+      [
+        73,
+        1040,
+        1300,
+        4737,
+        1016,
+        4137,
+        474,
+        62178,
+        8102,
+        3400,
+        211,
+        2531,
+        3832,
+        4803,
+        327,
+        243,
+        12
+      ],
+      [
+        56,
+        1132,
+        599,
+        611,
+        87,
+        5779,
+        408,
+        8102,
+        51913,
+        1874,
+        272,
+        330,
+        633,
+        2677,
+        891,
+        181,
+        2
+      ],
+      [
+        134,
+        195,
+        212,
+        250,
+        25,
+        1324,
+        237,
+        3400,
+        1874,
+        45031,
+        4987,
+        136,
+        4414,
+        443,
+        2056,
+        819,
+        2
+      ],
+      [
+        601,
+        613,
+        308,
+        63,
+        131,
+        510,
+        377,
+        211,
+        272,
+        4987,
+        38044,
+        88,
+        2433,
+        469,
+        2743,
+        829,
+        8
+      ],
+      [
+        271,
+        1075,
+        383,
+        358,
+        2328,
+        1555,
+        131,
+        2531,
+        330,
+        136,
+        88,
+        18657,
+        1440,
+        819,
+        236,
+        22,
+        7
+      ],
+      [
+        304,
+        1378,
+        371,
+        107,
+        287,
+        2687,
+        100,
+        3832,
+        633,
+        4414,
+        2433,
+        1440,
+        62151,
+        769,
+        1729,
+        413,
+        5
+      ],
+      [
+        48,
+        2527,
+        3797,
+        848,
+        1486,
+        3924,
+        76,
+        4803,
+        2677,
+        443,
+        469,
+        819,
+        769,
+        31330,
+        409,
+        33,
+        5
+      ],
+      [
+        73,
+        611,
+        137,
+        106,
+        114,
+        5604,
+        199,
+        327,
+        891,
+        2056,
+        2743,
+        236,
+        1729,
+        409,
+        94074,
+        2284,
+        307
+      ],
+      [
+        6,
+        28,
+        160,
+        59,
+        10,
+        183,
+        11,
+        243,
+        181,
+        819,
+        829,
+        22,
+        413,
+        33,
+        2284,
+        52591,
+        15
+      ],
+      [
+        8,
+        9,
+        2,
+        2,
+        10,
+        308,
+        59,
+        12,
+        2,
+        2,
+        8,
+        7,
+        5,
+        5,
+        307,
+        15,
+        15934
+      ]
+    ],
+    "distinct_pair_distances": 136
+  },
+  "sample": {
+    "n": 398,
+    "fields": {
+      "general_topology": 27,
+      "probability_statistics": 27,
+      "set_theory_logic": 26,
+      "differential_geometry": 26,
+      "ring_module_theory": 25,
+      "lie_representation_theory": 25,
+      "commutative_algebra": 24,
+      "algebraic_geometry": 24,
+      "number_theory": 24,
+      "numerical_analysis": 24,
+      "category_theory": 23,
+      "graph_theory": 23,
+      "real_complex_analysis": 23,
+      "group_theory": 22,
+      "functional_analysis": 22,
+      "algebraic_topology": 22,
+      "game_theory": 11
+    },
+    "all_splits": {
+      "confirmatory": {
+        "control": 129,
+        "math": 526
+      },
+      "pilot": {
+        "control": 31,
+        "math": 129
+      }
+    }
+  },
+  "checkpoints": {
+    "qwen3.5-2b": {
+      "role": "confirmatory",
+      "layer": 12,
+      "applied_labels": {
+        "assignments": 680,
+        "applied_fields": [
+          "game_theory",
+          "numerical_analysis",
+          "probability_statistics"
+        ],
+        "absolute_rhos": [
+          0.013169538031529402,
+          0.4107113666922656,
+          0.038134887327402923,
+          0.18228509840736806,
+          0.06465206905059633
+        ],
+        "pc_specific_exact_p": [
+          0.8029411764705883,
+          0.0029411764705882353,
+          0.6352941176470588,
+          0.008823529411764706,
+          0.41323529411764703
+        ],
+        "max_five_pc_p": [
+          1.0,
+          0.0029411764705882353,
+          0.9955882352941177,
+          0.175,
+          0.9470588235294117
+        ]
+      },
+      "trained": {
+        "field": {
+          "rho": 0.3873479318734793,
+          "mantel_exceedances": 0,
+          "mantel_p": 9.999000099990002e-05,
+          "cophenetic_c": 0.7604742707003049,
+          "supertree_rho": 0.2368712361361105,
+          "supertree_label_p": 0.017991004497751123
+        },
+        "families": {
+          "days": {
+            "line_rho": 0.775625052525011,
+            "circle_rho": 0.6453055826433889,
+            "closure": 1.1932209169499461,
+            "full_space_control": false
+          },
+          "months": {
+            "line_rho": 0.7895275488332775,
+            "circle_rho": 0.7018070176035541,
+            "closure": 1.22814457925211,
+            "full_space_control": false
+          },
+          "angles": {
+            "line_rho": 0.5603186933180784,
+            "circle_rho": 0.2852005317141868,
+            "closure": 2.1087886867862817
+          },
+          "digits_0_330": {
+            "line_rho": 0.5611389489030566,
+            "circle_rho": 0.2788401273494637,
+            "closure": 2.187095041186923
+          },
+          "ring_chain": {
+            "line_rho": 0.47867990442208497,
+            "circle_rho": 0.38469421184364117,
+            "closure": 1.6297226278867794,
+            "robinson_exact": {
+              "satisfied": 85,
+              "triples": 165,
+              "orders": 39916800,
+              "extreme": 411890,
+              "p": 0.01031871292287959
+            },
+            "blocks": [
+              {
+                "satisfied": 8,
+                "triples": 20,
+                "orders": 720,
+                "extreme": 230,
+                "p": 0.3194444444444444
+              }
+            ]
+          },
+          "space_chain": {
+            "line_rho": 0.6722267524686419,
+            "circle_rho": 0.40332151052238596,
+            "closure": 1.7885915288029552,
+            "robinson_exact": {
+              "satisfied": 108,
+              "triples": 165,
+              "orders": 39916800,
+              "extreme": 19190,
+              "p": 0.0004807499599166266
+            },
+            "blocks": [
+              {
+                "satisfied": 14,
+                "triples": 20,
+                "orders": 720,
+                "extreme": 12,
+                "p": 0.016666666666666666
+              },
+              {
+                "satisfied": 10,
+                "triples": 10,
+                "orders": 120,
+                "extreme": 2,
+                "p": 0.016666666666666666
+              }
+            ]
+          },
+          "offsets": {
+            "associative": {
+              "cosine": 0.4321809649671402,
+              "edges": 5,
+              "extreme": 0,
+              "draws": 20000,
+              "matched_p": 4.999750012499375e-05
+            },
+            "identity": {
+              "cosine": 0.2371752410037416,
+              "edges": 5,
+              "extreme": 294,
+              "draws": 20000,
+              "matched_p": 0.014749262536873156
+            },
+            "divisible": {
+              "cosine": 0.2891992945751941,
+              "edges": 5,
+              "extreme": 52,
+              "draws": 20000,
+              "matched_p": 0.0026498675066246686
+            },
+            "commutative": {
+              "cosine": 0.5335815079964389,
+              "edges": 6,
+              "extreme": 0,
+              "draws": 20000,
+              "matched_p": 4.999750012499375e-05
+            }
+          }
+        }
+      },
+      "random_init": {
+        "field": {
+          "rho": -0.1184580888316397,
+          "mantel_exceedances": 8545,
+          "mantel_p": 0.8545145485451455,
+          "cophenetic_c": 0.5897471388749469,
+          "supertree_rho": -0.03260520539148581,
+          "supertree_label_p": 0.544727636181909
+        },
+        "families": {
+          "days": {
+            "line_rho": -0.04386568420449934,
+            "circle_rho": -0.06741998624632421,
+            "closure": 0.9924699524930879,
+            "full_space_control": false
+          },
+          "months": {
+            "line_rho": -0.09630641855423899,
+            "circle_rho": -0.055335517973091546,
+            "closure": 0.985653493514034,
+            "full_space_control": false
+          },
+          "angles": {
+            "line_rho": -0.009443455324492969,
+            "circle_rho": 0.22439506598743333,
+            "closure": 0.7986444242080378
+          },
+          "digits_0_330": {
+            "line_rho": -0.19355928586037596,
+            "circle_rho": -0.011957560205679554,
+            "closure": 0.9918848626738076
+          },
+          "ring_chain": {
+            "line_rho": -0.031196097193135118,
+            "circle_rho": -0.012958120819996335,
+            "closure": 1.1710810407125396,
+            "robinson_exact": {
+              "satisfied": 49,
+              "triples": 165,
+              "orders": 39916800,
+              "extreme": 27239866,
+              "p": 0.6824160754369087
+            },
+            "blocks": [
+              {
+                "satisfied": 3,
+                "triples": 20,
+                "orders": 720,
+                "extreme": 640,
+                "p": 0.8888888888888888
+              }
+            ]
+          },
+          "space_chain": {
+            "line_rho": -0.03680193029435193,
+            "circle_rho": 0.02591624163999267,
+            "closure": 0.6642185749217663,
+            "robinson_exact": {
+              "satisfied": 55,
+              "triples": 165,
+              "orders": 39916800,
+              "extreme": 20554108,
+              "p": 0.5149237413820748
+            },
+            "blocks": [
+              {
+                "satisfied": 5,
+                "triples": 20,
+                "orders": 720,
+                "extreme": 552,
+                "p": 0.7666666666666667
+              },
+              {
+                "satisfied": 4,
+                "triples": 10,
+                "orders": 120,
+                "extreme": 48,
+                "p": 0.4
+              }
+            ]
+          },
+          "offsets": {
+            "associative": {
+              "cosine": 0.02125719148229375,
+              "edges": 5,
+              "extreme": 975,
+              "draws": 20000,
+              "matched_p": 0.0487975601219939
+            },
+            "identity": {
+              "cosine": 0.04018056193509626,
+              "edges": 5,
+              "extreme": 49,
+              "draws": 20000,
+              "matched_p": 0.0024998750062496873
+            },
+            "divisible": {
+              "cosine": 0.011873945612071425,
+              "edges": 5,
+              "extreme": 3129,
+              "draws": 20000,
+              "matched_p": 0.15649217539123045
+            },
+            "commutative": {
+              "cosine": 0.013098877617833717,
+              "edges": 6,
+              "extreme": 1908,
+              "draws": 20000,
+              "matched_p": 0.09544522773861307
+            }
+          }
+        }
+      },
+      "hierarchy_delta_ci": [
+        -0.0969372606502464,
+        0.3683646720222023
+      ],
+      "delta": 0.505806020705119,
+      "delta_ci": [
+        0.27651626830780973,
+        0.575721935976337
+      ],
+      "positive_bootstrap_draws": 2000
+    },
+    "qwen3.5-0.8b": {
+      "role": "robustness",
+      "layer": 12,
+      "trained": {
+        "field": {
+          "rho": 0.3685749725681027,
+          "mantel_exceedances": 0,
+          "mantel_p": 9.999000099990002e-05,
+          "cophenetic_c": 0.7483896365431929,
+          "supertree_rho": 0.2504250740565262,
+          "supertree_label_p": 0.015492253873063468
+        },
+        "families": {
+          "days": {
+            "line_rho": 0.8493991577780328,
+            "circle_rho": 0.6260427294301533,
+            "closure": 1.2919159129293842,
+            "full_space_control": false
+          },
+          "months": {
+            "line_rho": 0.7910839312252874,
+            "circle_rho": 0.7038423470002656,
+            "closure": 1.2319768272960325,
+            "full_space_control": false
+          },
+          "angles": {
+            "line_rho": 0.6215854758576063,
+            "circle_rho": 0.3080979874271902,
+            "closure": 2.590463862667433
+          },
+          "digits_0_330": {
+            "line_rho": 0.5503494331314199,
+            "circle_rho": 0.2406777011611246,
+            "closure": 2.0120143881427865
+          },
+          "ring_chain": {
+            "line_rho": 0.4644469125871773,
+            "circle_rho": 0.3579680876523988,
+            "closure": 1.6994002861214728,
+            "robinson_exact": {
+              "satisfied": 82,
+              "triples": 165,
+              "orders": 39916800,
+              "extreme": 597106,
+              "p": 0.014958764229597563
+            },
+            "blocks": [
+              {
+                "satisfied": 8,
+                "triples": 20,
+                "orders": 720,
+                "extreme": 254,
+                "p": 0.3527777777777778
+              }
+            ]
+          },
+          "space_chain": {
+            "line_rho": 0.6506770563912371,
+            "circle_rho": 0.32719255070490744,
+            "closure": 1.719222200769795,
+            "robinson_exact": {
+              "satisfied": 105,
+              "triples": 165,
+              "orders": 39916800,
+              "extreme": 22410,
+              "p": 0.0005614177489177489
+            },
+            "blocks": [
+              {
+                "satisfied": 6,
+                "triples": 20,
+                "orders": 720,
+                "extreme": 482,
+                "p": 0.6694444444444444
+              },
+              {
+                "satisfied": 9,
+                "triples": 10,
+                "orders": 120,
+                "extreme": 2,
+                "p": 0.016666666666666666
+              }
+            ]
+          },
+          "offsets": {
+            "associative": {
+              "cosine": 0.465037754380708,
+              "edges": 5,
+              "extreme": 0,
+              "draws": 20000,
+              "matched_p": 4.999750012499375e-05
+            },
+            "identity": {
+              "cosine": 0.2223388883864577,
+              "edges": 5,
+              "extreme": 532,
+              "draws": 20000,
+              "matched_p": 0.02664866756662167
+            },
+            "divisible": {
+              "cosine": 0.258163060010183,
+              "edges": 5,
+              "extreme": 248,
+              "draws": 20000,
+              "matched_p": 0.012449377531123443
+            },
+            "commutative": {
+              "cosine": 0.5651541031316901,
+              "edges": 6,
+              "extreme": 0,
+              "draws": 20000,
+              "matched_p": 4.999750012499375e-05
+            }
+          }
+        }
+      },
+      "random_init": {
+        "field": {
+          "rho": -0.1822575258813988,
+          "mantel_exceedances": 9827,
+          "mantel_p": 0.9827017298270173,
+          "cophenetic_c": 0.5814070186280499,
+          "supertree_rho": -0.10264392070725994,
+          "supertree_label_p": 0.9215392303848076
+        },
+        "families": {
+          "days": {
+            "line_rho": 0.1954016841836789,
+            "circle_rho": 0.06741998624632421,
+            "closure": 1.0127797956272133,
+            "full_space_control": false
+          },
+          "months": {
+            "line_rho": 0.06435851512906123,
+            "circle_rho": -0.0333285188711494,
+            "closure": 1.0224017839521662,
+            "full_space_control": false
+          },
+          "angles": {
+            "line_rho": 0.09744215705651656,
+            "circle_rho": 0.14870625404722765,
+            "closure": 1.0131566168623642
+          },
+          "digits_0_330": {
+            "line_rho": -0.130462702400512,
+            "circle_rho": -0.030911565212554594,
+            "closure": 1.0026629741318622
+          },
+          "ring_chain": {
+            "line_rho": 0.18371843936260554,
+            "circle_rho": 0.11419343972621769,
+            "closure": 1.2874700939434303,
+            "robinson_exact": {
+              "satisfied": 70,
+              "triples": 165,
+              "orders": 39916800,
+              "extreme": 4815348,
+              "p": 0.12063462000962001
+            },
+            "blocks": [
+              {
+                "satisfied": 4,
+                "triples": 20,
+                "orders": 720,
+                "extreme": 604,
+                "p": 0.8388888888888889
+              }
+            ]
+          },
+          "space_chain": {
+            "line_rho": -0.03509105915307148,
+            "circle_rho": 0.03725459735748946,
+            "closure": 0.9102463306303816,
+            "robinson_exact": {
+              "satisfied": 59,
+              "triples": 165,
+              "orders": 39916800,
+              "extreme": 15041340,
+              "p": 0.3768172799422799
+            },
+            "blocks": [
+              {
+                "satisfied": 4,
+                "triples": 20,
+                "orders": 720,
+                "extreme": 638,
+                "p": 0.8861111111111111
+              },
+              {
+                "satisfied": 5,
+                "triples": 10,
+                "orders": 120,
+                "extreme": 30,
+                "p": 0.25
+              }
+            ]
+          },
+          "offsets": {
+            "associative": {
+              "cosine": 0.06274285765202367,
+              "edges": 5,
+              "extreme": 244,
+              "draws": 20000,
+              "matched_p": 0.01224938753062347
+            },
+            "identity": {
+              "cosine": 0.07189710025937836,
+              "edges": 5,
+              "extreme": 134,
+              "draws": 20000,
+              "matched_p": 0.006749662516874156
+            },
+            "divisible": {
+              "cosine": 0.05062135440508965,
+              "edges": 5,
+              "extreme": 573,
+              "draws": 20000,
+              "matched_p": 0.028698565071746413
+            },
+            "commutative": {
+              "cosine": 0.018189772484269295,
+              "edges": 6,
+              "extreme": 3480,
+              "draws": 20000,
+              "matched_p": 0.17404129793510326
+            }
+          }
+        }
+      },
+      "hierarchy_delta_ci": [
+        -0.0226570550897701,
+        0.4021800593011875
+      ],
+      "delta": 0.5508324984495014,
+      "delta_ci": [
+        0.2995850627355565,
+        0.5875109727589332
+      ],
+      "positive_bootstrap_draws": 2000
+    },
+    "qwen2.5-1.5b": {
+      "role": "robustness",
+      "layer": 14,
+      "trained": {
+        "field": {
+          "rho": 0.4063737417107962,
+          "mantel_exceedances": 0,
+          "mantel_p": 9.999000099990002e-05,
+          "cophenetic_c": 0.7320719985869834,
+          "supertree_rho": 0.24443650689376167,
+          "supertree_label_p": 0.01699150424787606
+        },
+        "families": {
+          "days": {
+            "line_rho": 0.7703079998941628,
+            "circle_rho": 0.6645684358566244,
+            "closure": 1.2218330245672056,
+            "full_space_control": false
+          },
+          "months": {
+            "line_rho": 0.714631904266419,
+            "circle_rho": 0.558443503222694,
+            "closure": 1.2533654138890322,
+            "full_space_control": false
+          },
+          "angles": {
+            "line_rho": 0.6001326374812525,
+            "circle_rho": 0.2929602250391491,
+            "closure": 2.148221954366691
+          },
+          "digits_0_330": {
+            "line_rho": 0.5273402123630561,
+            "circle_rho": 0.24716531361314228,
+            "closure": 1.8869394113505555
+          },
+          "ring_chain": {
+            "line_rho": 0.5357574778162925,
+            "circle_rho": 0.36444714806239686,
+            "closure": 1.7358607307346594,
+            "robinson_exact": {
+              "satisfied": 89,
+              "triples": 165,
+              "orders": 39916800,
+              "extreme": 174042,
+              "p": 0.004360119047619048
+            },
+            "blocks": [
+              {
+                "satisfied": 9,
+                "triples": 20,
+                "orders": 720,
+                "extreme": 166,
+                "p": 0.23055555555555557
+              }
+            ]
+          },
+          "space_chain": {
+            "line_rho": 0.6934488349232486,
+            "circle_rho": 0.38469421184364117,
+            "closure": 1.8289789412831372,
+            "robinson_exact": {
+              "satisfied": 117,
+              "triples": 165,
+              "orders": 39916800,
+              "extreme": 4984,
+              "p": 0.00012485970819304151
+            },
+            "blocks": [
+              {
+                "satisfied": 11,
+                "triples": 20,
+                "orders": 720,
+                "extreme": 68,
+                "p": 0.09444444444444444
+              },
+              {
+                "satisfied": 10,
+                "triples": 10,
+                "orders": 120,
+                "extreme": 2,
+                "p": 0.016666666666666666
+              }
+            ]
+          },
+          "offsets": {
+            "associative": {
+              "cosine": 0.3800094544832809,
+              "edges": 5,
+              "extreme": 0,
+              "draws": 20000,
+              "matched_p": 4.999750012499375e-05
+            },
+            "identity": {
+              "cosine": 0.26909463849295207,
+              "edges": 5,
+              "extreme": 98,
+              "draws": 20000,
+              "matched_p": 0.004949752512374382
+            },
+            "divisible": {
+              "cosine": 0.24876357257532183,
+              "edges": 5,
+              "extreme": 142,
+              "draws": 20000,
+              "matched_p": 0.007149642517874106
+            },
+            "commutative": {
+              "cosine": 0.40981603033157205,
+              "edges": 6,
+              "extreme": 0,
+              "draws": 20000,
+              "matched_p": 4.999750012499375e-05
+            }
+          }
+        }
+      },
+      "random_init": {
+        "field": {
+          "rho": -0.09265779304422497,
+          "mantel_exceedances": 8873,
+          "mantel_p": 0.8873112688731127,
+          "cophenetic_c": 0.5606177985429078,
+          "supertree_rho": 0.04638817566638764,
+          "supertree_label_p": 0.25987006496751625
+        },
+        "families": {
+          "days": {
+            "line_rho": 0.09836547367069551,
+            "circle_rho": -0.10594569267279519,
+            "closure": 1.017469124300496,
+            "full_space_control": false
+          },
+          "months": {
+            "line_rho": 0.06593592971555781,
+            "circle_rho": -0.015901010911807914,
+            "closure": 1.0171090936995912,
+            "full_space_control": false
+          },
+          "angles": {
+            "line_rho": 0.14712020043391608,
+            "circle_rho": 0.30924286021284036,
+            "closure": 1.1565491253647073
+          },
+          "digits_0_330": {
+            "line_rho": 0.23507683777696642,
+            "circle_rho": 0.36788578845558795,
+            "closure": 1.1473718534097601
+          },
+          "ring_chain": {
+            "line_rho": 0.2970363513372026,
+            "circle_rho": 0.30532572182116363,
+            "closure": 1.0638553198697045,
+            "robinson_exact": {
+              "satisfied": 57,
+              "triples": 165,
+              "orders": 39916800,
+              "extreme": 17527952,
+              "p": 0.43911215327881997
+            },
+            "blocks": [
+              {
+                "satisfied": 2,
+                "triples": 20,
+                "orders": 720,
+                "extreme": 688,
+                "p": 0.9555555555555556
+              }
+            ]
+          },
+          "space_chain": {
+            "line_rho": -0.12012499502607454,
+            "circle_rho": -0.055072013484984424,
+            "closure": 0.9492781634421418,
+            "robinson_exact": {
+              "satisfied": 56,
+              "triples": 165,
+              "orders": 39916800,
+              "extreme": 19535636,
+              "p": 0.4894088704505371
+            },
+            "blocks": [
+              {
+                "satisfied": 4,
+                "triples": 20,
+                "orders": 720,
+                "extreme": 650,
+                "p": 0.9027777777777778
+              },
+              {
+                "satisfied": 3,
+                "triples": 10,
+                "orders": 120,
+                "extreme": 80,
+                "p": 0.6666666666666666
+              }
+            ]
+          },
+          "offsets": {
+            "associative": {
+              "cosine": 0.11657094214589962,
+              "edges": 5,
+              "extreme": 167,
+              "draws": 20000,
+              "matched_p": 0.00839958002099895
+            },
+            "identity": {
+              "cosine": 0.10291033390889712,
+              "edges": 5,
+              "extreme": 339,
+              "draws": 20000,
+              "matched_p": 0.016999150042497874
+            },
+            "divisible": {
+              "cosine": 0.1037910324203396,
+              "edges": 5,
+              "extreme": 278,
+              "draws": 20000,
+              "matched_p": 0.013949302534873257
+            },
+            "commutative": {
+              "cosine": 0.15514933986070456,
+              "edges": 6,
+              "extreme": 0,
+              "draws": 20000,
+              "matched_p": 4.999750012499375e-05
+            }
+          }
+        }
+      },
+      "hierarchy_delta_ci": [
+        -0.0474017428169065,
+        0.4012235974326151
+      ],
+      "delta": 0.49903153475502116,
+      "delta_ci": [
+        0.3183167549258147,
+        0.5654843518916082
+      ],
+      "positive_bootstrap_draws": 2000
+    },
+    "qwen2.5-math-1.5b": {
+      "role": "robustness",
+      "layer": 14,
+      "trained": {
+        "field": {
+          "rho": 0.3898096464863317,
+          "mantel_exceedances": 0,
+          "mantel_p": 9.999000099990002e-05,
+          "cophenetic_c": 0.7210064768136225,
+          "supertree_rho": 0.11317742700738015,
+          "supertree_label_p": 0.11044477761119441
+        },
+        "families": {
+          "days": {
+            "line_rho": 0.7251130525319514,
+            "circle_rho": 0.5778855963970646,
+            "closure": 1.181412707451827,
+            "full_space_control": false
+          },
+          "months": {
+            "line_rho": 0.7141481637932265,
+            "circle_rho": 0.5326202615019179,
+            "closure": 1.2110289103673466,
+            "full_space_control": false
+          },
+          "angles": {
+            "line_rho": 0.6191247091026716,
+            "circle_rho": 0.3125502704824964,
+            "closure": 1.8397102849231965
+          },
+          "digits_0_330": {
+            "line_rho": 0.4298139265285931,
+            "circle_rho": 0.16282635173691307,
+            "closure": 1.5925043906778995
+          },
+          "ring_chain": {
+            "line_rho": 0.5427465684359913,
+            "circle_rho": 0.3936029199073887,
+            "closure": 1.6708138826945893,
+            "robinson_exact": {
+              "satisfied": 92,
+              "triples": 165,
+              "orders": 39916800,
+              "extreme": 81306,
+              "p": 0.0020368867243867246
+            },
+            "blocks": [
+              {
+                "satisfied": 13,
+                "triples": 20,
+                "orders": 720,
+                "extreme": 4,
+                "p": 0.005555555555555556
+              }
+            ]
+          },
+          "space_chain": {
+            "line_rho": 0.6732823963643256,
+            "circle_rho": 0.39765233266363753,
+            "closure": 1.711231200456154,
+            "robinson_exact": {
+              "satisfied": 112,
+              "triples": 165,
+              "orders": 39916800,
+              "extreme": 11446,
+              "p": 0.0002867464325797659
+            },
+            "blocks": [
+              {
+                "satisfied": 11,
+                "triples": 20,
+                "orders": 720,
+                "extreme": 62,
+                "p": 0.08611111111111111
+              },
+              {
+                "satisfied": 10,
+                "triples": 10,
+                "orders": 120,
+                "extreme": 2,
+                "p": 0.016666666666666666
+              }
+            ]
+          },
+          "offsets": {
+            "associative": {
+              "cosine": 0.35267928588537156,
+              "edges": 5,
+              "extreme": 0,
+              "draws": 20000,
+              "matched_p": 4.999750012499375e-05
+            },
+            "identity": {
+              "cosine": 0.27191401269259663,
+              "edges": 5,
+              "extreme": 68,
+              "draws": 20000,
+              "matched_p": 0.0034498275086245686
+            },
+            "divisible": {
+              "cosine": 0.29719653247239497,
+              "edges": 5,
+              "extreme": 18,
+              "draws": 20000,
+              "matched_p": 0.0009499525023748813
+            },
+            "commutative": {
+              "cosine": 0.45076513499888426,
+              "edges": 6,
+              "extreme": 0,
+              "draws": 20000,
+              "matched_p": 4.999750012499375e-05
+            }
+          }
+        }
+      },
+      "random_init": {
+        "field": {
+          "rho": -0.0874528886980583,
+          "mantel_exceedances": 8718,
+          "mantel_p": 0.8718128187181282,
+          "cophenetic_c": 0.5971121361919647,
+          "supertree_rho": 0.03911491585319703,
+          "supertree_label_p": 0.2843578210894553
+        },
+        "families": {
+          "days": {
+            "line_rho": 0.1615054736620203,
+            "circle_rho": -0.14447139909926615,
+            "closure": 1.0207940183051925,
+            "full_space_control": false
+          },
+          "months": {
+            "line_rho": 0.03817343299321768,
+            "circle_rho": -0.013992889602390968,
+            "closure": 1.015573025279031,
+            "full_space_control": false
+          },
+          "angles": {
+            "line_rho": 0.16930916561730158,
+            "circle_rho": 0.33532051810820535,
+            "closure": 1.1564933271167863
+          },
+          "digits_0_330": {
+            "line_rho": 0.2340672924416086,
+            "circle_rho": 0.3636879215748707,
+            "closure": 1.1622003918724308
+          },
+          "ring_chain": {
+            "line_rho": 0.3388252890008187,
+            "circle_rho": 0.2996565439624152,
+            "closure": 1.0910646155762875,
+            "robinson_exact": {
+              "satisfied": 67,
+              "triples": 165,
+              "orders": 39916800,
+              "extreme": 5923896,
+              "p": 0.14840608465608465
+            },
+            "blocks": [
+              {
+                "satisfied": 2,
+                "triples": 20,
+                "orders": 720,
+                "extreme": 692,
+                "p": 0.9611111111111111
+              }
+            ]
+          },
+          "space_chain": {
+            "line_rho": -0.10257946544953882,
+            "circle_rho": -0.06722025175373099,
+            "closure": 0.9666705951019487,
+            "robinson_exact": {
+              "satisfied": 59,
+              "triples": 165,
+              "orders": 39916800,
+              "extreme": 16141838,
+              "p": 0.4043870751162418
+            },
+            "blocks": [
+              {
+                "satisfied": 5,
+                "triples": 20,
+                "orders": 720,
+                "extreme": 552,
+                "p": 0.7666666666666667
+              },
+              {
+                "satisfied": 3,
+                "triples": 10,
+                "orders": 120,
+                "extreme": 80,
+                "p": 0.6666666666666666
+              }
+            ]
+          },
+          "offsets": {
+            "associative": {
+              "cosine": 0.09484842748884206,
+              "edges": 5,
+              "extreme": 434,
+              "draws": 20000,
+              "matched_p": 0.021748912554372283
+            },
+            "identity": {
+              "cosine": 0.0930494543580812,
+              "edges": 5,
+              "extreme": 460,
+              "draws": 20000,
+              "matched_p": 0.02304884755762212
+            },
+            "divisible": {
+              "cosine": 0.09802206222541905,
+              "edges": 5,
+              "extreme": 322,
+              "draws": 20000,
+              "matched_p": 0.016149192540372982
+            },
+            "commutative": {
+              "cosine": 0.1513927436714427,
+              "edges": 6,
+              "extreme": 0,
+              "draws": 20000,
+              "matched_p": 4.999750012499375e-05
+            }
+          }
+        }
+      },
+      "hierarchy_delta_ci": [
+        -0.056790419619479865,
+        0.41211231157511424
+      ],
+      "delta": 0.47726253518439,
+      "delta_ci": [
+        0.2970113544201135,
+        0.5398741710796241
+      ],
+      "positive_bootstrap_draws": 2000
+    },
+    "gemma-4-e2b": {
+      "role": "robustness",
+      "layer": 18,
+      "trained": {
+        "field": {
+          "rho": 0.4363436858928486,
+          "mantel_exceedances": 0,
+          "mantel_p": 9.999000099990002e-05,
+          "cophenetic_c": 0.7788412386083823,
+          "supertree_rho": 0.22803850225616368,
+          "supertree_label_p": 0.026486756621689155
+        },
+        "families": {
+          "days": {
+            "line_rho": 0.721125263058815,
+            "circle_rho": 0.5778855963970646,
+            "closure": 1.6488894978500763,
+            "full_space_control": false
+          },
+          "months": {
+            "line_rho": 0.6062530060768594,
+            "circle_rho": 0.3566914767736752,
+            "closure": 1.9941216132425,
+            "full_space_control": false
+          },
+          "angles": {
+            "line_rho": 0.43107585819779043,
+            "circle_rho": 0.22643039538414475,
+            "closure": 2.0275438708945788
+          },
+          "digits_0_330": {
+            "line_rho": 0.3033473410805392,
+            "circle_rho": 0.12568159024692976,
+            "closure": 2.8322162370598885
+          },
+          "ring_chain": {
+            "line_rho": 0.27242892811367936,
+            "circle_rho": 0.07612895981747847,
+            "closure": 1.8550776114531475,
+            "robinson_exact": {
+              "satisfied": 82,
+              "triples": 165,
+              "orders": 39916800,
+              "extreme": 516720,
+              "p": 0.012944925444925445
+            },
+            "blocks": [
+              {
+                "satisfied": 2,
+                "triples": 20,
+                "orders": 720,
+                "extreme": 720,
+                "p": 1.0
+              }
+            ]
+          },
+          "space_chain": {
+            "line_rho": 0.5496264545147574,
+            "circle_rho": 0.2672612419124244,
+            "closure": 1.3948644769651637,
+            "robinson_exact": {
+              "satisfied": 94,
+              "triples": 165,
+              "orders": 39916800,
+              "extreme": 38810,
+              "p": 0.0009722723264389931
+            },
+            "blocks": [
+              {
+                "satisfied": 7,
+                "triples": 20,
+                "orders": 720,
+                "extreme": 338,
+                "p": 0.46944444444444444
+              },
+              {
+                "satisfied": 9,
+                "triples": 10,
+                "orders": 120,
+                "extreme": 2,
+                "p": 0.016666666666666666
+              }
+            ]
+          },
+          "offsets": {
+            "associative": {
+              "cosine": 0.5597937747986804,
+              "edges": 5,
+              "extreme": 1,
+              "draws": 20000,
+              "matched_p": 9.99950002499875e-05
+            },
+            "identity": {
+              "cosine": 0.19138948470166234,
+              "edges": 5,
+              "extreme": 1283,
+              "draws": 20000,
+              "matched_p": 0.06419679016049197
+            },
+            "divisible": {
+              "cosine": 0.3538612656512299,
+              "edges": 5,
+              "extreme": 187,
+              "draws": 20000,
+              "matched_p": 0.009399530023498826
+            },
+            "commutative": {
+              "cosine": 0.7359426733391753,
+              "edges": 6,
+              "extreme": 0,
+              "draws": 20000,
+              "matched_p": 4.999750012499375e-05
+            }
+          }
+        }
+      },
+      "random_init": {
+        "field": {
+          "rho": -0.020900720385477783,
+          "mantel_exceedances": 5655,
+          "mantel_p": 0.5655434456554345,
+          "cophenetic_c": 0.7543538350034581,
+          "supertree_rho": 0.07162786605506768,
+          "supertree_label_p": 0.17641179410294852
+        },
+        "families": {
+          "days": {
+            "line_rho": -0.2259747368110572,
+            "circle_rho": 0.0,
+            "closure": 0.9600762145999631,
+            "full_space_control": false
+          },
+          "months": {
+            "line_rho": 0.2710629225435755,
+            "circle_rho": 0.047194200386245895,
+            "closure": 1.0227085151454192,
+            "full_space_control": false
+          },
+          "angles": {
+            "line_rho": 0.24613977207692922,
+            "circle_rho": 0.4554049525141787,
+            "closure": 1.1372099992669398
+          },
+          "digits_0_330": {
+            "line_rho": 0.07981717807672789,
+            "circle_rho": 0.3731013200346609,
+            "closure": 1.0540264514491693
+          },
+          "ring_chain": {
+            "line_rho": 0.36754608326614385,
+            "circle_rho": 0.4041313930736357,
+            "closure": 1.4510417422517088,
+            "robinson_exact": {
+              "satisfied": 47,
+              "triples": 165,
+              "orders": 39916800,
+              "extreme": 30979420,
+              "p": 0.7760997875581209
+            },
+            "blocks": [
+              {
+                "satisfied": 4,
+                "triples": 20,
+                "orders": 720,
+                "extreme": 604,
+                "p": 0.8388888888888889
+              }
+            ]
+          },
+          "space_chain": {
+            "line_rho": -0.05554870982114841,
+            "circle_rho": -0.004859295307498625,
+            "closure": 1.0022141847942272,
+            "robinson_exact": {
+              "satisfied": 44,
+              "triples": 165,
+              "orders": 39916800,
+              "extreme": 31976722,
+              "p": 0.8010843053551386
+            },
+            "blocks": [
+              {
+                "satisfied": 5,
+                "triples": 20,
+                "orders": 720,
+                "extreme": 540,
+                "p": 0.75
+              },
+              {
+                "satisfied": 1,
+                "triples": 10,
+                "orders": 120,
+                "extreme": 112,
+                "p": 0.9333333333333333
+              }
+            ]
+          },
+          "offsets": {
+            "associative": {
+              "cosine": 0.21772951716949182,
+              "edges": 5,
+              "extreme": 49,
+              "draws": 20000,
+              "matched_p": 0.0024998750062496873
+            },
+            "identity": {
+              "cosine": 0.14481462785963717,
+              "edges": 5,
+              "extreme": 897,
+              "draws": 20000,
+              "matched_p": 0.044897755112244385
+            },
+            "divisible": {
+              "cosine": 0.2328783585346547,
+              "edges": 5,
+              "extreme": 24,
+              "draws": 20000,
+              "matched_p": 0.0012499375031248437
+            },
+            "commutative": {
+              "cosine": 0.022707951599774748,
+              "edges": 6,
+              "extreme": 7476,
+              "draws": 20000,
+              "matched_p": 0.3738313084345783
+            }
+          }
+        }
+      },
+      "hierarchy_delta_ci": [
+        -0.10177688709898554,
+        0.4113660965249683
+      ],
+      "delta": 0.4572444062783264,
+      "delta_ci": [
+        0.290462167835504,
+        0.5978052096751109
+      ],
+      "positive_bootstrap_draws": 2000
+    }
+  },
+  "math_training": {
+    "delta": -0.016564095224464503,
+    "ci": [
+      -0.05911740852058583,
+      0.01683435904775536
+    ]
+  },
+  "multiplicity": {
+    "H-A1": {
+      "input": 0.0004997501249375312,
+      "published": 0.00399800099950025,
+      "reserved": 1.0
+    },
+    "angles": {
+      "input": 1.0,
+      "published": 1.0,
+      "reserved": 1.0
+    },
+    "ring_chain": {
+      "input": 0.010494752623688156,
+      "published": 0.041979010494752625,
+      "reserved": 0.05247376311844078
+    },
+    "space_chain": {
+      "input": 0.0004997501249375312,
+      "published": 0.00399800099950025,
+      "reserved": 0.00399800099950025
+    },
+    "associative": {
+      "input": 0.0034982508745627187,
+      "published": 0.017491254372813594,
+      "reserved": 0.020989505247376312
+    },
+    "identity": {
+      "input": 0.04247876061969016,
+      "published": 0.08495752123938032,
+      "reserved": 0.12743628185907047
+    },
+    "divisible": {
+      "input": 0.027486256871564217,
+      "published": 0.08245877061469264,
+      "reserved": 0.10994502748625687
+    },
+    "commutative": {
+      "input": 0.0009995002498750624,
+      "published": 0.005997001499250375,
+      "reserved": 0.0069965017491254375
+    }
+  },
+  "saved_analyses": {
+    "embedding": {
+      "all_primary": {
+        "n": 398,
+        "rsa": {
+          "llm_trained": 0.3873479318734792,
+          "qwen3_embedding": 0.4537999141262344
+        }
+      },
+      "fasttext_covered": {
+        "n": 367,
+        "rsa": {
+          "llm_trained": 0.4006965316540241,
+          "qwen3_embedding": 0.48980964648633174,
+          "fasttext": 0.18958064977815942
+        }
+      }
+    },
+    "judge_readout": {
+      "stored_five_fold_ridge_rho": 0.7358893480679662
+    },
+    "sae": {
+      "sae_repo": "Qwen/SAE-Res-Qwen3.5-2B-Base-W32K-L0_50",
+      "sae_block": 11,
+      "k": 50,
+      "features_math_only": 2445,
+      "features_control_only": 871,
+      "features_shared": 715
+    }
+  },
+  "embedding_checks": {
+    "all_primary": {
+      "qwen3_embedding": 0.4537999141262344
+    },
+    "fasttext_covered": {
+      "qwen3_embedding": 0.48980964648633185,
+      "fasttext": 0.18958064977815942
+    }
+  },
+  "minimal_upper_bounds": [
+    "commutative loop",
+    "commutative monoid"
+  ],
+  "mathlib": {
+    "original_n": 39,
+    "original_rho": 0.372841920131803,
+    "original_ci": [
+      0.07111392494624527,
+      0.6164913672605957
+    ],
+    "reviewed": {
+      "mathlib_rev": "4bc4670bf916c8dc2ede840e3ead86301e52a40d",
+      "n_modules": 8672,
+      "n_math_concepts": 655,
+      "n_matched": 32,
+      "n_by_source": {
+        "mathlib_yaml": 19,
+        "camelcase": 13
+      },
+      "depth_median": 78.0,
+      "coverage_by_field": {
+        "algebraic_geometry": 0.025,
+        "algebraic_topology": 0.025,
+        "category_theory": 0.025,
+        "commutative_algebra": 0.075,
+        "differential_geometry": 0.0,
+        "functional_analysis": 0.0,
+        "game_theory": 0.038,
+        "general_topology": 0.1,
+        "graph_theory": 0.0,
+        "group_theory": 0.111,
+        "lie_representation_theory": 0.026,
+        "number_theory": 0.05,
+        "numerical_analysis": 0.0,
+        "probability_statistics": 0.025,
+        "real_complex_analysis": 0.125,
+        "ring_module_theory": 0.2,
+        "set_theory_logic": 0.0
+      },
+      "rho_mean_rating_depth": 0.5068770251773507,
+      "p": 0.0030703781947667443,
+      "ci95": [
+        0.19515731674171058,
+        0.7396966536792088
+      ],
+      "rho_per_judge": {
+        "ibm-granite/granite-4.0-micro": 0.35099950296289767,
+        "HuggingFaceTB/SmolLM3-3B": 0.22574732923057841,
+        "microsoft/Phi-4-mini-instruct": 0.6559692905424687
+      },
+      "rho_partial_zipf": 0.4745669527767556
+    },
+    "change_in_rho": 0.13403510504554766,
+    "retained_fields": 12,
+    "depth_disagreements": 39,
+    "dispositions": [
+      {
+        "concept": "simply connected",
+        "decision": "retain",
+        "reason": "The set predicate unfolds to simple connectivity of its subtype. The same module defines the space predicate; this is a module-level match.",
+        "field": "general_topology",
+        "original_depth": 90,
+        "checked_depth": 96,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1357877906",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/AlgebraicTopology/FundamentalGroupoid/SimplyConnected.lean#L137"
+      },
+      {
+        "concept": "homeomorphism",
+        "decision": "retain",
+        "reason": "Bundled equivalence with continuity in both directions.",
+        "field": "general_topology",
+        "original_depth": 53,
+        "checked_depth": 59,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1357877906",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/Topology/Homeomorph/Defs.lean#L44"
+      },
+      {
+        "concept": "discrete topology",
+        "decision": "retain",
+        "reason": "The typeclass requires the discrete topology on the space.",
+        "field": "general_topology",
+        "original_depth": 50,
+        "checked_depth": 56,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1357877906",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/Topology/Order.lean#L309"
+      },
+      {
+        "concept": "Cauchy sequence",
+        "decision": "retain",
+        "reason": "The uniform-space filter definition specializes to the metric sequence criterion.",
+        "field": "general_topology",
+        "original_depth": 72,
+        "checked_depth": 78,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1357877906",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/Topology/UniformSpace/Cauchy.lean#L185"
+      },
+      {
+        "concept": "subgroup",
+        "decision": "retain",
+        "reason": "Bundled subset closed under multiplication, unit and inverse.",
+        "field": "group_theory",
+        "original_depth": 27,
+        "checked_depth": 33,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1353640923",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/Algebra/Group/Subgroup/Defs.lean#L296"
+      },
+      {
+        "concept": "normal subgroup",
+        "decision": "retain",
+        "reason": "The subgroup predicate requires closure under conjugation.",
+        "field": "group_theory",
+        "original_depth": 27,
+        "checked_depth": 33,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1353640923",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/Algebra/Group/Subgroup/Defs.lean#L606"
+      },
+      {
+        "concept": "composition series",
+        "decision": "exclude",
+        "reason": "The declaration takes a Jordan–Hölder lattice and an unbounded maximal-step chain. The glossary specifies a subnormal series of a group with endpoints and simple factors.",
+        "field": "group_theory",
+        "original_depth": 52,
+        "checked_depth": 58,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1353640923",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/Order/JordanHolder.lean#L154"
+      },
+      {
+        "concept": "cyclic group",
+        "decision": "retain",
+        "reason": "Surjectivity of the powers of one element expresses generation by one element.",
+        "field": "group_theory",
+        "original_depth": 10,
+        "checked_depth": 16,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1353640923",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/Algebra/Group/DivInvMonoid.lean#L193"
+      },
+      {
+        "concept": "simple group",
+        "decision": "retain",
+        "reason": "Requires nontriviality and only trivial or universal normal subgroups.",
+        "field": "group_theory",
+        "original_depth": 47,
+        "checked_depth": 53,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1353640923",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/GroupTheory/Subgroup/Simple.lean#L38"
+      },
+      {
+        "concept": "finite length",
+        "decision": "retain",
+        "reason": "The inductive simple-factor definition characterizes finite module length.",
+        "field": "ring_module_theory",
+        "original_depth": 72,
+        "checked_depth": 78,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1350455074",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/RingTheory/FiniteLength.lean#L30"
+      },
+      {
+        "concept": "structure theorem",
+        "decision": "retain",
+        "reason": "The pinned glossary explicitly means the structure theorem for finitely generated modules over a PID.",
+        "field": "ring_module_theory",
+        "original_depth": 91,
+        "checked_depth": 97,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1350455074",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/Algebra/Module/PID.lean#L255"
+      },
+      {
+        "concept": "subring",
+        "decision": "retain",
+        "reason": "The bundled subring contains the unit and is closed under the ring operations.",
+        "field": "ring_module_theory",
+        "original_depth": 29,
+        "checked_depth": 35,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1370098282",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/Algebra/Ring/Subring/Defs.lean#L165"
+      },
+      {
+        "concept": "exterior algebra",
+        "decision": "retain",
+        "reason": "The Clifford algebra of the zero quadratic form imposes the alternating relation.",
+        "field": "ring_module_theory",
+        "original_depth": 84,
+        "checked_depth": 90,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1370098282",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/LinearAlgebra/ExteriorAlgebra/Basic.lean#L60"
+      },
+      {
+        "concept": "clifford algebra",
+        "decision": "retain",
+        "reason": "The quotient imposes the specified quadratic relation.",
+        "field": "ring_module_theory",
+        "original_depth": 83,
+        "checked_depth": 89,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1370098282",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/LinearAlgebra/CliffordAlgebra/Basic.lean#L71"
+      },
+      {
+        "concept": "determinant",
+        "decision": "exclude",
+        "reason": "The glossary defines the determinant line of a finite free module. Matrix.det is a scalar associated to a square matrix.",
+        "field": "ring_module_theory",
+        "original_depth": 73,
+        "checked_depth": 79,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1350455074",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean#L63"
+      },
+      {
+        "concept": "closed submodule",
+        "decision": "exclude",
+        "reason": "The glossary describes the essential-extension criterion. The matched declaration requires a topologically closed carrier.",
+        "field": "ring_module_theory",
+        "original_depth": 85,
+        "checked_depth": 91,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1350455074",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/Topology/Algebra/Module/ClosedSubmodule.lean#L36"
+      },
+      {
+        "concept": "chain complex",
+        "decision": "retain",
+        "reason": "The downward-degree HomologicalComplex specialization gives a chain complex.",
+        "field": "ring_module_theory",
+        "original_depth": 72,
+        "checked_depth": 78,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1350455074",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/Algebra/Homology/HomologicalComplex.lean#L151"
+      },
+      {
+        "concept": "sheaf of modules",
+        "decision": "retain",
+        "reason": "Bundled sheaf of modules over a sheaf of rings.",
+        "field": "ring_module_theory",
+        "original_depth": 79,
+        "checked_depth": 85,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1350455074",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/Algebra/Category/ModuleCat/Sheaf.lean#L31"
+      },
+      {
+        "concept": "module",
+        "decision": "retain",
+        "reason": "The scalar action specializes to the glossary's left module over a ring.",
+        "field": "ring_module_theory",
+        "original_depth": 20,
+        "checked_depth": 26,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1350455074",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/Algebra/Module/Defs.lean#L54"
+      },
+      {
+        "concept": "discrete valuation ring",
+        "decision": "retain",
+        "reason": "The local principal ideal domain characterization with the nonfield condition gives a DVR.",
+        "field": "commutative_algebra",
+        "original_depth": 74,
+        "checked_depth": 80,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1355326396",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/RingTheory/DiscreteValuationRing/Basic.lean#L56"
+      },
+      {
+        "concept": "fractional ideal",
+        "decision": "retain",
+        "reason": "Submodules with a common denominator implement the fractional ideal.",
+        "field": "commutative_algebra",
+        "original_depth": 77,
+        "checked_depth": 83,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1355326396",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/RingTheory/FractionalIdeal/Basic.lean#L83"
+      },
+      {
+        "concept": "Boolean ring",
+        "decision": "retain",
+        "reason": "The ring class requires idempotence of multiplication on each element.",
+        "field": "commutative_algebra",
+        "original_depth": 42,
+        "checked_depth": 48,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1355326396",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/Algebra/Ring/BooleanRing.lean#L53"
+      },
+      {
+        "concept": "inductive limit",
+        "decision": "exclude",
+        "reason": "The glossary explicitly refers to a categorical colimit. The declaration constructs a metric union along isometric embeddings.",
+        "field": "category_theory",
+        "original_depth": 83,
+        "checked_depth": 89,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1376093804",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/Topology/MetricSpace/Gluing.lean#L583"
+      },
+      {
+        "concept": "cartesian closed",
+        "decision": "exclude",
+        "reason": "MonoidalClosed assumes a chosen monoidal product; its general definition does not require the terminal object and cartesian products of the glossary.",
+        "field": "category_theory",
+        "original_depth": 51,
+        "checked_depth": 57,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1376093804",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/CategoryTheory/Monoidal/Closed/Basic.lean#L46"
+      },
+      {
+        "concept": "simplicial category",
+        "decision": "retain",
+        "reason": "Enrichment of an ordinary category over simplicial sets.",
+        "field": "category_theory",
+        "original_depth": 75,
+        "checked_depth": 81,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1376093804",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/AlgebraicTopology/SimplicialCategory/Basic.lean#L49"
+      },
+      {
+        "concept": "locally Noetherian",
+        "decision": "retain",
+        "reason": "The affine-open condition expresses local Noetherianity of a scheme.",
+        "field": "algebraic_geometry",
+        "original_depth": 106,
+        "checked_depth": 112,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1351541925",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/AlgebraicGeometry/Noetherian.lean#L54"
+      },
+      {
+        "concept": "modular form",
+        "decision": "retain",
+        "reason": "The bundled form combines transformation, holomorphy and cusp conditions.",
+        "field": "number_theory",
+        "original_depth": 151,
+        "checked_depth": 157,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1321562544",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/NumberTheory/ModularForms/Basic.lean#L75"
+      },
+      {
+        "concept": "chinese remainder theorem",
+        "decision": "retain",
+        "reason": "The finite pairwise-coprime ideal quotient isomorphism specializes to the integer CRT.",
+        "field": "number_theory",
+        "original_depth": 67,
+        "checked_depth": 73,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1321562544",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/RingTheory/Ideal/Quotient/Operations.lean#L248"
+      },
+      {
+        "concept": "measure space",
+        "decision": "retain",
+        "reason": "The structure adds a measure to a measurable space.",
+        "field": "real_complex_analysis",
+        "original_depth": 92,
+        "checked_depth": 98,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1365904789",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean#L358"
+      },
+      {
+        "concept": "convolution",
+        "decision": "retain",
+        "reason": "The bilinear integral specializes to ordinary scalar convolution on an additive group.",
+        "field": "real_complex_analysis",
+        "original_depth": 143,
+        "checked_depth": 149,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1365904789",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/Analysis/Convolution.lean#L401"
+      },
+      {
+        "concept": "measurable function",
+        "decision": "retain",
+        "reason": "Defined by measurable inverse images.",
+        "field": "real_complex_analysis",
+        "original_depth": 46,
+        "checked_depth": 52,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1365904789",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/MeasureTheory/MeasurableSpace/Defs.lean#L492"
+      },
+      {
+        "concept": "power series",
+        "decision": "retain",
+        "reason": "The glossary uses the coefficient-sequence interpretation; the formal one-variable series suffices for that sense.",
+        "field": "real_complex_analysis",
+        "original_depth": 70,
+        "checked_depth": 76,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1365904789",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/RingTheory/PowerSeries/Basic.lean#L57"
+      },
+      {
+        "concept": "measurable set",
+        "decision": "retain",
+        "reason": "Membership in the sigma algebra of the measurable space.",
+        "field": "real_complex_analysis",
+        "original_depth": 46,
+        "checked_depth": 52,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1365904789",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/MeasureTheory/MeasurableSpace/Defs.lean#L63"
+      },
+      {
+        "concept": "Schwarz lemma",
+        "decision": "exclude",
+        "reason": "The matched theorem gives the norm-bound part. It does not state the full derivative and equality conclusions of the classical lemma.",
+        "field": "real_complex_analysis",
+        "original_depth": 151,
+        "checked_depth": 157,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1365904789",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/Analysis/Complex/Schwarz.lean#L234"
+      },
+      {
+        "concept": "kan complex",
+        "decision": "retain",
+        "reason": "Fibrancy for simplicial sets supplies the horn-filling property.",
+        "field": "algebraic_topology",
+        "original_depth": 80,
+        "checked_depth": 86,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1382041788",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/AlgebraicTopology/SimplicialSet/KanComplex.lean#L40"
+      },
+      {
+        "concept": "fiber functor",
+        "decision": "exclude",
+        "reason": "The glossary is in representation theory. The declaration is specific to finite-set-valued fiber functors on a pre-Galois category.",
+        "field": "lie_representation_theory",
+        "original_depth": 67,
+        "checked_depth": 73,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1351912484",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/CategoryTheory/Galois/Basic.lean#L84"
+      },
+      {
+        "concept": "free Lie algebra",
+        "decision": "retain",
+        "reason": "The quotient implements the free Lie algebra on generators.",
+        "field": "lie_representation_theory",
+        "original_depth": 76,
+        "checked_depth": 82,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1355327888",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/Algebra/Lie/Free.lean#L121"
+      },
+      {
+        "concept": "central limit theorem",
+        "decision": "retain",
+        "reason": "The declaration gives an iid finite-variance central limit theorem. The match concerns this standard version.",
+        "field": "probability_statistics",
+        "original_depth": 156,
+        "checked_depth": 162,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1363373483",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/Probability/CentralLimitTheorem.lean#L122"
+      },
+      {
+        "concept": "real numbers",
+        "decision": "retain",
+        "reason": "The Cauchy completion constructs the real number system.",
+        "field": "game_theory",
+        "original_depth": 41,
+        "checked_depth": 47,
+        "glossary": "https://en.wikipedia.org/w/index.php?oldid=1259269808",
+        "declaration": "https://github.com/leanprover-community/mathlib4/blob/4bc4670bf916c8dc2ede840e3ead86301e52a40d/Mathlib/Basic/Real/Basic.lean#L36"
+      }
+    ]
+  },
+  "judges": {
+    "by_judge": {
+      "ibm-granite/granite-4.0-micro": {
+        "n": 655,
+        "median_digit_mass": 0.999858021736145
+      },
+      "HuggingFaceTB/SmolLM3-3B": {
+        "n": 655,
+        "median_digit_mass": 0.8165375590324402
+      },
+      "microsoft/Phi-4-mini-instruct": {
+        "n": 655,
+        "median_digit_mass": 0.7154682874679565
+      }
+    },
+    "rank_agreement": [
+      [
+        1.0,
+        0.5952902864346242,
+        0.6936219256254456
+      ],
+      [
+        0.5952902864346242,
+        1.0,
+        0.5967092149052164
+      ],
+      [
+        0.6936219256254454,
+        0.5967092149052163,
+        1.0
+      ]
+    ]
+  },
+  "intervention": {
+    "ring_chain": {
+      "baseline": {
+        "correct": 76,
+        "presentations": 110
+      }
+    },
+    "space_chain": {
+      "baseline": {
+        "correct": 95,
+        "presentations": 110
+      },
+      "chain_s1.0": {
+        "correct": 95,
+        "presentations": 110
+      },
+      "random0_s1.0": {
+        "correct": 93,
+        "presentations": 110
+      },
+      "random1_s1.0": {
+        "correct": 93,
+        "presentations": 110
+      },
+      "random2_s1.0": {
+        "correct": 93,
+        "presentations": 110
+      },
+      "random3_s1.0": {
+        "correct": 92,
+        "presentations": 110
+      },
+      "random4_s1.0": {
+        "correct": 95,
+        "presentations": 110
+      },
+      "chain_s2.0": {
+        "correct": 92,
+        "presentations": 110
+      },
+      "random0_s2.0": {
+        "correct": 95,
+        "presentations": 110
+      },
+      "random1_s2.0": {
+        "correct": 95,
+        "presentations": 110
+      },
+      "random2_s2.0": {
+        "correct": 94,
+        "presentations": 110
+      },
+      "random3_s2.0": {
+        "correct": 94,
+        "presentations": 110
+      },
+      "random4_s2.0": {
+        "correct": 93,
+        "presentations": 110
+      },
+      "chain_s4.0": {
+        "correct": 87,
+        "presentations": 110
+      },
+      "random0_s4.0": {
+        "correct": 88,
+        "presentations": 110
+      },
+      "random1_s4.0": {
+        "correct": 89,
+        "presentations": 110
+      },
+      "random2_s4.0": {
+        "correct": 92,
+        "presentations": 110
+      },
+      "random3_s4.0": {
+        "correct": 92,
+        "presentations": 110
+      },
+      "random4_s4.0": {
+        "correct": 91,
+        "presentations": 110
+      }
+    }
+  },
+  "hypotheses": [
+    {
+      "hypothesis": "H-A1, primary",
+      "sample": "398 concepts, 17 fields",
+      "rule": "Whole-field permutation p < .05 and positive paired trained-minus-twin CI",
+      "observed": "ρ 0.38735, twin -0.11846, Δ 0.50581, CI [0.277, 0.576]",
+      "verdict": "Supported for the chosen arXiv proxy and fixed fields."
+    },
+    {
+      "hypothesis": "H-A1c, math",
+      "sample": "398 concepts in 17 fields",
+      "rule": "LOO centroid accuracy, paired CI above zero versus twin",
+      "observed": "0.472 vs 0.090, Δ CI [0.329, 0.435]",
+      "verdict": "Clustering detected. Granularity differs across domains. Mathematical specificity unresolved."
+    },
+    {
+      "hypothesis": "H-A1c, control",
+      "sample": "97 concepts in 4 fields",
+      "rule": "LOO centroid accuracy, paired CI above zero versus twin",
+      "observed": "0.814 vs 0.268, Δ CI [0.423, 0.660]",
+      "verdict": "Clustering detected. Granularity differs across domains. Mathematical specificity unresolved."
+    },
+    {
+      "hypothesis": "H-A2, branch hierarchy",
+      "sample": "398 concepts, 17 fields",
+      "rule": "UPGMA branch match beats shuffled labels and twin",
+      "observed": "ρ 0.237, historical shuffle p 0.0200, historical twin Δ CI [-0.079, 0.348]",
+      "verdict": "Twin interval crosses zero. The conjunction fails on the MVP."
+    },
+    {
+      "hypothesis": "H-A3, math checkpoint",
+      "sample": "Two Qwen2.5 checkpoints, same glossary",
+      "rule": "Positive paired Δρ CI",
+      "observed": "Δ -0.0166, CI [-0.059, 0.017]",
+      "verdict": "Predicted increase unresolved. Equivalence untested."
+    },
+    {
+      "hypothesis": "H-A4, pure/applied",
+      "sample": "398 concepts, 17 fields",
+      "rule": "Secondary association with leading PCs. Post-hoc permute whole fields, preserving count applied",
+      "observed": "PC2 |ρ| 0.411, max-five p 0.0029",
+      "verdict": "Association survives this field-level reference."
+    },
+    {
+      "hypothesis": "H-A4, abstraction",
+      "sample": "398 concepts, 17 fields",
+      "rule": "Secondary rank association after regressing raw scores on frequency and token count",
+      "observed": "PC1 ρ 0.494, saved five-fold readout ρ 0.736",
+      "verdict": "Association with model ratings. Human judgments unavailable."
+    },
+    {
+      "hypothesis": "H-A4, external proxy",
+      "sample": "32/655 math concepts",
+      "rule": "Post-hoc semantic filtering of rating vs module-depth comparison",
+      "observed": "ρ 0.507, CI [0.195, 0.740]",
+      "verdict": "Positive on the retained subset. Cross-field coverage is sparse."
+    },
+    {
+      "hypothesis": "H-B, days",
+      "sample": "7 fixed names",
+      "rule": "Closure < 2 and circle ρ > line ρ and Robinson p < .05",
+      "observed": "closure 1.19, circle 0.645, line 0.776",
+      "verdict": "Full-space positive control failed."
+    },
+    {
+      "hypothesis": "H-B, months",
+      "sample": "12 fixed names",
+      "rule": "Closure < 2 and circle ρ > line ρ and Robinson p < .05",
+      "observed": "closure 1.23, circle 0.702, line 0.790",
+      "verdict": "Full-space positive control failed."
+    },
+    {
+      "hypothesis": "H-B, angles",
+      "sample": "12 fixed names",
+      "rule": "Closure < 2 and circle ρ > line ρ",
+      "observed": "closure 2.11, circle 0.285, line 0.560",
+      "verdict": "Specified prediction failed alongside both calendar controls. Latent circularity unresolved."
+    },
+    {
+      "hypothesis": "H-B, ring_chain",
+      "sample": "11 fixed names",
+      "rule": "Both Robinson and LOO order p < .05, Holm, trained Robinson > twin",
+      "observed": "Robinson exact p 0.01032, archived LOO p 0.00850, Holm 0.0420/0.0525",
+      "verdict": "Multiplicity-sensitive. Head-word control unresolved."
+    },
+    {
+      "hypothesis": "H-B, space_chain",
+      "sample": "11 fixed names",
+      "rule": "Both Robinson and LOO order p < .05, Holm, trained Robinson > twin",
+      "observed": "Robinson exact p 0.00048, archived LOO p 0.00010, Holm 0.0040/0.0040",
+      "verdict": "Survives both adjustments for this sequence."
+    },
+    {
+      "hypothesis": "H-B, ngons",
+      "sample": "10 ordered names and number words",
+      "rule": "RSA with number reference. Exploratory residual template fit",
+      "observed": "ρ 0.593, residual p 0.309",
+      "verdict": "Positive correspondence. Partial RDM p is sensitive to proxy confounding."
+    },
+    {
+      "hypothesis": "H-B, dimensions",
+      "sample": "11 ordered names and number words",
+      "rule": "RSA with number reference. Exploratory residual template fit",
+      "observed": "ρ 0.756, residual p 0.020",
+      "verdict": "Positive correspondence. Partial RDM p is sensitive to proxy confounding."
+    },
+    {
+      "hypothesis": "H-B, number systems",
+      "sample": "7 names",
+      "rule": "Exploratory order permutation",
+      "observed": "Robinson p 0.0045",
+      "verdict": "Descriptive order on these names."
+    },
+    {
+      "hypothesis": "H-B, random lists",
+      "sample": "100 lists of 11",
+      "rule": "Rejection fraction above .10 flags a calibration problem",
+      "observed": "Robinson rejection fraction 0.04",
+      "verdict": "No alarm for the examined nulls. Limited calibration scope."
+    },
+    {
+      "hypothesis": "H-B2, associative",
+      "sample": "5 one-bit offsets",
+      "rule": "Mean pairwise cosine exceeds random-pair null and twin, Holm",
+      "observed": "cos 0.432, twin 0.021, Holm 0.0175/0.0210, matched-edge p 0.00005",
+      "verdict": "Survives both adjustments. Lexical alternatives remain."
+    },
+    {
+      "hypothesis": "H-B2, identity",
+      "sample": "5 one-bit offsets",
+      "rule": "Mean pairwise cosine exceeds random-pair null and twin, Holm",
+      "observed": "cos 0.237, twin 0.040, Holm 0.0850/0.1274, matched-edge p 0.01475",
+      "verdict": "Does not pass the published multiplicity correction."
+    },
+    {
+      "hypothesis": "H-B2, divisible",
+      "sample": "5 one-bit offsets",
+      "rule": "Mean pairwise cosine exceeds random-pair null and twin, Holm",
+      "observed": "cos 0.289, twin 0.012, Holm 0.0825/0.1099, matched-edge p 0.00265",
+      "verdict": "Does not pass the published multiplicity correction."
+    },
+    {
+      "hypothesis": "H-B2, commutative",
+      "sample": "6 one-bit offsets",
+      "rule": "Mean pairwise cosine exceeds random-pair null and twin, Holm",
+      "observed": "cos 0.534, twin 0.013, Holm 0.0060/0.0070, matched-edge p 0.00005",
+      "verdict": "Survives both adjustments. Lexical alternatives remain."
+    },
+    {
+      "hypothesis": "H-B2, gender control",
+      "sample": "Fixed word pairs",
+      "rule": "Consistency exceeds random-pair 95th percentile",
+      "observed": "0.282 vs 0.088",
+      "verdict": "Offset method detects the positive control."
+    },
+    {
+      "hypothesis": "H-B2, axiom RDM and analogy",
+      "sample": "13 profiles",
+      "rule": "Secondary Hamming-RDM coefficient and three-term vector completion",
+      "observed": "β 0.492, p 0.0002, top-1 0.556 vs chance 0.100",
+      "verdict": "Descriptive. Shared names and nuisance misspecification can affect both statistics."
+    },
+    {
+      "hypothesis": "Sparse autoencoder",
+      "sample": "MVP at the recorded SAE block",
+      "rule": "Exploratory field RSA and centroid accuracy in sparse codes",
+      "observed": "ρ 0.146, LOO accuracy 0.430",
+      "verdict": "Archived aggregate scores. Feature selectivity is in-sample."
+    },
+    {
+      "hypothesis": "H-B2, related structures",
+      "sample": "Self-distributive names, group-object analogies, ring-like transfers",
+      "rule": "Exploratory offset comparisons and parent ranks",
+      "observed": "group objects cos 0.398, commutativity transfer p 0.051, identity p 0.398",
+      "verdict": "Group-object offsets also occur in name controls. Ring-like transfer unresolved. Small families have little resolution."
+    },
+    {
+      "hypothesis": "Chain intervention",
+      "sample": "110 ordered presentations per chain",
+      "rule": "Baseline ≥ .70 gates intervention, compare with five random 2-D bases",
+      "observed": "ring baseline 76, space baseline 95, space correct at s=4 87",
+      "verdict": "Space passes gate. Separate candidate noise and dependent presentations limit causal interpretation."
+    }
+  ]
+}

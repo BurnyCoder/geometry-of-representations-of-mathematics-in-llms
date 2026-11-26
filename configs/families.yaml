@@ -1,6 +1,6 @@
-# Curated concept families for H-B (ordered chains / circles) and H-B2 (axiom lattices).
+# Curated concept families for H-B (ordered chains / circles) and H-B2 (axiom profiles).
 # Pre-registered before any activation was analyzed. `domain` fills the {D} slot of the family
-# templates (constant within a family, so it cannot create within-family differences).
+# templates (constant within a family, so it is shared within a family; interactions with the item can still affect contrasts).
 # `items` are listed in ground-truth order (chains: general → specific, except number_systems, listed
 # specific → general (ℕ ⊂ … ⊂ octonions); cycles: cyclic order). Order statistics are symmetric in direction.
 
@@ -20,7 +20,9 @@ chains:
     expected: line
     role: test
     items: [rng, ring, commutative ring, integral domain, integrally closed domain, GCD domain, unique factorization domain, principal ideal domain, Euclidean domain, field, algebraically closed field]
-  space_chain:  # separation axioms https://en.wikipedia.org/wiki/Separation_axiom + metric/normed/Banach/Hilbert inclusions.
+  space_chain:  # Ordered labels: separation implications, then spaces with additional structure.
+    # Metrizable names a property. A metric space specifies a compatible metric; forgetting structure induces the topology.
+    # Munkres, Topology, §§20–21, 31: https://people.math.ethz.ch/~dkosanovic/24-FS/Munkres-Topology.pdf
     # A chain only if "regular" = T3 and "normal" = T4 (both include T1), as in Munkres, Topology §31; Wikipedia's
     # article defines regular/normal without T1, under which Hausdorff ⊃ regular fails (docs/deviations.md, 2026-10-30).
     domain: "topology and analysis"
@@ -62,7 +64,9 @@ references:  # lexical-number references (not hypotheses themselves)
     domain: "arithmetic"
     items: ["0", "30", "60", "90", "120", "150", "180", "210", "240", "270", "300", "330"]
 
-# H-B2 axiom lattices. Bits are ground truth from the cited sources.
+# H-B2 sampled profiles, ordered coordinatewise. A 0 means the axiom is not required.
+# Commutative magma and unital magma have incomparable minimal upper bounds here.
+# The historical YAML key is retained for compatibility.
 lattices:
   group_like:  # https://en.wikipedia.org/wiki/Magma_(algebra) group-like structures table (Template:Group-like_structures, oldid 1372036401): its total structures except the associative quasigroup; commutativity added
     domain: "abstract algebra"

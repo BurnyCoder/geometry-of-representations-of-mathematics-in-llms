@@ -1,5 +1,7 @@
 # Independent audit: word-form controls, twin seeds and test precision
 
+Historical word-form analysis. The [26 November 2026 review](reviews/2026-11-26_scientific_audit.md) revises the inferential interpretation and reports both Holm calculations and the failed calendar controls. Its new sensitivity tests postdate this document.
+
 *Generated from `reports/audit_template.md` by `python run.py paper`; every number comes from `results/*/*.json`. Everything here is **post-hoc**: the audit ran after all preregistered results were known. Its tests were defined in [`prereg_addendum_lexical.md`](prereg_addendum_lexical.md), committed before the `lexical` and `twins` phases ran (one amendment, made from a unit test before any real-data run, is recorded there). The log of changes is in [`docs/deviations.md`](../docs/deviations.md).*
 
 ## Why an audit was needed
@@ -216,16 +218,16 @@ Ordered families on word-form baselines (Qwen3.5-2B):
 
 Together with the 10,000-permutation LOO p-values (D9), this changes three decisions relative to the pre-audit rules (7-test Holm, 300 permutations): Gemma-4-E2B's space chain becomes Holm-significant, and identity and divisibility lose Holm significance in Qwen2.5-Math-1.5B. The confirmatory model:
 
-| Test | Model | p | Holm-adjusted p | reject at α=0.05 |
-|---|---|---|---|---|
-| H-A1 Δρ trained − random-init ≤ 0 (bootstrap) | qwen3.5-2b | 0.0005 | 0.0040 | yes |
-| H-B ring chain (Robinson and LOO order) | qwen3.5-2b | 0.0105 | 0.0420 | yes |
-| H-B space chain (Robinson and LOO order) | qwen3.5-2b | 0.0005 | 0.0040 | yes |
-| H-B2 associative offset consistency | qwen3.5-2b | 0.0035 | 0.0175 | yes |
-| H-B2 identity offset consistency | qwen3.5-2b | 0.0425 | 0.0850 | no |
-| H-B2 divisible offset consistency | qwen3.5-2b | 0.0275 | 0.0825 | no |
-| H-B2 commutative offset consistency | qwen3.5-2b | 0.0010 | 0.0060 | yes |
-| H-B angles circle prediction (decision rule: closure < 2 and circle ρ > line ρ; observed closure 2.11, circle ρ 0.29, line ρ 0.56; counted with p = 1) | qwen3.5-2b | — | — | not met (prediction falsified) |
+| Test | Model | Original input | Published Holm | Reserved-slot Holm |
+|---|---|---:|---:|---:|
+| H-A1 Δρ trained − random-init ≤ 0 (bootstrap) | qwen3.5-2b | 0.0005 | 0.0040 | reserved |
+| H-B ring chain (Robinson and LOO order) | qwen3.5-2b | 0.0105 | 0.0420 | 0.0525 |
+| H-B space chain (Robinson and LOO order) | qwen3.5-2b | 0.0005 | 0.0040 | 0.0040 |
+| H-B2 associative offset consistency | qwen3.5-2b | 0.0035 | 0.0175 | 0.0210 |
+| H-B2 identity offset consistency | qwen3.5-2b | 0.0425 | 0.0850 | 0.1274 |
+| H-B2 divisible offset consistency | qwen3.5-2b | 0.0275 | 0.0825 | 0.1099 |
+| H-B2 commutative offset consistency | qwen3.5-2b | 0.0010 | 0.0060 | 0.0070 |
+| Angles rule failed; see calendar controls | qwen3.5-2b | rule only | reserved | reserved |
 
 ## D9–D10: leave-one-out order, 10,000 permutations, two ridge penalties
 

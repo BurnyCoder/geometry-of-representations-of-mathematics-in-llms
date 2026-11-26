@@ -21,7 +21,7 @@ KEYS = list(S.MODEL)
 def offset_dots(ax, off, axes_names: list[str], conf: str, extra=None, lexical=None):
     """Dot plot of offset consistency per axis: the confirmatory model (filled), the other models (open),
     all twins (grey) and the confirmatory model's random-pair null (grey bar: mean → 95th percentile).
-    `off(key, axis)` returns that lattice's offsets entry; `extra(axis)` an optional diamond value;
+    `off(key, axis)` returns that family's offsets entry; `extra(axis)` an optional diamond value;
     `lexical(axis)` an optional word-form baseline (×: character 3-grams of the names, no model; audit D2)."""
     y = np.arange(len(axes_names))[::-1]
     for yi, a in zip(y, axes_names):
@@ -94,7 +94,7 @@ def draw_hero(r: dict, fam3d: dict, lat3d: dict, fmap: dict, conf: str):
     ax.scatter([], [], color=S.BLUE, label="trained (95% CI)"), ax.scatter([], [], color=S.TWIN, label="random-init twin")
     ax.scatter([], [], marker="x", color=S.ORANGE, label="names' character 3-grams"), ax.scatter([], [], marker="+", color=S.INK2, label="layer-0 token embeddings")
     ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.17), ncol=2, fontsize=6.3)
-    ax.set_title("A · Fields form a map in every model,\nbeyond the twin and beyond word form", fontsize=9)
+    ax.set_title("A · Fields form a map in every model,\nabove twin and tested name baselines", fontsize=9)
     m = mp[conf]["math_primary"]["rsa"]
     for col, (k, title, note) in enumerate((("arxiv", "B · arXiv cross-listing (ground truth)", "grey edges: each field's 2 nearest arXiv neighbours"),
                                              ("trained", f"{S.MODEL[conf]} ★: related fields sit together", f"ρ with arXiv = {m['trained']:.2f}"),
@@ -124,12 +124,12 @@ def draw_hero(r: dict, fam3d: dict, lat3d: dict, fmap: dict, conf: str):
     ax.set_title(f"D · Offsets are more parallel than in the twins, but the names' spelling\nalone (×) is as parallel for {n_matched} of {len(axes_names)} axioms", fontsize=9)
     # row 3 . ordered families in 3-D
     rw, sb = lx[conf]["ring_within_domain"]["trained"], lx[conf]["space_blocks"]
-    notes = {"days": f"cycle score {ph[conf]['pc_plane_cycle']['days'][Lp - 1]['score']:.2f} (twin {ph[conf + '__random']['pc_plane_cycle']['days'][Lp - 1]['score']:.2f})",
+    notes = {"days": f"full-space calendar controls failed\npost-hoc order {ph[conf]['pc_plane_cycle']['days'][Lp - 1]['score']:.2f} (twin {ph[conf + '__random']['pc_plane_cycle']['days'][Lp - 1]['score']:.2f})",
              "angles": f"d(0°, 330°) = {sh[conf]['angles']['closure']:.2f} × neighbour step (twin {sh[conf + '__random']['angles']['closure']:.2f})",
              "ring_chain": f"Robinson {sh[conf]['ring_chain']['robinson']:.2f} (twin {sh[conf + '__random']['ring_chain']['robinson']:.2f});\nwithin the 6 '... domain' items p = {rw['robinson_p']:.2f}",
              "space_chain": f"Robinson {sh[conf]['space_chain']['robinson']:.2f} (twin {sh[conf + '__random']['space_chain']['robinson']:.2f});\nwithin blocks p = "
              + " / ".join(f"{v['trained']['robinson_p']:.3f}" for v in sb.values())}
-    titles = {"days": "E · Days: a circle (positive control)", "angles": "Angles: not a circle", "ring_chain": "Ring chain: grouped by head noun", "space_chain": "Space chain: an ordered path"}
+    titles = {"days": "E · Days: post-hoc projection", "angles": "Angles: full-space rule failed", "ring_chain": "Ring chain: grouped by head noun", "space_chain": "Space chain: an ordered path"}
     for col, f in enumerate(("days", "angles", "ring_chain", "space_chain")):
         ax = fig.add_subplot(gs[2, col], projection="3d")
         P, var, labels = fam3d[f]
@@ -140,7 +140,7 @@ def draw_hero(r: dict, fam3d: dict, lat3d: dict, fmap: dict, conf: str):
 
 
 def draw_partial_operation(r: dict, conf: str):
-    """Negative result: the partial-operation lattice (semigroupoid / small category / groupoid vs
+    """Negative result: the partial-operation family (semigroupoid / small category / groupoid vs
     semigroup / monoid / group) shows no consistent 'make the operation total' direction."""
     import matplotlib.pyplot as plt
 
@@ -180,14 +180,12 @@ def draw_depth(r: dict):
 def forest_rows(r: dict) -> list[tuple[str, list[dict]]]:
     """(facet title, rows); each row: label, estimate, 95% CI, status ('pre-registered' / 'added'), n, and
     holm (the Holm decision where the test is in the pre-registered Holm family, else None)."""
-    from mathgeom.report.render import holm_decisions
 
     mp, hi, b, cmp, ml = r["map_fields"], r["hierarchy"], r["baselines"], r["compare"], r["mathlib"]
     row = lambda label, est, ci, status, n, holm=None: {"label": label, "est": est, "ci": ci, "status": status, "n": n, "holm": holm}  # noqa: E731
-    holm = lambda k: next(d["reject"] for d in holm_decisions(mp, r["shapes"], r["lattice"], k) if d["name"].startswith("H-A1"))  # noqa: E731
     d = lambda m: m["rsa"]["trained"] - m["rsa"]["random_init"]  # noqa: E731
-    facets = [("Field map: trained − twin (Δρ, H-A1)", [row(S.MODEL[k], d(mp[k]["math_primary"]), mp[k]["math_primary"]["rsa_boot"]["delta_vs_random_init"]["ci"], "pre-registered",
-                                                        f"{mp[k]['math_primary']['n']} concepts", holm(k)) for k in KEYS])]
+    facets = [("Field map: trained − twin (Δρ, H-A1)", [row(S.MODEL[k], d(mp[k]["math_primary"]), mp[k]["math_primary"]["rsa_boot"]["delta_vs_random_init"]["ci"], "MVP: Mantel + CI" if k == "qwen3.5-2b" else "robustness",
+                                                        f"{mp[k]['math_primary']['n']} concepts") for k in KEYS])]
     lx = r.get("lexical", {})
     if all(k in lx for k in KEYS):  # independent audit (D1): the trained map against the names' spelling alone
         fl = lambda k: lx[k]["field_map"]  # noqa: E731
@@ -198,7 +196,7 @@ def forest_rows(r: dict) -> list[tuple[str, list[dict]]]:
         row("− Qwen3-Embedding", q["all_primary"]["rsa"]["llm_trained"] - q["all_primary"]["rsa"]["qwen3_embedding"], q["all_primary"]["boot"]["delta_vs_qwen3_embedding"]["ci"], "added", f"{q['all_primary']['n']} concepts"),
         row("− fastText", q["fasttext_covered"]["rsa"]["llm_trained"] - q["fasttext_covered"]["rsa"]["fasttext"], q["fasttext_covered"]["boot"]["delta_vs_fasttext"]["ci"], "added", f"{q['fasttext_covered']['n']} concepts")]))
     c = cmp["qwen2.5-math-1.5b_vs_qwen2.5-1.5b"]
-    facets.append(("Math pretraining: Qwen2.5-Math − Qwen2.5 (Δρ, H-A3)", [row("1T math tokens", c["rho"]["qwen2.5-math-1.5b"] - c["rho"]["qwen2.5-1.5b"], c["boot"]["delta_vs_qwen2.5-1.5b"]["ci"],
+    facets.append(("Checkpoint contrast: Qwen2.5-Math − Qwen2.5 (Δρ, H-A3)", [row("Released checkpoints", c["rho"]["qwen2.5-math-1.5b"] - c["rho"]["qwen2.5-1.5b"], c["boot"]["delta_vs_qwen2.5-1.5b"]["ci"],
                                                                               "pre-registered", f"{mp['qwen2.5-1.5b']['math_primary']['n']} concepts")]))
     facets.append(("Hierarchy: trained − twin (Δ cophenetic match, H-A2)", [row(S.MODEL[k], hi[k]["coph_match"]["trained"] - hi[k]["coph_match"]["random_init"], hi[k]["coph_match_delta_vs_random_ci"],
                                                                                "pre-registered", f"{hi[k]['n_fields']} fields") for k in KEYS]))
@@ -219,7 +217,7 @@ def draw_forest(r: dict):
             ax.plot(rw["ci"], [yi, yi], color=S.BLUE if sig else S.TWIN, lw=2.2, solid_capstyle="round")
             ax.scatter(rw["est"], yi, color=S.BLUE if sig else S.TWIN, s=34, zorder=3, edgecolors=S.SURFACE)
             verdict = "CI excludes 0" if sig else "CI includes 0"
-            if rw["holm"] is not None:  # in the pre-registered Holm family: the decision comes from Holm, not from the CI
+            if rw["holm"] is not None:  # in the pre-registered Holm family: use only for statistics with an inferential Holm decision
                 verdict += " · Holm: " + ("significant" if rw["holm"] else "not significant")
             ax.text(1.01, yi, verdict + ("" if rw["status"] == "pre-registered" else f" · {rw['status']}"), transform=ax.get_yaxis_transform(), fontsize=6.5, color=S.INK2, va="center")
         ax.axvline(0, color=S.INK2, lw=0.7)
@@ -275,7 +273,7 @@ def draw_group_objects(r: dict):
     return fig
 
 
-def build(r: dict, cfg_conf, outdir) -> list[str]:
+def build(r: dict, cfg_conf, outdir, *, saved_field_map=None) -> list[str]:
     from mathgeom.report.figures.families import save_turntable, short
     from mathgeom.report.figures.lattice import save_axiom_gif
 
@@ -297,10 +295,17 @@ def build(r: dict, cfg_conf, outdir) -> list[str]:
     v3l = _views3d(X)
     lat3d = {s: v[0] for s, v in v3l.items()} | {"var": {s: v[1] for s, v in v3l.items()}, "pairs": axiom_pairs(bits, lat["axioms"].index("commutative"))}
     setup = figdata.field_setup(cfg_conf, r["map_fields"][conf])
-    rdms = figdata.field_rdms(cfg_conf, conf, setup, Lp)
-    lay3 = figdata.field_layouts(rdms, k=3)
-    fmap = {"lay3": lay3, "stress": {k: figdata.stress1(P, rdms[k]) for k, P in lay3.items()}, "names": setup["names"], "pa": setup["pa"],
+    if saved_field_map is None:
+        rdms = figdata.field_rdms(cfg_conf, conf, setup, Lp)
+        lay3 = figdata.field_layouts(rdms, k=3)
+        stress = {k: figdata.stress1(p, rdms[k]) for k, p in lay3.items()}
+    else:
+        lay3, stress = saved_field_map
+    fmap = {"lay3": lay3, "stress": stress, "names": setup["names"], "pa": setup["pa"],
             "edges": figdata.neighbour_edges(setup["arxiv"])}
+    if saved_field_map is not None:
+        return [S.save(draw_hero(r, fam3d, lat3d, fmap, conf), outdir, "hero"),
+                S.save(draw_forest(r), outdir, "forest")]
     return [S.save(draw_hero(r, fam3d, lat3d, fmap, conf), outdir, "hero"), S.save(draw_depth(r), outdir, "depth_curves"), S.save(draw_forest(r), outdir, "forest"),
             S.save(draw_group_objects(r), outdir, "group_objects"), S.save(draw_partial_operation(r, conf), outdir, "partial_operation"),
             save_turntable(cfg_conf, conf, Lp, outdir),  # README 3-D turntable, confirmatory model only (≈1.5 MB per GIF)

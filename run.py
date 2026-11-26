@@ -23,7 +23,7 @@ PHASES = {
     "hierarchy": pipeline.phase_hierarchy,  # H-A2 cophenetic correlation, Gromov δ, Gaussian null → hierarchy.json
     "shapes": pipeline.phase_shapes,  # H-B chains/circles → results/<cfg>/shapes.json
     "chainfreq": pipeline.phase_chainfreq,  # plan H-B frequency control: chain order beyond Zipf and token count → chain_frequency.json
-    "lattice": pipeline.phase_lattice,  # H-B2 axiom lattices → results/<cfg>/lattice.json
+    "lattice": pipeline.phase_lattice,  # H-B2 axiom profiles → results/<cfg>/lattice.json
     "structures": pipeline.phase_structures,  # H-B2 tests 4–5: axiom transfer, Lie/topological/algebraic groups → structures.json
     "judges": pipeline.phase_judges,  # H-A4 covariate: LLM-judge abstraction ratings → data/judge_ratings.csv
     "mathlib": pipeline.phase_mathlib,  # H-A4 judge validation: rating vs Mathlib import depth, coverage per field → mathlib.json

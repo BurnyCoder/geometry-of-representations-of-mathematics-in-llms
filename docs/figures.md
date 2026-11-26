@@ -1,6 +1,6 @@
 # Figures and the explorable article
 
-Every figure and every statistic on the website is generated from `results/<config>/*.json` and the cached activations; no statistic is drawn or typed by hand. Only structural counts (such as 13 structures or 8 templates) are typed into the page's prose. A few figure titles and site captions state a verdict in words (for example "Angles: not a circle"); they were checked against the results and must be re-checked if a result changes.
+Every figure and every statistic on the website is generated from `results/<config>/*.json` and the cached activations; no statistic is drawn or typed by hand. Only structural counts (such as 13 structures or 8 templates) are typed into the page's prose. A few figure titles and site captions state a verdict in words (for example "Angles: full-space rule failed"); they were checked against the results and must be re-checked if a result changes.
 
 To regenerate the per-model figures, report tables and site data for one config:
 
@@ -66,10 +66,10 @@ Rows are grouped by figure type; the README, summary and paper present the resul
 | Figure (file in `reports/figures/`) | Shows | Built by | Data |
 |---|---|---|---|
 | `hero` | Three-row overview: (1) field-map ρ in all models vs twins and two word-form baselines (× character 3-grams, + layer-0 token bag), and the arXiv / trained / twin maps; (2) the commutativity arrows at one common origin in 3-D, trained vs twin, and the offset consistency of every axiom in every model and twin with the names' character 3-grams (×); (3) days, angles, ring chain (with its within-“domain” p) and space chain (with its within-block p) | `figures/overview.py: draw_hero` | `map_fields`, `posthoc`, `shapes`, `lattice`, `lexical` + activations |
-| `axioms_explainer_<model>` | How the axiom test works, in four steps: (1) the lattice of structures (ground truth); (2) one axiom's pairs as arrows in the model's top-3 PCs; (3) the same arrows at one common origin in 3-D, trained vs twin, with their offset consistency; (4) a compass per axiom of full-space angles between each same-axiom difference vector and the leave-one-out mean of the others (`figdata.axiom_angles`), trained above the dashed line and twin below | `figures/lattice.py: draw_explainer` | activations, `lattice` |
+| `axioms_explainer_<model>` | How the axiom test works, in four steps: (1) the partial order on the sampled profiles; (2) one axiom's pairs as arrows in the model's top-3 PCs; (3) the same arrows at one common origin in 3-D, trained vs twin, with their offset consistency; (4) a compass per axiom of full-space angles between each same-axiom difference vector and the leave-one-out mean of the others (`figdata.axiom_angles`), trained above the dashed line and twin below | `figures/lattice.py: draw_explainer` | activations, `lattice` |
 | `axiom_arrows_qwen3.5-2b.gif` | README animation: one axiom at a time, its pairs appear as 3-D arrows in the top-3 PCs and slide to one common origin, trained (left) vs twin (right), with each panel's offset consistency; the camera turns ±15° | `lattice.py: save_axiom_gif` | activations, `lattice` |
 | `lattice3d_<model>` | Per-axiom 3-D facets: that axiom's pairs as 3-D arrows (blue; grey in the twin) with filled, camera-facing heads of fixed size (`style.arrow3d`), trained and twin | `lattice.py: draw_facets3d` | activations, `lattice` |
-| `lattice_axes_<model>` | Ideal axiom lattice and per-axiom PCA facets (2-D), trained and twin | `figures/lattice.py` | activations, `lattice` |
+| `lattice_axes_<model>` | Binary axiom coordinates and per-axiom PCA facets (2-D), trained and twin | `figures/lattice.py` | activations, `lattice` |
 | `lattice_cosines_<model>` | Difference-vector cosine matrices and per-axiom offset consistency, with the names' character 3-grams (×; audit) | `lattice.py` | activations, `lattice`, `lexical` |
 | `group_objects` | Group-object parallelograms (with the names' character 3-grams, ×; audit) and the parent ranks of "Lie group", all models | `overview.py: draw_group_objects` | `structures`, `lexical` |
 | `partial_operation` | Negative result: partial- vs total-operation offsets, all models and twins | `overview.py: draw_partial_operation` | `lattice` (`audit2`) |
@@ -111,21 +111,21 @@ The Markdown scorecard (`{{table:scorecard:all}}`) and its site version come fro
 - per-layer field layouts and rank matrices;
 - concept PCA coordinates and nearest neighbours;
 - per-layer family planes;
-- lattice planes, exact coordinates and the cosine matrix.
+- axiom-profile planes, exact coordinates and the cosine matrix.
 
-The twin's family and lattice planes are rotated onto the trained model's plane at the preregistered layer (rotation and reflection only), so the **Trained ↔ twin** button in the control bar morphs the main panels with minimal motion. The field maps of both are already aligned to the arXiv layout.
+The twin's family and axiom-profile planes are rotated onto the trained model's plane at the preregistered layer (rotation and reflection only), so the **Trained ↔ twin** button in the control bar morphs the main panels with minimal motion. The field maps of both are already aligned to the arXiv layout.
 
 **3-D interactions.** 3-D is the default. A **3D view** button per figure switches to 2-D, and `?view=2d` deep-links it. Without WebGL the page falls back to 2-D, with a note in the control bar; this was tested with headless Edge `--disable-3d-apis`. The interactions:
 - drag to rotate, scroll to zoom, double-click to reset;
 - **Link 3-D views** makes sibling panels follow one camera;
 - **⟳ Spin** turns a figure until you drag it;
 - **Axes** picks 3 of PC1–5, and the variance bar chart can be clicked to put a PC on an axis;
-- clicking a field, family item or lattice structure pins it in every panel of its figure and highlights its row in the table view, with an info line;
+- clicking a field, family item or axiom profile pins it in every panel of its figure and highlights its row in the table view, with an info line;
 - the camera is kept as shared state per figure (instead of Plotly's `uirevision`), so it survives layer and model changes and can be synced between panels;
-- the lattice draws the analogy point of the playground;
+- the axiom diagram draws the analogy point of the playground;
 - the layer slider, play and trained ↔ twin morph glide in 3-D too. Frames are interpolated on wall-clock time, because Plotly transitions only scatter traces ("only scatter traces may be smoothly transitioned", <https://plotly.com/javascript/animations/>).
 
-**Interactions.** Model menu; layer slider with play button and a depth inset; the global trained ↔ twin morph; linked hover between field maps, distance matrices and the concept cloud; concept search and a card with 10 nearest neighbours in the model and its twin; family picker with an ideal-shape overlay; axiom chips, a lattice click that shows axiom bits, and the analogy playground; scorecard and forest filters by hypothesis; a table view under every chart; light and dark themes. Every chart with two or more series has a legend, except the scree bars and the cosine heatmap's × overlay, which are explained in their captions.
+**Interactions.** Model menu; layer slider with play button and a depth inset; the global trained ↔ twin morph; linked hover between field maps, distance matrices and the concept cloud; concept search and a card with 10 nearest neighbours in the model and its twin; family picker with an ideal-shape overlay; axiom chips, clickable profiles with axiom bits, and the analogy playground; scorecard and forest filters by hypothesis; a table view under every chart; light and dark themes. Every chart with two or more series has a legend, except the scree bars and the cosine heatmap's × overlay, which are explained in their captions.
 
 Prose numbers are `data-num` elements resolved against `index.json`. `tests/test_site.py` checks the data schema, that every `data-num` path resolves, that the page text contains no hand-typed decimals, and that every link from the README, summary or paper into the site points to an existing anchor.
 

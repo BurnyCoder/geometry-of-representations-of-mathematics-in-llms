@@ -4,10 +4,10 @@ Global context: representations are template-averaged residual-stream states at 
 concept's last token (and, as a variant, mean-pooled over the concept's tokens). Templates
 contain a domain slot {D} that is CONSTANT across all compared items ("mathematics" for all
 math concepts, "science" for the non-math control, a fixed family domain for H-B/H-B2), so
-the domain word cannot create differences between items. Templates never name a sub-field,
+the domain is shared within that comparison. It can still interact with the item words. Templates never name a sub-field,
 which would leak the label H-A1 tries to predict; a separate, explicitly labelled
 "field_revealing" condition measures how much such leakage would inflate the effect.
-Templates 0–3 and 4–7 form the two halves for split-half reliability (noise ceiling).
+Templates 0–3 and 4–7 form the two halves for split-half template reliability.
 """
 
 FIELD_NEUTRAL = [
@@ -54,7 +54,7 @@ def render(template: str, concept: str, domain: str = "", field: str = "") -> tu
     """Return (prefix, full_prompt). prefix is everything before the concept (no trailing space).
 
     The concept is joined with a single space so that BPE tokenizers attach the space to the
-    concept's first token, making the prefix tokenization a prefix of the full tokenization.
+    concept's first token. Token boundaries depend on the tokenizer; extraction uses character offsets.
     """
     head = template.split("{X}")[0].format(D=domain, F=field).rstrip()
     return head, f"{head} {concept}"

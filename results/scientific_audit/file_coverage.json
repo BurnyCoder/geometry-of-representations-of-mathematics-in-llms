@@ -1,0 +1,1406 @@
+{
+  "field_extraction_logs": {
+    "qwen3.5-2b": {
+      "n": 6520,
+      "first": "2026-10-29T06:32:54.001"
+    },
+    "qwen3.5-2b__random": {
+      "n": 6520,
+      "first": "2026-10-29T06:52:17.436"
+    },
+    "qwen3.5-0.8b": {
+      "n": 6520,
+      "first": "2026-10-29T07:15:17.749"
+    },
+    "qwen3.5-0.8b__random": {
+      "n": 6520,
+      "first": "2026-10-29T07:33:06.080"
+    },
+    "qwen2.5-1.5b": {
+      "n": 6520,
+      "first": "2026-10-29T07:50:38.069"
+    },
+    "qwen2.5-1.5b__random": {
+      "n": 6520,
+      "first": "2026-10-29T08:00:06.222"
+    },
+    "qwen2.5-math-1.5b": {
+      "n": 6520,
+      "first": "2026-10-29T08:08:38.850"
+    },
+    "qwen2.5-math-1.5b__random": {
+      "n": 6520,
+      "first": "2026-10-29T08:16:57.326"
+    },
+    "gemma-4-e2b": {
+      "n": 6520,
+      "first": "2026-10-29T09:06:22.604"
+    },
+    "gemma-4-e2b__random": {
+      "n": 6520,
+      "first": "2026-10-29T09:25:03.743"
+    }
+  },
+  "examined_revision": "43dcda70a7f6093e946fbc975c88cd65a7d12e5f",
+  "counts": {
+    "environment, deployment or project metadata": 6,
+    "publication source or rendered result": 15,
+    "design, literal mappings or run configuration": 8,
+    "archived study input": 6,
+    "historical specification or retrospective report; revision and superseding review identified": 9,
+    "display projection or plotted statistic; generator and paired numeric record": 164,
+    "historical numerical record, parsed and compared with starting revision": 57,
+    "implementation, model interface or regression specification; static inspection and applicable numerical checks": 63,
+    "explorer labels, statistics or saved display coordinates": 9
+  },
+  "files": {
+    ".env.example": {
+      "disposition": "environment, deployment or project metadata",
+      "evidence": "uv.lock; .github/workflows/pages.yml"
+    },
+    ".github/workflows/pages.yml": {
+      "disposition": "environment, deployment or project metadata",
+      "evidence": "uv.lock; .github/workflows/pages.yml"
+    },
+    ".gitignore": {
+      "disposition": "environment, deployment or project metadata",
+      "evidence": "uv.lock; .github/workflows/pages.yml"
+    },
+    ".python-version": {
+      "disposition": "environment, deployment or project metadata",
+      "evidence": "uv.lock; .github/workflows/pages.yml"
+    },
+    "README.md": {
+      "disposition": "publication source or rendered result",
+      "evidence": "src/mathgeom/report/paper.py; src/mathgeom/report/render.py; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "configs/families.yaml": {
+      "disposition": "design, literal mappings or run configuration",
+      "evidence": "docs/prereg.md; results/mvp/manifest.json; configs/mathlib_review.tsv"
+    },
+    "configs/fields.yaml": {
+      "disposition": "design, literal mappings or run configuration",
+      "evidence": "docs/prereg.md; results/mvp/manifest.json; configs/mathlib_review.tsv"
+    },
+    "configs/flag_audit.yaml": {
+      "disposition": "design, literal mappings or run configuration",
+      "evidence": "docs/prereg.md; results/mvp/manifest.json; configs/mathlib_review.tsv"
+    },
+    "configs/gemma.yaml": {
+      "disposition": "design, literal mappings or run configuration",
+      "evidence": "docs/prereg.md; results/mvp/manifest.json; configs/mathlib_review.tsv"
+    },
+    "configs/mvp.yaml": {
+      "disposition": "design, literal mappings or run configuration",
+      "evidence": "docs/prereg.md; results/mvp/manifest.json; configs/mathlib_review.tsv"
+    },
+    "configs/mvp_variants.yaml": {
+      "disposition": "design, literal mappings or run configuration",
+      "evidence": "docs/prereg.md; results/mvp/manifest.json; configs/mathlib_review.tsv"
+    },
+    "configs/robustness.yaml": {
+      "disposition": "design, literal mappings or run configuration",
+      "evidence": "docs/prereg.md; results/mvp/manifest.json; configs/mathlib_review.tsv"
+    },
+    "configs/twin_seeds.yaml": {
+      "disposition": "design, literal mappings or run configuration",
+      "evidence": "docs/prereg.md; results/mvp/manifest.json; configs/mathlib_review.tsv"
+    },
+    "data/concepts.csv": {
+      "disposition": "archived study input",
+      "evidence": "data/wiki_revisions.json; data/field_distance.json; data/judge_ratings.csv; configs/mathlib_review.tsv"
+    },
+    "data/field_distance.json": {
+      "disposition": "archived study input",
+      "evidence": "data/wiki_revisions.json; data/field_distance.json; data/judge_ratings.csv; configs/mathlib_review.tsv"
+    },
+    "data/infinigram_counts.json": {
+      "disposition": "archived study input",
+      "evidence": "data/wiki_revisions.json; data/field_distance.json; data/judge_ratings.csv; configs/mathlib_review.tsv"
+    },
+    "data/judge_ratings.csv": {
+      "disposition": "archived study input",
+      "evidence": "data/wiki_revisions.json; data/field_distance.json; data/judge_ratings.csv; configs/mathlib_review.tsv"
+    },
+    "data/mathlib_depth.csv": {
+      "disposition": "archived study input",
+      "evidence": "data/wiki_revisions.json; data/field_distance.json; data/judge_ratings.csv; configs/mathlib_review.tsv"
+    },
+    "data/wiki_revisions.json": {
+      "disposition": "archived study input",
+      "evidence": "data/wiki_revisions.json; data/field_distance.json; data/judge_ratings.csv; configs/mathlib_review.tsv"
+    },
+    "docs/data_card.md": {
+      "disposition": "publication source or rendered result",
+      "evidence": "src/mathgeom/report/paper.py; src/mathgeom/report/render.py; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "docs/deviations.md": {
+      "disposition": "historical specification or retrospective report; revision and superseding review identified",
+      "evidence": "git:43dcda70a7f6093e946fbc975c88cd65a7d12e5f; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "docs/figures.md": {
+      "disposition": "publication source or rendered result",
+      "evidence": "src/mathgeom/report/paper.py; src/mathgeom/report/render.py; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "docs/prereg.md": {
+      "disposition": "historical specification or retrospective report; revision and superseding review identified",
+      "evidence": "git:43dcda70a7f6093e946fbc975c88cd65a7d12e5f; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "paper/header.tex": {
+      "disposition": "publication source or rendered result",
+      "evidence": "src/mathgeom/report/paper.py; src/mathgeom/report/render.py; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "paper/paper.md": {
+      "disposition": "publication source or rendered result",
+      "evidence": "src/mathgeom/report/paper.py; src/mathgeom/report/render.py; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "paper/paper.pdf": {
+      "disposition": "publication source or rendered result",
+      "evidence": "src/mathgeom/report/paper.py; src/mathgeom/report/render.py; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "paper/template.md": {
+      "disposition": "publication source or rendered result",
+      "evidence": "src/mathgeom/report/paper.py; src/mathgeom/report/render.py; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "pyproject.toml": {
+      "disposition": "environment, deployment or project metadata",
+      "evidence": "uv.lock; .github/workflows/pages.yml"
+    },
+    "reports/audit_lexical.md": {
+      "disposition": "historical specification or retrospective report; revision and superseding review identified",
+      "evidence": "git:43dcda70a7f6093e946fbc975c88cd65a7d12e5f; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "reports/audit_template.md": {
+      "disposition": "historical specification or retrospective report; revision and superseding review identified",
+      "evidence": "git:43dcda70a7f6093e946fbc975c88cd65a7d12e5f; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "reports/experiments.md": {
+      "disposition": "historical specification or retrospective report; revision and superseding review identified",
+      "evidence": "git:43dcda70a7f6093e946fbc975c88cd65a7d12e5f; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "reports/figures/abstraction_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/axes.py; results/"
+    },
+    "reports/figures/abstraction_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/axes.py; results/"
+    },
+    "reports/figures/angles_gemma-4-e2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/angles_gemma-4-e2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/angles_qwen2.5-1.5b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/angles_qwen2.5-1.5b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/angles_qwen2.5-math-1.5b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/angles_qwen2.5-math-1.5b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/angles_qwen3.5-0.8b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/angles_qwen3.5-0.8b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/angles_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/angles_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/axiom_arrows_qwen3.5-2b.gif": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/axioms_explainer_gemma-4-e2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/axioms_explainer_gemma-4-e2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/axioms_explainer_qwen2.5-1.5b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/axioms_explainer_qwen2.5-1.5b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/axioms_explainer_qwen2.5-math-1.5b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/axioms_explainer_qwen2.5-math-1.5b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/axioms_explainer_qwen3.5-0.8b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/axioms_explainer_qwen3.5-0.8b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/axioms_explainer_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/axioms_explainer_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/chains3d_gemma-4-e2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/chains3d_gemma-4-e2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/chains3d_qwen2.5-1.5b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/chains3d_qwen2.5-1.5b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/chains3d_qwen2.5-math-1.5b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/chains3d_qwen2.5-math-1.5b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/chains3d_qwen3.5-0.8b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/chains3d_qwen3.5-0.8b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/chains3d_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/chains3d_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/chains_gemma-4-e2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/chains_gemma-4-e2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/chains_qwen2.5-1.5b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/chains_qwen2.5-1.5b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/chains_qwen2.5-math-1.5b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/chains_qwen2.5-math-1.5b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/chains_qwen3.5-0.8b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/chains_qwen3.5-0.8b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/chains_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/chains_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/circle_depth_gemma-4-e2b.gif": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/circle_depth_gemma-4-e2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/circle_depth_gemma-4-e2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/circle_depth_qwen2.5-1.5b.gif": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/circle_depth_qwen2.5-1.5b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/circle_depth_qwen2.5-1.5b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/circle_depth_qwen2.5-math-1.5b.gif": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/circle_depth_qwen2.5-math-1.5b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/circle_depth_qwen2.5-math-1.5b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/circle_depth_qwen3.5-0.8b.gif": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/circle_depth_qwen3.5-0.8b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/circle_depth_qwen3.5-0.8b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/circle_depth_qwen3.5-2b.gif": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/circle_depth_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/circle_depth_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/cyclic_gemma-4-e2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/cyclic_gemma-4-e2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/cyclic_qwen2.5-1.5b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/cyclic_qwen2.5-1.5b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/cyclic_qwen2.5-math-1.5b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/cyclic_qwen2.5-math-1.5b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/cyclic_qwen3.5-0.8b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/cyclic_qwen3.5-0.8b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/cyclic_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/cyclic_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/depth_curves.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/depth_curves.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/families3d_gemma-4-e2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/families3d_gemma-4-e2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/families3d_qwen2.5-1.5b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/families3d_qwen2.5-1.5b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/families3d_qwen2.5-math-1.5b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/families3d_qwen2.5-math-1.5b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/families3d_qwen3.5-0.8b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/families3d_qwen3.5-0.8b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/families3d_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/families3d_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/field_maps_gemma-4-e2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/field_maps_gemma-4-e2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/field_maps_qwen2.5-1.5b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/field_maps_qwen2.5-1.5b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/field_maps_qwen2.5-math-1.5b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/field_maps_qwen2.5-math-1.5b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/field_maps_qwen3.5-0.8b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/field_maps_qwen3.5-0.8b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/field_maps_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/field_maps_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/field_rdms_gemma-4-e2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/field_rdms_gemma-4-e2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/field_rdms_qwen2.5-1.5b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/field_rdms_qwen2.5-1.5b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/field_rdms_qwen2.5-math-1.5b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/field_rdms_qwen2.5-math-1.5b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/field_rdms_qwen3.5-0.8b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/field_rdms_qwen3.5-0.8b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/field_rdms_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/field_rdms_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/forest.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/overview.py; results/"
+    },
+    "reports/figures/forest.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/overview.py; results/"
+    },
+    "reports/figures/group_objects.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/overview.py; results/"
+    },
+    "reports/figures/group_objects.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/overview.py; results/"
+    },
+    "reports/figures/hero.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/overview.py; results/"
+    },
+    "reports/figures/hero.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/overview.py; results/"
+    },
+    "reports/figures/lattice3d_gemma-4-e2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice3d_gemma-4-e2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice3d_qwen2.5-1.5b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice3d_qwen2.5-1.5b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice3d_qwen2.5-math-1.5b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice3d_qwen2.5-math-1.5b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice3d_qwen3.5-0.8b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice3d_qwen3.5-0.8b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice3d_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice3d_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice_axes_gemma-4-e2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice_axes_gemma-4-e2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice_axes_qwen2.5-1.5b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice_axes_qwen2.5-1.5b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice_axes_qwen2.5-math-1.5b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice_axes_qwen2.5-math-1.5b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice_axes_qwen3.5-0.8b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice_axes_qwen3.5-0.8b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice_axes_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice_axes_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice_cosines_gemma-4-e2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice_cosines_gemma-4-e2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice_cosines_qwen2.5-1.5b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice_cosines_qwen2.5-1.5b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice_cosines_qwen2.5-math-1.5b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice_cosines_qwen2.5-math-1.5b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice_cosines_qwen3.5-0.8b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice_cosines_qwen3.5-0.8b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice_cosines_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/lattice_cosines_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/mvp_variants/angles_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/mvp_variants/angles_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/mvp_variants/axioms_explainer_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/mvp_variants/axioms_explainer_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/mvp_variants/chains3d_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/mvp_variants/chains3d_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/mvp_variants/chains_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/mvp_variants/chains_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/mvp_variants/circle_depth_qwen3.5-2b.gif": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/mvp_variants/circle_depth_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/mvp_variants/circle_depth_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/mvp_variants/cyclic_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/mvp_variants/cyclic_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/mvp_variants/families3d_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/mvp_variants/families3d_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/figures/mvp_variants/field_maps_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/mvp_variants/field_maps_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/mvp_variants/field_rdms_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/mvp_variants/field_rdms_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/maps.py; overview.py; results/"
+    },
+    "reports/figures/mvp_variants/lattice3d_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/mvp_variants/lattice3d_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/mvp_variants/lattice_axes_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/mvp_variants/lattice_axes_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/mvp_variants/lattice_cosines_qwen3.5-2b.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/mvp_variants/lattice_cosines_qwen3.5-2b.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/lattice.py; results/"
+    },
+    "reports/figures/partial_operation.pdf": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/overview.py; results/"
+    },
+    "reports/figures/partial_operation.png": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/overview.py; results/"
+    },
+    "reports/figures/turntable_qwen3.5-2b.gif": {
+      "disposition": "display projection or plotted statistic; generator and paired numeric record",
+      "evidence": "src/mathgeom/report/figures/families.py; results/"
+    },
+    "reports/gemma_results.md": {
+      "disposition": "publication source or rendered result",
+      "evidence": "src/mathgeom/report/paper.py; src/mathgeom/report/render.py; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "reports/mvp_results.md": {
+      "disposition": "publication source or rendered result",
+      "evidence": "src/mathgeom/report/paper.py; src/mathgeom/report/render.py; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "reports/mvp_variants_results.md": {
+      "disposition": "publication source or rendered result",
+      "evidence": "src/mathgeom/report/paper.py; src/mathgeom/report/render.py; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "reports/prereg_addendum_3d.md": {
+      "disposition": "historical specification or retrospective report; revision and superseding review identified",
+      "evidence": "git:43dcda70a7f6093e946fbc975c88cd65a7d12e5f; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "reports/prereg_addendum_lexical.md": {
+      "disposition": "historical specification or retrospective report; revision and superseding review identified",
+      "evidence": "git:43dcda70a7f6093e946fbc975c88cd65a7d12e5f; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "reports/readme_results_template.md": {
+      "disposition": "publication source or rendered result",
+      "evidence": "src/mathgeom/report/paper.py; src/mathgeom/report/render.py; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "reports/readme_top_template.md": {
+      "disposition": "publication source or rendered result",
+      "evidence": "src/mathgeom/report/paper.py; src/mathgeom/report/render.py; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "reports/reviews/2026-11-22_independent_audit.md": {
+      "disposition": "historical specification or retrospective report; revision and superseding review identified",
+      "evidence": "git:43dcda70a7f6093e946fbc975c88cd65a7d12e5f; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "reports/reviews/2026-11-22_independent_audit_template.md": {
+      "disposition": "historical specification or retrospective report; revision and superseding review identified",
+      "evidence": "git:43dcda70a7f6093e946fbc975c88cd65a7d12e5f; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "reports/robustness_results.md": {
+      "disposition": "publication source or rendered result",
+      "evidence": "src/mathgeom/report/paper.py; src/mathgeom/report/render.py; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "reports/summary.md": {
+      "disposition": "publication source or rendered result",
+      "evidence": "src/mathgeom/report/paper.py; src/mathgeom/report/render.py; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "reports/summary_template.md": {
+      "disposition": "publication source or rendered result",
+      "evidence": "src/mathgeom/report/paper.py; src/mathgeom/report/render.py; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "results/gemma/chain_frequency.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/gemma/hierarchy.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/gemma/lattice.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/gemma/lexical.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/gemma/manifest.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/gemma/map_fields.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/gemma/numbers.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/gemma/posthoc.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/gemma/recheck.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/gemma/shapes.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/gemma/structures.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/gemma/views.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp/axes.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp/baselines.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp/calibration.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp/causal.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp/chain_frequency.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp/hierarchy.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp/judges.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp/lattice.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp/lexical.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp/manifest.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp/map_fields.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp/mathlib.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp/numbers.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp/posthoc.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp/recheck.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp/sae.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp/shapes.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp/smds.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp/structures.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp/views.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp_variants/chain_frequency.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp_variants/lattice.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp_variants/lexical.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp_variants/manifest.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp_variants/map_fields.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp_variants/numbers.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp_variants/posthoc.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp_variants/shapes.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp_variants/structures.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/mvp_variants/views.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/robustness/chain_frequency.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/robustness/compare.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/robustness/hierarchy.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/robustness/lattice.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/robustness/lexical.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/robustness/manifest.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/robustness/map_fields.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/robustness/numbers.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/robustness/posthoc.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/robustness/recheck.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/robustness/shapes.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/robustness/structures.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/robustness/views.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/twin_seeds/manifest.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "results/twin_seeds/twins.json": {
+      "disposition": "historical numerical record, parsed and compared with starting revision",
+      "evidence": "results/scientific_audit/verification.json"
+    },
+    "run.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "site/app.js": {
+      "disposition": "explorer labels, statistics or saved display coordinates",
+      "evidence": "src/mathgeom/report/site.py; tests/test_site.py; results/"
+    },
+    "site/data/gemma-4-e2b.json": {
+      "disposition": "explorer labels, statistics or saved display coordinates",
+      "evidence": "src/mathgeom/report/site.py; tests/test_site.py; results/"
+    },
+    "site/data/index.json": {
+      "disposition": "explorer labels, statistics or saved display coordinates",
+      "evidence": "src/mathgeom/report/site.py; tests/test_site.py; results/"
+    },
+    "site/data/qwen2.5-1.5b.json": {
+      "disposition": "explorer labels, statistics or saved display coordinates",
+      "evidence": "src/mathgeom/report/site.py; tests/test_site.py; results/"
+    },
+    "site/data/qwen2.5-math-1.5b.json": {
+      "disposition": "explorer labels, statistics or saved display coordinates",
+      "evidence": "src/mathgeom/report/site.py; tests/test_site.py; results/"
+    },
+    "site/data/qwen3.5-0.8b.json": {
+      "disposition": "explorer labels, statistics or saved display coordinates",
+      "evidence": "src/mathgeom/report/site.py; tests/test_site.py; results/"
+    },
+    "site/data/qwen3.5-2b.json": {
+      "disposition": "explorer labels, statistics or saved display coordinates",
+      "evidence": "src/mathgeom/report/site.py; tests/test_site.py; results/"
+    },
+    "site/index.html": {
+      "disposition": "explorer labels, statistics or saved display coordinates",
+      "evidence": "src/mathgeom/report/site.py; tests/test_site.py; results/"
+    },
+    "site/style.css": {
+      "disposition": "explorer labels, statistics or saved display coordinates",
+      "evidence": "src/mathgeom/report/site.py; tests/test_site.py; results/"
+    },
+    "src/mathgeom/__init__.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/analyses/__init__.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/analyses/baselines.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/analyses/calibration.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/analyses/causal.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/analyses/hierarchy.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/analyses/lattice.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/analyses/lexical.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/analyses/map_fields.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/analyses/sae.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/analyses/shapes.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/analyses/smds_fit.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/config.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/data/__init__.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/data/arxiv_fields.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/data/concepts.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/data/flags.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/data/judges.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/data/mathlib_depth.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/data/wiki_glossary.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/extract.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/geometry/__init__.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/geometry/manifold.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/geometry/offsets.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/geometry/preprocess.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/logio.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/manifest.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/models/__init__.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/models/load.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/pipeline.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/prompts/__init__.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/prompts/templates.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/report/__init__.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/report/audit.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/report/figdata.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/report/figures/__init__.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/report/figures/axes.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/report/figures/families.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/report/figures/lattice.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/report/figures/maps.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/report/figures/overview.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/report/paper.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/report/render.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/report/site.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/report/style.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/stats/__init__.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/stats/bootstrap.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "src/mathgeom/stats/rdm_regression.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "tests/test_data_and_prompts.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "tests/test_docs_regenerate.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "tests/test_extract.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "tests/test_figdata.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "tests/test_figures.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "tests/test_geometry.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "tests/test_hierarchy.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "tests/test_independent_recompute.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "tests/test_lexical.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "tests/test_mathlib.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "tests/test_rdm_regression.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "tests/test_report_rules.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "tests/test_results_provenance.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "tests/test_site.py": {
+      "disposition": "implementation, model interface or regression specification; static inspection and applicable numerical checks",
+      "evidence": "docs/prereg.md; src/mathgeom/verification/; reports/reviews/2026-11-26_scientific_audit.md"
+    },
+    "uv.lock": {
+      "disposition": "environment, deployment or project metadata",
+      "evidence": "uv.lock; .github/workflows/pages.yml"
+    }
+  }
+}

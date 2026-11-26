@@ -1,4 +1,4 @@
-"""H-B2: axiom-lattice geometry (group-like structures, racks/quandles, group objects).
+"""H-B2: axiom-profile geometry (group-like structures, racks/quandles, group objects).
 
 Global context: each structure is a bit vector of axioms (configs/families.yaml). Tests:
 (1) axiom RDM — regress the family RDM on Hamming distance of axiom vectors with a

@@ -1,5 +1,7 @@
 # Independent audit: word-form controls, twin seeds and test precision
 
+Historical word-form analysis. The [26 November 2026 review](reviews/2026-11-26_scientific_audit.md) revises the inferential interpretation and reports both Holm calculations and the failed calendar controls. Its new sensitivity tests postdate this document.
+
 *Generated from `reports/audit_template.md` by `python run.py paper`; every number comes from `results/*/*.json`. Everything here is **post-hoc**: the audit ran after all preregistered results were known. Its tests were defined in [`prereg_addendum_lexical.md`](prereg_addendum_lexical.md), committed before the `lexical` and `twins` phases ran (one amendment, made from a unit test before any real-data run, is recorded there). The log of changes is in [`docs/deviations.md`](../docs/deviations.md).*
 
 ## Why an audit was needed
