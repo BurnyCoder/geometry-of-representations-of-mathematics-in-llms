@@ -1,7 +1,7 @@
 [project]
 name = "mathgeom"
 version = "0.1.0"
-description = "Geometry of representations of mathematical concepts (fields, chains, axiom lattices) in LLM activations"
+description = "Geometry of representations of mathematical concepts (fields, chains, axiom profiles) in LLM activations"
 readme = "README.md"
 authors = [
     { name = "Libor Burian (BurnyCoder)" }

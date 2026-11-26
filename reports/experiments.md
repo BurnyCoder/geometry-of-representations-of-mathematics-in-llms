@@ -1,5 +1,7 @@
 # Experiment log and learnings
 
+Current hypothesis decisions, revised estimates and the model-free reproduction command are in the [26 November 2026 scientific review](reviews/2026-11-26_scientific_audit.md). Entries below describe the experiments as recorded at the time.
+
 This file records **what we tried, why, what went wrong, how we found out, and what we chose instead**. It is hand-written prose. It quotes a few numbers where they explain a decision (e.g. simulation rejection rates, a leaked statistic), each from the file named next to it; every reported result lives in auto-generated files, regenerated with `python run.py report --config configs/<cfg>.yaml`:
 - [`<cfg>_results.md`](.) tables;
 - [`../results/`](../results) JSON.
@@ -41,7 +43,7 @@ This was decided before the preregistration was tagged ([`docs/prereg.md`](../do
 
 **What went wrong.** The unit test with a planted line failed. After centering on a family's own mean, collinear points on one side of the centroid all point the same way, so cosine distance collapses to roughly {0, 2}.
 
-**Decision.** Families and lattices use **Euclidean** distance, which is what PCA plots ([Engels et al. 2024](https://arxiv.org/abs/2405.14860)) and SMDS stress ([Tiblias et al. 2025](https://arxiv.org/abs/2510.01025)) use. The field map keeps cosine distance on globally centered concepts.
+**Decision.** Families and axiom profiles use **Euclidean** distance, which is what PCA plots ([Engels et al. 2024](https://arxiv.org/abs/2405.14860)) and SMDS stress ([Tiblias et al. 2025](https://arxiv.org/abs/2510.01025)) use. The field map keeps cosine distance on globally centered concepts.
 
 A second test failure was a bug in the test itself: the synthetic shape was smaller than the high-dimensional noise norm. We scaled the shapes; the statistic was unchanged.
 
@@ -171,12 +173,12 @@ A second line-by-line pass over the approved plan found six items still missing 
 **Lattice items from the plan that had been extracted or planned but never analysed:**
 - associative quasigroup, the semantic-collapse probe (a non-empty one is a group);
 - inverse semigroup;
-- the partial-operation lattice (semigroupoid, small category, groupoid);
+- the partial-operation family (semigroupoid, small category, groupoid);
 - lattice-like held-out pairs for the identity-direction transfer;
 - offsets on mean-pooled tokens, and with the token-count direction removed (a one-direction analogue of Li et al.'s LDA distractor removal).
 
 The new items were appended after the existing ones. Extraction runs at batch size 1, so every earlier activation and every earlier result is unchanged. We verified this in two ways:
-- items extracted twice ("semigroup", "monoid", "group", appearing in both the group-like and partial-operation lattices) have bit-identical activations;
+- items extracted twice ("semigroup", "monoid", "group", appearing in both the group-like and partial-operation profiles) have bit-identical activations;
 - diffing every results file before and after the rerun showed no changed value, only added keys.
 
 ## E8: Article-style, interactive visualizations
@@ -226,13 +228,13 @@ The new items were appended after the existing ones. Extraction runs at batch si
 - *Controls and negative results.*
   - The angles figure lacked a twin panel.
   - The hero showed only the trained field map, where the plan asked for arXiv vs trained vs twin.
-  - The partial-operation lattice, a negative result the plan said must get a figure, had none.
+  - The partial-operation family, a negative result the plan said must get a figure, had none.
   - All three are added.
 - *Site.*
   - added a preregistered/post-hoc status column (and hover) on the scorecard;
   - added a depth-curve inset in the control bar that follows the slider;
   - hovering the concept cloud now highlights the field in the map and matrices;
-  - clicking a lattice node shows its axioms;
+  - clicking a profile shows its axioms;
   - the concept card now lists 10 neighbours (it had 8) and the concept's flag status;
   - the families table view now includes the per-layer cycle scores.
 - *A finding the new twin panel exposed.* All five random-init twins *meet* the preregistered angles rule (closure < 2 and circle ρ > line ρ), while all five trained models fail it. A structureless point cloud has closure ≈ 1 and near-zero template correlations, so it passes by chance. (Corrected 2026-10-31: the twins' circle-template ρ is not near zero but 0.15–0.46, p ≤ .0085, possibly from shared digit tokens; with no line order, that is enough to pass.) The rule is not specific, and the informative result is the trained models' line-like order. Reported in the paper and README; this is the second preregistered shape criterion (after the days/months full-space criterion) that turned out to be insensitive or non-specific.
@@ -256,14 +258,14 @@ The new items were appended after the existing ones. Extraction runs at batch si
 
 **What was built.**
 - *Site:* 3-D by default, with a 2D switch per figure.
-  - Field maps use 3-D MDS; families, the lattice and the concept cloud use each layer's top PCs.
+  - Field maps use 3-D MDS; families, the axiom profiles and the concept cloud use each layer's top PCs.
   - Interactions:
     - linked cameras across panels, a turntable Spin button, and an axes picker (any 3 of PC1–5);
     - a variance bar chart whose bars put a PC on an axis, and click-to-pin with info lines;
     - the analogy query b − a + c drawn exactly in the lattice;
     - wall-clock tweening for layer, model and trained ↔ twin changes.
 - *Static:*
-  - fixed-camera 3-D figures for families, chains and the lattice in every model;
+  - fixed-camera 3-D figures for families, chains and the axiom profiles in every model;
   - a turntable GIF for the README.
 
 **Integrity decisions.**
@@ -287,7 +289,7 @@ The new items were appended after the existing ones. Extraction runs at batch si
   2. *The test is conservative.* The closure rule makes it so (1,000 null simulations: 1.8% false positives at α = 0.05 for 12 items, 4.0% for 7). The unit test now checks validity, not exact size. (Noted 2026-11-04: the script of those simulations was not committed. A rerun of `manifold.best_plane_cycle` on structureless Gaussian points, 1,000 simulations with 1,000 permutations each, `default_rng(0)`, d = 64 and d = 2,048, gives 1.3% at n = 12 and 2.0–2.6% at n = 7: conservative too, but below the 4.0% quoted for n = 7.)
 - *The planted-cycle test failed at first because of a bad fixture.* The ramp was not orthogonal to sin θ, so part of the circle leaked into PC1. Rebuilding the fixture with orthogonal components fixed it; the code was right.
 - *Results* (the tables are in the README and paper, generated from `results/*/posthoc.json`):
-  - **Angles:** no model meets the pre-specified rule. The best is Gemma, at p ≈ 0.08 before Holm correction. "Angles are not a circle" stands, now for every plane of the top-5 PCs.
+  - **Angles.** The angle rule and both calendar controls failed in full space. The subsequent search did not detect a closed angle cycle in the ten coordinate planes examined at the primary layer in any checkpoint. Other subspaces remain open. [Saved plane statistics](../results/gemma/posthoc.json) · [independent review](reviews/2026-11-26_scientific_audit.md).
   - **Days:** the loop closes in the top-2 plane in 3 of 5 models. In Qwen3.5-0.8B and Gemma the top-2 view is an open arc, although the full-space closure ratio is below 2.
   - **Months:** in Qwen3.5-2B's top-2 plane the Dec → Jan step is 3× a neighbour step, an open arc. A closed loop sits in PC2–PC3 or PC4–PC5 in 3 of 5 models.
   - **Twin:** one twin also shows a closed months loop (p = 0.004). A model without learning can occasionally produce one, so the test is not fully specific.
@@ -298,7 +300,7 @@ The new items were appended after the existing ones. Extraction runs at batch si
 
 **A plan audit of E9 closed these gaps:**
 - the no-WebGL fallback now shows a note, tested with WebGL actually disabled;
-- pinning works in the lattice and in 2-D, highlights the table row, and the info line adds the family's statistic at that layer;
+- pinning works in the profile diagram and in 2-D, highlights the table row, and the info line adds the family's statistic at that layer;
 - every 3-D caption lists the interactions;
 - the README and paper captions print the exact variance shares through placeholders (`results/<config>/views.json`; a test checks them against the site data, after it caught the lattice share computed on 15 instead of 13 structures);
 - the Plotly limitation is cited;
@@ -328,14 +330,14 @@ The new items were appended after the existing ones. Extraction runs at batch si
 
 **What changed.**
 - *New figures* (built in a parallel session; see [`docs/figures.md`](../docs/figures.md)):
-  - `axioms_explainer_<model>`: the test in four steps. The lattice of structures; one axiom's pairs as arrows in the top-3 PCs; the same arrows at one common origin, trained vs twin; and a compass of full-space angles for every axiom.
+  - `axioms_explainer_<model>`: the test in four steps. The axiom profiles; one axiom's pairs as arrows in the top-3 PCs; the same arrows at one common origin, trained vs twin; and a compass of full-space angles for every axiom.
   - `axiom_arrows_qwen3.5-2b.gif`: the arrows sliding to one common origin in 3-D, at the top of the README.
   - A three-row hero with the axioms in the top row.
 - *Order.*
   - README: the axiom GIF, then the scorecard; the axioms bullet leads the highlights, and the results block opens with the axioms section.
   - Paper: §4.1 H-B2 axioms, §4.2 H-A1 map, §4.3 robustness (now also the template variants), §4.4 H-B shapes, §4.5 secondary. The abstract, contributions, discussion and conclusion lead with the axioms.
   - Summary: the plain-words list, the hypotheses table and the figures lead with the axioms.
-  - Everywhere, a 3-D view comes before the 2-D view of the same data (lattice, families, chains). The days/months layer GIF moved from the top of the README into the shapes section.
+  - Everywhere, a 3-D view comes before the 2-D view of the same data (axiom profiles, families, chains). The days/months layer GIF moved from the top of the README into the shapes section.
 
 **What did not change, and how the text says so.**
 - H-A1 (the field map) stays the primary preregistered hypothesis.

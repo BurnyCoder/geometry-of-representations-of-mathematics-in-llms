@@ -12,10 +12,13 @@ from mathgeom.config import ROOT
 
 
 def reviewed_rows():
-    return pd.read_csv(ROOT / "configs/mathlib_review.tsv", sep="\t").set_index("concept", verify_integrity=True)
+    rows = pd.read_csv(ROOT / "configs/mathlib_review.tsv", sep="\t").set_index("concept")
+    if not rows.index.is_unique:
+        raise ValueError("Repeated concept in semantic review")
+    return rows
 
 
-def reviewed_frame():
+def reviewed_frame(checked=None):
     """Original matched depths remain in the source table; the reviewed view masks excluded candidates."""
     full = pd.read_csv(ROOT / "data/mathlib_depth.csv")
     mask = full.depth.notna()
@@ -24,6 +27,9 @@ def reviewed_frame():
         raise ValueError("The semantic review must cover exactly the matched concepts")
     excluded = full.concept.isin(rows.index[rows.decision == "exclude"])
     full.loc[excluded, ["decl", "module", "depth", "source"]] = np.nan
+    if checked is not None:
+        depths = {r["concept"]: r["checked_depth"] for r in checked if r["decision"] == "retain"}
+        full["depth"] = full.concept.map(depths)
     return full
 
 

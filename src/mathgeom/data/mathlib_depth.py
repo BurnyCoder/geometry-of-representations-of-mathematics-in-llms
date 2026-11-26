@@ -1,14 +1,13 @@
-"""Mathlib definitional depth: a non-LLM abstraction proxy used to validate the judge ratings (H-A4).
+"""Mathlib module import depth: an external comparison for the judge ratings (H-A4).
 
 Global context: the plan validates LLM-judge abstraction ratings against Mathlib, the Lean 4
 mathematics library (https://github.com/leanprover-community/mathlib4, Apache-2.0). A concept is
 matched to a Lean declaration, the declaration to the module (file) that defines it, and the
 module to its *import depth*: the length of the longest chain of Mathlib imports below it
-(0 = imports nothing from Mathlib). A deeper module is built on a longer tower of prior Mathlib
-definitions. This is a module-level proxy; declaration-level dependency graphs (Li et al. 2026,
+(0 = imports nothing from Mathlib). A deeper module has a longer path of file imports. Individual declarations can depend on only a subset. This is a module-level proxy; declaration-level dependency graphs (Li et al. 2026,
 "The Network Structure of Mathlib", arXiv:2604.24797) need a compiled Mathlib.
 
-Matching, in order (docs/deviations.md, second audit):
+Candidate retrieval, in order. The publication applies the sense review in configs/mathlib_review.tsv:
   1. Mathlib's curated English-name maps docs/overview.yaml and docs/undergrad.yaml
      (e.g. "normal subgroup: 'Subgroup.Normal'");
   2. multi-word names only: an exact CamelCase match to a structure/class/def/abbrev/inductive
@@ -42,7 +41,7 @@ def module_imports(root: Path) -> dict[str, list[str]]:
         text = re.sub(r"^\s*/-.*?-/", "", f.read_text(encoding="utf-8"), count=1, flags=re.S)  # leading copyright comment
         imps = []
         for line in text.splitlines():
-            s = line.strip()
+            s = line.partition("--")[0].strip()  # Lean permits trailing comments on module and import commands.
             if not s or s.startswith("--") or s in ("module", "prelude"):
                 continue
             m = IMPORT.match(s)

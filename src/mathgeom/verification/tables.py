@@ -6,7 +6,7 @@ from mathgeom.config import ROOT
 
 def table(head, rows):
     return "\n".join(["| " + " | ".join(head) + " |", "|" + "---|"*len(head)] +
-                     ["| " + " | ".join(map(str,row)) + " |" for row in rows])
+                     ["| " + " | ".join(str(cell).replace("|", r"\|") for cell in row) + " |" for row in rows])
 
 
 def interval(values):
@@ -74,6 +74,13 @@ def decisions(s):
     g=la["analogy_control"]
     add("H-B2, gender control", "Fixed word pairs", "Consistency exceeds random-pair 95th percentile",
         f'{g["consistency"]:.3f} vs {g["null95"]:.3f}', "Offset method detects the positive control.")
+    g = la["group_like"]
+    add("H-B2, axiom RDM and analogy", "13 profiles", "Secondary Hamming-RDM coefficient and three-term vector completion",
+        f'β {g["axiom_rdm_beta"]:.3f}, p {g["axiom_rdm_p"]:.4f}, top-1 {g["analogy"]["top1"]:.3f} vs chance {g["analogy"]["chance_top1"]:.3f}',
+        "Descriptive. Shared names and nuisance misspecification can affect both statistics.")
+    sae = archived("sae")
+    add("Sparse autoencoder", "MVP at the recorded SAE block", "Exploratory field RSA and centroid accuracy in sparse codes",
+        f'ρ {sae["math"]["rsa_sae"]:.3f}, LOO accuracy {sae["math"]["loo_acc_sae"]:.3f}', "Archived aggregate scores. Feature selectivity is in-sample.")
     stg=st["group_objects"]["parallelograms"]
     add("H-B2, related structures", "Self-distributive names, group-object analogies, ring-like transfers", "Exploratory offset comparisons and parent ranks",
         f'group objects cos {stg["cos"]:.3f}, commutativity transfer p {st["transfer"]["commutative"]["p"]:.3f}, identity p {st["transfer"]["identity"]["p"]:.3f}',
@@ -92,7 +99,12 @@ def render_science(name, s):
         return table(["Checkpoint","Role","Trained ρ","Twin ρ","Δ, 95% CI","Mantel p","Branch match, twin Δ CI¹"],
             [[k,r["role"],f'{r["trained"]["field"]["rho"]:.5f}',f'{r["random_init"]["field"]["rho"]:.5f}',
               f'{r["delta"]:.5f} {interval(r["delta_ci"])}',f'{r["trained"]["field"]["mantel_p"]:.5f}',interval(r["hierarchy_delta_ci"])] for k,r in s["checkpoints"].items()])
+    if name == "science_depth_shift":
+        offsets = {r["checked_depth"]-r["original_depth"] for r in s["mathlib"]["dispositions"]}
+        if len(offsets) == 1:
+            return f"Every checked depth shifted by {next(iter(offsets)):+d}. Their ranks are unchanged, so the change in Spearman ρ comes from the semantic exclusions."
+        return f"Checked depth corrections range from {min(offsets):+d} to {max(offsets):+d}."
     if name == "science_matches":
-        return table(["Concept at glossary revision","Field","Lean declaration and checked depth","Decision","Reason"],
-            [[f'[{r["concept"]}]({r["glossary"]})',r["field"],f'[source, {r["checked_depth"]}]({r["declaration"]})',r["decision"],r["reason"]] for r in s["mathlib"]["dispositions"]])
+        return table(["Concept at glossary revision","Field","Lean source, original → checked depth","Decision","Reason"],
+            [[f'[{r["concept"]}]({r["glossary"]})',r["field"],f'[{r["original_depth"]} → {r["checked_depth"]}]({r["declaration"]})',r["decision"],r["reason"]] for r in s["mathlib"]["dispositions"]])
     raise KeyError(name)

@@ -123,3 +123,39 @@ def cached_embeddings(artifacts, frame, primary, target):
             np.testing.assert_allclose(rho, original[group]["rsa"][name], atol=1e-10)
             out[group][name] = rho
     return out
+
+EXTRACTION_LOGS = ("20261029-062417_mvp", "20261029-071103_robustness", "20261029-085551_gemma")
+
+
+def extraction_order(artifacts, frame):
+    """Match every field prompt to the ordered CSV row, template and final-template token count."""
+    from mathgeom.config import ROOT
+    from mathgeom.prompts.templates import FIELD_NEUTRAL
+    out = {}
+    concepts = list(frame.concept)
+    domains = ["mathematics" if k == "math" else "science" for k in frame.kind]
+    for prefix in EXTRACTION_LOGS:
+        path = ROOT / "logs" / (prefix+"_extract_prompts.jsonl")
+        with path.open(encoding="utf-8-sig") as source:
+            for line in source:
+                record = json.loads(line)
+                tag = record.get("tag", "")
+                if not tag.endswith("/field_neutral"):
+                    continue
+                key = tag.split("/")[0]
+                if key not in out:
+                    with np.load(artifacts / "acts" / key / "field_neutral.npz") as arrays:
+                        out[key] = {"n": 0, "tokens": arrays["n_tokens"], "first": record["time"]}
+                row = out[key]
+                i, t = divmod(row["n"], len(FIELD_NEUTRAL))
+                assert (record["concept"], record["template"], record["prompt"]) == (
+                    concepts[i], t, FIELD_NEUTRAL[t].format(D=domains[i], X=concepts[i]))
+                if t == len(FIELD_NEUTRAL)-1:
+                    assert record["concept_tokens"] == row["tokens"][i]
+                row["n"] += 1
+        for row in out.values():
+            assert row["n"] == len(concepts) * len(FIELD_NEUTRAL)
+    for row in out.values():
+        del row["tokens"]
+    assert len(out) == 10
+    return out

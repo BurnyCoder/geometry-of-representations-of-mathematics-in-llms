@@ -25,7 +25,7 @@ def test_chain_p_is_the_conjunction_of_robinson_and_loo():
 def test_holm_family_has_eight_tests_with_the_conjunctive_chain_p():
     r = _results("robustness")
     rows = render.holm_rows(r["map_fields"], r["shapes"], r["lattice"], "qwen3.5-0.8b")
-    assert len(rows) == 8  # prereg §4 lists 8 tests; the falsified angles rule enters with p = 1 (audit D8)
+    assert len(rows) == 8  # prereg §4 lists 8 tests; the deterministic angles slot is reserved for either outcome
     assert dict(rows)[render.ANGLES_ROW] == 1.0
     ring = dict(rows)["H-B ring chain (Robinson and LOO order)"]
     s = r["shapes"]["qwen3.5-0.8b"]["ring_chain"]

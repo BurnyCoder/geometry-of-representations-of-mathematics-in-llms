@@ -1,4 +1,4 @@
-"""Synthetic tests for shape and axiom-lattice statistics.
+"""Synthetic tests for shape and axiom-offset statistics.
 
 Global context: before touching LLM activations we require that each statistic
 (i) recovers a planted circle / line / parallelogram embedded in high-dimensional

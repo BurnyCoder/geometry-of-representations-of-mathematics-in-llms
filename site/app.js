@@ -256,7 +256,7 @@ function renderTiles() {
   $("tiles").innerHTML = [  // the axiom result leads, as in the TL;DR
     t(fmt(R(`lattice.${k}.group_like.offsets.commutative.consistency`)), "“add commutativity” consistency", `twin ${fmt(R(`lattice.${k}__random.group_like.offsets.commutative.consistency`))} · null 95th pct ${fmt(R(`lattice.${k}.group_like.offsets.commutative.null95`))}`),
     t(fmt(R(`map_fields.${k}.math_primary.rsa.trained`)), "field map vs arXiv (ρ)", `twin ${fmt(R(`map_fields.${k}.math_primary.rsa.random_init`))}`),
-    t(fmt(R(`posthoc.${k}.pc_plane_cycle.days.${Lp - 1}`)), "days: cycle score", `twin ${fmt(R(`posthoc.${k}__random.pc_plane_cycle.days.${Lp - 1}`))} · positive control`),
+    t(fmt(R(`posthoc.${k}.pc_plane_cycle.days.${Lp - 1}`)), "days: cycle score", `twin ${fmt(R(`posthoc.${k}__random.pc_plane_cycle.days.${Lp - 1}`))} · post-hoc projection`),
     t(fmt(R(`shapes.${k}.angles.line_rho`)), "angles follow the number line (line ρ)", `circle ρ ${fmt(R(`shapes.${k}.angles.circle_rho`))} · twin line ρ ${fmt(R(`shapes.${k}__random.angles.line_rho`))} · circle falsified`),
   ].join("");
 }
@@ -269,7 +269,7 @@ function renderScorecard(filter = "all") {
   $("score-filter").innerHTML = ["all", "axioms", "map", "shapes"].map((g) => `<button data-g="${g}" aria-pressed="${g === filter}">${g[0].toUpperCase() + g.slice(1)}</button>`).join("");
   $("score-filter").querySelectorAll("button").forEach((b) => b.onclick = () => renderScorecard(b.dataset.g));
 }
-const holmText = (r) => (r.holm === null ? "not in the Holm family" : `Holm: ${r.holm ? "significant" : "not significant"}`);
+const holmText = (r) => (r.holm === null ? "see test-specific rule" : `Holm: ${r.holm ? "significant" : "not significant"}`);
 const hypOf = (title) => (title.match(/H-A\d/) || ["Baselines"])[0];  // facet → hypothesis tag (filter chips)
 function renderForest() {
   const p = P(), box = $("forest"), tags = [...new Set(S.I.forest.map((f) => hypOf(f.title)))];
@@ -465,11 +465,11 @@ function pick(i) {
 
 // ---------------------------------------------------------------- families
 const FAM_TAKE = {
-  days: "Positive control: in the trained models the days keep their cyclic order at most depths; the twins mostly do not (one reaches it at a single layer by chance). Whether the loop also closes is the line under the variance chart.",
-  months: "Positive control: the months keep their cyclic order at most depths in some models, not all; in the top-2 plane their loop can stay open, and it closes in a lower plane in some models.",
-  angles: "Falsified prediction: angles follow the number line (line ρ > circle ρ in every model), so 330° is farther from 0° than neighbouring angles are (orange edge). Every twin meets the preregistered circle rule (without line order its closure ratio is ≈ 1, and its circle-template ρ beats a near-zero line ρ), so the evidence is the trained models' line-like order, not the failed rule.",
-  ring_chain: "Pre-registered: ordered if the Robinson score and the leave-one-out order beat their nulls (Holm) and the twin; the scorecard shows which models pass. In the confirmatory model the chain runs as a path and the twin is a tangle.",
-  space_chain: "Pre-registered: ordered if the Robinson score and the leave-one-out order beat their nulls (Holm) and the twin; the scorecard shows which models pass. In the confirmatory model the chain runs as a path and the twin is a tangle.",
+  days: "The original weekday control failed in full space. The post-hoc plane score measures cyclic order. The line under the variance chart also checks closure.",
+  months: "The original month control failed in full space. In some checkpoints a post-hoc projection preserves the month order. Closure depends on the plane.",
+  angles: "Angles, weekdays and months failed the preregistered full-space criteria in every trained checkpoint. The angle distances fit the line template better. The later plane search was post-hoc. Other circular components remain unresolved.",
+  ring_chain: "The rule combines Robinson and leave-one-out permutation tests and requires Robinson to exceed the twin. The confirmatory ring result crosses the significance threshold between the published and reserved-slot Holm calculations. The scorecard shows both.",
+  space_chain: "The rule combines Robinson and leave-one-out permutation tests and requires Robinson to exceed the twin. The confirmatory ring result crosses the significance threshold between the published and reserved-slot Holm calculations. The scorecard shows both.",
   number_systems: "Exploratory (7 items): ordered, but in most models not beyond word frequency and token count (the frequency control under the panel).",
   ngons: "Compared with the number words three … twelve; in the Qwen2.5 models the twins track them as well as the trained models do.", dimensions: "Follows the number words zero … ten, more closely than the twins do.",
 };
@@ -588,7 +588,7 @@ function renderFamilies() {
   $("fam-chips").querySelectorAll("button").forEach((b) => b.onclick = () => { S.fam = b.dataset.f; renderFamilies(); });
 }
 
-// ---------------------------------------------------------------- axiom lattice: lattice, cosines, analogy
+// ---------------------------------------------------------------- axiom profiles: directed offsets, cosines and analogies
 function axiomChips() {  // one axiom choice, shared by the how-the-test-works stepper and the lattice figure
   ["how-chips", "axiom-chips"].forEach((id) => {
     $(id).innerHTML = S.M[S.key].lattice.axioms.map((a) => `<button data-a="${a}" aria-pressed="${a === S.axiom}">+ ${a}</button>`).join("");
@@ -795,12 +795,12 @@ function compassTraces(side) {  // step 4: one compass per axiom (2 × 2); dashe
   ];
 }
 const flat = (ts) => ts.filter((t) => t.type !== "cone").map(({ z, ...t }) => ({ ...t, type: "scatter", y: z }));  // no WebGL: the x–z side view, no arrowheads
-const HOW_TITLES = ["Structures are sets of axioms", "Adding an axiom is an arrow", "Line the arrows up", "Measure in the full space"];
+const HOW_TITLES = ["Required axioms of sampled structures", "Adding an axiom is an arrow", "Line the arrows up", "Measure in the full space"];
 function howText(Lt, sel) {
   const a = S.axiom, n = sel.length, ex = sel.slice(0, 2).map(([i, j]) => `${Lt.items[i]} → ${Lt.items[j]}`).join(" and ");
   const o = R(`lattice.${S.key}.group_like.offsets.${a}`), ot = R(`lattice.${S.key}__random.group_like.offsets.${a}`);
   return `<b>${S.how} · ${HOW_TITLES[S.how - 1]}.</b> ` + [
-    `Each structure is the set of axioms it satisfies: a magma has none, a group has associativity, identity and divisibility, an abelian group all four. Left: the 13 structures drawn from their definitions alone, one fixed direction per axiom; right: the same as a table. The ${n} blue arrows join the pairs that differ only in ${a}, such as ${ex}. In this picture they are parallel by construction; the test asks whether they are in the model.`,
+    `Each profile lists the axioms its class requires. Magmas require none of these four, groups require associativity, identity and unique division, and abelian groups require all four. Individual magmas can satisfy additional axioms. Left: the 13 structures drawn from their definitions alone, one fixed direction per axiom; right: the same as a table. The ${n} blue arrows join the pairs that differ only in ${a}, such as ${ex}. In this picture they are parallel by construction; the test asks whether they are in the model.`,
     `The model’s own vectors for the 13 names at the preregistered layer ${model().primary_layer}, in three of their top-5 principal components: ${model().name} on the left (blue), its random-init twin on the right (grey). Each arrow runs from a structure to the one that adds ${a}.`,
     `The same ${n} arrows, each moved so that the tails meet at one point; direction and length are unchanged. A tight bundle suggests one shared direction, a wide fan none. This is still a projection, so it can mislead either way.`,
     `Each compass is one axiom, measured over every dimension of the residual stream (computed in your browser). The dashed vertical is the mean direction of the other arrows of that axiom, and each arrow is tilted from it by its true angle: 0° points straight up, 90° lies on the ring (unrelated). The test statistic, offset consistency, is the mean cosine between all pairs of same-axiom arrows: for + ${a}, ${fmt(o.consistency)} in ${model().name} against a random-pair null with 95th percentile ${fmt(o.null95)} (p ${pval(o.p)}), and ${fmt(ot.consistency)} in the twin.`,
@@ -885,7 +885,7 @@ function renderGroups() {
   }));
 }
 
-// ---------------------------------------------------------------- partial-operation lattice (negative result)
+// ---------------------------------------------------------------- partial-operation family (negative result)
 function renderPartial() {
   const p = P(), la = S.I.results.lattice, off = (k) => la[k].audit2.partial_operation.offsets, axes = Object.keys(off(S.key));
   const others = S.I.models.filter((m) => m.key !== S.key), me = off(S.key), clears = axes.filter((a) => me[a].consistency > me[a].null95);

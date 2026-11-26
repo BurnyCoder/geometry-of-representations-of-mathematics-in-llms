@@ -4,7 +4,7 @@ Global context: axes.json correlates each principal component of the primary con
 concepts with the mean judge abstraction rating after residualizing both on wordfreq Zipf frequency
 and token count. The scatter reproduces exactly that computation (PC scores residualized the same way)
 so the picture and the reported ρ describe the same numbers; the PC sign is flipped for display so
-that "more abstract" points right. The Mathlib panel plots data/mathlib_depth.csv (matched concepts only).
+that "more abstract" points right. The Mathlib panel plots data/mathlib_depth.csv (semantically retained concepts only).
 """
 
 from __future__ import annotations
@@ -74,7 +74,9 @@ def draw(d: dict, ax_res: dict, ax_twin: dict, ml: pd.DataFrame | None, mlres: d
 
 def build(cfg, ax_all: dict, mathlib: dict | None, primary: dict, outdir) -> list[str]:
     out = []
-    ml = pd.read_csv(cfg.data_dir / "mathlib_depth.csv").dropna(subset=["depth"]) if mathlib else None
+    from mathgeom.verification.mathlib import reviewed_frame
+    from mathgeom.report.paper import _results
+    ml = reviewed_frame(_results("mvp")["science"]["mathlib"]["dispositions"]).dropna(subset=["depth"]) if mathlib else None
     for key in [k for k in ax_all if not k.endswith("__random")]:
         out.append(S.save(draw(axis_data(cfg, key, primary[key]), ax_all[key], ax_all[f"{key}__random"], ml, mathlib, S.pretty(key)), outdir, f"abstraction_{key}"))
     return out

@@ -35,6 +35,11 @@ def collect():
     concepts = pd.read_csv(data / "concepts.csv")
     assert not concepts.concept.str.casefold().duplicated().any()
     assert (concepts.primary == ~(concepts.leak_own | concepts.eponym | concepts.polysemous)).all()
+    # Each field consumes two integer seeds before the original Bernoulli pilot assignment.
+    split_rng = np.random.default_rng(cfg.seed)
+    split_rng.integers(1 << 31, size=2 * concepts.field.nunique())
+    np.testing.assert_array_equal(concepts.split.eq("pilot"), split_rng.random(len(concepts)) < cfg.pilot_fraction)
+    assert not concepts.multi_field.any()
     mask = (concepts.kind.eq("math") & concepts.primary & concepts.split.eq("confirmatory")).to_numpy()
     sample = concepts[mask]
     spec = load_yaml("fields.yaml")["math"]
@@ -45,6 +50,8 @@ def collect():
     design = fields.reference_design(sample.field.to_numpy(), target["names"], np.asarray(target["distance"]),
                                      {f["id"]: f["branch"] for f in spec})
     index = read(artifacts / "acts/family_index.json")
+    for family, spec_row in fam["chains"].items():
+        assert [name for group,name,_ in index if group == family] == spec_row["items"]
     out = {"source_revision": "43dcda70a7f6093e946fbc975c88cd65a7d12e5f", "prereg_tag": "prereg-v1",
            "arxiv": arxiv, "sample": {"n": len(sample), "fields": sample.field.value_counts().to_dict(),
            "all_splits": concepts.groupby(["kind","split"]).size().unstack().to_dict()}, "checkpoints": {}}
@@ -119,12 +126,19 @@ def main():
     args = parser.parse_args()
     with threadpool_limits(limits=2):
         results = collect()
-    path = ROOT / "results/scientific_audit/verification.json"
+    from mathgeom.verification.coverage import inventory
+    evidence = ROOT / "results/scientific_audit"
+    path = evidence / "verification.json"
+    files = inventory()
     if args.write:
         path.parent.mkdir(exist_ok=True)
+        (evidence / "file_coverage.json").write_text(json.dumps(files, indent=2)+"\n", encoding="utf-8")
         path.write_text(json.dumps(results, indent=2, allow_nan=False, ensure_ascii=False)+"\n", encoding="utf-8")
     else:
         equal_evidence(results, read(path))
+        equal_evidence(files, read(evidence / "file_coverage.json"))
+        from mathgeom.verification.publications import check
+        check(results)
     progress("Verified the independent scientific calculations")
 
 

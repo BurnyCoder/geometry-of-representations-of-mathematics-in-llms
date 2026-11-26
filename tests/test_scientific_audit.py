@@ -44,3 +44,28 @@ def test_axiom_profile_counterexample_and_mathlib_dispositions():
     assert len(rows) == 39 and rows.index.is_unique
     assert rows.loc["inductive limit", "decision"] == "exclude"
     assert rows.loc["normal subgroup", "decision"] == "retain"
+
+def test_module_header_with_comment_keeps_its_imports(tmp_path):
+    from mathgeom.data.mathlib_depth import import_depth, module_imports
+    from mathgeom.verification.mathlib import module_depths
+
+    root = tmp_path / "Mathlib"
+    root.mkdir()
+    (root / "Core.lean").write_text("module\n", encoding="utf-8")
+    (root / "Base.lean").write_text("module -- shake: keep-all\npublic meta import Mathlib.Core\n", encoding="utf-8")
+    (root / "Result.lean").write_text("module\nimport Mathlib.Base\n", encoding="utf-8")
+    assert import_depth(module_imports(tmp_path))["Mathlib.Result"] == 2
+    assert module_depths(tmp_path, ["Mathlib.Result"]) == {"Mathlib.Result": 2}
+
+
+def test_calendar_controls_field_units_and_candidate_scores():
+    from mathgeom.report.paper import _results
+
+    s = _results("mvp")["science"]
+    for r in s["checkpoints"].values():
+        families = r["trained"]["families"]
+        assert not families["days"]["full_space_control"] and not families["months"]["full_space_control"]
+        assert all(families[f]["line_rho"] > families[f]["circle_rho"] for f in ("days","months","angles"))
+    p = s["checkpoints"]["qwen3.5-2b"]["applied_labels"]
+    assert p["assignments"] == 680 and p["max_five_pc_p"][1] == pytest.approx(2/680)
+    assert s["intervention"]["space_chain"]["chain_s4.0"] == {"correct": 87, "presentations": 110}

@@ -63,9 +63,9 @@ def mds(D: np.ndarray, seed: int = 0, k: int = 2) -> np.ndarray:
 
 
 def stress1(layout: np.ndarray, D: np.ndarray) -> float:
-    """Kruskal's stress-1 of a 2-D/3-D layout against the full-space distances D, with the optimal scale
+    """Scale-adjusted normalized distance error of a 2-D/3-D layout against target distances D, with the optimal scale
     factor (so display scaling does not matter): √(Σ(b·d − δ)² / Σδ²). 0 = distances kept exactly; the
-    standard goodness-of-fit of metric MDS (Kruskal 1964, Psychometrika 29:1–27), stated by the site's MDS views."""
+    display diagnostic for metric MDS (related to Kruskal 1964, Psychometrika 29:1–27)."""
     from scipy.spatial.distance import pdist
 
     d, delta = pdist(layout), D[np.triu_indices(len(D), 1)]
@@ -145,7 +145,7 @@ def neighbour_edges(D: np.ndarray, k: int = 2) -> list[tuple[int, int]]:
     return sorted(E)
 
 
-# ------------------------------------------------------------------ families and lattices
+# ------------------------------------------------------------------ families and axiom profiles
 def family_index(cfg: Config) -> list[tuple[str, str, str]]:
     return [tuple(x) for x in json.loads((cfg.artifacts / "acts" / "family_index.json").read_text())]
 

@@ -1,4 +1,4 @@
-"""Axiom-lattice tests (H-B2): offset consistency (parallelograms) and analogy completion.
+"""Axiom-profile tests (H-B2): offset consistency (parallelograms) and analogy completion.
 
 Global context: if a model represents "adding the identity axiom" as one direction,
 then difference vectors such as monoid−semigroup, loop−quasigroup and

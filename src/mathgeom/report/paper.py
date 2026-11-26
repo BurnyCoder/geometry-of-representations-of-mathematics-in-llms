@@ -35,7 +35,11 @@ def _results(cfg_name: str) -> dict:
                     merged.setdefault(stem, {}).update(res)
         return merged
     d = ROOT / "results" / cfg_name
-    return {p.stem: json.loads(p.read_text()) for p in d.glob("*.json") if p.stem != "numbers"}
+    out = {p.stem: json.loads(p.read_text()) for p in d.glob("*.json") if p.stem != "numbers"}
+    if cfg_name == "mvp":
+        science = json.loads((ROOT / "results/scientific_audit/verification.json").read_text(encoding="utf-8"))
+        out.update(science=science, mathlib=science["mathlib"]["reviewed"])
+    return out
 
 
 def render_template(tpl: str, fig_prefix: str = "../reports/figures/", fig_ext: str = ".png") -> str:
@@ -45,12 +49,17 @@ def render_template(tpl: str, fig_prefix: str = "../reports/figures/", fig_ext: 
     cache: dict[str, dict] = {}
     fams = load_yaml("families.yaml")
 
+    def results(cfg):
+        if cfg not in cache:
+            cache[cfg] = _results(cfg)
+        return cache[cfg]
+
     def num(m: re.Match) -> str:
         spec = m.group(1)
         path, _, fmt = spec.partition(":")
         # model keys contain dots (qwen3.5-2b), so split cfg.file first, then match the longest key prefix
         cfg_name, file, rest = path.split(".", 2)
-        res = cache.setdefault(cfg_name, _results(cfg_name))[file]
+        res = results(cfg_name)[file]
         obj, parts = res, rest.split(".")
         while parts:
             for j in range(len(parts), 0, -1):  # greedy: try the longest dotted key first
@@ -67,7 +76,10 @@ def render_template(tpl: str, fig_prefix: str = "../reports/figures/", fig_ext: 
 
     def table(m: re.Match) -> str:
         name, cfg_name = m.group(1), m.group(2)
-        r = cache.setdefault(cfg_name, _results(cfg_name))
+        r = results(cfg_name)
+        if name.startswith("science_"):
+            from mathgeom.verification.tables import render_science
+            return render_science(name, r["science"])
         fn = {
             "field_map": lambda: render.table_field_map(r["map_fields"]),
             "clustering": lambda: render.table_clustering(r["map_fields"]),
@@ -116,7 +128,7 @@ def render_template(tpl: str, fig_prefix: str = "../reports/figures/", fig_ext: 
         return f"{fig_prefix}{name}"
 
     out = re.sub(r"\{\{num:([^}]+)\}\}", num, tpl)
-    out = re.sub(r"\{\{fact:([^}]+)\}\}", lambda m: render.fact(cache.setdefault("all", _results("all")), m.group(1)), out)
+    out = re.sub(r"\{\{fact:([^}]+)\}\}", lambda m: render.fact(results("all"), m.group(1)), out)
     out = re.sub(r"\{\{table:(\w+):(\w+)\}\}", table, out)
     out = re.sub(r"\{\{fig:([^}]+)\}\}", fig, out)
     if "{{" in out:
@@ -168,7 +180,19 @@ def build_readme_block() -> None:
     (ROOT / "README.md").write_text(readme, encoding="utf-8")
 
 
+def build_data_card() -> None:
+    card = ROOT / "docs/data_card.md"
+    template = (ROOT / "reports/data_card_results_template.md").read_text(encoding="utf-8")
+    block = "<!-- VERIFIED:START -->\n" + render_template(template).strip() + "\n<!-- VERIFIED:END -->"
+    content, n = re.subn(r"<!-- VERIFIED:START -->.*?<!-- VERIFIED:END -->", lambda _: block,
+                         card.read_text(encoding="utf-8"), flags=re.S)
+    if n != 1:
+        raise ValueError("Missing or repeated dataset-card result block")
+    card.write_text(content, encoding="utf-8")
+
+
 def build_paper() -> None:
+    build_data_card()
     out = render_template((ROOT / "paper" / "template.md").read_text(encoding="utf-8"), fig_ext=".pdf")  # vector figures in the PDF
     md = ROOT / "paper" / "paper.md"
     md.write_text(out, encoding="utf-8")
@@ -179,6 +203,6 @@ def build_paper() -> None:
            "-V", "mainfontoptions=Ligatures=NoCommon"]  # Cambria Math's fi/fl ligatures have no Unicode mapping, so they vanished from the PDF text layer (search, copy)
     r = subprocess.run(cmd, capture_output=True, text=True, cwd=ROOT / "paper")
     if r.returncode != 0:
-        log.warning("pandoc failed (paper.md still written): %s", r.stderr[-2000:])
+        raise RuntimeError(f"pandoc failed: {r.stderr[-2000:]}")
     else:
         log.info("paper built: %s", pdf)
