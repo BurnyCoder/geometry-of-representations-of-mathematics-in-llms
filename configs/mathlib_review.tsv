@@ -1,0 +1,40 @@
+concept	decision	reason
+simply connected	retain	The set predicate unfolds to simple connectivity of its subtype. The same module defines the space predicate; this is a module-level match.
+homeomorphism	retain	Bundled equivalence with continuity in both directions.
+discrete topology	retain	The typeclass requires the discrete topology on the space.
+Cauchy sequence	retain	The uniform-space filter definition specializes to the metric sequence criterion.
+subgroup	retain	Bundled subset closed under multiplication, unit and inverse.
+normal subgroup	retain	The subgroup predicate requires closure under conjugation.
+composition series	exclude	The declaration takes a Jordan–Hölder lattice and an unbounded maximal-step chain. The glossary specifies a subnormal series of a group with endpoints and simple factors.
+cyclic group	retain	Surjectivity of the powers of one element expresses generation by one element.
+simple group	retain	Requires nontriviality and only trivial or universal normal subgroups.
+finite length	retain	The inductive simple-factor definition characterizes finite module length.
+structure theorem	retain	The pinned glossary explicitly means the structure theorem for finitely generated modules over a PID.
+subring	retain	The bundled subring contains the unit and is closed under the ring operations.
+exterior algebra	retain	The Clifford algebra of the zero quadratic form imposes the alternating relation.
+clifford algebra	retain	The quotient imposes the specified quadratic relation.
+determinant	exclude	The glossary defines the determinant line of a finite free module. Matrix.det is a scalar associated to a square matrix.
+closed submodule	exclude	The glossary describes the essential-extension criterion. The matched declaration requires a topologically closed carrier.
+chain complex	retain	The downward-degree HomologicalComplex specialization gives a chain complex.
+sheaf of modules	retain	Bundled sheaf of modules over a sheaf of rings.
+module	retain	The scalar action specializes to the glossary's left module over a ring.
+discrete valuation ring	retain	The local principal ideal domain characterization with the nonfield condition gives a DVR.
+fractional ideal	retain	Submodules with a common denominator implement the fractional ideal.
+Boolean ring	retain	The ring class requires idempotence of multiplication on each element.
+inductive limit	exclude	The glossary explicitly refers to a categorical colimit. The declaration constructs a metric union along isometric embeddings.
+cartesian closed	exclude	MonoidalClosed assumes a chosen monoidal product; its general definition does not require the terminal object and cartesian products of the glossary.
+simplicial category	retain	Enrichment of an ordinary category over simplicial sets.
+locally Noetherian	retain	The affine-open condition expresses local Noetherianity of a scheme.
+modular form	retain	The bundled form combines transformation, holomorphy and cusp conditions.
+chinese remainder theorem	retain	The finite pairwise-coprime ideal quotient isomorphism specializes to the integer CRT.
+measure space	retain	The structure adds a measure to a measurable space.
+convolution	retain	The bilinear integral specializes to ordinary scalar convolution on an additive group.
+measurable function	retain	Defined by measurable inverse images.
+power series	retain	The glossary uses the coefficient-sequence interpretation; the formal one-variable series suffices for that sense.
+measurable set	retain	Membership in the sigma algebra of the measurable space.
+Schwarz lemma	exclude	The matched theorem gives the norm-bound part. It does not state the full derivative and equality conclusions of the classical lemma.
+kan complex	retain	Fibrancy for simplicial sets supplies the horn-filling property.
+fiber functor	exclude	The glossary is in representation theory. The declaration is specific to finite-set-valued fiber functors on a pre-Galois category.
+free Lie algebra	retain	The quotient implements the free Lie algebra on generators.
+central limit theorem	retain	The declaration gives an iid finite-variance central limit theorem. The match concerns this standard version.
+real numbers	retain	The Cauchy completion constructs the real number system.
