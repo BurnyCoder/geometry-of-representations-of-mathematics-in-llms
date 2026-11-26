@@ -135,7 +135,13 @@ def test_cross_model_extra_figures_render(tmp_path):
     style.save(overview.draw_partial_operation(r, conf), tmp_path, "partial")
     rows = [rw for _, rr in overview.forest_rows(r) for rw in rr]
     assert all({"label", "est", "ci", "status", "n", "holm"} <= set(rw) for rw in rows)
-    assert sum(rw["holm"] is not None for rw in rows) == 5  # only the H-A1 rows are in the pre-registered Holm family
+    # The forest displays the H-A1 interval decision and separates the robustness checkpoints.
+    field_rows = overview.forest_rows(r)[0][1]
+    assert [rw["status"] for rw in field_rows].count("MVP: Mantel + CI") == 1
+    assert [rw["status"] for rw in field_rows].count("robustness") == len(field_rows) - 1
+    for rw, key in zip(field_rows, overview.KEYS, strict=True):
+        saved_ci = r["map_fields"][key]["math_primary"]["rsa_boot"]["delta_vs_random_init"]["ci"]
+        assert rw["ci"] == saved_ci and rw["holm"] is None
 
 
 def test_turntable_gif_renders(tmp_path):

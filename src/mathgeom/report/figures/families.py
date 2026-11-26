@@ -13,6 +13,7 @@ import numpy as np
 
 from mathgeom.config import load_yaml
 from mathgeom.report import figdata
+from mathgeom.report.render import angles_met, calendar_met
 from mathgeom.report import style as S
 
 CYCLIC = ["days", "months", "angles"]
@@ -239,16 +240,13 @@ def draw_angles(cfg, key: str, sh: dict, Lp: int):
     draw_plane(axes[2], figdata.pca(figdata.family_acts(cfg, key, "digits_0_330")[:, Lp]), digits, closed=False)
     axes[2].set_title("Reference: bare numbers 0 … 330", fontsize=9)
     S.note(axes[2], f"angles vs numbers: ρ(RDM, RDM) = {a['beyond_reference']['rho_fam_ref']:.2f}")
-    calendar = []
-    for family in ("days", "months"):
-        cal = sh[key][family]
-        met = cal["circle_rho"] > cal["line_rho"] and cal["closure"] < 2 and cal["robinson_p"] < .05
-        calendar.append("met" if met else "failed")
+    calendar = ["met" if calendar_met(sh[key][f]) else "failed" for f in ("days", "months")]
     t = sh[f"{key}__random"]["angles"]  # control: the same projection of the random-init twin
     draw_plane(axes[3], figdata.pca(figdata.family_acts(cfg, f"{key}__random", "angles")[:, Lp]), lab, closed=False, highlight=((len(items) - 1, 0),))
     axes[3].set_title("Control: random-init twin", fontsize=9)
-    S.note(axes[3], f"closure = {t['closure']:.2f}; circle ρ = {t['circle_rho']:.2f} (p = {t['circle_rho_p']:.3f}) vs line ρ = {t['line_rho']:.2f}\n"
-                    f"trained days/months: {calendar[0]}/{calendar[1]}; twin vs numbers: ρ = {t['beyond_reference']['rho_fam_ref']:.2f}")
+    S.note(axes[3], f"Twin angle thresholds {'met' if angles_met(t) else 'failed'} · closure {t['closure']:.2f} · vs numerals ρ {t['beyond_reference']['rho_fam_ref']:.2f}\n"
+                    f"circle ρ {t['circle_rho']:.2f} (p = {t['circle_rho_p']:.3f}) vs line ρ {t['line_rho']:.2f}\n"
+                    f"Trained weekdays/months: {calendar[0]}/{calendar[1]}")
     fig.tight_layout(w_pad=1.0)
     return fig
 

@@ -23,8 +23,8 @@ chains:
   space_chain:  # Ordered labels: separation implications, then spaces with additional structure.
     # Metrizable names a property. A metric space specifies a compatible metric; forgetting structure induces the topology.
     # Munkres, Topology, §§20–21, 31: https://people.math.ethz.ch/~dkosanovic/24-FS/Munkres-Topology.pdf
-    # A chain only if "regular" = T3 and "normal" = T4 (both include T1), as in Munkres, Topology §31; Wikipedia's
-    # article defines regular/normal without T1, under which Hausdorff ⊃ regular fails (docs/deviations.md, 2026-10-30).
+    # A chain only if "regular" = T3 and "normal" = T4 (both include T1), as in Munkres, Topology §31. Other
+    # conventions can omit T1: https://en.wikipedia.org/wiki/Separation_axiom (docs/deviations.md, 2026-10-30).
     domain: "topology and analysis"
     expected: line
     role: test

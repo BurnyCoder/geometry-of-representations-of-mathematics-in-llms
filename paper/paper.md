@@ -24,15 +24,15 @@ Interpretability research has found that LLMs encode some concepts as low-dimens
 
 [Karkada et al. (2026)](https://arxiv.org/abs/2602.15029) explain such shapes with symmetries of co-occurrence statistics: cyclic latents give circles, and ordered latents give 1-D curved manifolds.
 
-Mathematics is an unusually good test bed for these ideas, because its concepts carry *exact* external structure. Structures are defined by axiom sets, so they sit on the vertices of a hypercube. Fields relate through shared methods. Algebraic structures form inclusion chains. Here we jointly test a cross-listing field target, specified ordered families and offsets between axiom profiles. The closest results are the "math/code lobe" of [Li et al. (2024)](https://arxiv.org/abs/2410.19750), which does not resolve fields or structures, and [Berlioz (2021)](https://arxiv.org/abs/2109.02801), who embedded arXiv mathematical terms with static (standard and hyperbolic) word embeddings and asked whether their dependency structure shows in the vectors.
+Mathematics is an unusually good test bed for these ideas, because its concepts carry *exact* external structure. The selected algebraic structures have binary axiom profiles, and several families come with a mathematically motivated order. The field comparison has a different kind of target, observed cross-listing between arXiv categories. In our literature search we found no earlier study jointly testing field-centroid distances against cross-listing, prespecified concept orders, and same-axiom offsets in LLM residual streams. Related results include the "math/code lobe" of [Li et al. (2024)](https://arxiv.org/abs/2410.19750), which does not resolve fields or structures, and [Berlioz (2021)](https://arxiv.org/abs/2109.02801), who embedded arXiv mathematical terms with static (standard and hyperbolic) word embeddings and asked whether their dependency structure shows in the vectors.
 
 **Contributions.**
 
 1. At the specified layer, centroid distances track arXiv cross-listing in Qwen3.5-2B and four robustness checkpoints on the same concepts. The tested word-form baselines give weaker maps.
 2. Evidence that the space chain of separation axioms through normed, Banach and Hilbert spaces is an ordered path, also within its metric block (metrizable … Hilbert) in all 5 models; within its separation-axiom block the order holds in 1 of 5 models (Qwen3.5-2B). The ring chain's order is not established beyond the head nouns of its names.
-3. Character trigrams alone yield consistent axiom offsets. Associativity and the held-out abelian-group comparison supply narrower evidence beyond individual lexical controls.
+3. Character trigrams alone yield consistent axiom offsets. Associativity and the held-out abelian-group comparison supply narrower evidence beyond individual lexical controls. A nonsense modifier on the same head noun gives nearly as large a cosine as the abelian-group comparison (§4.4).
 4. A preregistered test (`docs/prereg.md`, git tag `prereg-v1`) with random-init twins, leakage flags, permutation nulls and paired bootstrap contrasts, followed by an independent post-hoc audit (`reports/prereg_addendum_lexical.md`) with word-form baselines, nonce modifiers, exact within-block tests and extra twin seeds.
-5. The angle prediction and both calendar controls fail in full space. The math-checkpoint contrast includes zero. Consistent group-object offsets also occur in name-only baselines.
+5. The angle prediction and both calendar controls fail in full space. The math-checkpoint contrast includes zero. Consistent group-object offsets also occur in name-only baselines. In simulations with the specified proxy confounders, partial distance-matrix regression exceeded its nominal false-positive rate (§3.5).
 
 # 2 Related work
 
@@ -159,7 +159,7 @@ The results follow how well they survive the audit's word-form controls: the fie
 | Angles: closed cycle in any top-5 PC plane (addendum rule) | post-hoc, pre-specified addendum | ○ 0.33 | ○ 0.33 | ○ 0.17 | ○ 0.25 | ○ 0.42 |
 | Days / months: a loop that closes in some top-5 PC plane (p < .05, unadjusted) | post-hoc, descriptive | ● 1.00 / ● 0.50 | ○ 0.57 / ○ 0.33 | ● 1.00 / ○ 0.33 | ● 1.00 / ● 0.58 | ○ 0.43 / ● 0.50 |
 
-† changes at .05 when the field-map bootstrap slot is reserved. Only Qwen3.5-2B is confirmatory; other checkpoints are robustness comparisons on the same items. ● significant: Holm-adjusted over the 8 pre-registered confirmatory tests for the axiom and chain rows (the angles slot always reserved), with the trained value above the twin's; for Δ tests the 95% CI lies entirely above 0 (H-A1 also needs Mantel p < .05); for every other row p < .05, unadjusted · ◐ raw p < .05 but not Holm-significant (axiom and chain rows) · ○ not significant · ✗ observed criteria failed. Days and months also failed the full-space rule in every trained checkpoint; a circular angle component remains unresolved. The angle rule is met by all 5 twins. Chains: p = max(Robinson p, LOO order p), the pre-registered conjunction. Numbers: the statistic for the trained model. Audit rows (post-hoc, reports/prereg_addendum_lexical.md): field map = lowest lower CI bound of Δρ against the three lexical baselines; ring chain = Robinson score within the “… domain” items; held-out pair = cosine of abelian group − group with the “commutative” direction; modifier and group-object rows = trained value vs the highest control; ● = the addendum's decision rule is met.
+† changes at .05 when the field-map bootstrap slot is reserved. Only Qwen3.5-2B is confirmatory; other checkpoints are robustness comparisons on the same items. ● significant: Holm-adjusted over the 8 pre-registered confirmatory tests for the axiom and chain rows (the angles slot always reserved), with the trained value above the twin's; for Δ tests the 95% CI lies entirely above 0 (H-A1 also needs Mantel p < .05); for every other row p < .05, unadjusted · ◐ raw p < .05 but not Holm-significant (axiom and chain rows) · ○ not significant · ✗ observed criteria failed. Days and months also failed the full-space rule in every trained checkpoint; a circular angle component remains unresolved. The two angle-side thresholds are met by all 5 twins. The twins’ bare-numeral distances fit the circle template better than the line. Chains: p = max(Robinson p, LOO order p), the pre-registered conjunction. Numbers: the statistic for the trained model. Audit rows (post-hoc, reports/prereg_addendum_lexical.md): field map = lowest lower CI bound of Δρ against the three lexical baselines; ring chain = Robinson score within the “… domain” items; held-out pair = cosine of abelian group − group with the “commutative” direction; modifier and group-object rows = trained value vs the highest control; ● = the addendum's decision rule is met.
 
 ## 4.1 H-A1: a map of mathematical fields
 
@@ -192,10 +192,7 @@ The results follow how well they survive the audit's word-form controls: the fie
 | qwen3.5-2b__random | -0.118 | -0.140 | -0.133 | -0.136 | -0.107 | -0.074 | -0.160 | -0.164 | 0.013, 0.012, 0.012, 0.012, 0.012 | 0.04, 0.02, 0.04, 0.06, 0.05, 0.03, 0.02, 0.03, 0.08, 0.06 |
 
 - Removing the top component *raises* ρ to 0.47.
-- Removing PC1 alone leaves a positive field correlation.
-- Field identity is spread over the top ~10 components, which carry far more field variance (η²) than the twin's.
-
-The fixed field-map statistic depends on how many leading components are removed.
+- After removing ten components, ρ falls to 0.02. The association survives removal of PC1 and is sensitive to removing several leading directions. The table also gives the fraction of variance explained by field labels (η²) for the trained and twin coordinates.
 
 **H-A2: hierarchy is not supported as preregistered.** The preregistered measure is the cophenetic correlation ([Sokal & Rohlf, 1962](https://doi.org/10.2307/1217208)) between an average-linkage (UPGMA; Sokal & Michener, 1958) dendrogram of the field centroids and the five-branch super-tree.
 
@@ -347,7 +344,7 @@ infini-gram (v4_dolma-v1_7_llama): Spearman ρ(wordfreq Zipf, log count) = 0.316
 *No-domain family templates* drop the shared context, e.g. "Consider X":
 - Axiom offsets (§4.4) weaken but persist for commutativity (0.47, p = 0.0020) and associativity (0.31, p = 0.0215).
 - Group-object parallelograms persist (0.47, p = 0.0005).
-- Of the shapes (§4.3), days remain a perfect PC-plane cycle, and months lose theirs.
+- The top-two-PC order score remains perfect for weekdays and drops for months. The original full-space rule gives a different result under these exploratory prompts. Weekdays still fail, while months pass (closure 0.96, circle ρ 0.48, line ρ 0.27, Robinson p 0.0340).
 - The chains' Robinson scores stay above their nulls before correction (p = 0.020 and 0.021), but the ring chain's leave-one-out order does not (p = 0.111), and neither chain survives Holm correction in this run. Angles remain line-like.
 
 - *Audit, same template variants:* the word-form controls give the same verdicts. The field map stays above the names' character 3-grams (Δρ CI [0.17, 0.43]), X → commutative X is no more consistent than X → wooden X (0.49 vs 0.52), and the "commutative" direction still predicts abelian group − group (cos 0.57, p = 0.041).
@@ -463,9 +460,9 @@ This statistic is post-hoc. The projections recover some calendar ordering after
 
 **Test precision and the ridge penalty (audit).** The trained models' and twins' leave-one-out order nulls have 10,000 permutations (300 before the audit; the word-form baselines keep 300, and the four extra-seed twins of the twin-seed check use 2,000). Together with the 8-test Holm family (§3.5), this changes three decisions: Gemma-4-E2B's space chain becomes Holm-significant, and identity and divisibility lose Holm significance in Qwen2.5-Math-1.5B. The preregistered ridge penalty α = 10 is not scale-invariant: the residual streams of the trained Qwen3.5 models have much smaller norms than those of Qwen2.5, Gemma and every twin, so their leave-one-out fits shrink toward the training mean, whose ranks are anti-correlated with the held-out ranks. This is why leave-one-out ρ is strongly negative for some families in those models (Qwen3.5-0.8B days: -1.00 with α = 10, 0.68 with the scale-relative α). The twins' strongly negative values have another cause: with no order to recover, the held-out prediction stays near the training mean whatever the penalty (Qwen3.5-2B twin, days: -0.93 and -1.00). Neither kind of value is an effect size. The scale-relative penalty is reported in Appendix A as a sensitivity analysis.
 
-**Angle prediction.** The preregistered full-space angle rule failed in every trained checkpoint. Weekdays and months also failed their full-space positive control in every trained checkpoint. A circular angle component in another subspace remains unresolved. At the primary layer the angle closure ratio is 2.11. The line template scores above the circle template in all 5 models.
+**Angle prediction.** The preregistered full-space angle rule failed in every trained checkpoint. Weekdays and months also failed their full-space positive control in every trained checkpoint. A circular angle component in another subspace remains unresolved. At their primary layers, the trained checkpoints have closure ratios of 1.84–2.59 and line-template correlations of 0.43 to 0.62. In Qwen3.5-2B the angle distances correlate with bare-numeral distances at ρ = 0.84. The same numerals appear in both prompts, and the twins also show angle–numeral correlations (0.22 to 0.85).
 
-**The preregistered rule is not specific.** The circle rule is *met* by all 5 twins, for example the Qwen3.5-2B twin: closure 0.80, circle ρ 0.22 vs line ρ -0.01. The twins have no line order (line ρ -0.01 to 0.25), so their closure ratio is near 1, and their circle-template ρ (0.15 to 0.46) is significant in all 5 twins (p ≤ 0.0085), possibly from shared digit tokens; that is enough to meet the rule. The informative result is therefore not the failed rule itself but the trained models' clear line-like order: line ρ 0.56 in Qwen3.5-2B, against circle ρ 0.29. That order tracks the bare numbers. We found this when we added the twin panel to the angles figure; it was not part of the preregistered analysis.
+**What the untrained controls show.** The measurements from all 5 twins meet the two angle-side thresholds. For the Qwen3.5-2B twin, closure is 0.80, circle ρ is 0.22 and line ρ is -0.01. Across twins, line fits span -0.01 to 0.25 and circle fits span 0.15 to 0.46 (unadjusted p ≤ 0.0085). A closure ratio near one can arise when all pairwise distances are similar. The protocol also expected a line-like bare-numeral reference. In every twin, the bare numerals fit the circle template better than the line (Qwen3.5-2B twin: circle ρ -0.01, line ρ -0.19). This comparison of twin shapes was post-hoc.
 
 | Family | Model | ρ(family RDM, reference RDM) | template β beyond reference (p) |
 |---|---|---|---|
@@ -521,6 +518,8 @@ The addendum's decision rule for "angles have a circular component beyond PC1–
 
 These saved SMDS fits describe the tested orderings. With both calendar controls failing the original rule, they cannot exclude other circular components.
 
+<a name="44-h-b2-axiom-lattices"></a>
+
 ## 4.4 H-B2: axiom profiles
 
 **The test.** The 13 sampled class labels have four-bit profiles of required axioms (associativity, identity, unique division and commutativity), placing them at selected vertices of a 4-cube (§3.3). For each axiom we take every pair of structures that differ only in that axiom, for example monoid → commutative monoid and group → abelian group for commutativity (6 pairs), and compute their difference vectors at the preregistered layer. *Offset consistency* is the mean pairwise cosine of these difference vectors in the full residual stream: 1 if they are parallel, about 0 if they are unrelated. The null draws the same number of random pairs from the same 13 structures (2,000 draws), and p = (1 + the number of null draws at least as large as the observed value)/(1 + 2,000). The next figure walks through the procedure on real data.
@@ -566,7 +565,11 @@ In this model's random-init twin, the four consistencies are 0.01 to 0.04.
 | H-B2 identity offset consistency | qwen3.5-2b | 0.0425 | 0.0850 | 0.1274 |
 | H-B2 divisible offset consistency | qwen3.5-2b | 0.0275 | 0.0825 | 0.1099 |
 | H-B2 commutative offset consistency | qwen3.5-2b | 0.0010 | 0.0060 | 0.0070 |
-| Angles rule failed; see calendar controls | qwen3.5-2b | rule only | reserved | reserved |
+| Angles rule failed | qwen3.5-2b | rule only | reserved | reserved |
+
+The published H-A1 input was (1 + paired bootstrap draws with Δρ ≤ 0) / (1 + total draws). Its prespecified decision uses the field-label permutation and paired confidence interval. Each chain uses the larger of its Robinson and leave-one-out permutation p-values. For a calibrated test, a Holm-adjusted p ≤ .05 rejects its null.
+
+The angle-side thresholds are closure < 2 and circle ρ > line ρ. The preregistration also expects a line-like bare-numeral reference. qwen3.5-2b: closure 2.11, circle ρ 0.29, line ρ 0.56. Weekday control failed, month control failed.
 
 - **After correction:** associativity and commutativity remain significant; identity and divisibility do not.
 - **Across the replication models (Appendix A):** the offsets are positive for associativity in all 5 models, identity in all 5 models, divisibility in all 5 models and commutativity in all 5 models. The twins are weaker but not always null: raw p < .05 for commutativity in 2 of 5 twins (those of Qwen2.5-1.5B and Qwen2.5-Math-1.5B), with consistency ≈ 0.16 in Qwen2.5-1.5B's twin; for associativity in 1 of 5 twins (that of Gemma-4-E2B) and for divisibility in 1 of 5 twins (that of Gemma-4-E2B); these twins keep more of the names' word composition (§3.6). Divisibility reaches raw p < .05 in all 5 models, identity in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B).
@@ -738,8 +741,8 @@ In this model's random-init twin, the four consistencies are 0.01 to 0.04.
 
 **Validation against Mathlib (plan; specified before computing, `docs/deviations.md`).** As an external, non-LLM measure, we matched concepts to declarations in [Mathlib4](https://github.com/leanprover-community/mathlib4) (commit `4bc4670bf916c8dc2ede840e3ead86301e52a40d`).
 - *Matching.* First through Mathlib's curated English-name maps (`docs/overview.yaml`, `docs/undergrad.yaml`), then through exact CamelCase names for multi-word concepts ("compact space" → `CompactSpace`). We independently compared every candidate with its pinned glossary sense and Lean declaration. The [row-level crosswalk](https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms/blob/master/reports/reviews/2026-11-26_scientific_audit.md) records exclusions and their reasons.
-- *Depth.* Longest chain of Mathlib imports below the defining module. The independent header scan handles comments on module commands. This corrected the absolute depths of 39 original candidates. The scatter and estimates use the checked depths.
-- *Reviewed estimate.* The original 39 name matches gave ρ = 0.373. Retaining 32 sense matches gave ρ = 0.507, with a concept-bootstrap 95% CI of [0.195, 0.740]. The target is module import depth, a software dependency measure.
+- *Depth.* Longest chain of Mathlib imports below the defining module, in an inventory of 8672 modules. The independent header scan handles comments on module commands. This corrected the absolute depths of 39 original candidates. The scatter and estimates use the checked depths.
+- *Reviewed estimate.* The original 39 name matches gave ρ = 0.373 (original 95% CI [0.071, 0.616]). Retaining 32 sense matches gave ρ = 0.507, with a concept-bootstrap 95% CI of [0.195, 0.740]. The target is module import depth, a software dependency measure.
 - *Caveat.* Only 32 of 655 concepts could be matched, and coverage is uneven across fields (table below). The judges also differ: the correlation is larger for Phi-4-mini (ρ = 0.66) than for SmolLM3 (ρ = 0.23).
 
 | Matched concepts (curated YAML / CamelCase) | median import depth | ρ(mean judge rating, depth) [95% CI] (p) | ρ partialling Zipf | ρ per judge |
@@ -765,6 +768,10 @@ In this model's random-init twin, the four consistencies are 0.01 to 0.04.
 | real_complex_analysis | 0.125 |
 | ring_module_theory | 0.200 |
 | set_theory_logic | 0.000 |
+
+```{=latex}
+\clearpage
+```
 
 ![**The top axis of the math-concept cloud correlates with judged abstraction.** Left and middle: PC1 × PC2 of the 398 primary concepts, both residualized on frequency and token count exactly as in the statistic. Left is coloured by judge abstraction, with the most and least abstract concepts labelled; middle is coloured pure/applied. The PC signs are flipped for display so that abstract and applied point right and up. Right: mean judge rating vs Mathlib import depth for the matched concepts. Interactive version: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-abstraction>.](../reports/figures/abstraction_qwen3.5-2b.pdf){width=100%}
 
@@ -793,11 +800,11 @@ At block 11, we encoded the template-averaged residuals with the official Qwen-S
 
 **Axiom offsets.** The offsets of group-like structures behave like the man → woman offset of word embeddings ([Mikolov, Yih & Zweig, 2013](https://aclanthology.org/N13-1090/)), and like those offsets they mix structure with word form ([Linzen, 2016](https://aclanthology.org/W16-2503/)). With simple additive composition, "modifier + noun" is a fixed vector by construction ([Mitchell & Lapata, 2010](https://doi.org/10.1111/j.1551-6709.2010.01106.x)), and the models compose "wooden" and "zorbic" about as consistently as "commutative". What survives the word-form controls is narrower: an associativity direction above every spelling baseline, and a commutativity direction that also points from "group" to "abelian group", though only a little more than a nonce modifier on "group" does. One divergence between naming and definition is that "associative quasigroup" stays with the quasigroups, although a non-empty one is a group. Whether the model uses these directions in reasoning, for example to decide that a monoid with inverses is a group, needs causal tests, which we did not run for the axioms (§6).
 
-**The field map.** All five checkpoint-specific maps covary with cross-listing on the same glossary sample. Field granularity differs between the mathematical and non-mathematical controls. The data cannot identify which parts of pretraining produced the association. Co-occurrence is a possible account. [Karkada et al. (2026)](https://arxiv.org/abs/2602.15029).
+**The field map.** All five checkpoint-specific maps covary with cross-listing on the same glossary sample at the primary layer. The pattern varies with depth. For example, Gemma is at or below the layer curve’s null threshold in 3 stretches (layers 1–4, 11–15, 23–25 of 35) (§4.1). Field granularity differs between the mathematical and non-mathematical controls. The data cannot identify which parts of pretraining produced the association. Co-occurrence is a possible account. [Karkada et al. (2026)](https://arxiv.org/abs/2602.15029).
 
 **Controls for concept geometry.** A random-init twin controls for architecture and tokenization, but not for word form: it can scramble even exact word composition (strongly in the Qwen3.5 twins, hardly in Gemma's), so a trained model can "beat the twin" with geometry that any spelling-based representation would show. Spelling-only baselines and nonce controls are cheap and should accompany studies of concept geometry, especially for multi-word names that encode their own structure, as mathematical names often do.
 
-**Angles.** The line template fit the saved angle distances better in every trained checkpoint. Models and tasks in [Kantamneni & Tegmark (2025)](https://arxiv.org/abs/2502.00873) differ from these phrase-level observations. The underlying geometry remains open.
+**Angles.** The line template fit the saved angle distances better in every trained checkpoint. The motivation for looking beyond the leading plane came from a study of integer representations that found a linear coordinate and several periodic components. An angle phrase could in principle contain both. Our post-hoc search covered the coordinate planes of the first five PCs and leaves other subspaces unresolved. [Kantamneni & Tegmark (2025)](https://arxiv.org/abs/2502.00873).
 
 # 6 Limitations
 
@@ -881,6 +888,8 @@ Every source cited in the text, with the identifier we checked (arXiv, Crossref,
 - Models and data: [Qwen3.5-2B-Base](https://huggingface.co/Qwen/Qwen3.5-2B-Base), [Qwen3.5-0.8B-Base](https://huggingface.co/Qwen/Qwen3.5-0.8B-Base), [Qwen2.5-1.5B](https://huggingface.co/Qwen/Qwen2.5-1.5B), [Qwen2.5-Math-1.5B](https://huggingface.co/Qwen/Qwen2.5-Math-1.5B), [Gemma-4-E2B](https://huggingface.co/google/gemma-4-E2B), [Qwen3-Embedding-0.6B](https://huggingface.co/Qwen/Qwen3-Embedding-0.6B), the judges [granite-4.0-micro](https://huggingface.co/ibm-granite/granite-4.0-micro), [SmolLM3-3B](https://huggingface.co/HuggingFaceTB/SmolLM3-3B) and [Phi-4-mini-instruct](https://huggingface.co/microsoft/Phi-4-mini-instruct); the arXiv metadata mirror [`librarian-bots/arxiv-metadata-snapshot`](https://huggingface.co/datasets/librarian-bots/arxiv-metadata-snapshot) (CC0); [Mathlib4](https://github.com/leanprover-community/mathlib4).
 
 Code, data, preregistration and every number: <https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms>. Interactive explorer: <https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/>. Data and activations: <https://huggingface.co/datasets/BurnyCoder/geometry-of-mathematics-in-llms>.
+
+<a name="appendix-a-replication-of-lattices-and-shapes"></a>
 
 # Appendix A: Axiom profiles and shapes across checkpoints
 
@@ -1238,4 +1247,4 @@ See `docs/deviations.md`. Every post-hoc statistic in this paper is labelled pos
 
 # AI statement
 
-The original codebase and manuscript were written with Claude Code from Libor Burian’s specification. Codex wrote the independent verification code and revised the paper from his audit specification. Human cleanup and rewriting are in progress.
+The original codebase and manuscript were written with Claude Code from Libor Burian’s specification. The [original author statement](https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms/blob/43dcda70a7f6093e946fbc975c88cd65a7d12e5f/paper/paper.md#ai-statement) identifies the model as Claude Opus 5.5. Codex wrote the independent verification code and revised the paper from his audit specification. Human cleanup and rewriting are in progress.

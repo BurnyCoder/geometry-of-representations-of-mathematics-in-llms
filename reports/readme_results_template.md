@@ -78,6 +78,8 @@ Each figure states what it shows, what to notice, and its main caveat. Pictures 
   - Every twin stays near or below zero (highest twin value at any layer: {{fact:twin_curve_max}}).
 - **Caveat:** only the preregistered layer is a confirmatory test; any "best layer" is post-hoc. [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-depth).
 
+<a name="shapes-circles-for-days-and-months-lines-for-chains-no-circle-for-angles"></a>
+
 #### Shape predictions and the failed calendar controls
 
 The preregistered full-space angle rule failed in every trained checkpoint. Weekdays and months also failed their full-space positive control in every trained checkpoint. A circular angle component in another subspace remains unresolved.
@@ -88,7 +90,7 @@ The preregistered full-space angle rule failed in every trained checkpoint. Week
 
 - **What you see:** days, months and angles in their top-3 principal components at the preregistered layer, rotating once. Trained model on top, random-init twin below. Each axis is that model's own PC and is labelled with its share of variance; proportions are true.
 - **What to notice:** with a third axis the angles still run as an open path, 330° far from 0°. Their PC1–3 hold {{num:mvp.views.qwen3.5-2b.angles.cum3.11:.0%}} of their variance (PC3 alone {{num:mvp.views.qwen3.5-2b.angles.var5.11.2:.0%}}), against {{num:mvp.views.qwen3.5-2b__random.angles.cum3.11:.0%}} in the twin. The days' loop is visible from every side (PC1–3: {{num:mvp.views.qwen3.5-2b.days.cum3.11:.0%}}).
-- **Caveat:** a rotating picture is not a test. Numbers lie on a generalized helix: a roughly linear top principal component plus periodic parts (periods 2, 5, 10 and 100) found with Fourier features ([Kantamneni & Tegmark 2025](https://arxiv.org/abs/2502.00873)). Such periodic parts need not show in PC1–2 (our inference), so we tested every plane of the top-5 PCs for a loop that closes (tables below). The test is post-hoc, and was pre-specified in an [addendum](reports/prereg_addendum_3d.md) before it ran. [Interactive 3-D, with a choice of axes](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
+- **Caveat:** a rotating picture is not a test. In other models, Kantamneni & Tegmark fitted a generalized helix to integer representations, combining a linear coordinate with periodic components of periods 2, 5, 10 and 100. [Original study](https://arxiv.org/abs/2502.00873). Such periodic parts need not show in PC1–2 (our inference), so we tested every plane of the top-5 PCs for a loop that closes (tables below). The test is post-hoc, and was pre-specified in an [addendum](reports/prereg_addendum_3d.md) before it ran. [Interactive 3-D, with a choice of axes](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
 
 ![days, months and angles in 3-D]({{fig:families3d_qwen3.5-2b}})
 
@@ -96,7 +98,7 @@ The preregistered full-space angle rule failed in every trained checkpoint. Week
 - **What to notice:** days and months each close in some plane of the top-5 PCs (p = {{num:mvp.posthoc.qwen3.5-2b.pc_planes_cycle.days.11.p:.3f}} and {{num:mvp.posthoc.qwen3.5-2b.pc_planes_cycle.months.11.p:.3f}}, unadjusted); the angles have no significant closed cycle in any of them (best score {{num:mvp.posthoc.qwen3.5-2b.pc_planes_cycle.angles.11.score:.2f}}, p = {{num:mvp.posthoc.qwen3.5-2b.pc_planes_cycle.angles.11.p:.2f}}). The twin's points do not follow the order.
 - **Caveat:** one camera angle can make an edge, such as the angles' orange 330° → 0° edge, look shorter or longer than it is; the turntable above shows every side, and the closure ratio in the headline table is measured in the full space. Static versions exist for every model (`families3d_<model>.png`). [Interactive 3-D](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
 
-**The pre-specified decision rule for "angles have a circular component beyond PC1–2"** requires all four conditions at the preregistered layer. Score: the best closed-cycle score over the 10 planes of PC1–5. p: a permutation p of that maximum.
+**The post-hoc projection test for "angles have a circular component beyond PC1–2"** requires all four conditions at the preregistered layer. The [addendum](reports/prereg_addendum_3d.md) specified this search before its own run. Score: the best closed-cycle score over the 10 planes of PC1–5. p: a permutation p of that maximum.
 
 {{table:planes_decision:all}}
 
@@ -135,9 +137,9 @@ For days and months, every model:
 ![angles: predicted vs found]({{fig:angles_qwen3.5-2b}})
 
 - **What you see:** the preregistered prediction, what the model does, the bare numbers 0–330, and the random-init twin as a control.
-- **What to notice:** the angles are ordered like the numbers (line ρ {{num:mvp.shapes.qwen3.5-2b.angles.line_rho:.2f}} vs circle ρ {{num:mvp.shapes.qwen3.5-2b.angles.circle_rho:.2f}}; twin line ρ {{num:mvp.shapes.qwen3.5-2b__random.angles.line_rho:.2f}}), so "330 degrees" sits by its numeral, far from "0 degrees", which falsifies our prediction. The angles' distances also match the bare numbers' (ρ = {{num:mvp.shapes.qwen3.5-2b.angles.beyond_reference.rho_fam_ref:.2f}}), but the twins match them too ({{fact:twin_angles_range.rho_fam_ref}}), because the prompts contain the numerals.
+- **What to notice:** the angles are ordered like the numbers (line ρ {{num:mvp.shapes.qwen3.5-2b.angles.line_rho:.2f}} vs circle ρ {{num:mvp.shapes.qwen3.5-2b.angles.circle_rho:.2f}}; twin line ρ {{num:mvp.shapes.qwen3.5-2b__random.angles.line_rho:.2f}}), so 330° lies far from 0°, contrary to the predicted closure. The angles' distances also match the bare numbers' (ρ = {{num:mvp.shapes.qwen3.5-2b.angles.beyond_reference.rho_fam_ref:.2f}}), but the twins match them too ({{fact:twin_angles_range.rho_fam_ref}}), and both sets of prompts contain the same numerals.
 - **Caveat:**
-  - The preregistered circle rule is *met* by {{fact:twins_meet_angles_rule}} (Qwen3.5-2B twin: closure {{num:mvp.shapes.qwen3.5-2b__random.angles.closure:.2f}}): without line order their closure ratio is near 1, and their circle-template ρ ({{fact:twin_angles_range.circle_rho}}, p ≤ {{fact:twin_circle_p_max}}) beats a near-zero line ρ. The informative result is the trained models' line-like order, not the failed rule.
+  - The two thresholds on angle phrases are *met* by {{fact:twins_meet_angles_rule}} (Qwen3.5-2B twin: closure {{num:mvp.shapes.qwen3.5-2b__random.angles.closure:.2f}}): their circle-template ρ ({{fact:twin_angles_range.circle_rho}}, unadjusted p ≤ {{fact:twin_circle_p_max}}) exceeds their line-template ρ ({{fact:twin_angles_range.line_rho}}). The bare-numeral reference in every twin also fits the circle template better than the line. The protocol expected line-like bare numerals. [Numeral reference measurements](results/scientific_audit/verification.json).
   - This is one prompt format at this model scale. [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
 
 ![ordered chains]({{fig:chains_qwen3.5-2b}})
@@ -145,6 +147,8 @@ For days and months, every model:
 - **What you see:** the prespecified sequences of structures in the PC plane, trained (top) and twin (bottom), with the Robinson score below each panel.
 - **What to notice:** in Qwen3.5-2B the ring and space chains run as ordered paths; in the twin they collapse to a tangle. Across models, the pre-registered test (Robinson and leave-one-out order, Holm, above the twin) holds for the ring chain in {{fact:chain_ordered.ring_chain}} and for the space chain in {{fact:chain_ordered.space_chain}}. The order survives removing word frequency and token count in {{fact:chain_beyond_frequency.ring_chain}} (ring) and {{fact:chain_beyond_frequency.space_chain}} (space).
 - **Caveat:** the ring chain's names end in four head nouns that form contiguous blocks of its order (rng | ring | … domain | field), and head-noun clusters with no order pass the preregistered test in up to {{num:mvp.lexical.block_only_simulation.2.reject_rate:.0%}} of simulations (audit). Within the six "… domain" items the order is significant in {{fact:ring_within}}, so the ring chain's order is not established beyond its head nouns. The space chain is ordered within its metric block in {{fact:space_block.1}}. [Interactive](https://burnycoder.github.io/geometry-of-representations-of-mathematics-in-llms/#fig-families).
+
+<a name="axiom-offsets-consistent-but-mostly-word-form"></a>
 
 #### Axiom offsets: consistent, but also present in name-only controls
 

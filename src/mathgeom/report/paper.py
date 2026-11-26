@@ -89,6 +89,7 @@ def render_template(tpl: str, fig_prefix: str = "../reports/figures/", fig_ext: 
             "lattice": lambda: render.table_lattice(r["lattice"]),
             "calibration": lambda: render.table_calibration(r["calibration"]),
             "holm": lambda: render.table_holm(r["map_fields"], r["shapes"], r["lattice"]),
+            "published_holm": lambda: render.table_holm(r["map_fields"], r["shapes"], r["lattice"], historical=True),
             "structures": lambda: render.table_structures(r["structures"]),
             "hierarchy": lambda: render.table_hierarchy(r["hierarchy"]),
             "baselines": lambda: render.table_baselines(r["baselines"]),
