@@ -1,5 +1,7 @@
 # Second independent audit: reproduction, hypothesis evaluation, methods, data and sources
 
+Historical report. Current decisions and corrections appear in the [26 November 2026 review](2026-11-26_scientific_audit.md). The archived numerical observations remain available at the [reviewed revision](https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms/tree/43dcda70a7f6093e946fbc975c88cd65a7d12e5f).
+
 *Date: 2026-11-22. Generated from `reports/reviews/2026-11-22_independent_audit_template.md` by `python run.py paper`; every number below is resolved from `results/*/*.json`, `configs/` or `data/`. No model was run for this audit (no inference, no training): it reads the cached activations (`artifacts/acts`) and the results files. It was done without relying on the conclusions of the earlier audits; where it reaches the same finding, it says so. Its one new analysis phase, `recheck`, was specified in [`docs/deviations.md`](../../docs/deviations.md) (row 2026-11-22) before its full run.*
 
 ## Verdict in brief

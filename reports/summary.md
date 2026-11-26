@@ -2,6 +2,8 @@
 
 *This file is generated from `reports/summary_template.md` by `python run.py paper`. Every statistic and every count of models comes from `results/*/*.json`; repository creation dates come from the Hugging Face API (a repository can be created before its public release), and sizes from the model cards, the checkpoints' safetensors headers (text-only sizes exclude the vision tower and Qwen3.5's multi-token-prediction head) and the extraction logs. For what we tried, why, and what went wrong, see [`experiments.md`](experiments.md).*
 
+[Independent review and model-free reproduction instructions](reviews/2026-11-26_scientific_audit.md)
+
 ## In plain words
 
 LLMs store words as long lists of numbers (vectors), and related ideas end up near each other. Earlier work found that the days of the week sit on a *circle* inside an LLM. We asked whether mathematics has a shape too. After the main results, an independent check (an "audit") asked a question we had missed: could each pattern come just from how the names are spelled? We list the results in the order of how well they survive that check; our main prediction written down in advance was the map of fields (question 1).
@@ -9,10 +11,10 @@ LLMs store words as long lists of numbers (vectors), and related ideas end up ne
 1. **Do math fields form a map?** Yes, moderately (ρ ≈ 0.4). Fields that mathematicians often combine on arXiv tend to sit closer together in the model. For example, probability's nearest field is numerical analysis in all 5 models, and numerical analysis is also among its three nearest on arXiv (graph theory, functional analysis and numerical analysis). The match is far from perfect: on arXiv, algebraic geometry's nearest fields are commutative algebra and number theory, but its nearest field is set theory & logic in all 5 models. A copy of the same network with random, untrained weights shows no such map, and neither do the letters of the concept names; the model's own input vectors of the names' tokens, without context, show only a weak one, so the map is mostly built by the trained model reading the names in context. Training on over a trillion extra tokens of math ([Qwen2.5-Math report](https://arxiv.org/abs/2409.12122)) did **not** make the map sharper. Whether the map is special to mathematics is still open: our comparison topics (biology, chemistry, geology, astronomy) cluster even more cleanly, but they are whole sciences, which are easier to tell apart than parts of one science.
 2. **Do ordered families have shapes?** Partly.
    - "T0 ⊃ … ⊃ Hilbert space" is laid out in order: the full pre-registered test holds in all 5 models, and the order also holds inside its parts (for example metric space → normed space → Banach space → Hilbert space, in all 5 models).
-   - "rng ⊃ ring ⊃ … ⊃ field ⊃ algebraically closed field" passes the same test in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B), but the check shows a shortcut: its names end in "rng", "ring", "domain" or "field", in that order, and simply grouping items by that last word already passes the test often. Among the six names ending in "domain", the order holds in 1 of 5 models (Qwen2.5-Math-1.5B). So we do not count it as shown.
+   - "rng ⊃ ring ⊃ … ⊃ field ⊃ algebraically closed field" passes the same test in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B), but the check shows a shortcut: its names end in "rng", "ring", "domain" or "field", in that order, and simply grouping items by that last word already passes the test often. Among the six names ending in "domain", the order holds in 1 of 5 models (Qwen2.5-Math-1.5B). So we do not count it as shown. The confirmatory ring-chain Holm value is 0.0420 in the published calculation and 0.0525 when H-A1 keeps its slot without bootstrap rejection credit.
    - Days go round in order in the two most important directions in all 5 models, months in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B). A stricter test, which also needs the loop to close, finds a closed days loop in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B) and a closed months loop (in other directions) in 3 of 5 models (all but Qwen3.5-0.8B and Qwen2.5-1.5B). Our pre-registered test for circles, which uses all directions at once, failed.
-   - **Angles do not form a circle.** The model treats "330 degrees" like the number 330, far from "0 degrees". This was a prediction we wrote down in advance, and it failed.
-3. **Are axioms directions?** Mostly not beyond the names. A structure is defined by which rules (axioms) it obeys, so we compared pairs of structures that differ in exactly one rule and drew the change as an arrow. Same-rule arrows are more parallel than random ones, and the untrained copy shows no such pattern. But the names carry the rules: "commutative monoid" is "monoid" with one extra word. Counting the letter triples of the names, with no model at all, gives arrows that are just as parallel, and adding an unrelated word ("wooden monoid") or a made-up one ("zorbic monoid") gives about as parallel arrows as adding "commutative". Two hints of more than spelling remain: "adding associativity" beats every spelling-only version in all 5 models, and the "commutative" arrow also points from "group" to "abelian group", which share no word with it, in all 5 models. These are suggestive, not conclusive.
+   - **Angle prediction and calendar controls.** The preregistered full-space angle rule failed in every trained checkpoint. Weekdays and months also failed their full-space positive control in every trained checkpoint. A circular angle component in another subspace remains unresolved.
+3. **Are axioms directions?** Names alone produce several of these effects. Each class label specifies which of the four rules it requires, so we compared pairs of structures that differ in exactly one rule and drew the change as an arrow. Same-rule arrows are more parallel than random ones, and the untrained copy shows no such pattern. But the names carry the rules: "commutative monoid" is "monoid" with one extra word. Counting the letter triples of the names, with no model at all, gives arrows that are just as parallel, and adding an unrelated word ("wooden monoid") or a made-up one ("zorbic monoid") gives about as parallel arrows as adding "commutative". Two hints of more than spelling remain: "adding associativity" beats every spelling-only version in all 5 models, and the "commutative" arrow also points from "group" to "abelian group", which share no word with it, in all 5 models. These are suggestive, not conclusive.
 
 ## Key terms
 
@@ -23,7 +25,7 @@ LLMs store words as long lists of numbers (vectors), and related ideas end up ne
 | Word-form baseline | A representation built only from a name, with no context: counts of its letter triples (character 3-grams) or of its words (spelling), or the model's own input vectors of its tokens added up (learned word meanings, but no context). A pattern the spelling versions show needs no understanding; one the input vectors show needs no context (audit). |
 | Nonce modifier | A made-up word ("zorbic") used like a real one ("zorbic monoid"), to see how parallel "adding a word" is by itself. |
 | Difference vector (arrow) | The representation of one structure minus that of another, e.g. "abelian group" − "group". |
-| Offset consistency | The mean cosine between difference vectors of pairs that differ by one axiom. 0 means unrelated; 1 means parallel. |
+| Offset consistency | The mean cosine between difference vectors of pairs that differ by one axiom. 0 means the mean pairwise cosine is zero; 1 means parallel. |
 | RDM | Representational dissimilarity matrix: all pairwise distances between items. |
 | RSA, field ρ | Spearman correlation between the model's field-centroid RDM and the arXiv-derived field distance. |
 | Ochiai cross-listing distance | 1 − (papers in both fields) / √(papers in A × papers in B), over 3.2M arXiv papers. |
@@ -59,24 +61,24 @@ Results that survive the audit's word-form controls come first; the "Pre-registe
 | Field map beyond word form | audit (post-hoc) | **yes** in all 5 models: ρ with arXiv for the names' letter triples 0.10, words -0.02, input-token vectors 0.16 vs the model's 0.39 (Qwen3.5-2B); the input-token vectors' weak map is itself significant in all 5 models | baseline comparison |
 | Field map specific to math | yes (specificity check) | **undecided**: the control fields cluster more strongly than most random sets of four math fields in all 5 models, but they are whole sciences, not sub-fields, so the comparison confounds domain with granularity (audit) | correlation |
 | Days/months circle (positive control) | yes | **full-space criterion failed** (line ρ > circle ρ for days in all 5 models and months in all 5 models); post-hoc PC-plane cycle = 1.00 (days) and 1.00 (months); a loop that closes: days in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B) (top-2 plane), months in 3 of 5 models (all but Qwen3.5-0.8B and Qwen2.5-1.5B) (a lower plane) | correlation |
-| Ring/space chains ordered (Robinson and LOO order, Holm, above the twin) | yes | **passes in Qwen3.5-2B** (the ring chain's order is not established beyond its head nouns; audit row above): Robinson p = 0.0105 / 0.0005, LOO order p = 0.0085 / 0.0001; twin ≈ chance. Across models: ring chain in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B), space chain in all 5 models | correlation |
+| Ring/space chains ordered (Robinson and LOO order, Holm, above the twin) | yes | **space passes both adjustments, ring passes only the published adjustment** (the ring chain's order is not established beyond its head nouns; audit row above): Robinson p = 0.0105 / 0.0005, LOO order p = 0.0085 / 0.0001; twin ≈ chance. Across models: ring chain in 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B), space chain in all 5 models | correlation |
 | Space chain ordered within its blocks; ring chain ordered within its six "… domain" items | audit (post-hoc) | **space: yes** (metrizable … Hilbert in all 5 models; T0 … normal in 1 of 5 models (Qwen3.5-2B)). **ring: no** (1 of 5 models (Qwen2.5-Math-1.5B)); clusters of head nouns without order pass the pre-registered chain test in up to 55% of simulations | exact permutation test; simulation |
 | Chain order survives removing word frequency and token count | added (plan) | **ring chain in 4 of 5 models (all but Gemma-4-E2B), space chain in 4 of 5 models (all but Gemma-4-E2B)**: ring/space ρ = 0.94 / 0.81 in Qwen3.5-2B (p = 0.003 / 0.017); the ring chain is also ordered in 2 of 5 twins (those of Qwen2.5-1.5B and Gemma-4-E2B) (untrained) | correlation; cross-validated confound regression |
-| Angles form a circle | yes | **falsified**: line-like; ρ with the digit RDM = 0.84 | correlation |
-| Group-like axioms are consistent directions | yes | **passes the pre-registered test for associativity and commutativity** (Holm correction, 8 tests: all 5 models and all 5 models), but mostly word form (audit rows below). Divisibility is positive in all 5 models and identity in all 5 models; significant before correction in all 5 models and 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B), after Holm correction in none of the 5 models and none of the 5 models. | correlation; paired control |
-| Axiom offsets are not a word-length artifact | added (plan) | **yes**: with the token-count direction removed, the offsets stay significant (before correction) for associativity in all 5 models, commutativity in all 5 models, divisibility in all 5 models, and identity in 4 of 5 models (all but Gemma-4-E2B) | correlation; distractor removal |
+| Angles form a circle | yes | **specified prediction failed alongside both calendar controls**; ρ with the digit RDM = 0.84 | correlation |
+| Group-like axioms are consistent directions | yes | **passes the pre-registered test for associativity and commutativity** (Holm correction, 8 tests: all 5 models and all 5 models), with large values also found for name-only representations (audit rows below). Divisibility is positive in all 5 models and identity in all 5 models; significant before correction in all 5 models and 3 of 5 models (all but Qwen3.5-0.8B and Gemma-4-E2B), after Holm correction in none of the 5 models and none of the 5 models. | correlation; paired control |
+| Axiom offsets after removing a linear token-count direction | added (plan) | **yes**: with the token-count direction removed, the offsets stay significant (before correction) for associativity in all 5 models, commutativity in all 5 models, divisibility in all 5 models, and identity in 4 of 5 models (all but Gemma-4-E2B) | correlation; distractor removal |
 | "Associative quasigroup" collapses onto "group" (a non-empty one is a group) | added (plan; exploratory) | **no** (collapse in none of the 5 models): 2.8× farther from group than from quasigroup (Qwen3.5-2B) | correlation |
-| Partial-operation lattice (semigroupoid, small category, groupoid); identity transfer to lattice-like pairs | added (plan; exploratory) | **no evidence** (partial-operation axes with p < .05: none of the 5 models; identity transfer with p < .05: none of the 5 models; 2–3 pairs per axis: weak tests) | correlation |
-| Lie/topological/algebraic groups combine their parents (parallelograms) | yes (exploratory) | **passes its null** in all 5 models, but explained by shared words (audit): cos = 0.40 (Qwen3.5-2B); twins weaker, but 2 of 5 twins (those of Qwen2.5-1.5B and Qwen2.5-Math-1.5B) also pass their own nulls (shared words) | correlation; paired control |
+| Partial-operation family (semigroupoid, small category, groupoid); identity transfer to lattice-like pairs | added (plan; exploratory) | **no evidence** (partial-operation axes with p < .05: none of the 5 models; identity transfer with p < .05: none of the 5 models; 2–3 pairs per axis: weak tests) | correlation |
+| Lie/topological/algebraic groups combine their parents (parallelograms) | yes (exploratory) | **passes its null** in all 5 models, but also present in spelling-only vectors (audit): cos = 0.40 (Qwen3.5-2B); twins weaker, but 2 of 5 twins (those of Qwen2.5-1.5B and Qwen2.5-Math-1.5B) also pass their own nulls (shared words) | correlation; paired control |
 | Commutativity direction transfers from group-like to ring-like structures | yes (exploratory) | **not established**: weak and partly lexical | correlation |
 | Axiom offsets beyond word form | audit (post-hoc) | **mostly no**: the names' letter triples alone pass the same test for all four axioms. Above every word-form baseline with lexically disjoint pairs passing the null: associativity in all 5 models, divisibility in 1 of 5 models (Gemma-4-E2B), identity in none of the 5 models, commutativity in none of the 5 models | baseline comparison |
 | "commutative" is more than an added word | audit (post-hoc) | **mostly no**: X → commutative X beats X → wooden X and X → zorbic X in 1 of 5 models (Gemma-4-E2B); the "commutative" direction predicts abelian group − group (no shared word) in all 5 models, but zorbic or wooden group − group already reach 0.40 to 0.51, and abelian group exceeds them by 0.04 to 0.24 (second independent audit) | nonce control; held-out pair |
 | Group objects beyond word form | audit (post-hoc) | **no**: models above every word-form baseline: none of the 5 models | baseline comparison |
 | Field map without the concepts the flag rules should have excluded | second independent audit (post-hoc) | H-A1 holds in all 5 models without 24 eponyms and non-concepts and 27 field roots inside compounds ("subgroup"); ρ 0.36 to 0.43 | sensitivity analysis |
-| The top principal axis correlates with abstraction (H-A4) | yes (secondary) | **supported** (LLM-judge ratings): PC1 ρ = 0.49 vs twin 0.06; PC1 holds 6.6% of the variance, and abstraction explains only part of it | correlation |
-| LLM-judge abstraction ratings agree with Mathlib definitional depth | added (plan; specified before computing) | **weakly supported**: ρ = 0.37, CI [0.07, 0.62], but only 39 of 655 concepts could be matched to Mathlib | correlation (external validity check) |
-| The second principal axis correlates with pure↔applied (H-A4) | yes (secondary) | **supported**: PC2 ρ = -0.41 (PC signs are arbitrary) | correlation |
-| Chain geometry is used causally | no (plan item; gate fixed before it ran) | **inconclusive**: ring chain below the accuracy gate (0.69 < 0.70); for the space chain, noise in the chain subspace lowers accuracy more than random-subspace noise at s = 2 and s = 4 (s = 4: 0.79 vs a random mean of 0.82) but not at s = 1; with 5 random subspaces this is descriptive, not a test | intervention (noise injection) |
+| The top principal axis correlates with abstraction (H-A4) | yes (secondary) | **supported** (LLM-judge ratings): PC1 ρ = 0.49 vs twin 0.06; PC1 holds 6.6% of the variance, and the rank correlation measures association with the judges’ ratings | correlation |
+| LLM-judge abstraction ratings agree with Mathlib module import depth | added (plan; specified before computing) | **positive association in the sense-reviewed subset**: ρ = 0.51, CI [0.20, 0.74], but only 32 of 655 concepts were retained after semantic review to Mathlib | correlation (external validity check) |
+| Pure/applied label and the leading PCs (H-A4) | secondary, field-label sensitivity post-hoc | Treating pure/applied as a field label gives exact PC2 p = 0.0029 and p = 0.0029 allowing selection among five PCs. | Conditional association on the specified fields |
+| Chain geometry is used causally | no (plan item; gate fixed before it ran) | **inconclusive**: ring chain below the accuracy gate (0.69 < 0.70); for the space chain, noise in the chain subspace lowers accuracy more than random-subspace noise at s = 2 and s = 4 (s = 4: 0.79 vs a random mean of 0.82) but not at s = 1; both candidates received separate noise draws and the five random bases give a descriptive comparison | intervention (noise injection) |
 | Field map visible in SAE features | exploratory | **weak**: SAE-code ρ = 0.15; field-selective features exist | correlation |
 
 ## Figures, in plain words
@@ -88,12 +90,12 @@ The figures show what the model's internal vectors look like, squashed down to t
 **All results in one picture.**
 - **Top row, the map of mathematics.** Left: every trained model has a map of mathematics; no twin has one, and neither does the spelling-only version (crosses); the model's own context-free input vectors (plus signs) show a weak one. Right: the map itself. On the left is how mathematicians combine fields on arXiv, in the middle the model's map, on the right the untrained twin's. Grey lines join fields that mathematicians often combine; they stay short in the model's map and cross the twin's.
 - **Middle row, axioms as arrows.** Left: every pair of structures that differ only in commutativity, drawn as an arrow from one starting point. In the model the arrows point roughly the same way; in the untrained twin they point every way. Right: the same measurement for all four axioms in every model and twin. The orange crosses come from the spelling of the names alone, with no model, and they are about as parallel.
-- **Bottom row, shapes, in 3-D.** Days of the week form a circle. Angles do not, although we predicted they would. The space chain is laid out in order; the ring chain is grouped by the last word of its names.
+- **Bottom row, shapes, in 3-D.** The selected projection shows an ordered calendar path. The original full-space angle and calendar rules all failed. The space chain is laid out in order; the ring chain is grouped by the last word of its names.
 
 ![how the axiom test works](figures/axioms_explainer_qwen3.5-2b.png)
 
 **How we test whether an axiom is a direction.**
-1. A structure is defined by which of four rules (axioms) it obeys, so the structures form a lattice.
+1. A class label lists the subset of four axioms it requires, giving a partial order on the sampled profiles.
 2. Take every pair that differs in just one rule, here commutativity (whether a·b = b·a always holds), and draw an arrow from one to the other.
 3. Move all these arrows to one starting point. In the model they point roughly the same way; in the untrained twin they point every way.
 4. Check it properly, using all of the model's dimensions instead of three: measure each arrow's angle to the average of the others. Near 0° means "the same direction", 90° means "unrelated". Most of the model's arrows stay well below 90°, most clearly for commutativity and associativity; the twin's sit near 90°.
@@ -112,7 +114,7 @@ The figures show what the model's internal vectors look like, squashed down to t
 
 ![arrow similarity](figures/lattice_cosines_qwen3.5-2b.png)
 
-**How parallel the arrows are.** Red squares along the diagonal mean "adding this axiom" always points the same way. It is strongest for associativity and commutativity. The orange crosses on the right show the same measurement on the names' letter triples, with no model: about as parallel.
+**How parallel the arrows are.** Each diagonal entry compares an arrow with itself. Off-diagonal entries measure alignment between different arrows. It is strongest for associativity and commutativity. The orange crosses on the right show the same measurement on the names' letter triples, with no model: about as parallel.
 
 ![Lie groups](figures/group_objects.png)
 
@@ -124,7 +126,7 @@ The figures show what the model's internal vectors look like, squashed down to t
 
 ![effect sizes](figures/forest.png)
 
-**How big the effects are.** Each line is a range of plausible values (95% confidence interval). A blue line does not cross zero, so the effect is reliably there.
+**How big the effects are.** Each line is a range of plausible values (95% confidence interval). A blue line does not cross zero, under the specified resampling scheme.
 
 ![field maps](figures/field_maps_qwen3.5-2b.png)
 
@@ -140,7 +142,7 @@ The figures show what the model's internal vectors look like, squashed down to t
 
 ![3-D turntable](figures/turntable_qwen3.5-2b.gif)
 
-**Days, months and angles in 3-D.** The three families in their three main directions, turning once (model on top, untrained twin below). A third direction does not turn the angles into a circle. We checked this properly, not by eye: models with a significant closed loop of angles in some pair of the top five directions: none of the 5 models. We wrote that test down before running it.
+**Days, months and angles in 3-D.** The three families in their three main directions, turning once (model on top, untrained twin below). The displayed projection does not close the angle sequence. We checked this properly, not by eye: models with a significant closed loop of angles in some pair of the top five directions: none of the 5 models. The post-hoc rule was written after the original controls failed and before its own run.
 
 ![chains in 3-D](figures/chains3d_qwen3.5-2b.png)
 
@@ -148,7 +150,7 @@ The figures show what the model's internal vectors look like, squashed down to t
 
 ![days, months, angles](figures/cyclic_qwen3.5-2b.png)
 
-**Circles, flattened to two dimensions.** Days and months go round in order; the untrained twin scrambles them. Angles do not close: 330° lands far from 0°. In this flat view the months' loop is open between December and January; it closes in another pair of directions.
+**Circles, flattened to two dimensions.** Days and months go round in order; the untrained twin scrambles them. In this displayed plane, 330° lands far from 0°. In this flat view the months' loop is open between December and January; it closes in another pair of directions.
 
 ![circle forming](figures/circle_depth_qwen3.5-2b.gif)
 
@@ -156,7 +158,7 @@ The figures show what the model's internal vectors look like, squashed down to t
 
 ![angles](figures/angles_qwen3.5-2b.png)
 
-**Our failed prediction.** We expected a circle (left). The model instead puts angles in a line, in the order of the plain numbers 0–330 (third panel), so "330 degrees" is far from "0 degrees". The untrained twin's angles are not in order (right).
+**Our failed prediction.** We expected a circle (left). The angle distances correlate more strongly with a line template, in the order of the plain numbers 0–330 (third panel), so "330 degrees" is far from "0 degrees". The untrained twin's angles are not in order (right).
 
 ![chains](figures/chains_qwen3.5-2b.png)
 
@@ -164,4 +166,4 @@ The figures show what the model's internal vectors look like, squashed down to t
 
 ![abstraction](figures/abstraction_qwen3.5-2b.png)
 
-**Concrete to abstract.** The model's biggest axis runs roughly from concrete ideas to abstract ones, as the judges rate them, though abstraction explains only part of it (ρ = 0.49; the labelled examples are the judges' extremes, such as "bar chart" and "generalized cohomology theory", not necessarily the ends of the axis). On the right, the judges' abstraction ratings agree with how deep each idea sits in a formal mathematics library (Mathlib).
+**Concrete to abstract.** The model's biggest axis runs roughly from concrete ideas to abstract ones, as the judges rate them, though the rank correlation measures association with the judges’ ratings (ρ = 0.49; the labelled examples are the judges' extremes, such as "bar chart" and "generalized cohomology theory", not necessarily the ends of the axis). On the right, the judges' abstraction ratings agree with how deep each idea sits in a formal mathematics library (Mathlib).
