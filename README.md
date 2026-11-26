@@ -7,7 +7,9 @@
 - a 3D spiral for the periodic table ([Lei & Cooper 2025](https://arxiv.org/abs/2502.10871));
 - a helix for numbers ([Kantamneni & Tegmark 2025](https://arxiv.org/abs/2502.00873)).
 
-We compare field-centroid distances with arXiv cross-listing, test prespecified orderings and measure offsets between algebraic axiom profiles. The primary checkpoint is Qwen3.5-2B-Base. Four robustness checkpoints reuse the same items.
+What about **abstract mathematics itself**? Berlioz (2021) used static word embeddings to study relationships among mathematical terms extracted from arXiv papers. One example was whether a term’s position reflects which other terms its definition depends on. [ArGoT, §4](https://arxiv.org/pdf/2109.02801#page=5)
+
+Our literature search found no earlier study that asked these three questions together in LLM residual streams. Are mathematical fields closer when authors more often cross-list papers between them? Do the names in ring and space chains follow the predicted order? Does adding the same axiom to different structures move their representations in a common direction? We preregistered these tests across five open base models. Qwen3.5-2B-Base was the confirmatory model, and the other four tested robustness on the same items. [Related work](reports/state-of-the-art-review.md) · [Frozen preregistration](https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms/blob/prereg-v1/docs/prereg.md)
 
 **Links:**
 - 📄 Paper: [`paper/paper.pdf`](paper/paper.pdf)
@@ -467,7 +469,7 @@ PyTorch 2.14 (CUDA 13), Hugging Face `transformers` 5.x, `accelerate` and `huggi
 - Kantamneni & Tegmark 2025, *Language Models Use Trigonometry to Do Addition*, [arXiv:2502.00873](https://arxiv.org/abs/2502.00873).
 - Gurnee & Tegmark 2023, *Language Models Represent Space and Time*, [arXiv:2310.02207](https://arxiv.org/abs/2310.02207); Modell et al. 2025, *The Origins of Representation Manifolds in Large Language Models*, [arXiv:2505.18235](https://arxiv.org/abs/2505.18235).
 - Kvinge et al. 2025, *Probing the Limits of Mathematical World Models in LLMs* (ICML 2025 workshop poster, [icml.cc/virtual/2025/49128](https://icml.cc/virtual/2025/49128); [OpenReview](https://openreview.net/forum?id=aMaSHy8IgK)).
-- Berlioz 2021, *ArGoT: A Glossary of Terms extracted from the arXiv*, [arXiv:2109.02801](https://arxiv.org/abs/2109.02801): static word embeddings of arXiv math terms, the closest earlier work on the geometry of mathematical concepts.
+- Berlioz (2021), *ArGoT: A Glossary of Terms extracted from the arXiv*. Section 4 compares mathematical terms using static embeddings and examines dependencies between their definitions. [Paper](https://arxiv.org/abs/2109.02801)
 - Mu & Viswanath 2018, *All-but-the-Top* (ICLR 2018; arXiv v1 also lists Suma Bhat), [arXiv:1702.01417](https://arxiv.org/abs/1702.01417).
 - Statistics used throughout: the Mantel test (Mantel 1967, [PMID 6018555](https://pubmed.ncbi.nlm.nih.gov/6018555/)), representational similarity analysis (Kriegeskorte et al. 2008, [doi:10.3389/neuro.06.004.2008](https://doi.org/10.3389/neuro.06.004.2008)), the Robinson order score (Robinson 1951, [doi:10.2307/276978](https://doi.org/10.2307/276978)), the Otsuka–Ochiai coefficient (Ochiai 1957, who credits it to Otsuka, [doi:10.2331/suisan.22.526](https://doi.org/10.2331/suisan.22.526)), partial Mantel tests (Smouse, Long & Sokal 1986, [doi:10.2307/2413122](https://doi.org/10.2307/2413122)), Holm correction (Holm 1979, [JSTOR 4615733](https://www.jstor.org/stable/4615733)) and BCa intervals (Efron 1987, [doi:10.1080/01621459.1987.10478410](https://doi.org/10.1080/01621459.1987.10478410)).
 - Guillot & Rousset 2013, *Dismantling the Mantel tests*, [doi:10.1111/2041-210X.12018](https://doi.org/10.1111/2041-210X.12018).
