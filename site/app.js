@@ -257,7 +257,7 @@ function renderTiles() {
     t(fmt(R(`lattice.${k}.group_like.offsets.commutative.consistency`)), "“add commutativity” consistency", `twin ${fmt(R(`lattice.${k}__random.group_like.offsets.commutative.consistency`))} · null 95th pct ${fmt(R(`lattice.${k}.group_like.offsets.commutative.null95`))}`),
     t(fmt(R(`map_fields.${k}.math_primary.rsa.trained`)), "field map vs arXiv (ρ)", `twin ${fmt(R(`map_fields.${k}.math_primary.rsa.random_init`))}`),
     t(fmt(R(`posthoc.${k}.pc_plane_cycle.days.${Lp - 1}`)), "days: cycle score", `twin ${fmt(R(`posthoc.${k}__random.pc_plane_cycle.days.${Lp - 1}`))} · post-hoc projection`),
-    t(fmt(R(`shapes.${k}.angles.line_rho`)), "angles follow the number line (line ρ)", `circle ρ ${fmt(R(`shapes.${k}.angles.circle_rho`))} · twin line ρ ${fmt(R(`shapes.${k}__random.angles.line_rho`))} · circle falsified`),
+    t(fmt(R(`shapes.${k}.angles.line_rho`)), "angles follow the number line (line ρ)", `circle ρ ${fmt(R(`shapes.${k}.angles.circle_rho`))} · twin line ρ ${fmt(R(`shapes.${k}__random.angles.line_rho`))} · full-space angle and calendar criteria failed`),
   ].join("");
 }
 function renderScorecard(filter = "all") {
@@ -465,11 +465,11 @@ function pick(i) {
 
 // ---------------------------------------------------------------- families
 const FAM_TAKE = {
-  days: "The original weekday control failed in full space. The post-hoc plane score measures cyclic order. The line under the variance chart also checks closure.",
-  months: "The original month control failed in full space. In some checkpoints a post-hoc projection preserves the month order. Closure depends on the plane.",
-  angles: "Angles, weekdays and months failed the preregistered full-space criteria in every trained checkpoint. The angle distances fit the line template better. The later plane search was post-hoc. Other circular components remain unresolved.",
+  days: "The weekday control failed in full space. The post-hoc plane score measures whether the weekdays go around in the right order. The closure test checks the Sunday–Monday seam.",
+  months: "The month control failed in full space. A post-hoc projection can put the months in their calendar order while leaving an open arc between December and January. Closure depends on the plane.",
+  angles: "Angles, weekdays and months failed the preregistered full-space criteria in every trained checkpoint. The trained angle distances fit the straight order from 0° to 330° better. All untrained twins meet the two thresholds on angle phrases. Their bare numerals also fit the circle template better than the line. The later plane search was post-hoc. Other circular components remain unresolved.",
   ring_chain: "The rule combines Robinson and leave-one-out permutation tests and requires Robinson to exceed the twin. The confirmatory ring result crosses the significance threshold between the published and reserved-slot Holm calculations. The scorecard shows both.",
-  space_chain: "The rule combines Robinson and leave-one-out permutation tests and requires Robinson to exceed the twin. The confirmatory ring result crosses the significance threshold between the published and reserved-slot Holm calculations. The scorecard shows both.",
+  space_chain: "The space sequence passes the full order test in every study checkpoint. Among the names ending in “space”, metrizable through Hilbert retain their order in every checkpoint. The separation-axiom block passes its within-block test only in Qwen3.5-2B. Choosing a compatible metric adds structure to a metrizable space.",
   number_systems: "Exploratory (7 items): ordered, but in most models not beyond word frequency and token count (the frequency control under the panel).",
   ngons: "Compared with the number words three … twelve; in the Qwen2.5 models the twins track them as well as the trained models do.", dimensions: "Follows the number words zero … ten, more closely than the twins do.",
 };
@@ -567,7 +567,12 @@ function renderFamilies() {
   if (cyc) $("fam-table").insertAdjacentHTML("beforeend", `<table><thead><tr><th>Layer</th><th>Cycle score, trained</th><th>Cycle score, twin</th></tr></thead><tbody>${
     cyc.map((v, l) => `<tr><td>${l + 1}</td><td>${fmt(v)}</td><td>${fmt(cycT[l])}</td></tr>`).join("")}</tbody></table>`);
   pinRow("fam-table", S.pin.fam);
-  $("fam-takeaway").innerHTML = `<b>${FAM_TAKE[f] || ""}</b>`;
+  const calendar = f === "days" || f === "months";
+  const perfectLayers = (scores) => scores.filter((score) => score === 1).length;
+  const depthResult = calendar && cyc && cycT
+    ? ` In the first two PCs, the order is perfect at ${perfectLayers(cyc)}/${cyc.length} layers in ${model().name} and ${perfectLayers(cycT)}/${cycT.length} in its twin.`
+    : "";
+  $("fam-takeaway").textContent = (FAM_TAKE[f] || "") + depthResult;
   if (cyc) {
     const tw = cycT, x = cyc.map((_, i) => (i + 1) / cyc.length);
     plot("fam-curve", [{ x, y: tw, mode: "lines", name: "random-init twin", line: { color: p.twin, width: 2 }, hovertemplate: "twin · depth %{x:.2f}: %{y:.2f}<extra></extra>" },

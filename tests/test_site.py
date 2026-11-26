@@ -62,7 +62,7 @@ def test_site_data_schema_and_page_numbers():
         assert isinstance(v, (int, float)) or (path.startswith("facts.") and isinstance(v, str) and v), path
     text = re.sub(r"<(script|style)[^>]*>.*?</\1>", "", html, flags=re.S)
     text = re.sub(r"<[^>]+>", " ", text)
-    text = re.sub(r"Qwen\d\.\d", "Qwen", text)  # model names, not results
+    text = re.sub(r"Qwen\d\.\d|Qwen3-Embedding-0\.6B", "Qwen", text)  # release names include decimals
     assert not re.findall(r"\d\.\d", text), "numbers in the page must come from data/index.json"
 
 
@@ -94,6 +94,15 @@ def test_figure_numbers_come_from_page_order():
     refs = set(re.findall(r'class="figref" href="#([\w-]+)"', html)) | set(re.findall(r'figref\("([\w-]+)"\)', js))
     assert refs and not refs - figures, refs - figures
     assert not re.findall(r"figures? *\d", html, flags=re.I) and not re.findall(r"figures? *\d", js, flags=re.I)
+
+
+def test_space_and_ring_selectors_have_distinct_chain_findings():
+    """Catch the copy error that displayed the ring result for both selectors."""
+    js = (SITE / "app.js").read_text(encoding="utf-8")
+    findings = dict(re.findall(r'^  (space_chain|ring_chain): "([^"]+)",$', js, flags=re.M))
+    assert set(findings) == {"space_chain", "ring_chain"}
+    assert "space" in findings["space_chain"].lower() and "ring" in findings["ring_chain"].lower()
+    assert findings["space_chain"] != findings["ring_chain"]
 
 
 def test_paper_links_point_at_paper_sections():

@@ -76,7 +76,11 @@ The table uses the MVP for primary and secondary outcomes unless the sample name
 | H-B2 identity offset consistency | qwen3.5-2b | 0.0425 | 0.0850 | 0.1274 |
 | H-B2 divisible offset consistency | qwen3.5-2b | 0.0275 | 0.0825 | 0.1099 |
 | H-B2 commutative offset consistency | qwen3.5-2b | 0.0010 | 0.0060 | 0.0070 |
-| Angles rule failed; see calendar controls | qwen3.5-2b | rule only | reserved | reserved |
+| Angles rule failed | qwen3.5-2b | rule only | reserved | reserved |
+
+The published H-A1 input was (1 + paired bootstrap draws with Δρ ≤ 0) / (1 + total draws). Its prespecified decision uses the field-label permutation and paired confidence interval. Each chain uses the larger of its Robinson and leave-one-out permutation p-values. For a calibrated test, a Holm-adjusted p ≤ .05 rejects its null.
+
+The angle-side thresholds are closure < 2 and circle ρ > line ρ. The preregistration also expects a line-like bare-numeral reference. qwen3.5-2b: closure 2.11, circle ρ 0.29, line ρ 0.56. Weekday control failed, month control failed.
 
 The angle prediction supplies a deterministic inequality. The field-map decision requires both the field-label permutation and a positive paired confidence interval. The historical additional input for H-A1 counted nonpositive resampled differences in an ordinary bootstrap centered on the sample estimate. Giving that slot a value of one preserves family size without treating this tail as a calibrated null p-value. Report both adjustments. For the ring chain, 411,890 of 39,916,800 orderings attained its Robinson score, for exact p = 0.01032. This tests Robinson alone. The registered conjunction uses the larger of the Robinson and LOO permutation p-values and also requires a trained score above the twin. [Holm](https://www.jstor.org/stable/4615733) · [Hall & Wilson](https://doi.org/10.2307/2532163) · [intersection-union tests](https://doi.org/10.1080/00401706.1982.10487790).
 
@@ -167,6 +171,10 @@ The header parser used for the historical depths stopped at module declarations 
 ## File coverage and limits
 
 The [file inventory](../../results/scientific_audit/file_coverage.json) identifies the evidence and review treatment for every tracked file in the starting revision. Frozen decisions are dated above. Numerical claims in the active publications resolve from stored results or the independent calculations. Model-execution code was read statically. Fitted model outputs and old report conclusions have different evidentiary status from quantities recovered directly from archived arrays. The [methods literature review](../literature-review.md) and [related work](../state-of-the-art-review.md) identify the external comparisons used here.
+
+### Comparison with the pre-audit publications
+
+We compared the files changed by the audit with the [pre-audit revision](https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms/tree/43dcda70a7f6093e946fbc975c88cd65a7d12e5f). Every original tracked path and original result JSON is present. We also compared paragraphs, links, captions, template fields and explorer panels. This restored the angle–numeral control, the reason an untrained twin can pass the angle-side thresholds, the signed PC2 association, the original Mathlib interval and search size, and the historical Holm decision table. The primary extraction fails both calendar controls. Under the exploratory templates that omit the shared family domain, months pass the original full-space control. The [alternate run report](../mvp_variants_results.md) gives both the full-space statistics and the projection results. The explorer now gives the space-chain result in its own panel. The [original README](https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms/blob/43dcda70a7f6093e946fbc975c88cd65a7d12e5f/README.md) provides the wording used before the audit.
 
 ## Reproduction and publication
 

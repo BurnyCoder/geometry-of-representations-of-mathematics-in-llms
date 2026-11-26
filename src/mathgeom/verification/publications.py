@@ -35,6 +35,10 @@ def check(results):
     plain = subprocess.check_output(
         ["pdftotext", "-layout", "-enc", "UTF-8", str(ROOT / "paper/paper.pdf"), "-"]
     ).decode("utf-8").replace("‑", "-")
+    # A long table can push a figure and its caption off the printed page despite a successful TeX build.
+    figure_count = sum(line.startswith("![") for line in text("paper/paper.md").splitlines())
+    captions = [int(n) for n in re.findall(r"(?m)^\s*Figure (\d+):", plain)]
+    assert captions == list(range(1, figure_count + 1)), ("PDF figure captions", captions, figure_count)
     plain = " ".join(plain.split())
     ring = results["multiplicity"]["ring_chain"]
     assert f"Holm value is {ring['published']:.4f} in the published calculation and {ring['reserved']:.4f}" in plain

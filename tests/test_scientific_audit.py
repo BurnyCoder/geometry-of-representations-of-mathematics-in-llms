@@ -22,6 +22,18 @@ def test_deterministic_angle_pass_never_generates_a_p_value():
     assert ring["reserved_holm"] == pytest.approx(0.0524737631)
 
 
+def test_original_and_alternate_calendar_controls_are_reported_from_each_extraction():
+    from mathgeom.report.paper import _results
+
+    for config, expected in (("mvp", "failed"), ("mvp_variants", "met")):
+        r = _results(config)
+        table = render.table_holm(r["map_fields"], r["shapes"], r["lattice"])
+        assert f"Weekday control failed, month control {expected}." in table
+        assert "Reserved-slot Holm" in table
+        historical = render.table_holm(r["map_fields"], r["shapes"], r["lattice"], historical=True)
+        assert "Published rejection at .05" in historical and "Reserved-slot Holm" not in historical
+
+
 def test_exact_order_preserves_ties_and_counts_all_labelings():
     from mathgeom.verification.geometry import exact_robinson
     from mathgeom.geometry.manifold import robinson_score

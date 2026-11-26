@@ -218,16 +218,22 @@ Ordered families on word-form baselines (Qwen3.5-2B):
 
 Together with the 10,000-permutation LOO p-values (D9), this changes three decisions relative to the pre-audit rules (7-test Holm, 300 permutations): Gemma-4-E2B's space chain becomes Holm-significant, and identity and divisibility lose Holm significance in Qwen2.5-Math-1.5B. The confirmatory model:
 
-| Test | Model | Original input | Published Holm | Reserved-slot Holm |
+| Test | Model | Original input | Published Holm | Published rejection at .05 |
 |---|---|---:|---:|---:|
-| H-A1 Δρ trained − random-init ≤ 0 (bootstrap) | qwen3.5-2b | 0.0005 | 0.0040 | reserved |
-| H-B ring chain (Robinson and LOO order) | qwen3.5-2b | 0.0105 | 0.0420 | 0.0525 |
-| H-B space chain (Robinson and LOO order) | qwen3.5-2b | 0.0005 | 0.0040 | 0.0040 |
-| H-B2 associative offset consistency | qwen3.5-2b | 0.0035 | 0.0175 | 0.0210 |
-| H-B2 identity offset consistency | qwen3.5-2b | 0.0425 | 0.0850 | 0.1274 |
-| H-B2 divisible offset consistency | qwen3.5-2b | 0.0275 | 0.0825 | 0.1099 |
-| H-B2 commutative offset consistency | qwen3.5-2b | 0.0010 | 0.0060 | 0.0070 |
-| Angles rule failed; see calendar controls | qwen3.5-2b | rule only | reserved | reserved |
+| H-A1 Δρ trained − random-init ≤ 0 (bootstrap) | qwen3.5-2b | 0.0005 | 0.0040 | yes |
+| H-B ring chain (Robinson and LOO order) | qwen3.5-2b | 0.0105 | 0.0420 | yes |
+| H-B space chain (Robinson and LOO order) | qwen3.5-2b | 0.0005 | 0.0040 | yes |
+| H-B2 associative offset consistency | qwen3.5-2b | 0.0035 | 0.0175 | yes |
+| H-B2 identity offset consistency | qwen3.5-2b | 0.0425 | 0.0850 | no |
+| H-B2 divisible offset consistency | qwen3.5-2b | 0.0275 | 0.0825 | no |
+| H-B2 commutative offset consistency | qwen3.5-2b | 0.0010 | 0.0060 | yes |
+| Angles rule failed | qwen3.5-2b | rule only | reserved | — |
+
+The published H-A1 input was (1 + paired bootstrap draws with Δρ ≤ 0) / (1 + total draws). Its prespecified decision uses the field-label permutation and paired confidence interval. Each chain uses the larger of its Robinson and leave-one-out permutation p-values. For a calibrated test, a Holm-adjusted p ≤ .05 rejects its null.
+
+The angle-side thresholds are closure < 2 and circle ρ > line ρ. The preregistration also expects a line-like bare-numeral reference. qwen3.5-2b: closure 2.11, circle ρ 0.29, line ρ 0.56. Weekday control failed, month control failed.
+
+These are the decisions reported at the time. The [archived table](https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms/blob/43dcda70a7f6093e946fbc975c88cd65a7d12e5f/reports/audit_lexical.md#d8-holm-over-all-8-preregistered-tests) and the [later reserved-slot sensitivity](reviews/2026-11-26_scientific_audit.md) document the two analyses.
 
 ## D9–D10: leave-one-out order, 10,000 permutations, two ridge penalties
 

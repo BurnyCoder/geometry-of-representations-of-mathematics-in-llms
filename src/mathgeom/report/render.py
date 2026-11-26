@@ -177,8 +177,13 @@ def chain_p(s: dict) -> float:
 
 
 def angles_met(a: dict) -> bool:
-    """The pre-registered angles decision rule (docs/prereg.md H-B): closure < 2 AND circle ρ > line ρ."""
+    """The two angle-side conditions in H-B. The protocol also describes a line-like bare-numeral reference."""
     return a["closure"] < 2 and a["circle_rho"] > a["line_rho"]
+
+
+def calendar_met(family: dict) -> bool:
+    """The original calendar control adds a Robinson permutation test to the two shape conditions."""
+    return angles_met(family) and family["robinson_p"] < 0.05
 
 
 ANGLES_ROW = "H-B angles circle prediction (descriptive rule)"
@@ -222,26 +227,38 @@ def _and(xs: list[str]) -> str:
     return "none" if not xs else xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
 
 
-def table_holm(mp: dict, sh: dict, la: dict) -> str:
-    """Holm over the 8 confirmatory tests; the angles prediction is a pre-registered decision rule
-    (closure < 2 AND circle ρ > line ρ) whose row shows the rule instead of a p-value."""
-    out = ["| Test | Model | Original input | Published Holm | Reserved-slot Holm |",
-           "|---|---|---:|---:|---:|"]
+def table_holm(mp: dict, sh: dict, la: dict, *, historical: bool = False) -> str:
+    """Display the as-published decisions or the side-by-side sensitivity on the same saved inputs."""
+    columns = "Published rejection at .05" if historical else "Reserved-slot Holm"
+    out = [f"| Test | Model | Original input | Published Holm | {columns} |", "|---|---|---:|---:|---:|"]
+    notes = []
     for key in mp:
         for d in holm_decisions(mp, sh, la, key):
             if d["name"] == ANGLES_ROW:
-                status = "met" if angles_met(sh[key]["angles"]) else "failed"
-                out.append(f"| Angles rule {status}; see calendar controls | {key} | rule only | reserved | reserved |")
+                angle = sh[key]["angles"]
+                status = "met" if angles_met(angle) else "failed"
+                out.append(f"| Angles rule {status} | {key} | rule only | reserved | {'—' if historical else 'reserved'} |")
+                cal = ["met" if calendar_met(sh[key][f]) else "failed" for f in ("days", "months")]
+                notes.append(f"{key}: closure {angle['closure']:.2f}, circle ρ {angle['circle_rho']:.2f}, line ρ {angle['line_rho']:.2f}. "
+                             f"Weekday control {cal[0]}, month control {cal[1]}.")
+                continue
+            if historical:
+                last = "yes" if d["reject"] else "no"
             else:
-                sensitivity = "reserved" if d["name"] == FIELD_ROW else _p(d["reserved_holm"])
-                out.append(f"| {d['name']} | {key} | {_p(d['p'])} | {_p(d['p_holm'])} | {sensitivity} |")
+                last = "reserved" if d["name"] == FIELD_ROW else _p(d["reserved_holm"])
+            out.append(f"| {d['name']} | {key} | {_p(d['p'])} | {_p(d['p_holm'])} | {last} |")
+    out.extend(["", "The published H-A1 input was (1 + paired bootstrap draws with Δρ ≤ 0) / (1 + total draws). "
+                "Its prespecified decision uses the field-label permutation and paired confidence interval. "
+                "Each chain uses the larger of its Robinson and leave-one-out permutation p-values. "
+                "For a calibrated test, a Holm-adjusted p ≤ .05 rejects its null.", "",
+                "The angle-side thresholds are closure < 2 and circle ρ > line ρ. The preregistration also expects a line-like bare-numeral reference. " + " ".join(notes)])
     return "\n".join(out)
 
 
 SCORE_LEGEND = ("† changes at .05 when the field-map bootstrap slot is reserved. Only Qwen3.5-2B is confirmatory; other checkpoints are robustness comparisons on the same items. ● significant: Holm-adjusted over the 8 pre-registered confirmatory tests for the axiom and chain rows (the angles slot always reserved), "
                 "with the trained value above the twin's; for Δ tests the 95% CI lies entirely above 0 (H-A1 also needs Mantel p < .05); for every other row p < .05, unadjusted · "
                 "◐ raw p < .05 but not Holm-significant (axiom and chain rows) · ○ not significant · "
-                "✗ observed criteria failed. Days and months also failed the full-space rule in every trained checkpoint; a circular angle component remains unresolved. The angle rule is met by {twins}. "
+                "✗ observed criteria failed. Days and months also failed the full-space rule in every trained checkpoint; a circular angle component remains unresolved. The two angle-side thresholds are met by {twins}. The twins’ bare-numeral distances fit the circle template better than the line. "
                 "Chains: p = max(Robinson p, LOO order p), the pre-registered conjunction. "
                 "Numbers: the statistic for the trained model. Audit rows (post-hoc, reports/prereg_addendum_lexical.md): field map = lowest lower CI bound of "
                 "Δρ against the three lexical baselines; ring chain = Robinson score within the “… domain” items; held-out pair = cosine of abelian group − group "
@@ -308,7 +325,7 @@ def scorecard_rows(r: dict) -> dict:
         ("Lie / topological / algebraic groups as parallelograms", "pre-registered, exploratory", lambda k: f"{'●' if st[k]['group_objects']['parallelograms']['p'] < 0.05 else '○'} {st[k]['group_objects']['parallelograms']['cos']:.2f}"),
         *a_row("group_objects"),
         ("Days / months pass the original full-space circle control", "pre-registered control",
-         lambda k: " / ".join("met" if angles_met(sh[k][f]) and sh[k][f]["robinson_p"] < .05 else "failed" for f in ("days", "months"))),
+         lambda k: " / ".join("met" if calendar_met(sh[k][f]) else "failed" for f in ("days", "months"))),
         ("Days form a cycle (positive control; PC plane)", "positive control; post-hoc statistic", cyc),
         ("Angles form a circle (closure < 2 and circle ρ > line ρ)", conf_, angles),
         *([("Angles: closed cycle in any top-5 PC plane (addendum rule)", "post-hoc, pre-specified addendum", lambda k: f"{'●' if planes[k]['accepted'] else '○'} {planes[k]['score']:.2f}"),

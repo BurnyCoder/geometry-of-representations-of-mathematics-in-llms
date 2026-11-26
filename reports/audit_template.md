@@ -91,7 +91,9 @@ Ordered families on word-form baselines (Qwen3.5-2B):
 
 Together with the 10,000-permutation LOO p-values (D9), this changes three decisions relative to the pre-audit rules (7-test Holm, 300 permutations): Gemma-4-E2B's space chain becomes Holm-significant, and identity and divisibility lose Holm significance in Qwen2.5-Math-1.5B. The confirmatory model:
 
-{{table:holm:mvp}}
+{{table:published_holm:mvp}}
+
+These are the decisions reported at the time. The [archived table](https://github.com/BurnyCoder/geometry-of-representations-of-mathematics-in-llms/blob/43dcda70a7f6093e946fbc975c88cd65a7d12e5f/reports/audit_lexical.md#d8-holm-over-all-8-preregistered-tests) and the [later reserved-slot sensitivity](reviews/2026-11-26_scientific_audit.md) document the two analyses.
 
 ## D9–D10: leave-one-out order, 10,000 permutations, two ridge penalties
 
